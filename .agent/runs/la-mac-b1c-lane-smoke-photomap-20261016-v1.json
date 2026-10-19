@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "la-mac-b1c-lane-smoke-photomap-20261016-v1",
+  "task_digest": "eb6416308eba2f35f205aa613255a6b7554f6a3dd4cb3816e09656e962ffd82e",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-16T16:38:07.247148+00:00",
+  "attempt_id": "09e12e04c113d1e8691cd016",
+  "daemon_version": "4.20.6",
+  "daemon_pid": 34735,
+  "updated_at": "2026-10-16T16:38:07.506091+00:00",
+  "pid": 34735
+}
