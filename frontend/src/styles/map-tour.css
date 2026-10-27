@@ -5,43 +5,6 @@
   pointer-events: none;
 }
 
-.map-tour-shade {
-  background: rgba(7, 16, 30, .72);
-  position: absolute;
-  pointer-events: auto;
-}
-
-.map-tour-spotlight {
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius-media);
-  box-shadow: 0 0 0 2px var(--color-accent-soft);
-  box-sizing: border-box;
-  position: absolute;
-  pointer-events: none;
-}
-
-.map-tour-spotlight.is-media-tile {
-  border: 0;
-  box-shadow: none;
-}
-
-/* The tutorial owns the highlight. Native map hover/focus zoom or title glow
-   should not make the chosen tile jump while the user is trying to click it. */
-body:has(.map-tour) .place-photo-marker:hover span,
-body:has(.map-tour) .place-photo-marker:focus-visible span {
-  filter: none;
-  box-shadow: var(--elevation-marker);
-  transform: translate(var(--place-marker-offset-x, 0px), var(--place-marker-offset-y, 0px)) scale(1);
-}
-body:has(.map-tour) .photo-gallery-marker:hover span,
-body:has(.map-tour) .photo-gallery-marker:focus-visible span,
-body:has(.map-tour) .photo-gallery-add-marker:hover span,
-body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
-  filter: none;
-  box-shadow: var(--elevation-marker);
-  transform: translate(calc(-50% + var(--gallery-x, 0px)), calc(-50% + var(--gallery-y, 0px))) scale(1);
-}
-
 .map-tour-card {
   background: var(--color-surface);
   backdrop-filter: blur(22px);
@@ -54,7 +17,9 @@ body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
   overflow-y: auto;
   padding: 20px;
   pointer-events: auto;
-  position: absolute;
+  position: fixed;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  right: max(16px, env(safe-area-inset-right));
   width: min(360px, calc(100vw - 24px));
   outline: none;
 }
@@ -167,6 +132,14 @@ body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
   font-weight: 700;
 }
 
+.map-tour-next:disabled {
+  background: var(--color-surface-soft);
+  border-color: var(--color-border);
+  color: var(--color-muted-strong);
+  cursor: not-allowed;
+  opacity: .65;
+}
+
 .map-tour button:focus-visible {
   outline: 3px solid var(--color-accent);
   outline-offset: 2px;
@@ -177,5 +150,5 @@ body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .map-tour-card, .map-tour-spotlight { transition: none; }
+  .map-tour-card { transition: none; }
 }
