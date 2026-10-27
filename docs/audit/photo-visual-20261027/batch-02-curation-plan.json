@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "photos": [
+    {
+      "photo_id": "f7e66317-79a4-4746-bd05-21bb0fa8ca8a",
+      "place_slug": "bastion-sakwowy",
+      "label": "F0038",
+      "reason": "Bardzo ciemne nocne ujęcie z mało rozpoznawalnym Bastionem Sakwowym."
+    },
+    {
+      "photo_id": "840b74fb-08ff-4810-8512-be2666d012f3",
+      "place_slug": "bastion-sakwowy",
+      "label": "F0035",
+      "reason": "Zwykła alejka z małą wartością wizualną wobec innych zdjęć Bastionu."
+    },
+    {
+      "photo_id": "dc98551e-bae3-4acc-987c-1d9f6b12df4c",
+      "place_slug": "aula-leopoldina",
+      "label": "F0028",
+      "reason": "Ciemny i mało wyrazisty fragment wnętrza, słabszy od pozostałych kadrów Auli."
+    }
+  ]
+}
