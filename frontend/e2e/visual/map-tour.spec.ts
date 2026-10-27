@@ -70,7 +70,7 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await page.getByRole("button", { name: "Otwórz menu" }).click();
   await page.getByRole("button", { name: "Samouczek" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "welcome");
-  await tour.getByRole("button", { name: "Pomiń" }).click();
+  await tour.getByRole("button", { name: "Pomiń", exact: true }).click();
   await expect(tour).toHaveCount(0);
 });
 
@@ -88,7 +88,7 @@ test("tutorial leaves all map thumbnails naturally interactive without a spotlig
   await tiles.first().hover();
   await tiles.first().click();
   await expect(tour).toHaveAttribute("data-tour-step", "gallery");
-  await tour.getByRole("button", { name: "Pomiń" }).click();
+  await tour.getByRole("button", { name: "Pomiń", exact: true }).click();
   await expect(tour).toHaveCount(0);
 });
 
@@ -111,6 +111,6 @@ test("tour works with empty map on narrow mobile viewport", async ({ page }) => 
   expect(rect!.x + rect!.width).toBeLessThanOrEqual(375);
   expect(rect!.y).toBeGreaterThanOrEqual(0);
   expect(rect!.y + rect!.height).toBeLessThanOrEqual(667);
-  await tour.getByRole("button", { name: "Pomiń" }).click();
+  await tour.getByRole("button", { name: "Pomiń", exact: true }).click();
   await expect(tour).toHaveCount(0);
 });
