@@ -67,13 +67,14 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(page.locator(".memory-sheet-content")).toBeVisible();
   await expect(page.getByRole("button", { name: "generuj token" })).toBeVisible();
   // The token UI must have breathing room inside the soft blue guide outline.
-  const fieldBounds = await page.locator(".memory-sheet-content > .ui-setting-field").boundingBox();
-  const glowBounds = await tour.locator(".map-tour-spotlight").boundingBox();
-  expect(fieldBounds).not.toBeNull();
-  expect(glowBounds).not.toBeNull();
-  expect(fieldBounds!.x - glowBounds!.x).toBeGreaterThanOrEqual(10);
-  expect(fieldBounds!.y - glowBounds!.y).toBeGreaterThanOrEqual(10);
-  expect(glowBounds!.x + glowBounds!.width - fieldBounds!.x - fieldBounds!.width).toBeGreaterThanOrEqual(10);
+  await expect.poll(async () => {
+    const fieldBounds = await page.locator(".memory-sheet-content > .ui-setting-field").boundingBox();
+    const glowBounds = await tour.locator(".map-tour-spotlight").boundingBox();
+    if (!fieldBounds || !glowBounds) return false;
+    return fieldBounds.x - glowBounds.x >= 10 &&
+      fieldBounds.y - glowBounds.y >= 10 &&
+      glowBounds.x + glowBounds.width - fieldBounds.x - fieldBounds.width >= 10;
+  }).toBe(true);
 
   await tour.getByRole("button", { name: "Dalej" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "layers");
