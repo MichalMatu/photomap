@@ -1,4 +1,5 @@
 import { APP_NAME } from "../../config/app";
+import { CircleHelp } from "lucide-react";
 import { DrawerAdminAction } from "./AppShellAdminAction";
 import { DrawerMapAudioControl } from "./AppShellMapAudioControl";
 import { DrawerMapCategoryControls } from "./AppShellMapCategoryControls";
@@ -24,6 +25,7 @@ type Props = {
   mapPinnedMediaControl?: AppShellMapPinnedMediaControl;
   primaryItems: AppShellPrimaryItem[];
   onAdminAction: () => void;
+  onStartTour?: () => void;
   onClose: () => void;
 };
 
@@ -36,6 +38,7 @@ export function AppShellDrawer({
   mapLayerControls,
   mapPinnedMediaControl,
   onAdminAction,
+  onStartTour,
   onClose,
   primaryItems,
 }: Props) {
@@ -80,6 +83,14 @@ export function AppShellDrawer({
       {isMapSection && mapAudioControl ? <DrawerMapAudioControl control={mapAudioControl} onClose={onClose} /> : null}
       {isMapSection && mapCategoryControls ? <DrawerMapCategoryControls controls={mapCategoryControls} /> : null}
       {adminAction ? <DrawerAdminAction action={adminAction} onClick={onAdminAction} /> : null}
+      {isMapSection && onStartTour ? (
+        <nav className="drawer-section" aria-label="Pomoc">
+          <button className="drawer-item" type="button" onClick={onStartTour}>
+            <CircleHelp aria-hidden="true" size={24} />
+            <span>Samouczek</span>
+          </button>
+        </nav>
+      ) : null}
     </aside>
   );
 }
