@@ -73,9 +73,10 @@ const TOUR_CONTENT: Record<MapTourStep, TourContent> = {
 function actionAvailable(selector: string): boolean {
   return Array.from(document.querySelectorAll<HTMLElement>(selector)).some((element) => {
     const rect = element.getBoundingClientRect();
+    // A drawer button can require scrolling yet still be available to use.
+    // We do not pick a particular tile or restrict selection to the viewport.
     return rect.width >= 8 && rect.height >= 8 &&
-      rect.bottom > 0 && rect.right > 0 &&
-      rect.top < window.innerHeight && rect.left < window.innerWidth;
+      window.getComputedStyle(element).visibility !== "hidden";
   });
 }
 
@@ -115,7 +116,7 @@ export function MapTour({ step, onBack, onNext, onSkipStep, onClose }: Props) {
     // Leaflet mounts the fan outside React and some controls become available
     // after an API response. We only observe availability, never choose a tile.
     const observer = new MutationObserver(measure);
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style"] });
     window.addEventListener("resize", measure);
     return () => {
       observer.disconnect();
