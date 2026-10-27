@@ -20,9 +20,12 @@ import { usePlaceGalleryPreloadControls, useVisiblePlaceGalleriesPreload } from 
 import { type MapViewport, useMapMarkerLayout } from "./useMapMarkerLayout";
 import { type PlaceVisualTarget, usePlaceGalleryData } from "./usePlaceGalleryData";
 import type { PinMediaRequest } from "./pinned-media/usePinnedMediaBoard";
+import type { MapTourEvent } from "../tour/mapTourSteps";
 
 type PlaceLayerProps = {
   isAudioAutoplayEnabled: boolean;
+  tourCloseMediaToken?: number;
+  onTourEvent?: (event: MapTourEvent) => void;
   mapSettings: AppConfigMap;
   onPinMedia: (request: PinMediaRequest) => boolean;
   places: PlaceMapItem[];
@@ -46,6 +49,8 @@ function readMapViewport(map: LeafletMap): MapViewport {
 
 export function PlaceLayer({
   isAudioAutoplayEnabled,
+  tourCloseMediaToken = 0,
+  onTourEvent,
   mapSettings,
   onPinMedia,
   places,
@@ -90,6 +95,15 @@ export function PlaceLayer({
     reportTarget,
     visualDetail,
   });
+
+  useEffect(() => {
+    if (!tourCloseMediaToken) return;
+    closePlaceGallery();
+    setVisualDetail(null);
+    setMemoryPlace(null);
+    setReportTarget(null);
+    setActiveAudioTarget(null);
+  }, [closePlaceGallery, tourCloseMediaToken]);
 
   useMapEvents({
     moveend: refreshMapViewport,
@@ -147,12 +161,14 @@ export function PlaceLayer({
             onMediaOpen={(nextPlace, nextItem) => {
               prioritizeMediaItem(nextItem);
               setVisualDetail({ id: nextItem.id, kind: nextItem.kind, placeId: nextPlace.id });
+              onTourEvent?.("photo-opened");
             }}
             onToggleGallery={() => {
               if (expandedPlaceId !== place.id) {
                 prioritizePlaceGallery(place);
               }
               togglePlaceGallery(place);
+              if (expandedPlaceId !== place.id) onTourEvent?.("gallery-opened");
             }}
             displayOffset={markerDisplayOffsets.get(place.id)}
             markerScale={mapSettings.marker_scale}
