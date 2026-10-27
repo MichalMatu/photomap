@@ -68,6 +68,18 @@ export function previousTourStep(step: MapTourStep): MapTourStep {
   return MAP_TOUR_STEPS[Math.max(0, MAP_TOUR_STEPS.indexOf(step) - 1)];
 }
 
+// The current photo detail renders an audio control only if a recording exists.
+// Do not describe a control that is absent from the user's selected photo.
+// Apply the same conditional jump in reverse so Back never lands on a
+// non-existent audio feature.
+export function nextTourStepForPhoto(step: MapTourStep, hasAudio: boolean): MapTourStep {
+  return step === "photo" && !hasAudio ? "narration" : nextTourStep(step);
+}
+
+export function previousTourStepForPhoto(step: MapTourStep, hasAudio: boolean): MapTourStep {
+  return step === "narration" && !hasAudio ? "photo" : previousTourStep(step);
+}
+
 export function isTourComplete() {
   try {
     return window.localStorage.getItem(MAP_TOUR_STORAGE_KEY) === "1";
