@@ -32,7 +32,7 @@ const TOUR_CONTENT: Record<MapTourStep, TourContent> = {
   },
   photo: {
     title: "Historie ukryte w zdjęciach",
-    description: "Otworzone zdjęcie ma informacje o miejscu, opis i dodatkowe akcje w górnym pasku.",
+    description: "Otworzone zdjęcie ma informacje i dodatkowe akcje. Nie każde zdjęcie ma nagranie — wtedy tutorial pominie etap audio.",
     selector: ".system-modal--media .photo-detail-content",
   },
   sound: {
@@ -67,7 +67,7 @@ const TOUR_CONTENT: Record<MapTourStep, TourContent> = {
   "memory-form": {
     title: "Wspomnienie i jego token",
     description: "Wybierz lub wygeneruj token — pozwoli Ci później zarządzać wspomnieniem. Następnie dodaj zdjęcie i wymagane dane. Publikacja nastąpi dopiero po wysłaniu i moderacji. W tutorialu niczego nie wysyłamy.",
-    selector: ".memory-sheet-content",
+    selector: ".memory-sheet-content > .ui-setting-field",
   },
   layers: {
     title: "Mapa na Twoich zasadach",
@@ -199,7 +199,7 @@ export function MapTour({ step, onBack, onNext, onSkipStep, onClose }: Props) {
 
       const rect = target?.getBoundingClientRect();
       // A tiny offset is enough for a soft blue outline; no cutout or shade.
-      const pad = 2;
+      const pad = step === "memory-form" ? 12 : 2;
       const nextRect = rect ? {
         left: rect.left - pad,
         top: rect.top - pad,
