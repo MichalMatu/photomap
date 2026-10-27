@@ -168,8 +168,14 @@ export function MapTour({ step, onBack, onNext, onClose }: Props) {
 
   useEffect(() => {
     const hiddenMarkerTitles = new Map<HTMLElement, string>();
+    let activeTarget: HTMLElement | null = null;
     const measure = () => {
       const target = visibleTarget(content.selector);
+      if (activeTarget !== target) {
+        activeTarget?.removeAttribute("data-map-tour-target");
+        activeTarget = target;
+        activeTarget?.setAttribute("data-map-tour-target", "true");
+      }
       // React-Leaflet does not always remove a native marker title when
       // its prop changes. Hide only the active tile's browser tooltip.
       const marker = target?.closest<HTMLElement>(".leaflet-marker-icon[title]");
@@ -198,6 +204,7 @@ export function MapTour({ step, onBack, onNext, onClose }: Props) {
       window.clearInterval(intervalId);
       window.removeEventListener("resize", measure);
       window.removeEventListener("scroll", measure, true);
+      activeTarget?.removeAttribute("data-map-tour-target");
       for (const [marker, title] of hiddenMarkerTitles) {
         if (marker.isConnected && !marker.hasAttribute("title")) marker.setAttribute("title", title);
       }
