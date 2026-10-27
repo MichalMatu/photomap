@@ -10,7 +10,11 @@ Ten dokument opisuje powtarzalny sposob dodawania nowych miast, miejsc i wysokie
 - Zdjecia maja budowac chec odwiedzenia miejsca. Galeria powinna miec rytm: szeroki kadr, detal, pora dnia, sezon, ruch ludzi, spokojniejszy moment, architektura, kontekst ulicy albo wnetrza.
 - Nie importuj zdjec bez pewnego prawa uzycia, stabilnego URL zrodla, autora i zapisanej licencji.
 - Nie importuj kilku prawie identycznych kadrow. Przy podobnych ujeciach wybierz jeden najlepszy plik: najmocniejszy wizualnie, najczytelniejszy dla miejsca, w najwyzszej jakosci i z najpewniejsza licencja.
-- Limit docelowy galerii nie moze obnizac progu jakosci. Jesli nie ma 10 unikalnych i mocnych zdjec miejsca, zostaw galerie niepelna i zapisz w podsumowaniu, czego zabraklo.
+- **Jakosc przed iloscia**: nie ma minimalnej liczby zdjec do osiagniecia. Jedno wybitne zdjecie jest lepsze od dziesieciu przecietnych. Kazde kolejne zdjecie musi dodawac inna perspektywe, porze dnia, unikatowy detal lub wiarygodny kontekst miejsca.
+- Nie publikuj zdjec pokazujacych przypadkowa sciane, posadzke, monitoring, tablice informacyjna lub inny niezrozumialy szczegol, chyba ze to rzeczywisty, istotny temat miejsca; podpis musi zgodnie opisywac kadr.
+- Usuwaj z bazy, poprzez istniejace admin API, trwale odrzucone i niskiej jakosci zdjecia, lacznie z ich oryginalami, miniaturami i audio. Przed partia destrukcyjna utrwal audit decyzji i spójna kopie SQLite, a potem zweryfikuj liczniki i covery. Nie tworz archiwum odrzuconych oryginalow tylko dla zwiekszania liczby assetow.
+- W audycie porownuj fotograficzne kadry, opisy i fakty. Najpierw wybieraj najlepszy cover; nie wypelniaj galerii przypadkowymi detaliami ani niemal identycznymi kadrami.
+- W wyniku audytu odnotowuj ile zdjec zostalo usunietych i dlaczego, osobno od liczby samych heurystycznych kandydatow.
 - Nie uzywaj generowanych ikon, tapet, obrazow AI ani ilustracyjnych coverow jako substytutu realnych zdjec miejsca.
 
 ## Kolejnosc Pracy
