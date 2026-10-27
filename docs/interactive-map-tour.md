@@ -1,12 +1,12 @@
 # PhotoMap — interaktywny samouczek mapy
 
-Samouczek został przygotowany na branchu `work/interactive-map-tour-20261027` i zaakceptowany do publikacji 2026-10-27. Nie wymaga nowych endpointów ani zmian danych. Produkcyjny frontend jest budowany na Macu i wdrażany na Raspberry Pi Zero 2 W zgodnie z `docs/deploy-pi-zero2w.md`.
+Pierwszą wersję samouczka wdrożono 2026-10-27. Rozszerzenia o audio, lektora, przypinanie oraz wspomnienia i korektę podświetlenia rozwijane są na `work/tour-media-memory-ux-20261027` i wymagają osobnej akceptacji przed produkcją. Nie wymaga nowych endpointów ani zmian danych. Produkcyjny frontend jest budowany na Macu i wdrażany na Raspberry Pi Zero 2 W zgodnie z `docs/deploy-pi-zero2w.md`.
 
 ## Zachowanie
 
-Przy pierwszej wizycie na publicznej mapie, po załadowaniu danych, pojawia się wprowadzenie. Przewodnik obejmuje: powitanie, otwarcie miniatury miejsca, galerię, zdjęcie, warstwy, trasy i zakończenie. Trzy kroki reagują na rzeczywiste akcje użytkownika; przy braku dostępnych elementów można przejść dalej. Podświetlenie jest pozycjonowane na wizualnej zawartości kafla Leaflet, a nie na jego niewidocznej kotwicy.
+Przy pierwszej wizycie na publicznej mapie, po załadowaniu danych, pojawia się wprowadzenie. Przewodnik obejmuje: powitanie, miejsce, galerię, szczegóły fotografii, nagranie miejsca (gdy jest dostępne), lektora opisu (gdy opis istnieje), przypinanie fotografii, przypiętą kartę, przycisk dodawania wspomnienia, formularz wspomnienia, warstwy, trasy i zakończenie. Cztery kroki reagują na rzeczywiste akcje użytkownika: otwarcie miejsca, otwarcie zdjęcia, przypięcie zdjęcia i otwarcie formularza wspomnienia; krok warstw również reaguje na przełączenie. Gdy kontrolka jest niedostępna, można przejść dalej. Podświetlenie jest pozycjonowane na wizualnej zawartości kafla Leaflet, a nie na jego niewidocznej kotwicy. Dodatkowe halo i animacja powiększenia na hover są wyłączone podczas zwiedzania; normalne zachowanie poza tutorialem pozostaje bez zmian.
 
-`Pomiń` i `Zaczynam!` zapisują `photomap-public-map-tour-v1-complete` w localStorage. Samouczek można otworzyć ponownie w **Menu → Samouczek**. Zmiana warstw w przewodniku jest tymczasowa i przy zamknięciu przywracana. Przewodnik nie wysyła formularzy ani nie zapisuje danych w backendzie.
+`Pomiń` i `Zaczynam!` zapisują `photomap-public-map-tour-v2-complete` w localStorage; nowy klucz umożliwia pokazanie zaktualizowanej wersji po premierze. Samouczek można otworzyć ponownie w **Menu → Samouczek**. Zmiana warstw w przewodniku jest tymczasowa i przy zamknięciu przywracana. Przewodnik nie wysyła formularzy ani nie zapisuje danych w backendzie. Wspomnienie jest tylko objaśniane, a nie wysyłane automatycznie. Nagranie i TTS uruchamia wyłącznie użytkownik; przypięcie jest lokalną, odwracalną akcją UI.
 
 Kod: `frontend/src/components/tour/MapTour.tsx`, `mapTourSteps.ts`, `frontend/src/styles/map-tour.css`; integracje: `PublicMapPage`, `PlaceMap`, `PlaceLayer`, `AppShell`. Nie kopiujemy struktury niebundlowanego JS z IleStoi.
 
