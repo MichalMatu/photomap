@@ -25,6 +25,7 @@ import type { MapTourEvent } from "../tour/mapTourSteps";
 type PlaceLayerProps = {
   isAudioAutoplayEnabled: boolean;
   tourCloseMediaToken?: number;
+  tourCloseOverlayToken?: number;
   onTourEvent?: (event: MapTourEvent) => void;
   mapSettings: AppConfigMap;
   onPinMedia: (request: PinMediaRequest) => boolean;
@@ -50,6 +51,7 @@ function readMapViewport(map: LeafletMap): MapViewport {
 export function PlaceLayer({
   isAudioAutoplayEnabled,
   tourCloseMediaToken = 0,
+  tourCloseOverlayToken = 0,
   onTourEvent,
   mapSettings,
   onPinMedia,
@@ -69,6 +71,7 @@ export function PlaceLayer({
   const [reportTarget, setReportTarget] = useState<PlaceVisualTarget | null>(null);
   const [isThanksOpen, setIsThanksOpen] = useState(false);
   const lastTourCloseToken = useRef(tourCloseMediaToken);
+  const lastTourOverlayToken = useRef(tourCloseOverlayToken);
   const zoom = mapViewport.zoom;
   const { prefetchPlaceGallery, prioritizeMediaItem, prioritizePlaceGallery } = usePlaceGalleryPreloadControls();
   const { markerDisplayOffsets, markerPlaces } = useMapMarkerLayout({
@@ -106,6 +109,15 @@ export function PlaceLayer({
     setReportTarget(null);
     setActiveAudioTarget(null);
   }, [closePlaceGallery, tourCloseMediaToken]);
+
+  useEffect(() => {
+    if (tourCloseOverlayToken === lastTourOverlayToken.current) return;
+    lastTourOverlayToken.current = tourCloseOverlayToken;
+    setVisualDetail(null);
+    setMemoryPlace(null);
+    setReportTarget(null);
+    setActiveAudioTarget(null);
+  }, [tourCloseOverlayToken]);
 
   useMapEvents({
     moveend: refreshMapViewport,
@@ -158,7 +170,10 @@ export function PlaceLayer({
             isExpanded={expandedPlaceId === place.id}
             enterIndex={index}
             isEntering={isPlaceMarkerEntering(previousPlaceMotionSignatures.current, place.id, placeMotionSignature)}
-            onMemoryOpen={setMemoryPlace}
+            onMemoryOpen={(nextPlace) => {
+              setMemoryPlace(nextPlace);
+              onTourEvent?.("memory-opened");
+            }}
             onPrefetchGallery={() => prefetchPlaceGallery(place)}
             onMediaOpen={(nextPlace, nextItem) => {
               prioritizeMediaItem(nextItem);
@@ -210,6 +225,7 @@ export function PlaceLayer({
             const didPin = onPinMedia({ item: detailItem, place: detailPlace, ...pinRequest });
             if (didPin) {
               setVisualDetail(null);
+              onTourEvent?.("pin-created");
             }
 
             return didPin;
