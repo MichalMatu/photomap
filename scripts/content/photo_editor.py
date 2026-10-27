@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sqlite3
 import sys
@@ -14,7 +15,6 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlsplit
 from urllib.request import Request, urlopen
-import os
 
 
 def normalized(value: str | None) -> str:
@@ -61,6 +61,14 @@ def export_snapshot(database: str) -> dict:
         }
     finally:
         connection.close()
+
+
+def canonical_blocks(blocks: list[dict]) -> list[dict]:
+    """API ContentBlock may include url=null; SQLite storage omits it."""
+    return [
+        {key: value for key, value in block.items() if key in ("type", "text", "url") and value is not None}
+        for block in blocks
+    ]
 
 
 def is_repeated_first_heading(photo: dict) -> bool:
@@ -171,11 +179,12 @@ def apply_plan(plan: dict, *, base_url: str, token: str, offset: int, batch_size
         photo = albums[place_id].get(edit["photo_id"])
         if photo is None:
             raise RuntimeError("Photo missing from admin API: " + edit["photo_id"])
-        if photo["description_blocks"] == edit["new_description_blocks"]:
+        if (photo["caption"] == edit["expected_caption"] and
+            canonical_blocks(photo["description_blocks"]) == canonical_blocks(edit["new_description_blocks"])):
             checked.append((edit, True))
         elif (
             photo["caption"] == edit["expected_caption"]
-            and photo["description_blocks"] == edit["expected_description_blocks"]
+            and canonical_blocks(photo["description_blocks"]) == canonical_blocks(edit["expected_description_blocks"])
         ):
             checked.append((edit, False))
         else:
