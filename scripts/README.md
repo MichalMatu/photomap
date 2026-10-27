@@ -48,6 +48,21 @@ make scripts
 | Migracja zdjęć apply | `make migrate-photo-originals-apply` | Zmienia URL-e i usuwa stare pełne pochodne po commicie DB. |
 | Reset dev data | `make reset-dev-data` | Czyści lokalną bazę i storage dev. |
 
+## Jednorazowy backup PhotoMap z Pi na Maca po czyszczeniu
+
+Po zamknięciu całej sesji selekcji zdjęć, a nie po każdej operacji DELETE, uruchom na Macu:
+
+```bash
+bash scripts/backup_pi_to_mac.sh --dry-run
+bash scripts/backup_pi_to_mac.sh --apply
+```
+
+Domyślna lokalizacja: `~/PhotoMap-backups/photo-map-<UTC timestamp>/`. Ścieżka docelowa może być zmieniona przez `PHOTOMAP_MAC_BACKUPS`. Skrypt tworzy spójny snapshot SQLite przez `sqlite3.Connection.backup` do **tymczasowego** pliku na Pi, pobiera go przez SSH i pobiera aktualny `backend/storage/` przez rsync. Weryfikuje integralność SQLite i istnienie wszystkich plików wskazywanych przez rekordy Photo/Memory. Po transferze usuwa tymczasowy SQLite z Pi.
+
+Nie używaj Syncthing do kopiowania aktywnego `backend/data/app.db`: kopiuj tylko zamknięty, gotowy snapshot. Mac ma Syncthing, lecz Pi nie wymaga instalowania demona — jednorazowy rsync jest prostszy. Jeżeli Syncthing służy do dalszej replikacji, można synchronizować **gotowy katalog backupu na Macu**, nie produkcyjną bazę SQLite.
+
+`scripts/content/photo_prune.py` po zmianie zapisuje tylko JSON/JSONL do `--audit-dir` na Pi. Nie wykonuje kopii bazy podczas każdej partii. Usunięcie zdjęć jest nieodwracalne do czasu wykonania końcowej kopii na Macu. Historyczny backup lokalny na Pi można usunąć dopiero po pozytywnej weryfikacji nowego backupu poza Pi.
+
 ## Content Pipeline
 
 Domyślny manifest to `content/cities/wroclaw/manifest.json`.
