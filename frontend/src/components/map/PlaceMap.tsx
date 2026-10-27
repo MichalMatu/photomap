@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, useMap, useMapEvents, ZoomControl } from "react-leaflet";
 
 import type { AppConfigMap, PlaceCustomFieldDefinition, PlaceMapItem } from "../../api/types";
+import type { MapTourEvent } from "../tour/mapTourSteps";
 import { DistanceMeasureTool } from "./DistanceMeasureTool";
 import { MAP_DISPLAY_CONFIG } from "./mapDisplayConfig";
 import { MapTrackpadZoom } from "./MapTrackpadZoom";
@@ -12,6 +13,8 @@ import { type PinMediaRequest, usePinnedMediaBoard } from "./pinned-media/usePin
 
 type Props = {
   isAudioAutoplayEnabled: boolean;
+  tourCloseMediaToken?: number;
+  onTourEvent?: (event: MapTourEvent) => void;
   mapFallback: AppConfigMap;
   markerPlaces: PlaceMapItem[];
   onPinnedMediaVisibleChange: (isVisible: boolean) => void;
@@ -112,6 +115,8 @@ function MapProjectionTracker({
 
 export function PlaceMap({
   isAudioAutoplayEnabled,
+  tourCloseMediaToken = 0,
+  onTourEvent,
   mapFallback,
   markerPlaces,
   onPinnedMediaVisibleChange,
@@ -159,6 +164,8 @@ export function PlaceMap({
         <TileLayer attribution={MAP_DISPLAY_CONFIG.tileLayer.attribution} url={MAP_DISPLAY_CONFIG.tileLayer.url} />
         <PlaceLayer
           isAudioAutoplayEnabled={isAudioAutoplayEnabled}
+          tourCloseMediaToken={tourCloseMediaToken}
+          onTourEvent={onTourEvent}
           mapSettings={mapFallback}
           places={markerPlaces}
           placeCustomFieldDefinitions={placeCustomFieldDefinitions}
