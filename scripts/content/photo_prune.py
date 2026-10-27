@@ -12,14 +12,13 @@ import json
 import os
 import sqlite3
 import sys
-from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.error import HTTPError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path.cwd()
 
 
 def database_connection(path: Path) -> sqlite3.Connection:
