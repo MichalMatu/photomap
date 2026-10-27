@@ -27,7 +27,7 @@ import { PlaceMap } from "../components/map/PlaceMap";
 import { SEOHead } from "../components/ui/SEOHead";
 import { MapTour } from "../components/tour/MapTour";
 import {
-  isTourComplete, nextStepOnEvent, nextTourStep, previousTourStep,
+  isTourComplete, nextStepOnEvent, nextTourStep, previousTourStep, skipUnavailableTourStep,
   rememberTourComplete, type MapTourEvent, type MapTourStep,
 } from "../components/tour/mapTourSteps";
 import { DEFAULT_SEO_DESCRIPTION, DEFAULT_SEO_TITLE } from "../seo/pageSeo";
@@ -68,6 +68,15 @@ export function PublicMapPage() {
     }
     setTourStep(nextTourStep(tourStep));
   }, [endTour, tourStep]);
+
+  const skipUnavailableStep = useCallback(() => {
+    if (tourStep === null) return;
+    if (tourStep === "pin") setCloseTourOverlayToken((current) => current + 1);
+    if (tourStep === "place" || tourStep === "gallery" || tourStep === "memory") {
+      setCloseTourMediaToken((current) => current + 1);
+    }
+    setTourStep(skipUnavailableTourStep(tourStep));
+  }, [tourStep]);
 
   const handleTourEvent = useCallback((event: MapTourEvent) => {
     setTourStep((current) => (current ? (nextStepOnEvent(current, event) ?? current) : null));
@@ -196,7 +205,6 @@ export function PublicMapPage() {
             <div className="map-frame">
               <PlaceMap
                 isAudioAutoplayEnabled={isAudioAutoplayEnabled}
-                isTourActive={tourStep !== null}
                 tourCloseMediaToken={closeTourMediaToken}
                 tourCloseOverlayToken={closeTourOverlayToken}
                 onTourEvent={handleTourEvent}
@@ -219,6 +227,7 @@ export function PublicMapPage() {
             setTourStep(previousTourStep(tourStep));
           }}
           onNext={advanceTour}
+          onSkipStep={skipUnavailableStep}
           onClose={endTour}
         />
       ) : null}
