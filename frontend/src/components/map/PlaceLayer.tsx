@@ -24,6 +24,7 @@ import type { MapTourEvent } from "../tour/mapTourSteps";
 
 type PlaceLayerProps = {
   isAudioAutoplayEnabled: boolean;
+  isTourActive?: boolean;
   tourCloseMediaToken?: number;
   tourCloseOverlayToken?: number;
   onTourEvent?: (event: MapTourEvent) => void;
@@ -50,6 +51,7 @@ function readMapViewport(map: LeafletMap): MapViewport {
 
 export function PlaceLayer({
   isAudioAutoplayEnabled,
+  isTourActive = false,
   tourCloseMediaToken = 0,
   tourCloseOverlayToken = 0,
   onTourEvent,
@@ -168,6 +170,7 @@ export function PlaceLayer({
             place={place}
             galleryItems={galleryItemsByPlaceId.get(place.id) ?? EMPTY_PLACE_GALLERY_ITEMS}
             isExpanded={expandedPlaceId === place.id}
+            isTourActive={isTourActive}
             enterIndex={index}
             isEntering={isPlaceMarkerEntering(previousPlaceMotionSignatures.current, place.id, placeMotionSignature)}
             onMemoryOpen={(nextPlace) => {
