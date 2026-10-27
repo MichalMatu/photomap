@@ -1,7 +1,6 @@
 # PhotoMap — interaktywny samouczek mapy
 
-Samouczek jest rozwijany na branchu `work/interactive-map-tour-20261027`.
-Nie wymaga nowych endpointów ani zmian danych. `main` i wdrożenie na Raspberry Pi Zero 2 W pozostają bez zmian aż do akceptacji właściciela.
+Samouczek został przygotowany na branchu `work/interactive-map-tour-20261027` i zaakceptowany do publikacji 2026-10-27. Nie wymaga nowych endpointów ani zmian danych. Produkcyjny frontend jest budowany na Macu i wdrażany na Raspberry Pi Zero 2 W zgodnie z `docs/deploy-pi-zero2w.md`.
 
 ## Zachowanie
 
