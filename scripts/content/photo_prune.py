@@ -12,6 +12,7 @@ import json
 import os
 import sqlite3
 import sys
+from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.error import HTTPError
@@ -79,6 +80,21 @@ def select_targets(db: sqlite3.Connection, curated: dict) -> list[dict]:
             if count <= 1:
                 raise RuntimeError("Refusing to remove final approved photo of place: " + photo_id)
         results.append({**target, "before": dict(row)})
+
+    # Validate whole batch, not only each image independently. Two selected
+    # images could otherwise empty an album that initially contained two.
+    approved_removals = Counter(
+        item["before"]["place_id"]
+        for item in results
+        if item["before"]["status"] == "approved"
+    )
+    for place_id, removing in approved_removals.items():
+        remaining = db.execute(
+            "SELECT count(*) FROM photo WHERE place_id=? AND status='approved'",
+            (place_id,),
+        ).fetchone()[0] - removing
+        if remaining < 1:
+            raise RuntimeError("Refusing to remove all approved photos of place: " + place_id)
     return results
 
 
