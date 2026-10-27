@@ -12,16 +12,17 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await page.getByRole("button", { name: "Odkrywaj" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "place");
 
-  const placeTile = page.locator(".place-photo-marker:not(.is-selected)").first();
+  const placeTile = page.locator('.place-photo-marker:not(.is-selected) > span[data-map-tour-target="true"]');
   await expect(placeTile).toBeVisible();
-  await expect(placeTile).not.toHaveAttribute("title");
-  await placeTile.locator("span").hover();
-  await expect(placeTile.locator("span")).toHaveCSS("filter", "none");
-  await page.locator(".place-photo-marker:not(.is-selected) > span").first().click();
+  await expect(placeTile.locator("..")).not.toHaveAttribute("title");
+  await placeTile.hover();
+  await expect(placeTile).toHaveCSS("filter", "none");
+  await placeTile.click();
   await expect(tour).toHaveAttribute("data-tour-step", "gallery");
 
-  await expect(page.locator(".photo-gallery-marker").first()).toBeVisible();
-  await page.locator(".photo-gallery-marker > span").first().click();
+  const galleryTile = page.locator('.photo-gallery-marker > span[data-map-tour-target="true"]');
+  await expect(galleryTile).toBeVisible();
+  await galleryTile.click();
   await expect(tour).toHaveAttribute("data-tour-step", "photo");
   await expect(page.locator(".system-modal--media")).toBeVisible();
 
@@ -38,7 +39,7 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await tour.getByRole("button", { name: "Dalej" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "memory");
   await expect(page.locator(".system-modal--media")).toHaveCount(0);
-  await page.locator(".photo-gallery-add-marker > span").click();
+  await page.locator('.photo-gallery-add-marker > span[data-map-tour-target="true"]').click();
   await expect(tour).toHaveAttribute("data-tour-step", "memory-form");
   await expect(page.locator(".memory-sheet-content")).toBeVisible();
   await expect(page.getByRole("button", { name: "generuj token" })).toBeVisible();
