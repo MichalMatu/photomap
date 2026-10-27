@@ -13,7 +13,7 @@ make scripts
 
 - Uruchamiaj komendy z katalogu repo.
 - Dla operacji zmieniających dane najpierw używaj celu bez `-apply`.
-- Przed większym importem albo czyszczeniem mediów zrób backup.
+- Przed większym importem wykonaj backup. Przy redakcyjnym czyszczeniu nie twórz pełnej kopii SQLite na Pi przy każdej partii: zapisz lekki dziennik usunięć, a po całej sesji zrób jeden backup bezpośrednio na Macu (patrz niżej).
 - Make domyślnie wybiera `backend/.venv/bin/python`, jeśli istnieje; możesz nadpisać interpreter przez `PYTHON=...`.
 
 ## Szybkie Komendy
