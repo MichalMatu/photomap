@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
 import { lockDocumentScroll, unlockDocumentScroll } from "../ui/documentScrollLock";
 import { AppShellDrawer } from "./AppShellDrawer";
@@ -19,6 +19,8 @@ type Props = {
   activeSection: AppSection;
   adminAction?: AppShellAdminAction;
   children: ReactNode;
+  onStartTour?: () => void;
+  tourShowDrawer?: boolean;
   mapAudioControl?: AppShellMapAudioControl;
   mapLayerControls?: AppShellMapLayerControls;
   mapPinnedMediaControl?: AppShellMapPinnedMediaControl;
@@ -35,12 +37,24 @@ export function AppShell({
   activeSection,
   adminAction,
   children,
+  onStartTour,
+  tourShowDrawer = false,
   mapAudioControl,
   mapCategoryControls,
   mapLayerControls,
   mapPinnedMediaControl,
 }: Props) {
   const [navigationState, setNavigationState] = useState<AppShellNavigationState>("collapsed");
+  const wasTourDrawerOpen = useRef(false);
+
+  useEffect(() => {
+    if (tourShowDrawer) {
+      setNavigationState("drawer");
+    } else if (wasTourDrawerOpen.current) {
+      setNavigationState("collapsed");
+    }
+    wasTourDrawerOpen.current = tourShowDrawer;
+  }, [tourShowDrawer]);
   const isRailOpen = navigationState === "rail";
   const isMenuOpen = navigationState === "drawer";
   const isNavigationOpen = navigationState !== "collapsed";
@@ -108,6 +122,7 @@ export function AppShell({
         mapLayerControls={mapLayerControls}
         mapPinnedMediaControl={mapPinnedMediaControl}
         primaryItems={primaryItems}
+        onStartTour={onStartTour ? () => { closeNavigation(); onStartTour(); } : undefined}
         onAdminAction={handleAdminAction}
         onClose={closeNavigation}
       />
