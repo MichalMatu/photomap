@@ -13,7 +13,8 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await page.getByRole("button", { name: "Odkrywaj" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "place");
 
-  await expect(tour.locator(".map-tour-shade, .map-tour-spotlight")).toHaveCount(0);
+  await expect(tour.locator(".map-tour-shade")).toHaveCount(0);
+  await expect(tour.locator(".map-tour-spotlight")).toBeVisible();
   await expect(tour.getByRole("button", { name: "Dalej" })).toBeDisabled();
   const placeTile = page.locator(".place-photo-marker:not(.is-selected) > span").first();
   await expect(placeTile).toBeVisible();
@@ -36,7 +37,22 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(tour.getByRole("button", { name: "Dalej" })).toBeDisabled();
   await page.locator('.system-modal--media button[aria-label^="Przypnij"]').click();
   await expect(tour).toHaveAttribute("data-tour-step", "pinned");
-  await expect(page.locator(".pinned-media-card")).toBeVisible();
+  const card = page.locator(".pinned-media-card").first();
+  await expect(card).toBeVisible();
+  const ring = tour.locator(".map-tour-spotlight");
+  await expect(ring).toBeVisible();
+  const initial = await card.boundingBox();
+  expect(initial).not.toBeNull();
+  await page.mouse.move(initial!.x + 48, initial!.y + 45);
+  await page.mouse.down();
+  await page.mouse.move(initial!.x + 98, initial!.y + 80, { steps: 8 });
+  await page.mouse.up();
+  // The blue ring must follow the drag, not lag behind on a 400ms timer.
+  await expect.poll(async () => {
+    const bounds = await card.boundingBox();
+    const glow = await ring.boundingBox();
+    return bounds && glow ? Math.abs(bounds.x - glow.x - 2) + Math.abs(bounds.y - glow.y - 2) : 999;
+  }).toBeLessThan(8);
 
   await tour.getByRole("button", { name: "Dalej" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "memory");
@@ -58,7 +74,7 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   // Clicking a layer ordinarily closes the drawer. The walkthrough must keep it open
   // so the user can see the next target without being stranded.
   await expect(page.locator("#app-side-drawer")).toHaveClass(/is-open/);
-  await expect(tour.locator(".map-tour-shade, .map-tour-spotlight")).toHaveCount(0);
+  await expect(tour.locator(".map-tour-shade")).toHaveCount(0);
 
   await tour.getByRole("button", { name: "Dalej" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "done");
@@ -74,7 +90,7 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(tour).toHaveCount(0);
 });
 
-test("tutorial leaves all map thumbnails naturally interactive without a spotlight", async ({ page }) => {
+test("subtle blue outline guides a natural click without dimming the map", async ({ page }) => {
   test.setTimeout(90_000);
   await page.setViewportSize({ width: 1280, height: 820 });
   await mockSharedApi(page, undefined, undefined, undefined, true, false);
@@ -82,7 +98,10 @@ test("tutorial leaves all map thumbnails naturally interactive without a spotlig
   const tour = page.locator(".map-tour");
   await expect(tour).toHaveAttribute("data-tour-step", "welcome");
   await tour.getByRole("button", { name: "Odkrywaj" }).click();
-  await expect(tour.locator(".map-tour-shade, .map-tour-spotlight")).toHaveCount(0);
+  await expect(tour.locator(".map-tour-shade")).toHaveCount(0);
+  const halo = tour.locator(".map-tour-spotlight");
+  await expect(halo).toBeVisible();
+  await expect(halo).toHaveCSS("border-top-color", "rgba(55, 155, 255, 0.72)");
   const tiles = page.locator(".place-photo-marker:not(.is-selected) > span");
   await expect(tiles.first()).toBeVisible();
   await tiles.first().hover();
