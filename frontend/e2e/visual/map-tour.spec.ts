@@ -14,9 +14,6 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
 
   const placeTile = page.locator('.place-photo-marker:not(.is-selected) > span[data-map-tour-target="true"]');
   await expect(placeTile).toBeVisible();
-  await expect(placeTile.locator("..")).not.toHaveAttribute("title");
-  await placeTile.hover();
-  await expect(placeTile).toHaveCSS("filter", "none");
   await placeTile.click();
   await expect(tour).toHaveAttribute("data-tour-step", "gallery");
 
@@ -66,6 +63,28 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await page.getByRole("button", { name: "Otwórz menu" }).click();
   await page.getByRole("button", { name: "Samouczek" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "welcome");
+  await tour.getByRole("button", { name: "Pomiń" }).click();
+  await expect(tour).toHaveCount(0);
+});
+
+test("spotlight suppresses native marker tooltip and hover scaling", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 820 });
+  await mockSharedApi(page, undefined, undefined, undefined, true, false);
+  await page.goto("/");
+  const tour = page.locator(".map-tour");
+  await expect(tour).toHaveAttribute("data-tour-step", "welcome");
+  await tour.getByRole("button", { name: "Odkrywaj" }).click();
+  const tile = page.locator('.place-photo-marker:not(.is-selected) > span[data-map-tour-target="true"]');
+  await expect(tile).toBeVisible();
+  await expect(tile.locator("..")).not.toHaveAttribute("title");
+  const before = await tile.boundingBox();
+  await tile.hover();
+  await expect(tile).toHaveCSS("filter", "none");
+  const after = await tile.boundingBox();
+  expect(before).not.toBeNull();
+  expect(after).not.toBeNull();
+  expect(Math.abs(before!.width - after!.width)).toBeLessThan(1);
+  expect(Math.abs(before!.height - after!.height)).toBeLessThan(1);
   await tour.getByRole("button", { name: "Pomiń" }).click();
   await expect(tour).toHaveCount(0);
 });
