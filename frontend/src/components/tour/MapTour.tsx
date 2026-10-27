@@ -68,7 +68,7 @@ function visibleTarget(selector?: string): HTMLElement | null {
   return null;
 }
 
-export function mapTourPlacement(
+function mapTourPlacement(
   target: TargetRect | null,
   card: { width: number; height: number },
   viewport: { width: number; height: number },
@@ -109,7 +109,9 @@ export function MapTour({ step, onBack, onNext, onClose }: Props) {
 
   useEffect(() => {
     lastFocused.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    return () => lastFocused.current?.isConnected && lastFocused.current.focus({ preventScroll: true });
+    return () => {
+      if (lastFocused.current?.isConnected) lastFocused.current.focus({ preventScroll: true });
+    };
   }, []);
 
   useEffect(() => {
