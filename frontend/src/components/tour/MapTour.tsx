@@ -32,8 +32,42 @@ const TOUR_CONTENT: Record<MapTourStep, TourContent> = {
   },
   photo: {
     title: "Historie ukryte w zdjęciach",
-    description: "Tutaj poznasz szczegóły zdjęcia i miejsca. Możesz też przypiąć fotografię na mapie lub zgłosić problem.",
+    description: "Otworzone zdjęcie ma informacje o miejscu, opis i dodatkowe akcje w górnym pasku.",
     selector: ".system-modal--media .photo-detail-content",
+  },
+  sound: {
+    title: "Posłuchaj dźwięków miejsca",
+    description: "Gdy fotografia ma nagranie, przycisk odtwarzania pozwoli posłuchać atmosfery miejsca. Nagranie jest opcjonalne i nie uruchamiamy go za Ciebie.",
+    selector: ".system-modal--media .photo-detail-audio-toggle",
+    hint: "Możesz włączyć i zatrzymać nagranie",
+  },
+  narration: {
+    title: "Opis czytany przez lektora",
+    description: "Przycisk lektora odczytuje opis fotografii. Obok jest ikona dokumentu, która otwiera tekst do samodzielnego przeczytania.",
+    selector: '.system-modal--media button[aria-label="Odczytaj opis zdjęcia"]',
+    hint: "Odtwarzanie lektora jest dobrowolne",
+  },
+  pin: {
+    title: "Przypnij zdjęcie na mapie",
+    description: "Pinezka tworzy pływającą kartę ze zdjęciem nad mapą. Możesz ją przesuwać, zmieniać rozmiar i później odpiąć.",
+    selector: '.system-modal--media button[aria-label^="Przypnij"]',
+    hint: "Kliknij pinezkę, aby przypiąć to zdjęcie",
+  },
+  pinned: {
+    title: "Twoja przypięta fotografia",
+    description: "Przypięte zdjęcie można przesuwać i powiększać. Ikona mapy wskazuje jego miejsce, a krzyżyk usuwa tylko tę kartę, nie fotografię z serwisu.",
+    selector: ".pinned-media-card",
+  },
+  memory: {
+    title: "Dodaj własne wspomnienie",
+    description: "W rozwiniętej galerii miejsca kliknij kafelek z plusem. W ten sposób dodasz swoją fotografię i wspomnienie z odwiedzonego miejsca.",
+    selector: ".photo-gallery-add-marker > span",
+    hint: "Kliknij plus przy galerii miejsca",
+  },
+  "memory-form": {
+    title: "Wspomnienie i jego token",
+    description: "Wybierz lub wygeneruj token — pozwoli Ci później zarządzać wspomnieniem. Następnie dodaj zdjęcie i wymagane dane. Publikacja nastąpi dopiero po wysłaniu i moderacji. W tutorialu niczego nie wysyłamy.",
+    selector: ".memory-sheet-content",
   },
   layers: {
     title: "Mapa na Twoich zasadach",
@@ -48,7 +82,7 @@ const TOUR_CONTENT: Record<MapTourStep, TourContent> = {
   },
   done: {
     title: "Teraz Twoja kolej!",
-    description: "Odkrywaj miejsca, fotografie i pamiątki we własnym tempie. Samouczek uruchomisz ponownie z menu.",
+    description: "Umiesz już otwierać zdjęcia, słuchać nagrań i lektora, przypinać fotografie oraz dodawać wspomnienia. Wróć do samouczka w dowolnym momencie z menu.",
   },
 };
 
