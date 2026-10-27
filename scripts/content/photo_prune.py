@@ -2,8 +2,8 @@
 """Permanently prune manually rejected and explicitly selected PhotoMap photos.
 
 Uses the existing admin API (not direct SQL writes). Dry run by default.
-A SQLite backup and an audit manifest are retained, but media originals are
-deliberately deleted in accordance with the PhotoMap editorial policy.
+A small durable decision log is retained. No local SQLite/media backup is
+created by this script; take a single consistent backup after editorial cleanup.
 """
 from __future__ import annotations
 
@@ -144,28 +144,26 @@ def run(args: argparse.Namespace) -> None:
 
         if args.confirm != "PERMANENT_DELETE":
             raise ValueError("Requires --confirm PERMANENT_DELETE")
-        backup_dir = Path(args.backup_dir).resolve()
-        if backup_dir.exists():
-            raise RuntimeError("Backup/audit directory already exists; use a new batch ID")
-        backup_dir.mkdir(parents=True, exist_ok=False)
-        backup_db = sqlite3.connect(backup_dir / "app-before.sqlite")
-        db.backup(backup_db)
-        backup_db.close()
-        with sqlite3.connect(backup_dir / "app-before.sqlite") as saved:
-            if saved.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
-                raise RuntimeError("Backup failed integrity check")
+        # Persist a small audit trail, not another SQLite or media copy.
+        audit_dir = Path(args.audit_dir).resolve()
+        if audit_dir.exists():
+            raise RuntimeError("Audit directory already exists; use a new batch ID")
+        audit_dir.mkdir(parents=True, exist_ok=False)
 
         manifest = {
             "created_at": datetime.now(UTC).isoformat(),
             "policy": "permanent removal of rejected/low-quality media",
+            "backup_policy": "No per-batch backup; one verified off-Pi snapshot after final cleanup",
             "before": before,
             "targets": targets,
         }
-        (backup_dir / "manifest.json").write_text(
-            json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-        )
+        with (audit_dir / "manifest.json").open("x", encoding="utf-8") as manifest_file:
+            json.dump(manifest, manifest_file, ensure_ascii=False, indent=2)
+            manifest_file.write("\n")
+            manifest_file.flush()
+            os.fsync(manifest_file.fileno())
         token = get_token()
-        log_path = backup_dir / "deleted.jsonl"
+        log_path = audit_dir / "deleted.jsonl"
         for target in targets:
             pid = target["id"]
             fresh = db.execute("SELECT status FROM photo WHERE id=?", (pid,)).fetchone()
@@ -182,6 +180,8 @@ def run(args: argparse.Namespace) -> None:
                     "reason": target["reason"],
                     "deleted_at": datetime.now(UTC).isoformat(),
                 }, ensure_ascii=False) + "\n")
+                log.flush()
+                os.fsync(log.fileno())
             print("DELETED", target["label"] or "rejected", target["before"]["slug"], pid, flush=True)
 
     with database_connection(db_path) as after_db:
@@ -213,7 +213,7 @@ def run(args: argparse.Namespace) -> None:
             raise RuntimeError("Deletion audit log incomplete")
         summary = {"status":"verified", "deleted":len(targets), "before":before, "after":after,
                    "stale_covers":stale_covers,"place_photo_count_discrepancies":discrepancies}
-        (backup_dir / "result.json").write_text(json.dumps(summary, indent=2)+"\n", encoding="utf-8")
+        (audit_dir / "result.json").write_text(json.dumps(summary, indent=2)+"\n", encoding="utf-8")
         print("PHOTO_PRUNE_VERIFIED", json.dumps(summary), flush=True)
 
 
@@ -221,7 +221,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--database", required=True)
     parser.add_argument("--plan", required=True)
-    parser.add_argument("--backup-dir", required=True)
+    parser.add_argument("--audit-dir", required=True, help="Unique directory for JSON audit only; no database or media backup")
     parser.add_argument("--base-url", default="http://127.0.0.1:8000")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--confirm", default="")
