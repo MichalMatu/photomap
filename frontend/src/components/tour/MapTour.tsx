@@ -227,7 +227,7 @@ export function MapTour({ step, onBack, onNext, onClose }: Props) {
       {shadeRects.map((rect, idx) => (
         <div aria-hidden="true" className={backdrop} key={idx} style={rect} />
       ))}
-      {cutout ? <div className="map-tour-spotlight" aria-hidden="true" style={cutout} /> : null}
+      {cutout ? <div className={step === "place" || step === "gallery" ? "map-tour-spotlight is-media-tile" : "map-tour-spotlight"} aria-hidden="true" style={cutout} /> : null}
       <section
         aria-label="Samouczek PhotoMap"
         className="map-tour-card"
