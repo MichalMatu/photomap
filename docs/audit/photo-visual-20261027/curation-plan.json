@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "review_date": "2026-10-27",
-  "decision": "reject_from_public_gallery",
+  "decision": "permanent_delete",
   "method": "manual_review_contact_sheets",
   "snapshot": "docs/audit/photo-visual-20261027/index.json",
   "safeguards": [
-    "Never select covers",
-    "Keep original private files and archive selected originals",
-    "Make consistent SQLite backup",
-    "Use authenticated local admin review API",
-    "Verify each operation and public counts"
+    "Never delete protected cover photos",
+    "Preflight approved count and exact photo/place identity",
+    "Make consistent SQLite backup and audit manifest; deliberately do not archive discarded media originals",
+    "Use existing authenticated local admin DELETE API to delete records and original/public media",
+    "Verify place counters, covers, SQLite integrity, and absence of remaining rejected photos"
   ],
   "photos": [
     {
