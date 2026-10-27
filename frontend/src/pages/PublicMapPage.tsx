@@ -40,6 +40,7 @@ export function PublicMapPage() {
   const [tourStep, setTourStep] = useState<MapTourStep | null>(null);
   const [hasSeenTour, setHasSeenTour] = useState(isTourComplete);
   const [closeTourMediaToken, setCloseTourMediaToken] = useState(0);
+  const [closeTourOverlayToken, setCloseTourOverlayToken] = useState(0);
   const tourInitialLayers = useRef(DEFAULT_MAP_LAYER_STATE);
 
   const startTour = useCallback(() => {
@@ -62,7 +63,9 @@ export function PublicMapPage() {
       endTour();
       return;
     }
-    if (tourStep === "photo") setCloseTourMediaToken((current) => current + 1);
+    if (tourStep === "pinned" || tourStep === "memory-form") {
+      setCloseTourOverlayToken((current) => current + 1);
+    }
     setTourStep(nextTourStep(tourStep));
   }, [endTour, tourStep]);
 
@@ -194,6 +197,7 @@ export function PublicMapPage() {
               <PlaceMap
                 isAudioAutoplayEnabled={isAudioAutoplayEnabled}
                 tourCloseMediaToken={closeTourMediaToken}
+                tourCloseOverlayToken={closeTourOverlayToken}
                 onTourEvent={handleTourEvent}
                 mapFallback={mapFallback}
                 markerPlaces={markerPlaces}
@@ -210,7 +214,7 @@ export function PublicMapPage() {
         <MapTour
           step={tourStep}
           onBack={() => {
-            if (tourStep === "photo") setCloseTourMediaToken((current) => current + 1);
+            if (tourStep === "memory-form") setCloseTourOverlayToken((current) => current + 1);
             setTourStep(previousTourStep(tourStep));
           }}
           onNext={advanceTour}
