@@ -124,7 +124,7 @@ export function AppShell({
         primaryItems={primaryItems}
         onStartTour={onStartTour ? () => { closeNavigation(); onStartTour(); } : undefined}
         onAdminAction={handleAdminAction}
-        onClose={closeNavigation}
+        onClose={() => { if (!tourShowDrawer) closeNavigation(); }}
       />
 
       <div className="app-content">{children}</div>
