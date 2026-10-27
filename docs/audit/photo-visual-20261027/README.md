@@ -48,3 +48,17 @@ Aktualna decyzja redakcyjna: **trwale usuwać** wszystkie poprzednio odrzucone z
 3. Nigdy nie odrzucaj okładki bez wskazania lepszego następcy.
 4. Dla każdego trwałego usunięcia zapisz ID, powód, wcześniejszy status i potwierdzenie działania API. Przechowuj ślad audytowy, nie usunięte media.
 5. Po selekcji uzupełnij brakujące treści (w pierwszej kolejności Wroclavia) i zastąp wielokrotne ogólne podpisy konkretnymi opisami widocznych elementów.
+
+## Audyt redundancji plików (27.10.2026, odczyt produkcyjny)
+
+Przed trwałym czyszczeniem sprawdzono model zapisu zdjęć, fizyczne pliki, referencje bazy i backupy na Pi. **Nie znaleziono zbędnych pełnowymiarowych duplikatów w aktywnym storage.**
+
+- `Photo`: 1189 approved, 50 rejected. Każdy approved ma **jeden prywatny, kanoniczny oryginał**, który backend publicznie serwuje przez `/api/places/{place_id}/photos/{photo_id}/media/image`; nie generuje drugiego pełnego obrazu. Suma oryginałów: **4 345 488 821 B**.
+- Miniatury `thumb_path`: 1189 plików, **124 732 368 B**; są potrzebne dla lekkiej mapy i należy je zachować.
+- `public_path` zatwierdzonych `Photo` w formacie starego `/media/...`: **0**. Osierocone pliki private/public: **0**. SQLite `integrity_check=ok`.
+- `Memory`: 0 rekordów w produkcji; mechanizm pamiętek ma osobny workflow oryginał + publiczna pochodna + miniatura, ale nie zużywa obecnie miejsca.
+- Audio: 16 oryginałów (**39 013 190 B**) i 16 kopii publicznych (**39 013 034 B**); ten osobny przypadek wymaga uwzględnienia stripowania metadanych przed ewentualną optymalizacją.
+- Katalog `backups/local-20260912-111259`: **4 565 181 054 B**, pojedynczy niezależny pełny backup SQLite + mediów; pliki nie są hardlinkowane. Jego duży rozmiar **nie jest błędem generowania zdjęć w aktywnej bazie**. Kopii bezpieczeństwa nie usuwać bez uprzedniego zweryfikowania odpowiednika poza Pi.
+- System plików Pi podczas audytu: ok. **45,65 GB wolnego miejsca**.
+
+**Decyzja techniczna:** nie modyfikować obecnego pipeline `Photo`, ponieważ już realizuje wymaganie jednego pełnowymiarowego pliku + małej miniatury. Nie usuwać kanonicznych oryginałów — to zepsułoby stronę. Dalsze odchudzanie Pi należy rozdzielić na (a) selekcję słabych zdjęć wraz z ich miniaturami, (b) retencję/przeniesienie pełnego backupu poza Pi, (c) ewentualną osobną optymalizację audio. W skrypcie czyszczenia `photo_prune.py` tworzony jest backup samego SQLite, bez dodatkowych kopii zdjęć.
