@@ -145,6 +145,7 @@ export async function mockSharedApi(
   if (dismissMapTour) {
     await page.addInitScript(() => {
       window.localStorage.setItem("photomap-public-map-tour-v1-complete", "1");
+      window.localStorage.setItem("photomap-public-map-tour-v2-complete", "1");
     });
   }
   if (dismissModeratorRecruitment) {
