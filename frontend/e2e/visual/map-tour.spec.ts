@@ -15,7 +15,7 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   const placeTile = page.locator(".place-photo-marker:not(.is-selected)").first();
   await expect(placeTile).toBeVisible();
   await expect(placeTile).not.toHaveAttribute("title");
-  await placeTile.hover();
+  await placeTile.locator("span").hover();
   await expect(placeTile.locator("span")).toHaveCSS("filter", "none");
   await page.locator(".place-photo-marker:not(.is-selected) > span").first().click();
   await expect(tour).toHaveAttribute("data-tour-step", "gallery");
