@@ -13,11 +13,11 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(tour).toHaveAttribute("data-tour-step", "place");
 
   await expect(page.locator(".place-photo-marker:not(.is-selected)").first()).toBeVisible();
-  await page.locator(".place-photo-marker:not(.is-selected)").first().click();
+  await page.locator(".place-photo-marker:not(.is-selected) > span").first().click();
   await expect(tour).toHaveAttribute("data-tour-step", "gallery");
 
   await expect(page.locator(".photo-gallery-marker").first()).toBeVisible();
-  await page.locator(".photo-gallery-marker").first().click();
+  await page.locator(".photo-gallery-marker > span").first().click();
   await expect(tour).toHaveAttribute("data-tour-step", "photo");
   await expect(page.locator(".system-modal--media")).toBeVisible();
 
