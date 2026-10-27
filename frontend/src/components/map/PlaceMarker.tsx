@@ -89,7 +89,6 @@ type Props = {
   place: PlaceMapItem;
   galleryItems: PlaceMapVisualItem[];
   isExpanded: boolean;
-  isTourActive?: boolean;
   isEntering: boolean;
   markerScale: AppConfigMapMarkerScale;
   onMediaOpen: (place: PlaceMapItem, item: PlaceMapVisualItem) => void;
@@ -106,7 +105,6 @@ export function PlaceMarker({
   place,
   galleryItems,
   isExpanded,
-  isTourActive = false,
   isEntering,
   markerScale,
   onMediaOpen,
@@ -241,7 +239,7 @@ export function PlaceMarker({
         pane={isExpanded ? PHOTO_GALLERY_PANE : MAP_MARKER_PANE}
         position={placePosition}
         riseOnHover
-        title={isTourActive ? undefined : place.title}
+        title={place.title}
         zIndexOffset={isExpanded ? 1280 : placeLayout.zIndexOffset}
         eventHandlers={{
           click: (event) => {
@@ -269,7 +267,7 @@ export function PlaceMarker({
                 pane={PHOTO_GALLERY_PANE}
                 position={layout.position}
                 riseOnHover
-                title={isTourActive ? undefined : item.caption ?? place.title}
+                title={item.caption ?? place.title}
                 zIndexOffset={1300 + index}
                 eventHandlers={{
                   click: (event) => {
@@ -291,7 +289,7 @@ export function PlaceMarker({
           pane={PHOTO_GALLERY_PANE}
           position={galleryAddLayout.position}
           riseOnHover
-          title={isTourActive ? undefined : `Byłem tutaj: ${place.title}`}
+          title={`Byłem tutaj: ${place.title}`}
           zIndexOffset={1400 + galleryItems.length}
           eventHandlers={{
             click: (event) => {
