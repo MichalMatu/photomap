@@ -21,13 +21,13 @@ const TOUR_CONTENT: Record<MapTourStep, TourContent> = {
   place: {
     title: "Wybierz miejsce",
     description: "Kliknij jedną z miniaturek na mapie. Otworzysz galerię zdjęć tego miejsca.",
-    selector: ".place-photo-marker:not(.is-selected)",
+    selector: ".place-photo-marker:not(.is-selected) > span",
     hint: "Kliknij podświetlone miejsce",
   },
   gallery: {
     title: "Zajrzyj do galerii",
     description: "Każde miejsce może mieć wiele fotografii i pamiątek. Kliknij dowolną miniaturkę z rozwiniętej galerii.",
-    selector: ".photo-gallery-marker",
+    selector: ".photo-gallery-marker > span",
     hint: "Otwórz zdjęcie z galerii",
   },
   photo: {
@@ -84,8 +84,26 @@ function mapTourPlacement(
   }
   const below = target.top + target.height + gap;
   const above = target.top - card.height - gap;
-  const top = below + card.height + margin <= viewport.height ? below
-    : above >= margin ? above : target.top > viewport.height / 2 ? margin : maxTop;
+  const right = target.left + target.width + gap;
+  const leftSide = target.left - card.width - gap;
+  // On an interactive step the entire highlighted tile must stay clickable.
+  // Try all four sides before clamping; clamping an overflowing tooltip onto
+  // the tile would make the tutorial block the action it asks for.
+  if (below + card.height + margin <= viewport.height) {
+    return { left: clamp(left, margin, maxLeft), top: below };
+  }
+  if (above >= margin) {
+    return { left: clamp(left, margin, maxLeft), top: above };
+  }
+  if (right + card.width + margin <= viewport.width) {
+    return { left: right, top: clamp(target.top + target.height / 2 - card.height / 2, margin, maxTop) };
+  }
+  if (leftSide >= margin) {
+    return { left: leftSide, top: clamp(target.top + target.height / 2 - card.height / 2, margin, maxTop) };
+  }
+  // Very small screens can lack space on all sides: keep the card in bounds
+  // while minimizing overlap rather than masking the target entirely.
+  const top = target.top > viewport.height / 2 ? margin : maxTop;
   return { left: clamp(left, margin, maxLeft), top: clamp(top, margin, maxTop) };
 }
 
