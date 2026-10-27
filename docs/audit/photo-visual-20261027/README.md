@@ -30,9 +30,9 @@ Weryfikacja na kopii produkcyjnego SQLite wykazała:
 
 W [`curation-plan.json`](curation-plan.json) wskazano **12 konkretnych zdjęć z ID, miejscem i uzasadnieniem**. Każde zostało ocenione na planszy, zweryfikowane w aktualnej produkcyjnej bazie, nie jest okładką i ma dostępny prywatny oryginał.
 
-Proponowana bezpieczna operacja: przed wycofaniem utworzyć świeży backup SQLite i kopię oryginałów wybranych 12 zdjęć; następnie użyć **`POST /api/admin/photos/{id}/review`** ze statusem `rejected`, nie nieodwracalnego `DELETE`. Ten przepływ zachowuje rekord bazy i oryginał prywatny, wycofując publiczne media. Po zmianie zweryfikować liczniki miejsc, okładki, integralność bazy oraz publiczne API.
+Aktualna decyzja redakcyjna: **trwale usuwać** wszystkie poprzednio odrzucone zdjęcia oraz 12 wybranych zdjęć niskiej jakości. Po zgodzie właściciela projektu stosować istniejący **`DELETE /api/admin/photos/{id}`**, który usuwa rekord, prywatny oryginał, miniaturę i audio. Przed operacją utrwalić spójny backup SQLite i manifest decyzji (bez archiwizowania wyrzuconych plików); następnie sprawdzić okładki, liczniki i integralność bazy. Docelowo tylko najwyższa jakość, nie ustalać minimalnej liczby zdjęć na miejsce.
 
-**Status: zatwierdzona lista kandydatów, bez wykonanych odrzuceń produkcyjnych.** Próba uruchomienia zapisu została zablokowana przez zabezpieczenie narzędzia. Bez potwierdzenia wykonania nie należy raportować jakiejkolwiek zmiany w produkcyjnej galerii.
+**Status: plan trwałego czyszczenia przygotowany; stan produkcji zostanie uaktualniony dopiero po pozytywnym wyniku zadania Local Agenta.** Nie raportować usunięć bez potwierdzenia API i SQLite.
 
 ## Zasoby do przeglądu
 
@@ -43,8 +43,8 @@ Proponowana bezpieczna operacja: przed wycofaniem utworzyć świeży backup SQLi
 
 ## Kryteria dalszej selekcji
 
-1. Usuń tylko kadr jednoznacznie niepowiązany z miejscem, nieczytelny lub wizualnie powtarzalny bez dodatkowej wartości.
+1. Trwale usuń kadr jednoznacznie niepowiązany z miejscem, nieczytelny lub wizualnie powtarzalny bez dodatkowej wartości. Nie trzymaj starych odrzuconych oryginałów.
 2. Zachowaj różne perspektywy, pory dnia, detale architektoniczne, materiały historyczne i zdjęcia pozwalające odczytać kontekst miejsca.
 3. Nigdy nie odrzucaj okładki bez wskazania lepszego następcy.
-4. Dla każdego odrzucenia zapisz ID, powód, kopię oryginału, wcześniejszy status, nowy status i potwierdzenie działania API.
+4. Dla każdego trwałego usunięcia zapisz ID, powód, wcześniejszy status i potwierdzenie działania API. Przechowuj ślad audytowy, nie usunięte media.
 5. Po selekcji uzupełnij brakujące treści (w pierwszej kolejności Wroclavia) i zastąp wielokrotne ogólne podpisy konkretnymi opisami widocznych elementów.
