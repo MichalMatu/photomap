@@ -68,6 +68,7 @@ export function PlaceLayer({
   const [visualDetail, setVisualDetail] = useState<PlaceVisualTarget | null>(null);
   const [reportTarget, setReportTarget] = useState<PlaceVisualTarget | null>(null);
   const [isThanksOpen, setIsThanksOpen] = useState(false);
+  const lastTourCloseToken = useRef(tourCloseMediaToken);
   const zoom = mapViewport.zoom;
   const { prefetchPlaceGallery, prioritizeMediaItem, prioritizePlaceGallery } = usePlaceGalleryPreloadControls();
   const { markerDisplayOffsets, markerPlaces } = useMapMarkerLayout({
@@ -97,7 +98,8 @@ export function PlaceLayer({
   });
 
   useEffect(() => {
-    if (!tourCloseMediaToken) return;
+    if (tourCloseMediaToken === lastTourCloseToken.current) return;
+    lastTourCloseToken.current = tourCloseMediaToken;
     closePlaceGallery();
     setVisualDetail(null);
     setMemoryPlace(null);
