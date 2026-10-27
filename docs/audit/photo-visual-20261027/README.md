@@ -30,7 +30,7 @@ Weryfikacja na kopii produkcyjnego SQLite wykazała:
 
 W [`curation-plan.json`](curation-plan.json) wskazano **12 konkretnych zdjęć z ID, miejscem i uzasadnieniem**. Każde zostało ocenione na planszy, zweryfikowane w aktualnej produkcyjnej bazie, nie jest okładką i ma dostępny prywatny oryginał.
 
-Aktualna decyzja redakcyjna: **trwale usuwać** wszystkie poprzednio odrzucone zdjęcia oraz 12 wybranych zdjęć niskiej jakości. Po zgodzie właściciela projektu stosować istniejący **`DELETE /api/admin/photos/{id}`**, który usuwa rekord, prywatny oryginał, miniaturę i audio. Przed operacją utrwalić spójny backup SQLite i manifest decyzji (bez archiwizowania wyrzuconych plików); następnie sprawdzić okładki, liczniki i integralność bazy. Docelowo tylko najwyższa jakość, nie ustalać minimalnej liczby zdjęć na miejsce.
+Aktualna decyzja redakcyjna: **trwale usuwać** wszystkie poprzednio odrzucone zdjęcia oraz 12 wybranych zdjęć niskiej jakości. Po zgodzie właściciela projektu stosować istniejący **`DELETE /api/admin/photos/{id}`**, który usuwa rekord, prywatny oryginał, miniaturę i audio. Przed operacją utrwalić tylko niewielki manifest decyzji i dziennik usunięć (bez kopii SQLite ani archiwum wyrzucanych plików); następnie sprawdzić okładki, liczniki i integralność bazy. **Jeden pełny, spójny backup po zakończeniu całego czyszczenia ma zostać przesłany na Maca** za pomocą `scripts/backup_pi_to_mac.sh --apply`. Nie synchronizować na żywo otwartego `app.db`. Docelowo tylko najwyższa jakość, nie ustalać minimalnej liczby zdjęć na miejsce.
 
 **Status: plan trwałego czyszczenia przygotowany; stan produkcji zostanie uaktualniony dopiero po pozytywnym wyniku zadania Local Agenta.** Nie raportować usunięć bez potwierdzenia API i SQLite.
 
