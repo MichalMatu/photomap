@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { MAP_TOUR_STEPS, nextStepOnEvent, nextTourStep, previousTourStep } from "./mapTourSteps";
+import { MAP_TOUR_STEPS, nextStepOnEvent, nextTourStep, previousTourStep, skipUnavailableTourStep, tourActionSelector } from "./mapTourSteps";
 
 describe("public map tour flow", () => {
   it("starts with a welcome and ends without escaping the steps", () => {
@@ -19,6 +19,22 @@ describe("public map tour flow", () => {
     expect(nextStepOnEvent("pinned", "memory-opened")).toBeNull();
     expect(nextStepOnEvent("place", "photo-opened")).toBeNull();
     expect(nextStepOnEvent("routes", "layer-toggled")).toBeNull();
+  });
+
+  it("requires real actions, never choosing one particular tile", () => {
+    expect(tourActionSelector("place")).toBe(".place-photo-marker:not(.is-selected) > span");
+    expect(tourActionSelector("gallery")).toBe(".photo-gallery-marker > span");
+    expect(tourActionSelector("photo")).toBeNull();
+    expect(tourActionSelector("sound")).toBeNull();
+    expect(tourActionSelector("pinned")).toBeNull();
+  });
+
+  it("skips unavailable dependent views without requiring invisible controls", () => {
+    expect(skipUnavailableTourStep("place")).toBe("layers");
+    expect(skipUnavailableTourStep("gallery")).toBe("layers");
+    expect(skipUnavailableTourStep("pin")).toBe("memory");
+    expect(skipUnavailableTourStep("memory")).toBe("layers");
+    expect(skipUnavailableTourStep("layers")).toBe("routes");
   });
 
   it("supports manual navigation when no media or controls are available", () => {
