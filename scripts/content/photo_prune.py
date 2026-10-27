@@ -118,6 +118,17 @@ def run(args: argparse.Namespace) -> None:
         if db.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
             raise RuntimeError("SQLite integrity check failed before deletion")
         before = dict(db.execute("SELECT status,count(*) FROM photo GROUP BY status"))
+        inconsistent = db.execute(
+            """SELECT count(*) FROM place p WHERE p.photo_count !=
+               (SELECT count(*) FROM photo f WHERE f.place_id=p.id AND f.status='approved')"""
+        ).fetchone()[0]
+        stale = db.execute(
+            """SELECT count(*) FROM place p LEFT JOIN photo f ON f.id=p.cover_photo_id
+               WHERE p.cover_photo_id IS NOT NULL
+                 AND (f.id IS NULL OR f.status!='approved')"""
+        ).fetchone()[0]
+        if inconsistent or stale:
+            raise RuntimeError(f"Pre-existing data inconsistencies: counts={inconsistent}, covers={stale}")
         targets = select_targets(db, plan)
         affected_places = sorted({x["before"]["place_id"] for x in targets})
         print(json.dumps({
