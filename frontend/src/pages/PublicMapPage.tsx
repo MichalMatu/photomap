@@ -205,6 +205,7 @@ export function PublicMapPage() {
             <div className="map-frame">
               <PlaceMap
                 isAudioAutoplayEnabled={isAudioAutoplayEnabled}
+                isTourActive={tourStep !== null}
                 tourCloseMediaToken={closeTourMediaToken}
                 tourCloseOverlayToken={closeTourOverlayToken}
                 onTourEvent={handleTourEvent}
