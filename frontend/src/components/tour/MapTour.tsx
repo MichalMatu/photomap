@@ -71,7 +71,7 @@ const TOUR_CONTENT: Record<MapTourStep, TourContent> = {
   },
   layers: {
     title: "Mapa na Twoich zasadach",
-    description: "Włącz lub wyłącz warstwę w menu: Polecane, Miejsca albo Pamiątki. Zobacz, jak zmienia się widok mapy.",
+    description: "W menu ustawisz warstwy Polecane, Miejsca i Pamiątki. Jest tam także Audio, które włącza automatyczne odtwarzanie dostępnych dźwięków podczas przeglądania fotografii.",
     selector: "#app-side-drawer .drawer-section--layers",
     hint: "Wybierz jedną z warstw",
   },
