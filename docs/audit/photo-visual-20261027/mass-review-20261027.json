@@ -1,0 +1,334 @@
+{
+  "schema_version": 1,
+  "created_on": "2026-10-27",
+  "basis": "Visual review of all 19 pre-prune contact sheets F0001-F1189, not a production deletion action",
+  "latest_verified_production_approved": 1174,
+  "previously_deleted_approved": 15,
+  "decision_policy": "Strict editorial high quality; keep historic detail, genuine interiors and meaningful distinctive conditions; never delete covers or last photo per place",
+  "recommended_remove": [
+    {
+      "label": "F0072",
+      "reason": "Fotografia ściany z tekstem ekspozycji zamiast atrakcyjnego kadru",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0085",
+      "reason": "Odległy, mało czytelny widok, sam Dom Zdrojowy praktycznie znika",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0095",
+      "reason": "Zwykłe okno bez wyjątkowego detalu na tle mocniejszych zdjęć domów",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0116",
+      "reason": "Słabo skomponowane ujęcie ulicy; w galerii są znacznie lepsze kadry",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0141",
+      "reason": "Przeciętny fragment leśnego szlaku bez rozpoznawalnej cechy Ślęży",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0150",
+      "reason": "Przypadkowy kadr placu z drzewem i masztem; Hala Stulecia nie jest tematem",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0184",
+      "reason": "Mało charakterystyczny teren zewnętrzny, niedopasowany do mocnych kadrów Hydropolis",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0205",
+      "reason": "Krasnal niezwiązany z przedstawieniem katedry; rozprasza główny temat galerii",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0223",
+      "reason": "Nocne ujęcie praktycznie bez czytelnej kolegiaty",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0241",
+      "reason": "Błotnisty, nieatrakcyjny fragment jeziora wśród lepszych fotografii Kolorowych Jeziorek",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0247",
+      "reason": "Kadr sprowadza się do tablicy/wjazdu do obiektu, bez pokazania jego walorów",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0253",
+      "reason": "Sama informacyjna tablica tekstowa, brak waloru fotograficznego atrakcji",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0256",
+      "reason": "Tablica przy leśnym szlaku zamiast obrazu kopalni",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0290",
+      "reason": "Powtórzenie figurki krasnali ze zdjęcia F0287 bez nowej wartości",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0345",
+      "reason": "Prawie czarny widok Mostu Tumskiego; obiekt nierozpoznawalny",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0375",
+      "reason": "Zbyt ciemne ujęcie małej makiety, znikoma czytelność",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0408",
+      "reason": "Odległy, pochmurny kadr pustego placu z małym NFM w tle",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0412",
+      "reason": "Mało atrakcyjny, dzienny widok nieaktywnej elewacji neonowej pośród lepszych nocnych kadrów",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0422",
+      "reason": "Tablice drogowskazów zamiast Ogrodu Bajek i jego eksponatów",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0485",
+      "reason": "Przypadkowe rumowisko kamienne bez przekonującej kompozycji formacji skalnej",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0508",
+      "reason": "Niemal identyczny widok Ostrowa Tumskiego co F0497, tylko monochromatyczny",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0522",
+      "reason": "Ciemny i mglisty pejzaż z ledwo widoczną Ostrzycą w oddali",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0662",
+      "reason": "Pusty betonowy korytarz bez waloru kompozycyjnego w bogatszej galerii podziemi",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0667",
+      "reason": "Budynek techniczny i zaparkowane auta zamiast kolei linowej Polinka",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0732",
+      "reason": "Telefon fotografującego zamiast samego Ratusza/Rynku",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0771",
+      "reason": "Rozmazany nocny kadr, wieża Sky Tower słabo rozpoznawalna między drzewami",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0775",
+      "reason": "Wieża Sky Tower mała, zasłonięta ciemną ramą okna",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0850",
+      "reason": "Wewnętrzny kadr ciemnego okna schroniska, bez czytelnego widoku",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0871",
+      "reason": "Sama tabliczka DO WYJŚCIA w podziemnej trasie",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0940",
+      "reason": "Barierka punktu widokowego zamiast wieży Borowa lub panoramy",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F0985",
+      "reason": "Przypadkowe korzenie na skraju wąwozu zamiast Wodospadu Wilczki",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F1004",
+      "reason": "Szare, mało atrakcyjne pobocze zalewu; inne kadry ukazują miejsce dużo lepiej",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F1053",
+      "reason": "Niemal identyczny widok schodów Zamku Grodno jak F1052",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F1097",
+      "reason": "Powtarza szeroki widok Książa ze zdjęcia F1093 bez nowego punktu widzenia",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F1112",
+      "reason": "Prawie pusta, biała sala bez wyraźnego charakteru zamku",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F1145",
+      "reason": "Zwykła ścieżka leśna bez czytelnych ruin Zamku Rogowiec",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    },
+    {
+      "label": "F1162",
+      "reason": "Wyblakły, odległy widok Zapory Pilchowickiej; niewiele widać",
+      "decision": "recommend_remove",
+      "status": "pending_fresh_id_and_cover_check"
+    }
+  ],
+  "needs_fullsize_review": [
+    {
+      "label": "F0073",
+      "reason": "Rysunek wystawowy może być ważnym dokumentem historii komunikacji, ale wymaga oceny wartości informacyjnej",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0083",
+      "reason": "Nocny Dom Zdrojowy jest dość ciemny, lecz pora dnia wnosi odmianę",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0125",
+      "reason": "Zielona iluminacja fontanny jest mało wyraźna, ale to unikalny rodzaj spektaklu",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0135",
+      "reason": "Tablica historyczna Ślęży może być wartościowym materialnym świadectwem",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0178",
+      "reason": "Ogień w mroku w Hydropolis może być ważną częścią ekspozycji",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0284",
+      "reason": "Ciemne empory kościoła mogą przedstawiać ważny element wnętrza",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0316",
+      "reason": "Tablica po nieistniejącej Miedziance może być istotnym dokumentem miejsca",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0368",
+      "reason": "Zabytkowa klamka może być świadomym detalem architektonicznym",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0431",
+      "reason": "Spokojny kadr alei może uzupełniać ogród, choć jest słabszy od kwiatów",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0473",
+      "reason": "Ozdobna latarnia przy operze może być charakterystycznym detalem",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0483",
+      "reason": "Sama struktura skały może być główną atrakcją geologiczną",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0570",
+      "reason": "Restauracyjne wnętrze pałacu może być autentycznym zabytkowym detalem",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0621",
+      "reason": "Panorama parku jest zwyczajna, ale pokazuje jego przestrzeń",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0651",
+      "reason": "Pawilon ukryty w ciemnym kadrze; może mieć wartość inną porą dnia",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0863",
+      "reason": "Szczeliniec z daleka wygląda przeciętnie, jednak szeroki pejzaż może mieć znaczenie",
+      "decision": "review_original"
+    },
+    {
+      "label": "F0928",
+      "reason": "Krasnal przy uniwersytecie może być lokalnym elementem studenckiej kultury",
+      "decision": "review_original"
+    },
+    {
+      "label": "F1048",
+      "reason": "Kamienna tablica zamku Grodno może mieć znaczenie dla historii miejsca",
+      "decision": "review_original"
+    },
+    {
+      "label": "F1100",
+      "reason": "Odległa bryła zamku i katedry, trudna do odczytania w małej miniaturze",
+      "decision": "review_original"
+    },
+    {
+      "label": "F1188",
+      "reason": "Ujęcie zewnętrzne architektury Afrykarium jest mało atrakcyjne wobec zdjęć zwierząt",
+      "decision": "review_original"
+    }
+  ],
+  "notes": [
+    "Index and sheets are pre-pruning; never delete labels already deleted in batches 1 or 2",
+    "Automatic heuristic flags are not deletion decisions",
+    "No database or media writes are authorized by this file"
+  ]
+}
