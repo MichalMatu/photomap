@@ -5,6 +5,7 @@ Uses the existing admin API (not direct SQL writes). Dry run by default.
 A small durable decision log is retained. No local SQLite/media backup is
 created by this script; take a single consistent backup after editorial cleanup.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -41,15 +42,20 @@ def select_targets(db: sqlite3.Connection, curated: dict) -> list[dict]:
             "expected_slug": photo["place_slug"],
             "selection": "visual_review",
         }
-    rejected = db.execute("SELECT id FROM photo WHERE status='rejected' ORDER BY id").fetchall()
+    rejected = db.execute(
+        "SELECT id FROM photo WHERE status='rejected' ORDER BY id"
+    ).fetchall()
     for row in rejected:
-        chosen.setdefault(row["id"], {
-            "id": row["id"],
-            "reason": "Previously rejected; remove permanently",
-            "label": None,
-            "expected_slug": None,
-            "selection": "previously_rejected",
-        })
+        chosen.setdefault(
+            row["id"],
+            {
+                "id": row["id"],
+                "reason": "Previously rejected; remove permanently",
+                "label": None,
+                "expected_slug": None,
+                "selection": "previously_rejected",
+            },
+        )
 
     results = []
     for photo_id, target in chosen.items():
@@ -78,7 +84,9 @@ def select_targets(db: sqlite3.Connection, curated: dict) -> list[dict]:
                 (row["place_id"],),
             ).fetchone()[0]
             if count <= 1:
-                raise RuntimeError("Refusing to remove final approved photo of place: " + photo_id)
+                raise RuntimeError(
+                    "Refusing to remove final approved photo of place: " + photo_id
+                )
         results.append({**target, "before": dict(row)})
 
     # Validate whole batch, not only each image independently. Two selected
@@ -89,18 +97,24 @@ def select_targets(db: sqlite3.Connection, curated: dict) -> list[dict]:
         if item["before"]["status"] == "approved"
     )
     for place_id, removing in approved_removals.items():
-        remaining = db.execute(
-            "SELECT count(*) FROM photo WHERE place_id=? AND status='approved'",
-            (place_id,),
-        ).fetchone()[0] - removing
+        remaining = (
+            db.execute(
+                "SELECT count(*) FROM photo WHERE place_id=? AND status='approved'",
+                (place_id,),
+            ).fetchone()[0]
+            - removing
+        )
         if remaining < 1:
-            raise RuntimeError("Refusing to remove all approved photos of place: " + place_id)
+            raise RuntimeError(
+                "Refusing to remove all approved photos of place: " + place_id
+            )
     return results
 
 
 def get_token() -> str:
     sys.path.insert(0, str(ROOT))
     import server
+
     server.load_local_env()
     token = os.getenv("ADMIN_TOKEN")
     if not token:
@@ -119,7 +133,9 @@ def delete_by_api(base_url: str, token: str, photo_id: str) -> None:
             if response.status != 204:
                 raise RuntimeError("Unexpected admin response for " + photo_id)
     except HTTPError as exc:
-        raise RuntimeError("Admin DELETE failed for " + photo_id + ": HTTP " + str(exc.code)) from exc
+        raise RuntimeError(
+            "Admin DELETE failed for " + photo_id + ": HTTP " + str(exc.code)
+        ) from exc
 
 
 def run(args: argparse.Namespace) -> None:
@@ -144,17 +160,28 @@ def run(args: argparse.Namespace) -> None:
                  AND (f.id IS NULL OR f.status!='approved')"""
         ).fetchone()[0]
         if inconsistent or stale:
-            raise RuntimeError(f"Pre-existing data inconsistencies: counts={inconsistent}, covers={stale}")
+            raise RuntimeError(
+                f"Pre-existing data inconsistencies: counts={inconsistent}, covers={stale}"
+            )
         targets = select_targets(db, plan)
         affected_places = sorted({x["before"]["place_id"] for x in targets})
-        print(json.dumps({
-            "action": "dry-run" if not args.execute else "delete",
-            "total": len(targets),
-            "manual_selections": sum(x["selection"] == "visual_review" for x in targets),
-            "previously_rejected": sum(x["selection"] == "previously_rejected" for x in targets),
-            "before": before,
-            "affected_places": len(affected_places),
-        }), flush=True)
+        print(
+            json.dumps(
+                {
+                    "action": "dry-run" if not args.execute else "delete",
+                    "total": len(targets),
+                    "manual_selections": sum(
+                        x["selection"] == "visual_review" for x in targets
+                    ),
+                    "previously_rejected": sum(
+                        x["selection"] == "previously_rejected" for x in targets
+                    ),
+                    "before": before,
+                    "affected_places": len(affected_places),
+                }
+            ),
+            flush=True,
+        )
         if not args.execute:
             return
 
@@ -189,22 +216,38 @@ def run(args: argparse.Namespace) -> None:
             if db.execute("SELECT id FROM photo WHERE id=?", (pid,)).fetchone():
                 raise RuntimeError("Photo still in database after admin DELETE: " + pid)
             with log_path.open("a", encoding="utf-8") as log:
-                log.write(json.dumps({
-                    "photo_id": pid,
-                    "place_slug": target["before"]["slug"],
-                    "selection": target["selection"],
-                    "reason": target["reason"],
-                    "deleted_at": datetime.now(UTC).isoformat(),
-                }, ensure_ascii=False) + "\n")
+                log.write(
+                    json.dumps(
+                        {
+                            "photo_id": pid,
+                            "place_slug": target["before"]["slug"],
+                            "selection": target["selection"],
+                            "reason": target["reason"],
+                            "deleted_at": datetime.now(UTC).isoformat(),
+                        },
+                        ensure_ascii=False,
+                    )
+                    + "\n"
+                )
                 log.flush()
                 os.fsync(log.fileno())
-            print("DELETED", target["label"] or "rejected", target["before"]["slug"], pid, flush=True)
+            print(
+                "DELETED",
+                target["label"] or "rejected",
+                target["before"]["slug"],
+                pid,
+                flush=True,
+            )
 
     with database_connection(db_path) as after_db:
-        after = dict(after_db.execute("SELECT status,count(*) FROM photo GROUP BY status"))
+        after = dict(
+            after_db.execute("SELECT status,count(*) FROM photo GROUP BY status")
+        )
         if after_db.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
             raise RuntimeError("SQLite integrity check failed after pruning")
-        remaining = after_db.execute("SELECT count(*) FROM photo WHERE status='rejected'").fetchone()[0]
+        remaining = after_db.execute(
+            "SELECT count(*) FROM photo WHERE status='rejected'"
+        ).fetchone()[0]
         stale_covers = after_db.execute(
             """SELECT count(*) FROM place p
                LEFT JOIN photo f ON f.id=p.cover_photo_id
@@ -220,16 +263,30 @@ def run(args: argparse.Namespace) -> None:
                 f"Post-check failed: rejected={remaining}, stale_covers={stale_covers}, photo_count_errors={discrepancies}"
             )
         expected = dict(before)
-        expected["approved"] = before.get("approved", 0) - len([p for p in targets if p["before"]["status"]=="approved"])
-        expected["rejected"] = before.get("rejected", 0) - len([p for p in targets if p["before"]["status"]=="rejected"])
-        expected = {k:v for k,v in expected.items() if v}
+        expected["approved"] = before.get("approved", 0) - len(
+            [p for p in targets if p["before"]["status"] == "approved"]
+        )
+        expected["rejected"] = before.get("rejected", 0) - len(
+            [p for p in targets if p["before"]["status"] == "rejected"]
+        )
+        expected = {k: v for k, v in expected.items() if v}
         if after != expected:
-            raise RuntimeError(f"Photo counts differ after deletion: expected={expected}, actual={after}")
+            raise RuntimeError(
+                f"Photo counts differ after deletion: expected={expected}, actual={after}"
+            )
         if len(log_path.read_text(encoding="utf-8").splitlines()) != len(targets):
             raise RuntimeError("Deletion audit log incomplete")
-        summary = {"status":"verified", "deleted":len(targets), "before":before, "after":after,
-                   "stale_covers":stale_covers,"place_photo_count_discrepancies":discrepancies}
-        (audit_dir / "result.json").write_text(json.dumps(summary, indent=2)+"\n", encoding="utf-8")
+        summary = {
+            "status": "verified",
+            "deleted": len(targets),
+            "before": before,
+            "after": after,
+            "stale_covers": stale_covers,
+            "place_photo_count_discrepancies": discrepancies,
+        }
+        (audit_dir / "result.json").write_text(
+            json.dumps(summary, indent=2) + "\n", encoding="utf-8"
+        )
         print("PHOTO_PRUNE_VERIFIED", json.dumps(summary), flush=True)
 
 
@@ -237,7 +294,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--database", required=True)
     parser.add_argument("--plan", required=True)
-    parser.add_argument("--audit-dir", required=True, help="Unique directory for JSON audit only; no database or media backup")
+    parser.add_argument(
+        "--audit-dir",
+        required=True,
+        help="Unique directory for JSON audit only; no database or media backup",
+    )
     parser.add_argument("--base-url", default="http://127.0.0.1:8000")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--confirm", default="")

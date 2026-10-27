@@ -33,10 +33,12 @@ def db_for_review() -> sqlite3.Connection:
 
 
 def plan(photo_id: str = "bad") -> dict:
-    return {"schema_version": 1, "photos": [
-        {"photo_id": photo_id, "place_slug": "dworzec-glowny",
-         "reason": "reviewed as irrelevant", "label": "F0001"}
-    ]}
+    return {
+        "schema_version": 1,
+        "photos": [
+            {"photo_id": photo_id, "place_slug": "dworzec-glowny", "reason": "reviewed as irrelevant", "label": "F0001"}
+        ],
+    }
 
 
 def test_selects_both_old_rejections_and_curated_photo() -> None:
@@ -72,18 +74,19 @@ def test_refuses_wrong_place() -> None:
 def test_refuses_removal_of_all_approved_photos_in_one_batch() -> None:
     db = db_for_review()
     db.execute("UPDATE place SET cover_photo_id=NULL WHERE id='place1'")
-    plan_for_both = {"photos": [
-        {"photo_id": "cover", "place_slug": "dworzec-glowny",
-         "reason": "reviewed", "label": "F0000"},
-        {"photo_id": "bad", "place_slug": "dworzec-glowny",
-         "reason": "reviewed", "label": "F0001"},
-    ]}
+    plan_for_both = {
+        "photos": [
+            {"photo_id": "cover", "place_slug": "dworzec-glowny", "reason": "reviewed", "label": "F0000"},
+            {"photo_id": "bad", "place_slug": "dworzec-glowny", "reason": "reviewed", "label": "F0001"},
+        ]
+    }
     with pytest.raises(RuntimeError, match="all approved"):
         select_targets(db, plan_for_both)
 
 
 def test_pruning_writes_only_small_audit_not_sqlite_backup(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     import photo_prune
 
@@ -99,9 +102,12 @@ def test_pruning_writes_only_small_audit_not_sqlite_backup(
     plan_file.write_text(json.dumps(plan()), encoding="utf-8")
     audit_dir = tmp_path / "logs"
     args = Namespace(
-        database=str(disk), plan=str(plan_file), audit_dir=str(audit_dir),
+        database=str(disk),
+        plan=str(plan_file),
+        audit_dir=str(audit_dir),
         base_url="http://127.0.0.1:8000",
-        execute=True, confirm="PERMANENT_DELETE",
+        execute=True,
+        confirm="PERMANENT_DELETE",
     )
 
     def fake_api(_url: str, _token: str, photo_id: str) -> None:
@@ -120,6 +126,4 @@ def test_pruning_writes_only_small_audit_not_sqlite_backup(
     assert json.loads((audit_dir / "result.json").read_text())["after"] == {"approved": 1}
     assert not list(audit_dir.rglob("*.db"))
     assert not list(audit_dir.rglob("*.sqlite"))
-    assert sorted(path.name for path in audit_dir.iterdir()) == [
-        "deleted.jsonl", "manifest.json", "result.json"
-    ]
+    assert sorted(path.name for path in audit_dir.iterdir()) == ["deleted.jsonl", "manifest.json", "result.json"]
