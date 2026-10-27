@@ -13,6 +13,7 @@ import { type PinMediaRequest, usePinnedMediaBoard } from "./pinned-media/usePin
 
 type Props = {
   isAudioAutoplayEnabled: boolean;
+  isTourActive?: boolean;
   tourCloseMediaToken?: number;
   tourCloseOverlayToken?: number;
   onTourEvent?: (event: MapTourEvent) => void;
@@ -116,6 +117,7 @@ function MapProjectionTracker({
 
 export function PlaceMap({
   isAudioAutoplayEnabled,
+  isTourActive = false,
   tourCloseMediaToken = 0,
   tourCloseOverlayToken = 0,
   onTourEvent,
@@ -166,6 +168,7 @@ export function PlaceMap({
         <TileLayer attribution={MAP_DISPLAY_CONFIG.tileLayer.attribution} url={MAP_DISPLAY_CONFIG.tileLayer.url} />
         <PlaceLayer
           isAudioAutoplayEnabled={isAudioAutoplayEnabled}
+          isTourActive={isTourActive}
           tourCloseMediaToken={tourCloseMediaToken}
           tourCloseOverlayToken={tourCloseOverlayToken}
           onTourEvent={onTourEvent}
