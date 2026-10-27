@@ -3,9 +3,10 @@ import { expect, test } from "@playwright/test";
 import { mockSharedApi } from "../support/visualApi";
 
 test("interactive PhotoMap tutorial follows real place, gallery and layer actions", async ({ page }) => {
+  test.setTimeout(120_000); // Includes slow installed Chrome startup on a busy Mac.
   await page.setViewportSize({ width: 1280, height: 820 });
   await mockSharedApi(page, undefined, undefined, undefined, true, false);
-  await page.goto("/");
+  await page.goto("/", { waitUntil: "domcontentloaded" });
 
   const tour = page.locator(".map-tour");
   await expect(tour).toHaveAttribute("data-tour-step", "welcome");
@@ -68,9 +69,10 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
 });
 
 test("spotlight suppresses native marker tooltip and hover scaling", async ({ page }) => {
+  test.setTimeout(90_000);
   await page.setViewportSize({ width: 1280, height: 820 });
   await mockSharedApi(page, undefined, undefined, undefined, true, false);
-  await page.goto("/");
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   const tour = page.locator(".map-tour");
   await expect(tour).toHaveAttribute("data-tour-step", "welcome");
   await tour.getByRole("button", { name: "Odkrywaj" }).click();
@@ -90,9 +92,10 @@ test("spotlight suppresses native marker tooltip and hover scaling", async ({ pa
 });
 
 test("tour works with empty map on narrow mobile viewport", async ({ page }) => {
+  test.setTimeout(90_000);
   await page.setViewportSize({ width: 375, height: 667 });
   await mockSharedApi(page, [], undefined, undefined, true, false);
-  await page.goto("/");
+  await page.goto("/", { waitUntil: "domcontentloaded" });
 
   const tour = page.locator(".map-tour");
   await expect(tour).toHaveAttribute("data-tour-step", "welcome");
