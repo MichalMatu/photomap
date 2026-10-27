@@ -28,8 +28,12 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(tour).toHaveAttribute("data-tour-step", "photo");
   await expect(page.locator(".system-modal--media")).toBeVisible();
 
+  // Default fixture photo has no audio: skip the whole absent-media step.
+  await expect(page.locator(".photo-detail-audio-toggle")).toHaveCount(0);
   await tour.getByRole("button", { name: "Dalej" }).click();
-  await expect(tour).toHaveAttribute("data-tour-step", "sound");
+  await expect(tour).toHaveAttribute("data-tour-step", "narration");
+  await tour.getByRole("button", { name: "Poprzedni krok" }).click();
+  await expect(tour).toHaveAttribute("data-tour-step", "photo");
   await tour.getByRole("button", { name: "Dalej" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "narration");
   await tour.getByRole("button", { name: "Dalej" }).click();
@@ -62,6 +66,14 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(tour).toHaveAttribute("data-tour-step", "memory-form");
   await expect(page.locator(".memory-sheet-content")).toBeVisible();
   await expect(page.getByRole("button", { name: "generuj token" })).toBeVisible();
+  // The token UI must have breathing room inside the soft blue guide outline.
+  const fieldBounds = await page.locator(".memory-sheet-content > .ui-setting-field").boundingBox();
+  const glowBounds = await tour.locator(".map-tour-spotlight").boundingBox();
+  expect(fieldBounds).not.toBeNull();
+  expect(glowBounds).not.toBeNull();
+  expect(fieldBounds!.x - glowBounds!.x).toBeGreaterThanOrEqual(10);
+  expect(fieldBounds!.y - glowBounds!.y).toBeGreaterThanOrEqual(10);
+  expect(glowBounds!.x + glowBounds!.width - fieldBounds!.x - fieldBounds!.width).toBeGreaterThanOrEqual(10);
 
   await tour.getByRole("button", { name: "Dalej" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "layers");
@@ -88,6 +100,41 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(tour).toHaveAttribute("data-tour-step", "welcome");
   await tour.getByRole("button", { name: "Pomiń", exact: true }).click();
   await expect(tour).toHaveCount(0);
+});
+
+test("photo with recording retains the audio tutorial stage", async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.setViewportSize({ width: 1280, height: 820 });
+  await mockSharedApi(page, undefined, undefined, undefined, true, false);
+
+  // Use the actual public photo payload structure with a recording attached.
+  const { places, rynekCover, rynekSide } = await import("../fixtures/visualData");
+  const { API_URL } = await import("../support/config");
+  const recording = {
+    public_path: "/media/visual/tour-recording.mp3",
+    mime_type: "audio/mpeg",
+    size_bytes: 2048,
+    duration_seconds: 5,
+  };
+  await page.route(`${API_URL}/api/places/${places[0].id}/photos`, (route) =>
+    route.fulfill({ json: [{ ...rynekCover, audio: recording }, { ...rynekSide, audio: recording }] }),
+  );
+
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const tour = page.locator(".map-tour");
+  await expect(tour).toHaveAttribute("data-tour-step", "welcome");
+  await tour.getByRole("button", { name: "Odkrywaj" }).click();
+  await page.locator(".place-photo-marker:not(.is-selected) > span").first().click();
+  await expect(tour).toHaveAttribute("data-tour-step", "gallery");
+  await page.locator(".photo-gallery-marker > span").first().click();
+  await expect(tour).toHaveAttribute("data-tour-step", "photo");
+  await expect(page.locator(".system-modal--media .photo-detail-audio-toggle")).toBeVisible();
+  await tour.getByRole("button", { name: "Dalej" }).click();
+  await expect(tour).toHaveAttribute("data-tour-step", "sound");
+  await tour.getByRole("button", { name: "Dalej" }).click();
+  await expect(tour).toHaveAttribute("data-tour-step", "narration");
+  await tour.getByRole("button", { name: "Poprzedni krok" }).click();
+  await expect(tour).toHaveAttribute("data-tour-step", "sound");
 });
 
 test("subtle blue outline guides a natural click without dimming the map", async ({ page }) => {
