@@ -13,6 +13,10 @@ describe("public map tour flow", () => {
     expect(nextStepOnEvent("place", "gallery-opened")).toBe("gallery");
     expect(nextStepOnEvent("gallery", "photo-opened")).toBe("photo");
     expect(nextStepOnEvent("layers", "layer-toggled")).toBe("routes");
+    expect(nextStepOnEvent("pin", "pin-created")).toBe("pinned");
+    expect(nextStepOnEvent("memory", "memory-opened")).toBe("memory-form");
+    expect(nextStepOnEvent("photo", "pin-created")).toBeNull();
+    expect(nextStepOnEvent("pinned", "memory-opened")).toBeNull();
     expect(nextStepOnEvent("place", "photo-opened")).toBeNull();
     expect(nextStepOnEvent("routes", "layer-toggled")).toBeNull();
   });
@@ -20,5 +24,11 @@ describe("public map tour flow", () => {
   it("supports manual navigation when no media or controls are available", () => {
     expect(nextTourStep("place")).toBe("gallery");
     expect(previousTourStep("photo")).toBe("gallery");
+    expect(nextTourStep("photo")).toBe("sound");
+    expect(nextTourStep("narration")).toBe("pin");
+    expect(nextTourStep("pinned")).toBe("memory");
+    expect(nextTourStep("memory-form")).toBe("layers");
+    expect(previousTourStep("memory-form")).toBe("memory");
+    expect(MAP_TOUR_STEPS).toHaveLength(13);
   });
 });
