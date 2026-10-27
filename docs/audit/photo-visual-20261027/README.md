@@ -21,8 +21,8 @@ Duplikaty wizualne do selekcji: Polinka F0666/F0670 i F0669/F0671; Stary Cmentar
 
 Weryfikacja na kopii produkcyjnego SQLite wykazała:
 
-- **1 miejsce z brakującym opisem, lokalnym komentarzem i artykułem:** `wroclavia`.
-- **9 miejsc z grupami co najmniej trzech identycznych podpisów zdjęć.** Należy zastąpić je informatywnymi, unikalnymi podpisami przy zachowaniu zgodności z fotografią.
+- **1 miejsce z brakującym opisem, lokalnym komentarzem i artykułem:** `wroclavia`. Dodatkowo oba opublikowane zdjęcia Wroclavii mają puste podpisy i nie mają opisów zdjęć.
+- **9 miejsc z grupami co najmniej trzech identycznych podpisów zdjęć:** Aula Leopoldina, Bastion Sakwowy, Dworzec Główny, Fontanna Multimedialna, Hala Targowa, Katedra Marii Magdaleny, Most Grunwaldzki, Ossolineum i Panorama Racławicka. Ta ostatnia ma aż **6** zdjęć z jednakowym podpisem „Fragment monumentalnej ekspozycji Panoramy Racławickiej”. Należy je uzupełnić o konkretne elementy kadru bez zgadywania faktów.
 - **95 miejsc** zawiera tekst zdjęcia z wyrazami wymagającymi ewentualnej kontroli (np. „ściana”, „tablica”, „kamera”), ale samo wystąpienie słowa **nie dowodzi błędu**.
 - Brak weryfikowanych na tym etapie błędów historycznych lub geograficznych; do takiej oceny konieczny jest osobny audyt źródłowy opisów, nie tylko kontrola strukturalna.
 
