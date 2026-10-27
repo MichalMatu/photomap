@@ -140,7 +140,13 @@ export async function mockSharedApi(
   guideList = guides,
   cityList: SharedCity[] = [city],
   dismissModeratorRecruitment = true,
+  dismissMapTour = true,
 ) {
+  if (dismissMapTour) {
+    await page.addInitScript(() => {
+      window.localStorage.setItem("photomap-public-map-tour-v1-complete", "1");
+    });
+  }
   if (dismissModeratorRecruitment) {
     await page.addInitScript(() => {
       window.localStorage.setItem("photomap:moderator-recruitment:v1", "dismissed");
