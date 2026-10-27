@@ -51,7 +51,9 @@ def export_snapshot(database: str) -> dict:
         photos = []
         for row in connection.execute(query):
             photo = dict(row)
-            photo["description_blocks"] = json.loads(photo["description_blocks"] or "[]")
+            photo["description_blocks"] = json.loads(
+                photo["description_blocks"] or "[]"
+            )
             photo["is_cover"] = bool(photo["is_cover"])
             photos.append(photo)
         return {
@@ -66,7 +68,11 @@ def export_snapshot(database: str) -> dict:
 def canonical_blocks(blocks: list[dict]) -> list[dict]:
     """API ContentBlock may include url=null; SQLite storage omits it."""
     return [
-        {key: value for key, value in block.items() if key in ("type", "text", "url") and value is not None}
+        {
+            key: value
+            for key, value in block.items()
+            if key in ("type", "text", "url") and value is not None
+        }
         for block in blocks
     ]
 
@@ -101,11 +107,15 @@ def audit_snapshot(snapshot: dict) -> dict:
             totals["missing_caption"] += 1
         if not photo.get("description_blocks"):
             totals["missing_description"] += 1
-        if not (photo.get("attribution_license") and photo.get("attribution_source_url")):
+        if not (
+            photo.get("attribution_license") and photo.get("attribution_source_url")
+        ):
             totals["missing_license_or_source"] += 1
     albums = [
         {"place_slug": slug, **counts}
-        for slug, counts in sorted(by_place.items(), key=lambda item: (-item[1]["photos"], item[0]))
+        for slug, counts in sorted(
+            by_place.items(), key=lambda item: (-item[1]["photos"], item[0])
+        )
     ]
     return {"counts": dict(totals), "albums": albums}
 
@@ -120,15 +130,17 @@ def make_plan(snapshot: dict) -> dict:
         if len(blocks) < 2:
             skipped_heading_only.append(photo["id"])
             continue
-        edits.append({
-            "photo_id": photo["id"],
-            "place_id": photo["place_id"],
-            "place_slug": photo["place_slug"],
-            "reason": "caption_repeated_as_first_heading",
-            "expected_caption": photo["caption"],
-            "expected_description_blocks": blocks,
-            "new_description_blocks": blocks[1:],
-        })
+        edits.append(
+            {
+                "photo_id": photo["id"],
+                "place_id": photo["place_id"],
+                "place_slug": photo["place_slug"],
+                "reason": "caption_repeated_as_first_heading",
+                "expected_caption": photo["caption"],
+                "expected_description_blocks": blocks,
+                "new_description_blocks": blocks[1:],
+            }
+        )
     return {
         "schema_version": 1,
         "source_exported_at": snapshot.get("exported_at"),
@@ -137,9 +149,15 @@ def make_plan(snapshot: dict) -> dict:
     }
 
 
-def api_json(base_url: str, token: str, path: str, method: str = "GET", body: dict | None = None):
+def api_json(
+    base_url: str, token: str, path: str, method: str = "GET", body: dict | None = None
+):
     url = base_url.rstrip("/") + path
-    data = json.dumps(body, ensure_ascii=False).encode("utf-8") if body is not None else None
+    data = (
+        json.dumps(body, ensure_ascii=False).encode("utf-8")
+        if body is not None
+        else None
+    )
     request = Request(
         url,
         data=data,
@@ -157,7 +175,15 @@ def api_json(base_url: str, token: str, path: str, method: str = "GET", body: di
         raise RuntimeError("Admin API request failed: " + method + " " + path) from exc
 
 
-def apply_plan(plan: dict, *, base_url: str, token: str, offset: int, batch_size: int, log_path: str) -> dict:
+def apply_plan(
+    plan: dict,
+    *,
+    base_url: str,
+    token: str,
+    offset: int,
+    batch_size: int,
+    log_path: str,
+) -> dict:
     parsed = urlsplit(base_url)
     if parsed.scheme != "https" and not (
         parsed.scheme == "http" and parsed.hostname in ("localhost", "127.0.0.1", "::1")
@@ -165,7 +191,7 @@ def apply_plan(plan: dict, *, base_url: str, token: str, offset: int, batch_size
         raise ValueError("Admin API URL must use HTTPS or local-loopback HTTP")
     if not 1 <= batch_size <= 100 or offset < 0:
         raise ValueError("batch-size must be 1..100 and offset must be nonnegative")
-    edits = plan["edits"][offset:offset + batch_size]
+    edits = plan["edits"][offset : offset + batch_size]
     if not edits:
         return {"selected": 0, "updated": 0, "already_applied": 0}
 
@@ -179,16 +205,18 @@ def apply_plan(plan: dict, *, base_url: str, token: str, offset: int, batch_size
         photo = albums[place_id].get(edit["photo_id"])
         if photo is None:
             raise RuntimeError("Photo missing from admin API: " + edit["photo_id"])
-        if (photo["caption"] == edit["expected_caption"] and
-            canonical_blocks(photo["description_blocks"]) == canonical_blocks(edit["new_description_blocks"])):
+        if photo["caption"] == edit["expected_caption"] and canonical_blocks(
+            photo["description_blocks"]
+        ) == canonical_blocks(edit["new_description_blocks"]):
             checked.append((edit, True))
-        elif (
-            photo["caption"] == edit["expected_caption"]
-            and canonical_blocks(photo["description_blocks"]) == canonical_blocks(edit["expected_description_blocks"])
-        ):
+        elif photo["caption"] == edit["expected_caption"] and canonical_blocks(
+            photo["description_blocks"]
+        ) == canonical_blocks(edit["expected_description_blocks"]):
             checked.append((edit, False))
         else:
-            raise RuntimeError("Stale edit; aborting batch before mutation: " + edit["photo_id"])
+            raise RuntimeError(
+                "Stale edit; aborting batch before mutation: " + edit["photo_id"]
+            )
 
     log_file = Path(log_path)
     log_file.parent.mkdir(parents=True, exist_ok=True)
@@ -199,7 +227,10 @@ def apply_plan(plan: dict, *, base_url: str, token: str, offset: int, batch_size
                 continue
             path = "/api/admin/photos/" + quote(edit["photo_id"], safe="")
             api_json(
-                base_url, token, path, method="PATCH",
+                base_url,
+                token,
+                path,
+                method="PATCH",
                 body={"description_blocks": edit["new_description_blocks"]},
             )
             record = {
@@ -212,22 +243,32 @@ def apply_plan(plan: dict, *, base_url: str, token: str, offset: int, batch_size
             log.write(json.dumps(record, ensure_ascii=False) + "\n")
             log.flush()
             updated += 1
-    return {"selected": len(edits), "updated": updated, "already_applied": len(edits) - updated}
+    return {
+        "selected": len(edits),
+        "updated": updated,
+        "already_applied": len(edits) - updated,
+    }
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="action", required=True)
-    export = subparsers.add_parser("export", help="Read-only SQLite metadata export as JSON")
+    export = subparsers.add_parser(
+        "export", help="Read-only SQLite metadata export as JSON"
+    )
     export.add_argument("--database", required=True)
     export.add_argument("--output")
     audit = subparsers.add_parser("audit", help="Analyze saved photo metadata on Mac")
     audit.add_argument("--snapshot", required=True)
     audit.add_argument("--output")
-    plan = subparsers.add_parser("plan", help="Prepare reversible duplicate-heading changes")
+    plan = subparsers.add_parser(
+        "plan", help="Prepare reversible duplicate-heading changes"
+    )
     plan.add_argument("--snapshot", required=True)
     plan.add_argument("--output", required=True)
-    apply = subparsers.add_parser("apply", help="Explicit, precondition-checked admin API updates")
+    apply = subparsers.add_parser(
+        "apply", help="Explicit, precondition-checked admin API updates"
+    )
     apply.add_argument("--plan", required=True)
     apply.add_argument("--base-url", default="https://photomap.pl")
     apply.add_argument("--token-env", default="PHOTOMAP_ADMIN_TOKEN")
@@ -252,7 +293,9 @@ def main() -> None:
         snapshot = read_json(args.snapshot)
         if snapshot.get("schema_version") != 1:
             parser.error("Unsupported snapshot format")
-        data = audit_snapshot(snapshot) if args.action == "audit" else make_plan(snapshot)
+        data = (
+            audit_snapshot(snapshot) if args.action == "audit" else make_plan(snapshot)
+        )
         if args.action == "plan" or args.output:
             write_json(args.output, data)
         else:
@@ -262,19 +305,38 @@ def main() -> None:
     edit_plan = read_json(args.plan)
     if edit_plan.get("schema_version") != 1:
         parser.error("Unsupported edit plan format")
-    selected = edit_plan["edits"][args.offset:args.offset + args.batch_size]
+    selected = edit_plan["edits"][args.offset : args.offset + args.batch_size]
     if not args.execute:
-        print(json.dumps({"dry_run": True, "selected": len(selected), "offset": args.offset}))
+        print(
+            json.dumps(
+                {"dry_run": True, "selected": len(selected), "offset": args.offset}
+            )
+        )
         return
-    if args.confirm != "APPLY" or not args.backup_path or not Path(args.backup_path).is_file() or not args.log:
-        parser.error("Execution requires --confirm APPLY, an existing --backup-path and --log")
+    if (
+        args.confirm != "APPLY"
+        or not args.backup_path
+        or not Path(args.backup_path).is_file()
+        or not args.log
+    ):
+        parser.error(
+            "Execution requires --confirm APPLY, an existing --backup-path and --log"
+        )
     token = os.environ.get(args.token_env)
     if not token:
         parser.error("Admin token environment variable is missing")
-    print(json.dumps(apply_plan(
-        edit_plan, base_url=args.base_url, token=token,
-        offset=args.offset, batch_size=args.batch_size, log_path=args.log,
-    )))
+    print(
+        json.dumps(
+            apply_plan(
+                edit_plan,
+                base_url=args.base_url,
+                token=token,
+                offset=args.offset,
+                batch_size=args.batch_size,
+                log_path=args.log,
+            )
+        )
+    )
 
 
 if __name__ == "__main__":

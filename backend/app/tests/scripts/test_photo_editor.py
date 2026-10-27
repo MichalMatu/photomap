@@ -25,7 +25,9 @@ def photo(
         "status": "approved",
         "caption": caption,
         "description_blocks": (
-            blocks if blocks is not None else [
+            blocks
+            if blocks is not None
+            else [
                 {"type": "heading", "text": caption},
                 {"type": "paragraph", "text": "Śnieg na elewacji przy Rynku."},
             ]
