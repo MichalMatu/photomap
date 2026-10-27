@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { MAP_TOUR_STEPS, nextStepOnEvent, nextTourStep, previousTourStep, skipUnavailableTourStep, tourActionSelector } from "./mapTourSteps";
+import { MAP_TOUR_STEPS, nextStepOnEvent, nextTourStep, nextTourStepForPhoto, previousTourStep, previousTourStepForPhoto, skipUnavailableTourStep, tourActionSelector } from "./mapTourSteps";
 
 describe("public map tour flow", () => {
   it("starts with a welcome and ends without escaping the steps", () => {
@@ -19,6 +19,15 @@ describe("public map tour flow", () => {
     expect(nextStepOnEvent("pinned", "memory-opened")).toBeNull();
     expect(nextStepOnEvent("place", "photo-opened")).toBeNull();
     expect(nextStepOnEvent("routes", "layer-toggled")).toBeNull();
+  });
+
+  it("skips missing audio while retaining playback guidance where available, including Back", () => {
+    expect(nextTourStepForPhoto("photo", false)).toBe("narration");
+    expect(nextTourStepForPhoto("photo", true)).toBe("sound");
+    expect(nextTourStepForPhoto("sound", false)).toBe("narration");
+    expect(previousTourStepForPhoto("narration", false)).toBe("photo");
+    expect(previousTourStepForPhoto("narration", true)).toBe("sound");
+    expect(previousTourStepForPhoto("pin", false)).toBe("narration");
   });
 
   it("requires real actions, never choosing one particular tile", () => {
