@@ -1,6 +1,6 @@
 # PhotoMap — interaktywny samouczek mapy
 
-Pierwszą wersję i rozszerzenia multimedialne samouczka wdrożono 2026-10-27. Wariant bez przyciemniania i podświetleń jest rozwijany na `work/tour-natural-interaction-20261027`; wdrożenie wymaga odrębnej akceptacji. Nie wymaga nowych endpointów ani zmian danych. Produkcyjny frontend jest budowany na Macu i wdrażany na Raspberry Pi Zero 2 W zgodnie z `docs/deploy-pi-zero2w.md`.
+Samouczek PhotoMap obejmuje miejsca, fotografie, audio, lektora, przypinanie, wspomnienia i warstwy. Od 2026-10-27 prowadzi przez stronę bez zasłaniania mapy i bez wskazywania jednej konkretnej fotografii. Nie wymaga nowych endpointów ani zmian danych. Produkcyjny frontend jest budowany na Macu i wdrażany na Raspberry Pi Zero 2 W zgodnie z `docs/deploy-pi-zero2w.md`.
 
 ## Zachowanie
 
