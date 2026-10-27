@@ -298,11 +298,10 @@ python3 scripts/content/photo_editor.py apply \
   --plan .dev/editorial/photo-edits.json --offset 0 --batch-size 25
 ```
 
-Przed faktycznym zastosowaniem zmian: zweryfikuj backup z
-`scripts/backup_local_data.sh` oraz zachowaj lokalną kopię snapshotu.
+Przed faktycznym zastosowaniem zmian: utwórz i zweryfikuj kopię SQLite z aktywnej bazy (np. przez SQLite backup API). Upewnij się, że plik podany do `--backup-path` jest rzeczywistą kopią bazy, a nie eksportem JSON. Dla usuwania lub podmiany obrazów wymagany jest również backup plików storage za pomocą `scripts/backup_local_data.sh`. Zachowaj lokalny snapshot metadanych.
 Token ustaw wyłącznie w zmiennej środowiskowej `PHOTOMAP_ADMIN_TOKEN` na Macu.
 Do `apply` dodaj jawne `--execute --confirm APPLY` i argumenty
-`--backup-path .dev/editorial/photo-snapshot.json` oraz
+`--backup-path .dev/editorial/photo-text-pre-20261027.sqlite` oraz
 `--log .dev/editorial/photo-edits-applied.jsonl`.
 Dla następnych porcji zwiększ `--offset`. Bez automatycznego masowego kasowania.
 
