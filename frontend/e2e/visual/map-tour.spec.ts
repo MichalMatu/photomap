@@ -12,7 +12,11 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await page.getByRole("button", { name: "Odkrywaj" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "place");
 
-  await expect(page.locator(".place-photo-marker:not(.is-selected)").first()).toBeVisible();
+  const placeTile = page.locator(".place-photo-marker:not(.is-selected)").first();
+  await expect(placeTile).toBeVisible();
+  await expect(placeTile).not.toHaveAttribute("title");
+  await placeTile.hover();
+  await expect(placeTile.locator("span")).toHaveCSS("filter", "none");
   await page.locator(".place-photo-marker:not(.is-selected) > span").first().click();
   await expect(tour).toHaveAttribute("data-tour-step", "gallery");
 
@@ -22,8 +26,26 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(page.locator(".system-modal--media")).toBeVisible();
 
   await tour.getByRole("button", { name: "Dalej" }).click();
-  await expect(tour).toHaveAttribute("data-tour-step", "layers");
+  await expect(tour).toHaveAttribute("data-tour-step", "sound");
+  await tour.getByRole("button", { name: "Dalej" }).click();
+  await expect(tour).toHaveAttribute("data-tour-step", "narration");
+  await tour.getByRole("button", { name: "Dalej" }).click();
+  await expect(tour).toHaveAttribute("data-tour-step", "pin");
+  await page.locator('.system-modal--media button[aria-label^="Przypnij"]').click();
+  await expect(tour).toHaveAttribute("data-tour-step", "pinned");
+  await expect(page.locator(".pinned-media-card")).toBeVisible();
+
+  await tour.getByRole("button", { name: "Dalej" }).click();
+  await expect(tour).toHaveAttribute("data-tour-step", "memory");
   await expect(page.locator(".system-modal--media")).toHaveCount(0);
+  await page.locator(".photo-gallery-add-marker > span").click();
+  await expect(tour).toHaveAttribute("data-tour-step", "memory-form");
+  await expect(page.locator(".memory-sheet-content")).toBeVisible();
+  await expect(page.getByRole("button", { name: "generuj token" })).toBeVisible();
+
+  await tour.getByRole("button", { name: "Dalej" }).click();
+  await expect(tour).toHaveAttribute("data-tour-step", "layers");
+  await expect(page.locator(".memory-sheet-content")).toHaveCount(0);
   await expect(page.locator("#app-side-drawer")).toHaveClass(/is-open/);
 
   await page.locator("#app-side-drawer .drawer-section--layers button").first().click();
@@ -37,7 +59,7 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(tour).toHaveAttribute("data-tour-step", "done");
   await tour.getByRole("button", { name: "Zaczynam!" }).click();
   await expect(tour).toHaveCount(0);
-  await expect.poll(() => page.evaluate(() => window.localStorage.getItem("photomap-public-map-tour-v1-complete"))).toBe("1");
+  await expect.poll(() => page.evaluate(() => window.localStorage.getItem("photomap-public-map-tour-v2-complete"))).toBe("1");
 
   await page.getByRole("button", { name: "Pokaż pasek nawigacji" }).click();
   await page.getByRole("button", { name: "Otwórz menu" }).click();
