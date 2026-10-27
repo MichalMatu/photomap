@@ -12,12 +12,34 @@
 }
 
 .map-tour-spotlight {
-  border: 2px solid var(--color-accent);
-  border-radius: 15px;
-  box-shadow: 0 0 0 5px rgba(255, 255, 255, .2), 0 0 28px rgba(14, 165, 233, .3);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-media);
+  box-shadow: 0 0 0 2px var(--color-accent-soft);
   box-sizing: border-box;
   position: absolute;
   pointer-events: none;
+}
+
+.map-tour-spotlight.is-media-tile {
+  border: 0;
+  box-shadow: none;
+}
+
+/* The tutorial owns the highlight. Native map hover/focus zoom or title glow
+   should not make the chosen tile jump while the user is trying to click it. */
+body:has(.map-tour) .place-photo-marker:hover span,
+body:has(.map-tour) .place-photo-marker:focus-visible span {
+  filter: none;
+  box-shadow: var(--elevation-marker);
+  transform: translate(var(--place-marker-offset-x, 0px), var(--place-marker-offset-y, 0px)) scale(1);
+}
+body:has(.map-tour) .photo-gallery-marker:hover span,
+body:has(.map-tour) .photo-gallery-marker:focus-visible span,
+body:has(.map-tour) .photo-gallery-add-marker:hover span,
+body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
+  filter: none;
+  box-shadow: var(--elevation-marker);
+  transform: translate(calc(-50% + var(--gallery-x, 0px)), calc(-50% + var(--gallery-y, 0px))) scale(1);
 }
 
 .map-tour-card {
