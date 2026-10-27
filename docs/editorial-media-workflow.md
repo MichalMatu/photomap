@@ -261,3 +261,51 @@ Nastepnie sprawdz publicznie:
 - czy rozwiniety wachlarz miejsca pokazuje wszystkie zatwierdzone zdjecia.
 
 Seria jest gotowa dopiero wtedy, gdy mapa od razu wyglada wizualnie, galerie sa roznorodne, a kazdy plik ma kompletna atrybucje.
+
+## Audyt i kontrolowana redakcja istniejących zdjęć (MacBook)
+
+PhotoMap trzyma opisy zdjęć w SQLite na Pi, a manifesty miejsc w Git.
+Ciężkie analizy i planowanie edycji wykonujemy na MacBooku. Nie zmieniamy
+produkcyjnego SQLite ręcznie i nie usuwamy plików storage spoza admin API.
+
+Skrypt `scripts/content/photo_editor.py` zapewnia:
+
+- `export` — mały eksport metadanych zdjęć tylko do odczytu, bez prywatnych plików;
+- `audit` — duplikaty podpis/nagłówek, brakujące teksty i licencje, liczba zdjęć na miejsce;
+- `plan` — odwracalny JSON starych i nowych bloków. Usuwa tylko identyczny pierwszy
+  nagłówek, jeżeli po nim pozostaje treść; przypadki niejednoznaczne zostawia do oceny;
+- `apply` — edycje przez istniejący admin API, domyślnie 25 na porcję, z kontrolą
+  aktualnej wersji pól przed PATCH. Powtórzenie porcji nie dubluje zmian.
+
+Przepływ na Macu przez Local Agent (na Pi tylko krótki odczyt SQLite):
+
+```bash
+mkdir -p .dev/editorial
+ssh -i /Users/michal/.ssh/id_ed25519 michal@192.168.0.23 \
+  'cd /home/michal/src/PhotoMaps && python3 - export --database backend/data/app.db' \
+  < scripts/content/photo_editor.py > .dev/editorial/photo-snapshot.json
+
+python3 scripts/content/photo_editor.py audit \
+  --snapshot .dev/editorial/photo-snapshot.json \
+  --output .dev/editorial/photo-audit.json
+
+python3 scripts/content/photo_editor.py plan \
+  --snapshot .dev/editorial/photo-snapshot.json \
+  --output .dev/editorial/photo-edits.json
+
+# Bez połączenia z API i bez zmian produkcyjnych
+python3 scripts/content/photo_editor.py apply \
+  --plan .dev/editorial/photo-edits.json --offset 0 --batch-size 25
+```
+
+Przed faktycznym zastosowaniem zmian: zweryfikuj backup z
+`scripts/backup_local_data.sh` oraz zachowaj lokalną kopię snapshotu.
+Token ustaw wyłącznie w zmiennej środowiskowej `PHOTOMAP_ADMIN_TOKEN` na Macu.
+Do `apply` dodaj jawne `--execute --confirm APPLY` i argumenty
+`--backup-path .dev/editorial/photo-snapshot.json` oraz
+`--log .dev/editorial/photo-edits-applied.jsonl`.
+Dla następnych porcji zwiększ `--offset`. Bez automatycznego masowego kasowania.
+
+Redukcję zdjęć wykonuj dopiero po ocenie wizualnej kadrów, ostrości, licencji,
+różnorodności i coverów. Sama duża liczba zdjęć nie dowodzi, że są zbędne.
+Ten skrypt nie kasuje i nie nadpisuje żadnych plików obrazów.
