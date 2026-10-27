@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getAppConfig } from "../api/appConfig";
@@ -25,6 +25,11 @@ import { MAP_DISPLAY_CONFIG } from "../components/map/mapDisplayConfig";
 import { getPlacePreviewVisual } from "../components/map/placePreview";
 import { PlaceMap } from "../components/map/PlaceMap";
 import { SEOHead } from "../components/ui/SEOHead";
+import { MapTour } from "../components/tour/MapTour";
+import {
+  isTourComplete, nextStepOnEvent, nextTourStep, previousTourStep,
+  rememberTourComplete, type MapTourEvent, type MapTourStep,
+} from "../components/tour/mapTourSteps";
 import { DEFAULT_SEO_DESCRIPTION, DEFAULT_SEO_TITLE } from "../seo/pageSeo";
 
 export function PublicMapPage() {
@@ -32,6 +37,39 @@ export function PublicMapPage() {
   const [isAudioAutoplayEnabled, setIsAudioAutoplayEnabled] = useState(false);
   const [isPinnedMediaVisible, setIsPinnedMediaVisible] = useState(true);
   const [mapLayerState, setMapLayerState] = useState(DEFAULT_MAP_LAYER_STATE);
+  const [tourStep, setTourStep] = useState<MapTourStep | null>(null);
+  const [hasSeenTour, setHasSeenTour] = useState(isTourComplete);
+  const [closeTourMediaToken, setCloseTourMediaToken] = useState(0);
+  const tourInitialLayers = useRef(DEFAULT_MAP_LAYER_STATE);
+
+  const startTour = useCallback(() => {
+    if (tourStep !== null) return;
+    tourInitialLayers.current = mapLayerState;
+    setTourStep("welcome");
+  }, [mapLayerState, tourStep]);
+
+  const endTour = useCallback(() => {
+    setTourStep(null);
+    setCloseTourMediaToken((current) => current + 1);
+    setMapLayerState(tourInitialLayers.current);
+    setHasSeenTour(true);
+    rememberTourComplete();
+  }, []);
+
+  const advanceTour = useCallback(() => {
+    if (tourStep === null) return;
+    if (tourStep === "done") {
+      endTour();
+      return;
+    }
+    if (tourStep === "photo") setCloseTourMediaToken((current) => current + 1);
+    setTourStep(nextTourStep(tourStep));
+  }, [endTour, tourStep]);
+
+  const handleTourEvent = useCallback((event: MapTourEvent) => {
+    setTourStep((current) => (current ? (nextStepOnEvent(current, event) ?? current) : null));
+  }, []);
+
   const appConfigQuery = useQuery({
     queryKey: ["app-config"],
     queryFn: getAppConfig,
@@ -42,6 +80,17 @@ export function PublicMapPage() {
     queryFn: () => getMapPlaces(),
     staleTime: 60_000,
   });
+  useEffect(() => {
+    if (hasSeenTour || tourStep !== null || appConfigQuery.isLoading || placesQuery.isLoading || placesQuery.isError) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      if (document.querySelector(".system-modal-backdrop")) return;
+      startTour();
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [appConfigQuery.isLoading, hasSeenTour, placesQuery.isError, placesQuery.isLoading, startTour, tourStep]);
+
   const mapPlaces = useMemo(() => placesQuery.data ?? [], [placesQuery.data]);
   const layerPlaces = useMemo(() => filterMapPlaces(mapPlaces, mapLayerState), [mapLayerState, mapPlaces]);
   const visiblePlaces = useMemo(
@@ -72,6 +121,8 @@ export function PublicMapPage() {
       <SEOHead title={DEFAULT_SEO_TITLE} description={DEFAULT_SEO_DESCRIPTION} url="/" />
       <AppShell
         activeSection="map"
+        onStartTour={startTour}
+        tourShowDrawer={tourStep === "layers" || tourStep === "routes"}
         mapAudioControl={{
           active: isAudioAutoplayEnabled,
           label: "Audio",
@@ -93,8 +144,10 @@ export function PublicMapPage() {
             active: isMapLayerControlActive(mapLayerState, layer.id),
             count: layerCounts[layer.id],
           })),
-          onToggle: (layerId) =>
-            setMapLayerState((currentState) => toggleMapLayer(currentState, layerId as MapLayerControlId)),
+          onToggle: (layerId) => {
+            setMapLayerState((currentState) => toggleMapLayer(currentState, layerId as MapLayerControlId));
+            handleTourEvent("layer-toggled");
+          },
         }}
         mapPinnedMediaControl={{
           active: isPinnedMediaVisible,
@@ -140,6 +193,8 @@ export function PublicMapPage() {
             <div className="map-frame">
               <PlaceMap
                 isAudioAutoplayEnabled={isAudioAutoplayEnabled}
+                tourCloseMediaToken={closeTourMediaToken}
+                onTourEvent={handleTourEvent}
                 mapFallback={mapFallback}
                 markerPlaces={markerPlaces}
                 onPinnedMediaVisibleChange={setIsPinnedMediaVisible}
@@ -151,6 +206,17 @@ export function PublicMapPage() {
           ) : null}
         </main>
       </AppShell>
+      {tourStep !== null ? (
+        <MapTour
+          step={tourStep}
+          onBack={() => {
+            if (tourStep === "photo") setCloseTourMediaToken((current) => current + 1);
+            setTourStep(previousTourStep(tourStep));
+          }}
+          onNext={advanceTour}
+          onClose={endTour}
+        />
+      ) : null}
     </>
   );
 }
