@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-27",
+  "decision": "reject_from_public_gallery",
+  "method": "manual_review_contact_sheets",
+  "snapshot": "docs/audit/photo-visual-20261027/index.json",
+  "safeguards": [
+    "Never select covers",
+    "Keep original private files and archive selected originals",
+    "Make consistent SQLite backup",
+    "Use authenticated local admin review API",
+    "Verify each operation and public counts"
+  ],
+  "photos": [
+    {
+      "label": "F0105",
+      "photo_id": "6062384d-fe7a-4f68-a9e9-8a904b72a2c5",
+      "place_slug": "dworzec-glowny",
+      "reason": "Ciemny kadr samej posadzki bez czytelnego związku z dworcem; brak podpisu i treści."
+    },
+    {
+      "label": "F0111",
+      "photo_id": "d141cd8d-324c-4a44-b096-23b2498955a6",
+      "place_slug": "dworzec-glowny",
+      "reason": "Mały krasnal na bruku nie pokazuje architektury ani funkcji dworca; nieadekwatny kontekst."
+    },
+    {
+      "label": "F0215",
+      "photo_id": "fc3017eb-08b7-4c73-bdd2-cf5f94f25cf6",
+      "place_slug": "katedra-marii-magdaleny",
+      "reason": "Praktycznie ten sam kadr bocznej fasady co zachowywane F0207."
+    },
+    {
+      "label": "F0382",
+      "photo_id": "a3508ec0-11b1-4548-bf3b-094ac988e9cd",
+      "place_slug": "muzeum-narodowe",
+      "reason": "Pusta boczna ściana zasłonięta bluszczem, mała wartość dla galerii muzeum."
+    },
+    {
+      "label": "F0469",
+      "photo_id": "31f25671-a402-4660-833e-1695c6f0ec1a",
+      "place_slug": "opera-wroclawska",
+      "reason": "Zwykłe okno i odbicie zamiast rozpoznawalnego ujęcia gmachu opery."
+    },
+    {
+      "label": "F0579",
+      "photo_id": "2e2694d0-f8f4-4a41-abc7-6996f28a1740",
+      "place_slug": "palac-wojanow",
+      "reason": "Głównie tekst tablicy informacyjnej, który lepiej zapisać w opisie miejsca."
+    },
+    {
+      "label": "F0616",
+      "photo_id": "b4183d68-8d55-4521-a6bb-cebe6e57d56f",
+      "place_slug": "park-miniatur-kowary",
+      "reason": "Wyłącznie mapa informacyjna zamiast widoku parku i miniatur."
+    },
+    {
+      "label": "F0661",
+      "photo_id": "cdc94c83-1dc9-475f-806f-0219ea6cfa2d",
+      "place_slug": "podziemne-miasto-osowka",
+      "reason": "Prawie czarny kadr bez czytelnego detalu atrakcji."
+    },
+    {
+      "label": "F0670",
+      "photo_id": "a4df9805-7b56-4fe1-b924-46e3410e5f9e",
+      "place_slug": "polinka",
+      "reason": "Prawie identyczne ujęcie wagonika i podpory do pozostawianego F0666."
+    },
+    {
+      "label": "F0671",
+      "photo_id": "b7c0231d-7687-47cc-bde8-6f486e585698",
+      "place_slug": "polinka",
+      "reason": "Prawie identyczne ujęcie wagonika przy szklanym budynku do pozostawianego F0669."
+    },
+    {
+      "label": "F0829",
+      "photo_id": "77768298-cb2e-4ac9-bf69-aa3cc41da20e",
+      "place_slug": "stary-cmentarz-zydowski",
+      "reason": "Niemal ten sam kadr grobowców co zachowywana fotografia okładkowa F0832."
+    },
+    {
+      "label": "F0977",
+      "photo_id": "93b7ebb2-9bc1-41aa-97f1-1b390d12669a",
+      "place_slug": "wodospad-szklarki",
+      "reason": "Samo oznaczenie szlaku na mokrym kamieniu, bez wodospadu i bez atrakcyjnego kadru."
+    }
+  ]
+}
