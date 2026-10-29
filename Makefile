@@ -1,4 +1,4 @@
-.PHONY: help scripts scripts-readme start stop restart status logs check api-flow api-contract e2e smoke perf-smoke quality dev health server-start server-stop server-restart server-status server-logs tunnel-start tunnel-stop tunnel-status tunnel-logs autostart autostart-start autostart-stop autostart-status serwerstart serwerstop diagnose-data diagnose-architecture schema-check backup backup-apply cleanup-media cleanup-media-apply retain-originals retain-originals-apply migrate-photo-originals migrate-photo-originals-apply import-city import-city-apply audit-prompt place-inventory export-place-research export-city-research export-all-research reset-dev-data redact-media
+.PHONY: help scripts scripts-readme start stop restart status logs check api-flow api-contract e2e smoke perf-smoke quality dev health server-start server-stop server-restart server-status server-logs tunnel-start tunnel-stop tunnel-status tunnel-logs autostart autostart-start autostart-stop autostart-status serwerstart serwerstop diagnose-data diagnose-architecture schema-check backup backup-apply cleanup-media cleanup-media-apply retain-originals retain-originals-apply migrate-photo-originals migrate-photo-originals-apply import-city import-city-apply audit-prompt audit-editorial place-inventory export-place-research export-city-research export-all-research reset-dev-data redact-media
 
 PYTHON ?= $(shell if [ -x backend/.venv/bin/python ]; then printf '%s' backend/.venv/bin/python; else printf '%s' python3; fi)
 MANIFEST ?= content/cities/wroclaw/manifest.json
@@ -25,6 +25,7 @@ scripts:
 		'' \
 		'Dane lokalne i storage:' \
 		'  make diagnose-data                 diagnostyka lokalnej bazy i storage' \
+		'  make audit-editorial              raport jakości treści i atrybucji (read-only)' \
 		'  make backup                        dry-run backupu' \
 		'  make backup-apply                  realny backup do backups/local-*' \
 		'  make cleanup-media                 dry-run usuwania osieroconych mediów' \
@@ -143,6 +144,9 @@ import-city:
 
 import-city-apply:
 	@$(PYTHON) scripts/content/import_city.py --apply "$(MANIFEST)"
+
+audit-editorial:
+	@$(PYTHON) scripts/content/place_editorial_audit.py --database backend/data/app.db --exceptions content/editorial-quality-exceptions.json --output research-exports/editorial-quality.json $(ARGS)
 
 audit-prompt:
 	@$(PYTHON) scripts/generate_audit_prompt.py $(if $(strip $(CITY)),--city "$(CITY)") $(if $(strip $(PLACE)),--place "$(PLACE)") $(ARGS)

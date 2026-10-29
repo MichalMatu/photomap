@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "media_exceptions": [
+    {
+      "photo_id": "08a12320-0842-4b62-8879-2d7ee706979e",
+      "reason": "Owner requested leaving this possible personally owned photo unchanged; authorship/license not yet verified."
+    },
+    {
+      "photo_id": "46b095dc-2858-4e44-90c1-4cdbb1aef84c",
+      "reason": "Owner requested leaving this possible personally owned photo unchanged; authorship/license not yet verified."
+    },
+    {
+      "photo_id": "8ddf639e-68cf-4489-aa1b-b09cb0a64d04",
+      "reason": "Owner requested leaving this possible personally owned photo unchanged; authorship/license not yet verified."
+    }
+  ]
+}

@@ -141,6 +141,17 @@ do czatu razem z załączonym ZIP-em.
 `research-exports/` jest ignorowane przez Git. Paczki są lokalnym artefaktem roboczym; nie zawierają
 plików zdjęć ani prywatnych ścieżek storage.
 
+## Redakcyjny audyt jakości (bez zapisów)
+
+`make audit-editorial` tworzy raport `research-exports/editorial-quality.json` z aktualnego SQLite: braki w opisach i okładkach miejsc, podpisach i atrybucjach zatwierdzonych zdjęć oraz sygnały powtarzalnej treści. Nie zmienia bazy ani plików zdjęć.
+
+```bash
+make audit-editorial
+make audit-editorial ARGS="--strict"
+```
+
+`--strict` zwraca błąd dla nowych nierozwiązanych braków krytycznych. Puste `photo.description_blocks` są tylko informacją: rozbudowany opis zdjęcia jest opcjonalny. Jawne wyjątki w `content/editorial-quality-exceptions.json` oznaczają wyłącznie decyzję „pozostaw bez zmian”, **nie** potwierdzają autorstwa ani licencji. Trzy istniejące, potencjalnie prywatne fotografie (Borek i Wroclavia) nie mogą być automatycznie modyfikowane lub usuwane. Wyjątki niewystępujące już w opublikowanych albumach są raportowane jako wymagające przeglądu. Po zmianie produkcyjnych metadanych uruchom audyt ponownie, bez bezrefleksyjnego odtwarzania starszych raportów PR #45/#46.
+
 ## Diagnostyka
 
 | Potrzeba | Komenda |
