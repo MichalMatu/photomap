@@ -151,3 +151,15 @@ def test_exception_file_and_readonly_sqlite(tmp_path: Path) -> None:
         with pytest.raises(sqlite3.OperationalError, match="readonly"):
             conn.execute("UPDATE photo SET caption='changed'")
     assert db.read_bytes() == old
+
+
+def test_real_caption_plan_matches_protected_photo_policy() -> None:
+    repo = Path(__file__).resolve().parents[4]
+    plan_data = load_plan(repo / "docs" / "audit" / "photo-captions-20261029-plan.json")
+    excluded = protected_ids(repo / "content" / "editorial-quality-exceptions.json")
+    edits = plan_data["edits"]
+    assert len(edits) == 27
+    assert len({item["photo_id"] for item in edits}) == 27
+    assert len({item["place_slug"] for item in edits}) == 7
+    assert not excluded.intersection(item["photo_id"] for item in edits)
+    assert all(item["expected_caption"] != item["new_caption"] for item in edits)
