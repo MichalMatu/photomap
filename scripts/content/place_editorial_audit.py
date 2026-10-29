@@ -3,6 +3,7 @@
 
 This is a review aid, not an automatic content editor or media deletion tool.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -14,8 +15,14 @@ from pathlib import Path
 
 
 BLOCKING_PLACE_FLAGS = frozenset(
-    {"missing_description", "missing_local_comment", "missing_article", "no_approved_photos",
-     "cover_missing_from_approved_photos", "missing_cover"}
+    {
+        "missing_description",
+        "missing_local_comment",
+        "missing_article",
+        "no_approved_photos",
+        "cover_missing_from_approved_photos",
+        "missing_cover",
+    }
 )
 BLOCKING_PHOTO_FLAGS = frozenset({"missing_caption", "incomplete_attribution"})
 
@@ -29,7 +36,11 @@ def load_blocks(value: str | None) -> list[dict]:
         loaded = json.loads(value or "[]")
     except (TypeError, ValueError):
         return []
-    return [block for block in loaded if isinstance(block, dict)] if isinstance(loaded, list) else []
+    return (
+        [block for block in loaded if isinstance(block, dict)]
+        if isinstance(loaded, list)
+        else []
+    )
 
 
 def load_exceptions(path: str | None) -> dict[str, str]:
@@ -115,7 +126,9 @@ def audit(database: str, *, exceptions: dict[str, str] | None = None) -> dict:
             if not photos:
                 flags.append("no_approved_photos")
             caption_count = Counter(
-                normalize(photo["caption"]) for photo in photos if normalize(photo["caption"])
+                normalize(photo["caption"])
+                for photo in photos
+                if normalize(photo["caption"])
             )
             repeated_captions = {
                 caption: count for caption, count in caption_count.items() if count >= 3
@@ -131,63 +144,90 @@ def audit(database: str, *, exceptions: dict[str, str] | None = None) -> dict:
                 if not normalize(photo["caption"]):
                     issues.append("missing_caption")
                 missing_attribution_fields = [
-                    field for field in (
-                        "attribution_author", "attribution_source_url",
-                        "attribution_license", "attribution_license_url",
-                    ) if not (photo[field] or "").strip()
+                    field
+                    for field in (
+                        "attribution_author",
+                        "attribution_source_url",
+                        "attribution_license",
+                        "attribution_license_url",
+                    )
+                    if not (photo[field] or "").strip()
                 ]
                 if missing_attribution_fields:
                     issues.append("incomplete_attribution")
                 if photo_id in exceptions:
                     seen_exception_ids.add(photo_id)
                 for issue in issues:
-                    photo_issues.append({
-                        "photo_id": photo_id,
-                        "place_slug": place["slug"],
-                        "flag": issue,
-                        "accepted_exception": photo_id in exceptions,
-                        "reason": exceptions.get(photo_id),
-                        "missing_fields": missing_attribution_fields
-                        if issue == "incomplete_attribution" else [],
-                    })
+                    photo_issues.append(
+                        {
+                            "photo_id": photo_id,
+                            "place_slug": place["slug"],
+                            "flag": issue,
+                            "accepted_exception": photo_id in exceptions,
+                            "reason": exceptions.get(photo_id),
+                            "missing_fields": missing_attribution_fields
+                            if issue == "incomplete_attribution"
+                            else [],
+                        }
+                    )
                 photo_text = " ".join(
-                    [photo["caption"] or ""] +
-                    [str(b.get("text") or "") for b in load_blocks(photo["description_blocks"])]
+                    [photo["caption"] or ""]
+                    + [
+                        str(b.get("text") or "")
+                        for b in load_blocks(photo["description_blocks"])
+                    ]
                 )
                 if re.search(
                     r"\b(?:kamera|monitoring|cctv|wentylator|rura|ściana|sciana|reklama)\b",
-                    photo_text, re.IGNORECASE,
+                    photo_text,
+                    re.IGNORECASE,
                 ):
-                    suspicious.append({
-                        "photo_id": photo_id, "caption": photo["caption"],
-                        "text": photo_text[:330],
-                    })
+                    suspicious.append(
+                        {
+                            "photo_id": photo_id,
+                            "caption": photo["caption"],
+                            "text": photo_text[:330],
+                        }
+                    )
             if suspicious:
                 flags.append("photos_with_questionable_subject_words")
-            place_results.append({
-                "place_id": place["id"], "slug": place["slug"], "title": place["title"],
-                "approved_photo_count": len(photos), "flags": flags,
-                "same_caption_groups": repeated_captions,
-                "suspicious_photo_text": suspicious,
-            })
+            place_results.append(
+                {
+                    "place_id": place["id"],
+                    "slug": place["slug"],
+                    "title": place["title"],
+                    "approved_photo_count": len(photos),
+                    "flags": flags,
+                    "same_caption_groups": repeated_captions,
+                    "suspicious_photo_text": suspicious,
+                }
+            )
 
         unmatched = sorted(set(exceptions) - seen_exception_ids)
         blocking_places = [
             {"slug": place["slug"], "flag": flag}
-            for place in place_results for flag in place["flags"]
+            for place in place_results
+            for flag in place["flags"]
             if flag in BLOCKING_PLACE_FLAGS
         ]
         blocking_photos = [
-            issue for issue in photo_issues
+            issue
+            for issue in photo_issues
             if issue["flag"] in BLOCKING_PHOTO_FLAGS and not issue["accepted_exception"]
         ]
         return {
             "places_audited": len(place_results),
-            "approved_photos_audited": sum(p["approved_photo_count"] for p in place_results),
-            "place_issues_by_type": dict(Counter(f for p in place_results for f in p["flags"])),
+            "approved_photos_audited": sum(
+                p["approved_photo_count"] for p in place_results
+            ),
+            "place_issues_by_type": dict(
+                Counter(f for p in place_results for f in p["flags"])
+            ),
             "photo_issues_by_type": dict(Counter(p["flag"] for p in photo_issues)),
             "optional_photo_descriptions_missing": missing_photo_descriptions,
-            "blocking_issue_count": len(blocking_places) + len(blocking_photos) + len(unmatched),
+            "blocking_issue_count": len(blocking_places)
+            + len(blocking_photos)
+            + len(unmatched),
             "blocking_place_issues": blocking_places,
             "blocking_photo_issues": blocking_photos,
             "accepted_photo_issues": [
@@ -197,7 +237,7 @@ def audit(database: str, *, exceptions: dict[str, str] | None = None) -> dict:
             "places": place_results,
             "photo_issues": photo_issues,
             "note": "Exception means 'leave unchanged', not verified authorship or licensing. "
-                    "Heuristic warnings and optional photo descriptions do not fail --strict.",
+            "Heuristic warnings and optional photo descriptions do not fail --strict.",
         }
     finally:
         connection.close()
@@ -207,20 +247,36 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--database", required=True)
     parser.add_argument("--output", required=True)
-    parser.add_argument("--exceptions", help="Versioned list of explicitly accepted media omissions")
-    parser.add_argument("--strict", action="store_true", help="Fail on unresolved blocking issues")
+    parser.add_argument(
+        "--exceptions", help="Versioned list of explicitly accepted media omissions"
+    )
+    parser.add_argument(
+        "--strict", action="store_true", help="Fail on unresolved blocking issues"
+    )
     args = parser.parse_args()
     report = audit(args.database, exceptions=load_exceptions(args.exceptions))
     path = Path(args.output)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({
-        key: report[key] for key in (
-            "places_audited", "approved_photos_audited", "blocking_issue_count",
-            "place_issues_by_type", "photo_issues_by_type",
-            "optional_photo_descriptions_missing", "unmatched_exceptions",
+    path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(
+        json.dumps(
+            {
+                key: report[key]
+                for key in (
+                    "places_audited",
+                    "approved_photos_audited",
+                    "blocking_issue_count",
+                    "place_issues_by_type",
+                    "photo_issues_by_type",
+                    "optional_photo_descriptions_missing",
+                    "unmatched_exceptions",
+                )
+            },
+            ensure_ascii=False,
         )
-    }, ensure_ascii=False))
+    )
     return int(args.strict and report["blocking_issue_count"] > 0)
 
 
