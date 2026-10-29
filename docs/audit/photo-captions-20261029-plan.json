@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "kind": "photo_caption_curation",
+  "source_main_sha": "82cacecff8e93bd4977a847a9599922ed6e0b557",
+  "expected_pi_sha": "ac898d465bfca86d4259cdf76abea1dadb2e1f4c",
+  "notes": "All 27 photos have detailed pre-existing descriptions. No media deletions. Three user-protected photos must remain unchanged.",
+  "edits": [
+    {
+      "photo_id": "c39e9bc2-f32c-4a2a-8c9d-471601cebabe",
+      "place_slug": "aula-leopoldina",
+      "expected_caption": "Aula Leopoldina",
+      "expected_heading": "Cesarz pod baldachimem i teatr posłuszeństwa",
+      "new_caption": "Leopold I pod baldachimem w Auli Leopoldina"
+    },
+    {
+      "photo_id": "19b96f02-ddbe-4121-94f6-582c72796ee9",
+      "place_slug": "aula-leopoldina",
+      "expected_caption": "Aula Leopoldina",
+      "expected_heading": "Kartusz Schaffgotscha i podpis pod akademicką ambicją",
+      "new_caption": "Złocony kartusz i łacińska inskrypcja w Auli Leopoldina"
+    },
+    {
+      "photo_id": "0b248b88-a5ce-4430-99db-9f245d15d3e3",
+      "place_slug": "aula-leopoldina",
+      "expected_caption": "Aula Leopoldina",
+      "expected_heading": "Pionowy fresk i lekcja patrzenia w górę",
+      "new_caption": "Fresk na sklepieniu Auli Leopoldina"
+    },
+    {
+      "photo_id": "bb9ee4ed-67fa-4638-9fb0-34d57c177060",
+      "place_slug": "dworzec-glowny",
+      "expected_caption": "Dworzec Wrocław Główny",
+      "expected_heading": "Nocna brama z czerwonym napisem nad miastem",
+      "new_caption": "Nocna fasada Dworca Głównego z czerwonym napisem"
+    },
+    {
+      "photo_id": "c32ea8e6-a1fa-4224-93b2-06ce8613df42",
+      "place_slug": "dworzec-glowny",
+      "expected_caption": "Dworzec Wrocław Główny",
+      "expected_heading": "Świetlna hala nad plątaniną szyn",
+      "new_caption": "Tory i przeszklone hale peronowe Dworca Głównego"
+    },
+    {
+      "photo_id": "a285a5ea-ddec-4cc5-a1b6-1dc9a75ee355",
+      "place_slug": "dworzec-glowny",
+      "expected_caption": "Dworzec Wrocław Główny",
+      "expected_heading": "Trzy arkady przed decyzją o podróży",
+      "new_caption": "Oświetlone arkady wejściowe Dworca Głównego"
+    },
+    {
+      "photo_id": "ed251c62-d299-4fd1-bf6d-8dee81ae099c",
+      "place_slug": "fontanna-multimedialna",
+      "expected_caption": "Pergola przy Hali Stulecia jako spacerowy kontekst fontanny",
+      "expected_heading": "Zimowy tunel Pergoli, zanim wróci winorośl",
+      "new_caption": "Bezlistna Pergola przy Hali Stulecia"
+    },
+    {
+      "photo_id": "06dfded5-a15c-4d30-ab6d-2a385e9eb3c1",
+      "place_slug": "fontanna-multimedialna",
+      "expected_caption": "Pergola przy Hali Stulecia jako spacerowy kontekst fontanny",
+      "expected_heading": "Zielony korytarz półelipsy",
+      "new_caption": "Zielone przejście w Pergoli przy Hali Stulecia"
+    },
+    {
+      "photo_id": "b21dc450-eca1-487d-b203-8d02bbc3b940",
+      "place_slug": "fontanna-multimedialna",
+      "expected_caption": "Pergola przy Hali Stulecia jako spacerowy kontekst fontanny",
+      "expected_heading": "Winorośl rysuje cień na łuku Pergoli",
+      "new_caption": "Letni łuk Pergoli w cieniu winorośli"
+    },
+    {
+      "photo_id": "909c03be-2f43-44e6-90c1-d001c71968b3",
+      "place_slug": "fontanna-multimedialna",
+      "expected_caption": "Pokaz Fontanny Multimedialnej przy Hali Stulecia",
+      "expected_heading": "Nocny ekran wody przed kopułą Hali",
+      "new_caption": "Nocny pokaz fontanny na tle Hali Stulecia"
+    },
+    {
+      "photo_id": "294dce91-ad35-42bb-b55f-ec624ce026ae",
+      "place_slug": "fontanna-multimedialna",
+      "expected_caption": "Pokaz Fontanny Multimedialnej przy Hali Stulecia",
+      "expected_heading": "Hala Stulecia za tańcem dysz",
+      "new_caption": "Białe strumienie fontanny przed Halą Stulecia"
+    },
+    {
+      "photo_id": "3d927973-0bac-4364-a7a1-36c9c5477598",
+      "place_slug": "fontanna-multimedialna",
+      "expected_caption": "Pokaz Fontanny Multimedialnej przy Hali Stulecia",
+      "expected_heading": "Zielona noc i wodna mgła spektaklu",
+      "new_caption": "Zielone światło i mgła podczas pokazu fontanny"
+    },
+    {
+      "photo_id": "e8f9ef1b-13f1-4a94-984c-647776e781dc",
+      "place_slug": "hala-targowa",
+      "expected_caption": "Hala Targowa",
+      "expected_heading": "Czerwony dach między Odrą a starymi drogami",
+      "new_caption": "Czerwony dach Hali Targowej z góry"
+    },
+    {
+      "photo_id": "1d7fa48d-201e-4cac-b341-25b98ae76271",
+      "place_slug": "hala-targowa",
+      "expected_caption": "Hala Targowa",
+      "expected_heading": "Wieża, która pilnuje godzin dostaw",
+      "new_caption": "Wieża zegarowa Hali Targowej"
+    },
+    {
+      "photo_id": "39238a33-9aa9-43e9-af5f-20e6c7557d50",
+      "place_slug": "hala-targowa",
+      "expected_caption": "Hala Targowa",
+      "expected_heading": "Pod żelbetowymi żebrami codzienności",
+      "new_caption": "Żelbetowe łuki i stoiska we wnętrzu Hali Targowej"
+    },
+    {
+      "photo_id": "72bacc7b-9e7e-427f-9812-65aeb5fad5cf",
+      "place_slug": "most-grunwaldzki",
+      "expected_caption": "Most Grunwaldzki",
+      "expected_heading": "Nocne smugi na dawnym Moście Cesarskim",
+      "new_caption": "Most Grunwaldzki nocą w smugach świateł"
+    },
+    {
+      "photo_id": "944fa910-f620-453d-a845-f75eea88c74d",
+      "place_slug": "most-grunwaldzki",
+      "expected_caption": "Most Grunwaldzki",
+      "expected_heading": "Granitowy pylon i legenda o projektancie",
+      "new_caption": "Granitowy pylon Mostu Grunwaldzkiego z bliska"
+    },
+    {
+      "photo_id": "0cca6b4d-c0b5-42ab-bc37-e3e85659b524",
+      "place_slug": "most-grunwaldzki",
+      "expected_caption": "Most Grunwaldzki",
+      "expected_heading": "Pod pasem nośnym widać pracę mostu",
+      "new_caption": "Nity i stalowe pasy nośne Mostu Grunwaldzkiego"
+    },
+    {
+      "photo_id": "6673850d-b5a9-4080-a4d7-926b0d658874",
+      "place_slug": "ossolineum",
+      "expected_caption": "Ossolineum",
+      "expected_heading": "Długa elewacja przy ulicy i praca instytucji",
+      "new_caption": "Uliczna elewacja gmachu Ossolineum"
+    },
+    {
+      "photo_id": "b99ddb8d-b3fe-400d-b316-154c001bde3a",
+      "place_slug": "ossolineum",
+      "expected_caption": "Ossolineum",
+      "expected_heading": "Oś ogrodu prowadząca do lwowskiego początku",
+      "new_caption": "Ogród Ossolineum z osią widokową na fasadę"
+    },
+    {
+      "photo_id": "600ff938-cff0-453b-97ca-5cffd0641baa",
+      "place_slug": "ossolineum",
+      "expected_caption": "Ossolineum",
+      "expected_heading": "Biały mur, ogród i ślad dawnego Gimnazjum św. Macieja",
+      "new_caption": "Biały mur i fontanna w ogrodzie Ossolineum"
+    },
+    {
+      "photo_id": "b5c6beee-1630-4a1b-ae29-601ea90db2e3",
+      "place_slug": "panorama-raclawicka",
+      "expected_caption": "Fragment monumentalnej ekspozycji Panoramy Racławickiej",
+      "expected_heading": "Pierścień pola bitwy i pierwszy trik Panoramy",
+      "new_caption": "Pejzaż bitwy i przestrzenny pierwszy plan Panoramy Racławickiej"
+    },
+    {
+      "photo_id": "3a160c58-2ad8-4d2e-b36e-41284b44e815",
+      "place_slug": "panorama-raclawicka",
+      "expected_caption": "Fragment monumentalnej ekspozycji Panoramy Racławickiej",
+      "expected_heading": "Błoto, dym i bitwa bez pocztówkowej czystości",
+      "new_caption": "Rozkopana ziemia i dym na Panoramie Racławickiej"
+    },
+    {
+      "photo_id": "fc0e3a0c-ae44-4394-acde-469c7fb8d138",
+      "place_slug": "panorama-raclawicka",
+      "expected_caption": "Fragment monumentalnej ekspozycji Panoramy Racławickiej",
+      "expected_heading": "Chata na skraju bitwy i wieś wciągnięta w historię",
+      "new_caption": "Wiejska chata na obrazie Panoramy Racławickiej"
+    },
+    {
+      "photo_id": "8a69b893-199d-4fd4-814b-c3633db80137",
+      "place_slug": "panorama-raclawicka",
+      "expected_caption": "Fragment monumentalnej ekspozycji Panoramy Racławickiej",
+      "expected_heading": "Krzyż, porzucony wóz i cisza między szarżami",
+      "new_caption": "Krzyż i wóz na przedpolu Panoramy Racławickiej"
+    },
+    {
+      "photo_id": "8b619f1b-c7f2-408c-a231-62bcf6002f34",
+      "place_slug": "panorama-raclawicka",
+      "expected_caption": "Fragment monumentalnej ekspozycji Panoramy Racławickiej",
+      "expected_heading": "Ludzie przy płocie, czyli bitwa oglądana z podwórka",
+      "new_caption": "Ludzie przy płocie na fragmencie Panoramy Racławickiej"
+    },
+    {
+      "photo_id": "f748d3ed-c143-4350-9f71-f0011d9b8a94",
+      "place_slug": "panorama-raclawicka",
+      "expected_caption": "Fragment monumentalnej ekspozycji Panoramy Racławickiej",
+      "expected_heading": "Kawaleria w ruchu i chwila, gdy mit nabiera prędkości",
+      "new_caption": "Kawaleria w ruchu na Panoramie Racławickiej"
+    }
+  ]
+}
