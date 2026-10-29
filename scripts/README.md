@@ -152,6 +152,12 @@ make audit-editorial ARGS="--strict"
 
 `--strict` zwraca błąd dla nowych nierozwiązanych braków krytycznych. Puste `photo.description_blocks` są tylko informacją: rozbudowany opis zdjęcia jest opcjonalny. Jawne wyjątki w `content/editorial-quality-exceptions.json` oznaczają wyłącznie decyzję „pozostaw bez zmian”, **nie** potwierdzają autorstwa ani licencji. Trzy istniejące, potencjalnie prywatne fotografie (Borek i Wroclavia) nie mogą być automatycznie modyfikowane lub usuwane. Wyjątki niewystępujące już w opublikowanych albumach są raportowane jako wymagające przeglądu. Po zmianie produkcyjnych metadanych uruchom audyt ponownie, bez bezrefleksyjnego odtwarzania starszych raportów PR #45/#46.
 
+## Bezpieczna korekta podpisów zdjęć
+
+Zamknięty sprint 29.10.2026 dokumentuje [checkpoint korekty 27 podpisów](../docs/checkpoints/2026-10-29-caption-curation.md). Plan i skrypt pozostają w repo jako odtwarzalny ślad audytowy, **nie jako zadanie do ponownego automatycznego wykonania**.
+
+`scripts/content/photo_caption_editor.py` działa domyślnie jako dry-run. Weryfikuje stare podpisy i nagłówki istniejących opisów, wyklucza okładki, wykrywa kolizje oraz respektuje `content/editorial-quality-exceptions.json`. Jawny zapis przez lokalne admin API wymaga `--apply --confirm APPLY_CAPTIONS`, tworzy backup SQLite i dziennik audytowy. Przed jakąkolwiek kolejną serią przygotuj **nowy plan** dla aktualnej produkcji. Trzech zdjęć właściciela nie zmieniaj, nie usuwaj i nie przypisuj im praw bez dowodów.
+
 ## Diagnostyka
 
 | Potrzeba | Komenda |
