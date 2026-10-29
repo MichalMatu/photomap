@@ -13,6 +13,12 @@ Ten dokument opisuje powtarzalny sposob dodawania nowych miast, miejsc i wysokie
 - Limit docelowy galerii nie moze obnizac progu jakosci. Jesli nie ma 10 unikalnych i mocnych zdjec miejsca, zostaw galerie niepelna i zapisz w podsumowaniu, czego zabraklo.
 - Nie uzywaj generowanych ikon, tapet, obrazow AI ani ilustracyjnych coverow jako substytutu realnych zdjec miejsca.
 
+## Audyt jakości obecnych danych
+
+Po imporcie uruchom `make audit-editorial`; opcjonalnie `make audit-editorial ARGS="--strict"` jako zabezpieczenie przed nowymi brakami krytycznymi. Wynik jest zapisywany do `research-exports/editorial-quality.json` i nie zmienia żadnych danych. Zgłasza brak opisu, komentarza, artykułu i okładki miejsca, brak podpisu oraz niekompletną atrybucję zdjęcia. Powtarzalność tekstów to sygnał do ręcznej weryfikacji, a brak rozbudowanego opisu pojedynczego zdjęcia jest informacyjny.
+
+Plik `content/editorial-quality-exceptions.json` rejestruje decyzje o pozostawieniu wskazanych zdjęć bez zmian. Nie ustala autorstwa/licencji i nie stanowi podstawy automatycznego usunięcia lub publikacji innego zdjęcia. Trzy zachowane fotografie (Wieża Ciśnień Borek i Wroclavia) mają niezweryfikowane pochodzenie; na wyraźne życzenie właściciela pozostają bez zmian. Nowych wyjątków nie dodawaj automatycznie.
+
 ## Kolejnosc Pracy
 
 1. Wybierz miasto i ustal jego jawny `city.id`, nazwe, `city.region`, srodek mapy, `default_zoom`, `sort_order` i status.
