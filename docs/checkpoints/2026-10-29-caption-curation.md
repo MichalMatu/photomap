@@ -20,7 +20,7 @@ Narzędzie `scripts/content/photo_caption_editor.py` domyślnie robi **wyłączn
 
 **PRODUKCYJNE DANE: PASS.** Sprint został wykonany przez Mac Local Agent po GitHub-owym odczycie kontrolowanej gałęzi. Nie było deployu runtime, usuwania mediów ani zmian przypisania autorstwa.
 
-1. Testy gałęzi `work/caption-curation-20261029`: `pytest` testów narzędzia **7/7 PASS**, Ruff check i Ruff format PASS, `compileall` PASS. Pełna regresja backendu: osobne zadanie `photomap-caption-full-backend-20261029-v1` (wynik w jego artefakcie, nie dopisywać PASS bez sprawdzenia).
+1. Testy gałęzi `work/caption-curation-20261029`: `pytest` testów narzędzia **7/7 PASS**, Ruff check i Ruff format PASS, `compileall` PASS. Pełna regresja backendu: po odtworzeniu izolowanych katalogów `backend/storage/{public,private}`, zadanie `photomap-caption-full-backend-20261029-v2` — **339/339 PASS**, Ruff check i format PASS. Pierwsza próba `v1`: 335 PASS i 4 błędy wyłącznie z powodu nieistniejącego ignorowanego katalogu `storage/public` w tymczasowym worktree; po korekcie środowiska wszystkie 339 testów PASS.
 2. Produkcyjny **dry-run**: `photomap-caption-prod-dryrun-20261029-v2` — `planned=27`, `protected=3`, `repeated_caption_groups=8`.
 3. Jawny `--apply --confirm APPLY_CAPTIONS`: `photomap-caption-prod-apply-20261029-v1` — `updated=27`, `repeated_groups_remaining=0`, `protected_unchanged=3`, `integrity=ok`.
 4. Niezależny postcheck: `photomap-caption-independent-postcheck-20261029-v1` — porównanie z backupem wykazało **dokładnie 27 zmian samych podpisów**; 3 chronione rekordy identyczne przed/po; 0 powtórzeń (według progu audytu: grupy min. 3); 195 miejsc, 1140 zatwierdzonych zdjęć, `integrity_check=ok` dla obu baz, 27 wpisów w dzienniku.
