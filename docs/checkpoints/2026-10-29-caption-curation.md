@@ -35,3 +35,13 @@ Trzech zdjęć (Wieża Ciśnień Borek, dwa zdjęcia Wroclavii) **nie zmieniono*
 ## Przyszły etap (nie otwierać kolejnej pracy w tym sprincie)
 
 Nowa sesja powinna zacząć od aktualnych `main`, `AGENTS.md`, tego checkpointu oraz rzeczywistego odczytu produkcji. Ewentualny dalszy rozwój: pomiar wydajności mapy na telefonie i redakcyjne opcjonalne opisy 62 zdjęć — wyłącznie jeśli pomiar lub potrzeba produktu uzasadniają zmianę. Nie ponawiać ukończonych 27 poprawek.
+
+## Końcowy checkpoint sprintu — 29.10.2026
+
+- **Kod:** PR #47 (read-only quality gate) i PR #48 (27 podpisów) zostały scalone do `main`. Po merge #48 główny commit był `155a704a4fba83f14d7b8c4ae52e1fa7198eab85`. Kolejne commity dokumentacyjne mogą zmienić HEAD; na początku nowego czatu odczytać rzeczywisty `main`.
+- **Testy:** 7/7 focused i 339/339 pełnego backendu PASS na osobnym Mac Local Agent worktree; Ruff check i Ruff format PASS. Nie uruchamiano GitHub Actions.
+- **Baza produkcyjna:** 27/27 podpisów zmienionych, 0 grup o co najmniej trzech identycznych podpisach, 3/3 wskazane zdjęcia całkowicie nietknięte. Niezależna kontrola pokrycia dokładnie 27 ID, backup SQLite i bieżąca baza `integrity_check=ok`, 195 published places i 1140 approved photos.
+- **Stare PR-y:** #45 i #46 zamknięte **bez merge** jako historyczne; ich przestarzałe opisy opatrzono adnotacjami. Nie usuwać archiwów/bakcupów na podstawie starych liczb.
+- **Stan wdrożenia:** działający runtime Pi pozostaje na `main` SHA `ac898d465bfca86d4259cdf76abea1dadb2e1f4c`. Po tym SHA w GitHub `main` zmieniły się wyłącznie skrypty redakcyjne, ich testy, dokumentacja i Makefile; **nie zmieniono backendowego runtime ani frontendu**, dlatego nie wykonywano restartu. Pi pomyślnie pobrał aktualny commit GitHub, lecz lokalne fast-forward checkoutu **nie zostało wykonane** z powodu ograniczenia mechanizmu wykonawczego. Traktować to jako niewpływające na działanie strony zadanie housekeeping do ewentualnego wykonania podczas przyszłych prac, nie jako niespełnioną korektę danych.
+- **Git remote Pi:** `origin` wskazuje historyczną nazwę `https://github.com/MichalMatu/PhotoMaps.git`; nowy commit poprawnie pobrano z kanonicznego `https://github.com/MichalMatu/photomap.git`. Nie przełączać runtime tylko po to, by poprawić remote. Przyszły preflight powinien to sprawdzić przed synchronizacją.
+- **Brak otwartych zadań bieżącego sprintu dotyczących kodu lub danych.** Przy kolejnym uruchomieniu nie stosować drugi raz starego planu 27 zmian, nie usuwać chronionych zdjęć i nie zgadywać ich autorstwa.
