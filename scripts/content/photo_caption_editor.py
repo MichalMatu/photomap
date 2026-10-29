@@ -137,18 +137,18 @@ def check_plan(
         rows.append({"photo": row, "edit": edit})
         planned[row["id"]] = edit["new_caption"]
 
-    existing: set[tuple[str, str]] = set()
+    effective_captions: Counter[tuple[str, str]] = Counter()
     for row in conn.execute(
         "SELECT p.id, p.caption, pl.id AS place_id FROM photo p JOIN place pl ON p.place_id=pl.id "
         "WHERE p.status='approved' AND pl.status='published'"
     ):
         caption = normalize(planned.get(row["id"], row["caption"]))
-        if not caption:
-            continue
-        key = (row["place_id"], caption)
-        if row["id"] in planned and key in existing:
+        if caption:
+            effective_captions[(row["place_id"], caption)] += 1
+    for entry in rows:
+        key = (entry["photo"]["place_id"], normalize(entry["edit"]["new_caption"]))
+        if effective_captions[key] != 1:
             raise ValueError("New caption duplicates an existing gallery caption")
-        existing.add(key)
     return rows, protected_before
 
 
