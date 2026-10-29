@@ -132,11 +132,17 @@ def test_preflight_detects_conflicting_target_caption(tmp_path: Path) -> None:
 
 def test_exception_file_and_readonly_sqlite(tmp_path: Path) -> None:
     path = tmp_path / "exceptions.json"
-    path.write_text(json.dumps({
-        "schema_version": 1, "media_exceptions": [
-            {"photo_id": "protected", "reason": "At owner's request"},
-        ],
-    }), encoding="utf-8")
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "media_exceptions": [
+                    {"photo_id": "protected", "reason": "At owner's request"},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
     assert protected_ids(path) == {"protected"}
     db = database(tmp_path)
     old = db.read_bytes()
