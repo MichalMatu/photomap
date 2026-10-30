@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 
-import { approachTrackpadZoom, isTrackpadPinchWheelEvent, targetZoomFromPinch, TRACKPAD_PINCH_ZOOM } from "./trackpadZoom";
+import {
+  approachTrackpadZoom,
+  isTrackpadPinchWheelEvent,
+  targetZoomFromPinch,
+  TRACKPAD_PINCH_ZOOM,
+} from "./trackpadZoom";
 
 export function MapTrackpadZoom() {
   const map = useMap();
@@ -82,12 +87,7 @@ export function MapTrackpadZoom() {
         window.clearTimeout(resetTimerId);
       }
       gestureEnded = false;
-      targetZoom = targetZoomFromPinch(
-        targetZoom ?? map.getZoom(),
-        event.deltaY,
-        map.getMinZoom(),
-        map.getMaxZoom(),
-      );
+      targetZoom = targetZoomFromPinch(targetZoom ?? map.getZoom(), event.deltaY, map.getMinZoom(), map.getMaxZoom());
       cursorPoint = map.mouseEventToContainerPoint(event);
       if (frameId === null) {
         frameId = window.requestAnimationFrame(animateZoom);

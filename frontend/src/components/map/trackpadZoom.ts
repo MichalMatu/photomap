@@ -14,12 +14,7 @@ export function isTrackpadPinchWheelEvent(event: TrackpadWheelLike): boolean {
   return event.ctrlKey && event.deltaMode === PIXEL_DELTA_MODE;
 }
 
-export function targetZoomFromPinch(
-  currentTarget: number,
-  deltaY: number,
-  minZoom: number,
-  maxZoom: number,
-): number {
+export function targetZoomFromPinch(currentTarget: number, deltaY: number, minZoom: number, maxZoom: number): number {
   if (!Number.isFinite(deltaY) || !Number.isFinite(currentTarget) || deltaY === 0) {
     return currentTarget;
   }

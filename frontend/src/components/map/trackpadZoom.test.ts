@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { approachTrackpadZoom, isTrackpadPinchWheelEvent, targetZoomFromPinch, TRACKPAD_PINCH_ZOOM } from "./trackpadZoom";
+import {
+  approachTrackpadZoom,
+  isTrackpadPinchWheelEvent,
+  targetZoomFromPinch,
+  TRACKPAD_PINCH_ZOOM,
+} from "./trackpadZoom";
 
 describe("trackpadZoom", () => {
   it("recognizes desktop pinch without intercepting ordinary scrolling", () => {
