@@ -1,27 +1,12 @@
-export type TrackpadPinchState = {
-  accumulatedDeltaY: number;
-  lastStepAt: number | null;
-};
-
-export type TrackpadPinchResult = {
-  state: TrackpadPinchState;
-  zoomDelta: number;
-};
-
 const PIXEL_DELTA_MODE = 0;
 
 export const TRACKPAD_PINCH_ZOOM = {
-  cooldownMs: 60,
   idleResetMs: 180,
-  maxAccumulatedDeltaPx: 96,
-  stepDeltaPx: 48,
-  zoomStep: 0.25,
+  maxEventDeltaPx: 120,
+  zoomPerPixel: 1 / 200,
+  smoothingFactor: 0.4,
+  settleEpsilon: 0.002,
 } as const;
-
-export const EMPTY_TRACKPAD_PINCH_STATE: TrackpadPinchState = {
-  accumulatedDeltaY: 0,
-  lastStepAt: null,
-};
 
 type TrackpadWheelLike = Pick<WheelEvent, "ctrlKey" | "deltaMode">;
 
@@ -29,31 +14,28 @@ export function isTrackpadPinchWheelEvent(event: TrackpadWheelLike): boolean {
   return event.ctrlKey && event.deltaMode === PIXEL_DELTA_MODE;
 }
 
-export function consumeTrackpadPinchDelta(
-  state: TrackpadPinchState,
+export function targetZoomFromPinch(
+  currentTarget: number,
   deltaY: number,
-  nowMs: number,
-): TrackpadPinchResult {
-  if (!Number.isFinite(deltaY) || deltaY === 0) {
-    return { state, zoomDelta: 0 };
+  minZoom: number,
+  maxZoom: number,
+): number {
+  if (!Number.isFinite(deltaY) || !Number.isFinite(currentTarget) || deltaY === 0) {
+    return currentTarget;
   }
 
-  const previousDirection = Math.sign(state.accumulatedDeltaY);
-  const nextDirection = Math.sign(deltaY);
-  const baseDelta = previousDirection !== 0 && previousDirection !== nextDirection ? 0 : state.accumulatedDeltaY;
-  const accumulatedDeltaY = Math.max(
-    -TRACKPAD_PINCH_ZOOM.maxAccumulatedDeltaPx,
-    Math.min(TRACKPAD_PINCH_ZOOM.maxAccumulatedDeltaPx, baseDelta + deltaY),
+  const boundedDelta = Math.max(
+    -TRACKPAD_PINCH_ZOOM.maxEventDeltaPx,
+    Math.min(TRACKPAD_PINCH_ZOOM.maxEventDeltaPx, deltaY),
   );
-  const isCoolingDown = state.lastStepAt !== null && nowMs - state.lastStepAt < TRACKPAD_PINCH_ZOOM.cooldownMs;
+  return Math.max(minZoom, Math.min(maxZoom, currentTarget - boundedDelta * TRACKPAD_PINCH_ZOOM.zoomPerPixel));
+}
 
-  if (Math.abs(accumulatedDeltaY) < TRACKPAD_PINCH_ZOOM.stepDeltaPx || isCoolingDown) {
-    return { state: { accumulatedDeltaY, lastStepAt: state.lastStepAt }, zoomDelta: 0 };
+export function approachTrackpadZoom(current: number, target: number): number {
+  if (Math.abs(target - current) <= TRACKPAD_PINCH_ZOOM.settleEpsilon) {
+    return target;
   }
 
-  const consumedDelta = Math.sign(accumulatedDeltaY) * TRACKPAD_PINCH_ZOOM.stepDeltaPx;
-  return {
-    state: { accumulatedDeltaY: accumulatedDeltaY - consumedDelta, lastStepAt: nowMs },
-    zoomDelta: accumulatedDeltaY < 0 ? TRACKPAD_PINCH_ZOOM.zoomStep : -TRACKPAD_PINCH_ZOOM.zoomStep,
-  };
+  const next = current + (target - current) * TRACKPAD_PINCH_ZOOM.smoothingFactor;
+  return Math.abs(target - next) <= TRACKPAD_PINCH_ZOOM.settleEpsilon ? target : next;
 }

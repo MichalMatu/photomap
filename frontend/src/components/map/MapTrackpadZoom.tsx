@@ -1,65 +1,116 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 
-import {
-  consumeTrackpadPinchDelta,
-  EMPTY_TRACKPAD_PINCH_STATE,
-  isTrackpadPinchWheelEvent,
-  TRACKPAD_PINCH_ZOOM,
-  type TrackpadPinchState,
-} from "./trackpadZoom";
+import { approachTrackpadZoom, isTrackpadPinchWheelEvent, targetZoomFromPinch, TRACKPAD_PINCH_ZOOM } from "./trackpadZoom";
 
 export function MapTrackpadZoom() {
   const map = useMap();
-  const stateRef = useRef<TrackpadPinchState>(EMPTY_TRACKPAD_PINCH_STATE);
-  const resetTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const container = map.getContainer();
+    let targetZoom: number | null = null;
+    let cursorPoint: ReturnType<typeof map.mouseEventToContainerPoint> | null = null;
+    let originalZoomSnap: number | null = null;
+    let frameId: number | null = null;
+    let resetTimerId: number | null = null;
+    let gestureEnded = false;
 
-    const scheduleReset = () => {
-      if (resetTimerRef.current !== null) {
-        window.clearTimeout(resetTimerRef.current);
+    const restoreZoomSnap = () => {
+      if (originalZoomSnap !== null) {
+        map.options.zoomSnap = originalZoomSnap;
+        originalZoomSnap = null;
       }
-      resetTimerRef.current = window.setTimeout(() => {
-        resetTimerRef.current = null;
-        stateRef.current = EMPTY_TRACKPAD_PINCH_STATE;
-      }, TRACKPAD_PINCH_ZOOM.idleResetMs);
+      targetZoom = null;
+      cursorPoint = null;
+      gestureEnded = false;
+    };
+
+    const animateZoom = () => {
+      frameId = null;
+      if (targetZoom === null || cursorPoint === null) {
+        return;
+      }
+      if (!map.scrollWheelZoom.enabled()) {
+        restoreZoomSnap();
+        return;
+      }
+
+      const current = map.getZoom();
+      const next = approachTrackpadZoom(current, targetZoom);
+      if (next !== current) {
+        map.setZoomAround(cursorPoint, next, { animate: false });
+      }
+      if (next !== targetZoom) {
+        frameId = window.requestAnimationFrame(animateZoom);
+      } else if (gestureEnded) {
+        restoreZoomSnap();
+      }
     };
 
     const handleWheel = (event: WheelEvent) => {
       if (!isTrackpadPinchWheelEvent(event)) {
+        if (originalZoomSnap !== null) {
+          if (frameId !== null) {
+            window.cancelAnimationFrame(frameId);
+            frameId = null;
+          }
+          if (resetTimerId !== null) {
+            window.clearTimeout(resetTimerId);
+            resetTimerId = null;
+          }
+          restoreZoomSnap();
+        }
         return;
       }
 
       event.preventDefault();
       event.stopImmediatePropagation();
-      scheduleReset();
-
-      const result = consumeTrackpadPinchDelta(stateRef.current, event.deltaY, performance.now());
-      stateRef.current = result.state;
-      if (result.zoomDelta === 0) {
+      if (!map.scrollWheelZoom.enabled()) {
+        if (frameId !== null) {
+          window.cancelAnimationFrame(frameId);
+          frameId = null;
+        }
+        restoreZoomSnap();
         return;
       }
 
-      const currentZoom = map.getZoom();
-      const nextZoom = Math.max(map.getMinZoom(), Math.min(map.getMaxZoom(), currentZoom + result.zoomDelta));
-      if (nextZoom === currentZoom) {
-        return;
+      if (originalZoomSnap === null) {
+        originalZoomSnap = map.options.zoomSnap ?? 1;
+        map.options.zoomSnap = 0;
       }
-
-      map.setZoomAround(map.mouseEventToContainerPoint(event), nextZoom);
+      if (resetTimerId !== null) {
+        window.clearTimeout(resetTimerId);
+      }
+      gestureEnded = false;
+      targetZoom = targetZoomFromPinch(
+        targetZoom ?? map.getZoom(),
+        event.deltaY,
+        map.getMinZoom(),
+        map.getMaxZoom(),
+      );
+      cursorPoint = map.mouseEventToContainerPoint(event);
+      if (frameId === null) {
+        frameId = window.requestAnimationFrame(animateZoom);
+      }
+      resetTimerId = window.setTimeout(() => {
+        resetTimerId = null;
+        gestureEnded = true;
+        if (frameId === null) {
+          restoreZoomSnap();
+        }
+      }, TRACKPAD_PINCH_ZOOM.idleResetMs);
     };
 
     container.addEventListener("wheel", handleWheel, { capture: true, passive: false });
-
     return () => {
       container.removeEventListener("wheel", handleWheel, { capture: true });
-      if (resetTimerRef.current !== null) {
-        window.clearTimeout(resetTimerRef.current);
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
       }
-      resetTimerRef.current = null;
-      stateRef.current = EMPTY_TRACKPAD_PINCH_STATE;
+      if (resetTimerId !== null) {
+        window.clearTimeout(resetTimerId);
+      }
+      restoreZoomSnap();
     };
   }, [map]);
 

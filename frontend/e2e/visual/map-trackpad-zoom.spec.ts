@@ -28,35 +28,40 @@ async function dispatchPinch(page: Page, deltaY: number) {
   });
 }
 
-async function dispatchGradualPinchStep(page: Page) {
-  for (let index = 0; index < 4; index += 1) {
-    await dispatchPinch(page, -12);
-  }
-}
-
 async function settledMarkerWidth(page: Page) {
-  await page.waitForTimeout(350);
+  await page.waitForTimeout(450);
   return markerWidth(page);
 }
 
-test("Mac-style trackpad pinch zoom is gradual and rate limited", async ({ page }) => {
+test("Mac-style trackpad pinch responds to a sub-threshold delta and reverses smoothly", async ({ page }) => {
   await page.setViewportSize({ height: 820, width: 1280 });
   await mockSharedApi(page);
   await page.goto("/");
   await expect(page.locator(".place-photo-marker").first()).toBeVisible();
 
-  const initialWidth = await markerWidth(page);
-  await dispatchGradualPinchStep(page);
-  await expect.poll(() => markerWidth(page)).toBeGreaterThan(initialWidth);
-  const oneStepWidth = await settledMarkerWidth(page);
+  const initialWidth = await settledMarkerWidth(page);
+  await dispatchPinch(page, -36);
+  const enlargedWidth = await settledMarkerWidth(page);
+  expect(enlargedWidth).toBeGreaterThan(initialWidth);
 
+  await dispatchPinch(page, 36);
+  const reversedWidth = await settledMarkerWidth(page);
+  expect(Math.abs(reversedWidth - initialWidth)).toBeLessThan(1);
+});
+
+test("Mac-style trackpad pinch bounds a burst without quarter-step jumps", async ({ page }) => {
+  await page.setViewportSize({ height: 820, width: 1280 });
+  await mockSharedApi(page);
+  await page.goto("/");
+  await expect(page.locator(".place-photo-marker").first()).toBeVisible();
+
+  const initialWidth = await settledMarkerWidth(page);
+  await dispatchPinch(page, -36);
+  const smallPinchWidth = await settledMarkerWidth(page);
   await page.reload();
   await expect(page.locator(".place-photo-marker").first()).toBeVisible();
-  const burstInitialWidth = await markerWidth(page);
-  await dispatchGradualPinchStep(page);
   await dispatchPinch(page, -600);
-  await expect.poll(() => markerWidth(page)).toBeGreaterThan(burstInitialWidth);
-  const rateLimitedBurstWidth = await settledMarkerWidth(page);
-
-  expect(Math.abs(rateLimitedBurstWidth - oneStepWidth)).toBeLessThan(1);
+  const burstWidth = await settledMarkerWidth(page);
+  expect(burstWidth).toBeGreaterThan(smallPinchWidth);
+  expect(burstWidth).toBeGreaterThan(initialWidth);
 });
