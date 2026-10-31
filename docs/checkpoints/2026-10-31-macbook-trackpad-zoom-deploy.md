@@ -34,5 +34,7 @@
 
 ## Granice sprzątania i dalsze prace
 - Archiwalne checkpointy, dzienniki audytowe i backup produkcyjny zachować; żadne produkcyjne media ani rekordy nie były modyfikowane lub usuwane.
-- Usuwać wyłącznie tymczasowy testowy worktree/branch po finalnym sprawdzeniu i po zsynchronizowaniu dokumentacji. Nie usuwać `agent-control` ani jego protokołów/rezultatów.
+- Porządek wykonany: testowy Mac worktree `~/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom` usunięty po sprawdzeniu, że zawierał wyłącznie 120 syntetycznych miejsc i 120 syntetycznych zdjęć oraz nie miał zmian Git; gałąź `fix/macbook-trackpad-zoom` skasowana lokalnie i na GitHub. Gałęzie i dziennik `agent-control` pozostają.
+- Po wdrożeniu kodu wykonano synchronizację dokumentacji `main=d21400207c121eb3169647978072ee18a99269d1` na Maca i Pi bez restartu serwera. Potwierdzono ten sam PID `2260274`, `/health` OK, frontend 200, `/api/places/map` 200, czysty Mac checkout i zachowany backup produkcyjny. Ostateczny HEAD dokumentacji może się zmienić przy zapisie niniejszej adnotacji; weryfikować aktualny `main`.
+- Nie usuwano logów produkcyjnych, starszych backupów ani chronionych materiałów właściciela. Sprzątanie ograniczono do buildów/artefaktów zastąpionych w `frontend/dist`, przejściowego staging i odizolowanego testowego worktree.
 - Na początku kolejnej pracy weryfikować rzeczywisty `main`, HEAD Pi, health i dokumentację, a nie zakładać SHA wyłącznie z tego checkpointu.
