@@ -1,17 +1,27 @@
 const PIXEL_DELTA_MODE = 0;
 
 export const TRACKPAD_PINCH_ZOOM = {
-  idleResetMs: 180,
+  idleResetMs: 240,
   maxEventDeltaPx: 120,
   zoomPerPixel: 1 / 200,
-  smoothingFactor: 0.4,
-  settleEpsilon: 0.002,
+  smoothingFactor: 0.6,
+  settleEpsilon: 0.001,
+  maxSmoothScrollDeltaPx: 40,
 } as const;
 
-type TrackpadWheelLike = Pick<WheelEvent, "ctrlKey" | "deltaMode">;
+type TrackpadWheelLike = Pick<WheelEvent, "ctrlKey" | "deltaMode" | "deltaY">;
 
 export function isTrackpadPinchWheelEvent(event: TrackpadWheelLike): boolean {
   return event.ctrlKey && event.deltaMode === PIXEL_DELTA_MODE;
+}
+
+export function isSmoothTrackpadZoomEvent(event: TrackpadWheelLike, gestureActive = false): boolean {
+  return (
+    event.deltaMode === PIXEL_DELTA_MODE &&
+    Number.isFinite(event.deltaY) &&
+    event.deltaY !== 0 &&
+    (event.ctrlKey || gestureActive || Math.abs(event.deltaY) < TRACKPAD_PINCH_ZOOM.maxSmoothScrollDeltaPx)
+  );
 }
 
 export function targetZoomFromPinch(currentTarget: number, deltaY: number, minZoom: number, maxZoom: number): number {
