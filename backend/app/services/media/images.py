@@ -183,6 +183,10 @@ def validate_image_content(content: bytes) -> None:
         with Image.open(BytesIO(content), formats=SUPPORTED_IMAGE_FORMATS) as image:
             ensure_supported_image_format(image)
             ensure_image_size(image)
+            # Pillow can reduce JPEG resolution before decoding; avoid loading
+            # a giant RGB bitmap just to validate an uploaded original.
+            if image.format == "JPEG":
+                image.draft("RGB", (2048, 2048))
             image.load()
     except (UnidentifiedImageError, OSError, Image.DecompressionBombError, Image.DecompressionBombWarning) as exc:
         raise HTTPException(status_code=422, detail="Unsupported image file") from exc
@@ -238,6 +242,11 @@ def publish_image_thumbnail(original_path: str) -> str:
             ensure_image_size(image)
             output_format = public_image_format(image)
             _, thumb_path = public_image_paths_for_original(original_path, output_format)
+            if image.format != "JPEG" and image.width * image.height > 8_000_000:
+                raise HTTPException(status_code=413, detail="Photo is too large for thumbnail rendering")
+            target_size = (THUMB_SIZE[0] * 2, THUMB_SIZE[1] * 2)
+            image.draft("RGB", target_size)
+            image.thumbnail(target_size, resample=Image.Resampling.LANCZOS)
             public_image = normalized_public_image(image, output_format)
             thumb_image = ImageOps.fit(
                 public_image,
