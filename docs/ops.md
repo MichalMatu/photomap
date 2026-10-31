@@ -2,6 +2,34 @@
 
 Ten dokument opisuje lokalne czynności operacyjne PhotoMap: diagnostykę danych, backup i podstawowy restore test. Nie jest roadmapą produktu.
 
+## Kolejne ograniczenia presji pamięci — 01.11.2026
+
+W panelu administracyjnym prywatne miniatury są pobierane dopiero przy
+zbliżeniu do viewportu (IntersectionObserver; 250 px wyprzedzenia), a wspólna
+kolejka limituje równoczesne pobrania do trzech. Odmontowanie zdjęcia
+anuluje żądanie, również jeśli oczekiwało w kolejce. Samo ustawienie
+`loading="lazy"` na elemencie `img` nie opóźnia wykonywanego przez
+JavaScript `fetch`.
+
+Backend przechowuje wygenerowane miniatury prywatne w
+`backend/storage/private/.admin-thumbnails/`; są dostępne tylko przez
+autoryzowany endpoint admina. Cache jest zależny od ścieżki, rozmiaru
+i czasu modyfikacji oryginału, a przy trwałym usunięciu zdjęcia usuwany
+jest też jego katalog cache. Zatwierdzone zdjęcia nadal wykorzystują
+istniejące gotowe miniatury publiczne.
+
+Duże prywatne PNG/WebP (powyżej 8 Mpix) nie są dekodowane do podglądu
+na żądanie i otrzymują HTTP 413; oryginał pozostaje nienaruszony.
+Weryfikacja JPEG oraz generowanie miniatur przy publikacji korzysta
+z `Image.draft` i wczesnego zmniejszania przed kopiowaniem RGB.
+
+Na Pi Zero 2 W swap jest `/dev/zram0`. Sam poziom zajętości zram
+nie oznacza intensywnego stronicowania; mierz `vmstat 1 4`,
+`/proc/<PID>/status` (VmRSS/VmSwap) i `free -m` przed zmianą ustawień.
+Nie uruchamiaj `swapoff` przy małej ilości wolnego RAM.
+Dla regresji sprawdzaj testy prywatnego cache, usuwania mediów,
+kolejki frontendowej i dostępność /health oraz /api/places/map.
+
 ## OOM na Raspberry Pi Zero 2 W — 31.10.2026
 
 Podczas usuwania zdjęć przez panel admina produkcyjny proces Python został
