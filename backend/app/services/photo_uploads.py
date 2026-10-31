@@ -4,6 +4,7 @@ from sqlmodel import Session
 
 from app.models.photo import Photo
 from app.schemas.content import ContentBlock
+from app.services.media.admin_previews import delete_preview_cache
 from app.services.media.audio import (
     StoredPrivateAudio,
     audio_paths,
@@ -13,7 +14,6 @@ from app.services.media.audio import (
     publish_private_audio,
     store_private_audio_bytes,
 )
-from app.services.media.admin_previews import delete_preview_cache
 from app.services.media.images import (
     StoredPrivateImage,
     delete_public_image,
