@@ -62,6 +62,21 @@ python3 scripts/diagnose_local_data.py
 
 Szczegóły: [`docs/ops.md`](ops.md).
 
+## Zoom gładzika na MacBooku
+
+Zoom na desktopie obsługuje gesty ciągłe bez wielokrotnego kończenia aktualizacji Leaflet i przeliczania miniaturek w każdej klatce. Testy regresji sprawdzają płynne przybliżanie, wielokrotne oddalanie, powrót do skali, blokady interakcji i niezależne zachowanie kółka myszy. Mobile touch zoom pozostaje natywny.
+
+```bash
+cd frontend
+npm run test -- src/components/map/trackpadZoom.test.ts
+npm run build
+# Playwright przez izolowany wrapper z katalogu głównego:
+cd ..
+E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ./scripts/quality/e2e.sh e2e/visual/map-trackpad-zoom.spec.ts --workers=1
+```
+
+Ręczny test na MacBooku jest obowiązkowym uzupełnieniem emulacji kółka/gestów w Chromium. Wyniki i warunki wdrożenia: [checkpoint 31.10.2026](checkpoints/2026-10-31-macbook-trackpad-zoom-deploy.md).
+
 ## Publiczny runtime
 
 `server.py` serwuje FastAPI, `/media` i gotowy `frontend/dist` na `127.0.0.1:8000`.
