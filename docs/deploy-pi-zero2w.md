@@ -51,7 +51,7 @@ ssh -i "$SSH_KEY" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeou
   "cd /home/michal/src/PhotoMaps && sudo -n systemctl restart photomap.service && for n in \$(seq 1 60); do curl -fsS --max-time 3 http://127.0.0.1:8000/health >/dev/null 2>&1 && break; sleep 1; done && curl -fsS --max-time 5 http://127.0.0.1:8000/health >/dev/null && test \"\$(git rev-parse HEAD)\" = \"$TARGET_SHA\" && systemctl is-active --quiet photomap.service && make server-status"
 ```
 
-`PHOTOMAP_SKIP_FRONTEND_BUILD=1` jest celowe: gotowy build jest już skopiowany z Maca.
+Serwis systemd uruchamia bezpośrednio `server.py`; frontend musi być zbudowany i skopiowany z Maca **przed** restartem usługi.
 
 `photomap.service` ma `Restart=on-failure` i powinien pozostać aktywny po wdrożeniu.
 Ręczne `make server-start` uruchamia proces poza nadzorem systemd; po awarii OOM
