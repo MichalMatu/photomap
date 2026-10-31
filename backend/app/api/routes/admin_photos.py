@@ -30,6 +30,7 @@ from app.services.admin_photos import (
     update_admin_photo,
 )
 from app.services.media import images
+from app.services.media.admin_previews import preview_cache_path, write_preview_cache
 from app.services.place_taxonomy import category_ids_by_place_id
 
 router = APIRouter(prefix="/api/admin/photos", tags=["admin photos"], dependencies=[Depends(require_admin_token)])
@@ -51,8 +52,6 @@ def private_photo_image_path(photo_id: str, session: Session):
 
 def photo_thumbnail_response(photo_id: str, session: Session) -> FileResponse | Response:
     photo = get_admin_photo(session, photo_id)
-    # Approved photos already have a small public derivative. Re-encoding the
-    # private original for every admin thumbnail can exhaust Raspberry Pi RAM.
     if photo.status == "approved":
         published_thumb = images.static_public_storage_path(photo.thumb_path)
         if published_thumb is not None and published_thumb.is_file():
@@ -62,6 +61,10 @@ def photo_thumbnail_response(photo_id: str, session: Session) -> FileResponse | 
             )
 
     path = private_photo_image_path(photo_id, session)
+    cached = preview_cache_path(photo_id, path)
+    if cached is not None:
+        return FileResponse(cached, media_type=guess_type(cached.name)[0] or "application/octet-stream")
+
     if not _uncached_thumb_slots.acquire(timeout=3):
         raise HTTPException(
             status_code=503,
@@ -70,14 +73,22 @@ def photo_thumbnail_response(photo_id: str, session: Session) -> FileResponse | 
         )
 
     try:
+        # Recheck after acquiring the slot: another request may have just
+        # populated the cache while we waited for the single decoder.
+        cached = preview_cache_path(photo_id, path)
+        if cached is not None:
+            return FileResponse(cached, media_type=guess_type(cached.name)[0] or "application/octet-stream")
         try:
             with Image.open(path) as image:
-                # JPEG decoder subsampling and early thumbnailing avoid expanding
-                # a full-size RGB/RGBA copy before the 520px preview is created.
+                output_format = images.public_image_format(image)
+                # Non-JPEG Pillow decoders can expand the entire image into RAM.
+                # On the Pi Zero, refuse an expensive admin preview rather than
+                # letting a single malformed/oversized original kill the server.
+                if image.format != "JPEG" and image.width * image.height > 8_000_000:
+                    raise HTTPException(status_code=413, detail="Photo is too large for admin preview")
                 preview_size = (images.THUMB_SIZE[0] * 2, images.THUMB_SIZE[1] * 2)
                 image.draft("RGB", preview_size)
                 image.thumbnail(preview_size, resample=Image.Resampling.LANCZOS)
-                output_format = images.public_image_format(image)
                 output_image = images.normalized_public_image(image, output_format)
                 thumbnail = ImageOps.fit(
                     output_image,
@@ -88,7 +99,6 @@ def photo_thumbnail_response(photo_id: str, session: Session) -> FileResponse | 
                 buffer = BytesIO()
                 if output_format == "PNG":
                     thumbnail.save(buffer, "PNG", optimize=True)
-                    media_type = "image/png"
                 else:
                     thumbnail.save(
                         buffer,
@@ -97,10 +107,19 @@ def photo_thumbnail_response(photo_id: str, session: Session) -> FileResponse | 
                         subsampling=images.THUMB_JPEG_SUBSAMPLING,
                         optimize=True,
                     )
-                    media_type = "image/jpeg"
         except (UnidentifiedImageError, OSError, Image.DecompressionBombError) as exc:
             raise HTTPException(status_code=422, detail="Photo media could not be processed") from exc
-        return Response(content=buffer.getvalue(), media_type=media_type)
+
+        # Cache failures must not prevent an otherwise valid thumbnail from
+        # displaying. Keep the cache best-effort and always release the slot.
+        try:
+            cached = write_preview_cache(photo_id, path, buffer.getvalue(), output_format)
+        except OSError:
+            return Response(
+                content=buffer.getvalue(),
+                media_type="image/png" if output_format == "PNG" else "image/jpeg",
+            )
+        return FileResponse(cached, media_type=guess_type(cached.name)[0] or "application/octet-stream")
     finally:
         _uncached_thumb_slots.release()
 

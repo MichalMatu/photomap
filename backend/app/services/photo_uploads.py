@@ -4,6 +4,7 @@ from sqlmodel import Session
 
 from app.models.photo import Photo
 from app.schemas.content import ContentBlock
+from app.services.media.admin_previews import delete_preview_cache
 from app.services.media.audio import (
     StoredPrivateAudio,
     audio_paths,
@@ -31,6 +32,7 @@ from app.services.photo_media import public_photo_image_url_for
 def delete_photo_files(photo: Photo) -> None:
     delete_stored_image(photo.original_path, photo.public_path, photo.thumb_path)
     delete_stored_audio(photo.audio_original_path, photo.audio_public_path)
+    delete_preview_cache(photo.id)
 
 
 def cleanup_stored_upload(
