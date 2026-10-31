@@ -1,49 +1,49 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  consumeTrackpadPinchDelta,
-  EMPTY_TRACKPAD_PINCH_STATE,
+  approachTrackpadZoom,
+  isSmoothTrackpadZoomEvent,
   isTrackpadPinchWheelEvent,
+  targetZoomFromPinch,
   TRACKPAD_PINCH_ZOOM,
 } from "./trackpadZoom";
 
 describe("trackpadZoom", () => {
-  it("recognizes pixel-mode ctrl wheel events used by desktop trackpad pinch", () => {
-    expect(isTrackpadPinchWheelEvent({ ctrlKey: true, deltaMode: 0 })).toBe(true);
-    expect(isTrackpadPinchWheelEvent({ ctrlKey: false, deltaMode: 0 })).toBe(false);
-    expect(isTrackpadPinchWheelEvent({ ctrlKey: true, deltaMode: 1 })).toBe(false);
+  it("recognizes pinch and fine two-finger scroll without intercepting mouse wheel", () => {
+    expect(isTrackpadPinchWheelEvent({ ctrlKey: true, deltaMode: 0, deltaY: -10 })).toBe(true);
+    expect(isTrackpadPinchWheelEvent({ ctrlKey: false, deltaMode: 0, deltaY: -10 })).toBe(false);
+    expect(isSmoothTrackpadZoomEvent({ ctrlKey: true, deltaMode: 0, deltaY: 100 })).toBe(true);
+    expect(isSmoothTrackpadZoomEvent({ ctrlKey: false, deltaMode: 0, deltaY: 12 })).toBe(true);
+    expect(isSmoothTrackpadZoomEvent({ ctrlKey: false, deltaMode: 0, deltaY: 100 })).toBe(false);
+    expect(isSmoothTrackpadZoomEvent({ ctrlKey: false, deltaMode: 0, deltaY: 100 }, true)).toBe(true);
+    expect(isSmoothTrackpadZoomEvent({ ctrlKey: false, deltaMode: 1, deltaY: 2 })).toBe(false);
+    expect(isSmoothTrackpadZoomEvent({ ctrlKey: false, deltaMode: 0, deltaY: 0 })).toBe(false);
   });
 
-  it("accumulates small pinch deltas before applying one quarter zoom step", () => {
-    let state = EMPTY_TRACKPAD_PINCH_STATE;
-
-    for (const deltaY of [-12, -12, -12]) {
-      const result = consumeTrackpadPinchDelta(state, deltaY, 100);
-      state = result.state;
-      expect(result.zoomDelta).toBe(0);
-    }
-
-    const result = consumeTrackpadPinchDelta(state, -12, 100);
-    expect(result.zoomDelta).toBe(TRACKPAD_PINCH_ZOOM.zoomStep);
-    expect(result.state.accumulatedDeltaY).toBe(0);
+  it("responds proportionally to either direction without quantized steps", () => {
+    expect(targetZoomFromPinch(12, -12, 6, 18)).toBeCloseTo(12.06);
+    expect(targetZoomFromPinch(12, 12, 6, 18)).toBeCloseTo(11.94);
+    expect(targetZoomFromPinch(12.06, 12, 6, 18)).toBeCloseTo(12);
   });
 
-  it("limits rapid large deltas to one step per cooldown window", () => {
-    const first = consumeTrackpadPinchDelta(EMPTY_TRACKPAD_PINCH_STATE, -96, 100);
-    expect(first.zoomDelta).toBe(TRACKPAD_PINCH_ZOOM.zoomStep);
-
-    const cooling = consumeTrackpadPinchDelta(first.state, -96, 120);
-    expect(cooling.zoomDelta).toBe(0);
-
-    const next = consumeTrackpadPinchDelta(cooling.state, -1, 100 + TRACKPAD_PINCH_ZOOM.cooldownMs);
-    expect(next.zoomDelta).toBe(TRACKPAD_PINCH_ZOOM.zoomStep);
+  it("bounds exceptional events but does not block subsequent input", () => {
+    const first = targetZoomFromPinch(12, 600, 6, 18);
+    expect(first).toBeCloseTo(12 - TRACKPAD_PINCH_ZOOM.maxEventDeltaPx * TRACKPAD_PINCH_ZOOM.zoomPerPixel);
+    expect(targetZoomFromPinch(first, 8, 6, 18)).toBeLessThan(first);
   });
 
-  it("drops accumulated momentum when pinch direction changes", () => {
-    const inward = consumeTrackpadPinchDelta(EMPTY_TRACKPAD_PINCH_STATE, -24, 100);
-    const outward = consumeTrackpadPinchDelta(inward.state, 24, 110);
+  it("clamps zoom bounds and rejects invalid values", () => {
+    expect(targetZoomFromPinch(17.95, -120, 6, 18)).toBe(18);
+    expect(targetZoomFromPinch(6.05, 120, 6, 18)).toBe(6);
+    expect(targetZoomFromPinch(12, Number.NaN, 6, 18)).toBe(12);
+    expect(targetZoomFromPinch(12, Number.POSITIVE_INFINITY, 6, 18)).toBe(12);
+  });
 
-    expect(outward.zoomDelta).toBe(0);
-    expect(outward.state.accumulatedDeltaY).toBe(24);
+  it("approaches smoothly without overshoot", () => {
+    const first = approachTrackpadZoom(12, 12.3);
+    expect(first).toBeGreaterThan(12);
+    expect(first).toBeLessThan(12.3);
+    expect(approachTrackpadZoom(first, 12.3)).toBeGreaterThan(first);
+    expect(approachTrackpadZoom(12.2999, 12.3)).toBe(12.3);
   });
 });
