@@ -2,6 +2,40 @@
 
 Ten dokument opisuje lokalne czynności operacyjne PhotoMap: diagnostykę danych, backup i podstawowy restore test. Nie jest roadmapą produktu.
 
+## OOM na Raspberry Pi Zero 2 W — 31.10.2026
+
+Podczas usuwania zdjęć przez panel admina produkcyjny proces Python został
+zakończony przez jądro Linuksa (OOM-killer, 23:27:29 czasu Warszawy).
+W chwili awarii wolna pamięć swap wynosiła 0 kB. Tunel Cloudflare pozostał
+uruchomiony, ale backend przestał nasłuchiwać na porcie 8000, co spowodowało
+brak dostępności strony. `PRAGMA quick_check` SQLite zwrócił `ok`.
+
+Wykryty kosztowny mechanizm: endpoint
+`GET /api/admin/photos/{photo_id}/media/thumb` za każdym razem dekodował
+prywatny oryginał i konwertował pełnowymiarowy obraz **przed**
+zmniejszeniem go do miniatury. Frontend używa tego endpointu na listach
+zdjęć i po operacjach admina. To prawdopodobne źródło skoku zużycia RAM,
+chociaż nie ma bezpośredniego pomiaru pamięci konkretnego żądania.
+
+Naprawa: dla zatwierdzonych zdjęć endpoint zwraca gotową, zapisaną
+miniaturę, a dla zdjęć bez publicznej miniatury wcześniej redukuje rozmiar
+odczytywanego obrazu i serializuje dekodowanie w procesie. Kanoniczne
+oryginały pozostają niezmienione. Jeśli prywatny renderer jest zajęty
+dłużej niż trzy sekundy, zwracane jest 503 z `Retry-After: 2`
+zamiast równoległego dekodowania kolejnego oryginału. Duży pojedynczy
+obraz w formacie bez efektywnego dekodowania w obniżonej rozdzielczości
+może nadal wymagać osobnej optymalizacji; nie należy twierdzić, że
+niniejsza poprawka usuwa wszystkie możliwe OOM.
+
+Po awarii sprawdź `journalctl -k`, `make server-status`, `make tunnel-status`,
+`free -m`, `df -h` i `sqlite3 backend/data/app.db 'PRAGMA quick_check;'`.
+Nie wykonuj cleanupu ani restore bazy na podstawie samego błędu 502.
+Na Pi z gotowym frontendem uruchamiaj backend przez
+`PHOTOMAP_SKIP_FRONTEND_BUILD=1 make server-start` i sprawdzaj
+`/health`, `/api/places/map` oraz status publicznej domeny.
+Samo włączenie autostartu na boot **nie oznacza** nadzorowania procesu
+po OOM: politykę restartu usługi trzeba zweryfikować osobno.
+
 ## API Request IDs
 
 Każda odpowiedź backendu ma nagłówek `X-Request-ID`. Jeśli klient przyśle własny poprawny identyfikator, backend go zachowa; w przeciwnym razie wygeneruje nowy. Odpowiedzi błędów JSON mają kształt:
