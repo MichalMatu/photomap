@@ -1,5 +1,6 @@
 from io import BytesIO
 from mimetypes import guess_type
+from threading import BoundedSemaphore
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse, Response
@@ -33,6 +34,10 @@ from app.services.place_taxonomy import category_ids_by_place_id
 
 router = APIRouter(prefix="/api/admin/photos", tags=["admin photos"], dependencies=[Depends(require_admin_token)])
 
+# Full-resolution private originals are expensive to decode on a Pi Zero 2 W.
+# Serialize only the thumbnails that cannot reuse a published derivative.
+_uncached_thumb_slots = BoundedSemaphore(1)
+
 
 def private_photo_image_path(photo_id: str, session: Session):
     photo = get_admin_photo(session, photo_id)
@@ -44,35 +49,60 @@ def private_photo_image_path(photo_id: str, session: Session):
     return path
 
 
-def photo_thumbnail_response(photo_id: str, session: Session) -> Response:
-    path = private_photo_image_path(photo_id, session)
-    try:
-        with Image.open(path) as image:
-            output_format = images.public_image_format(image)
-            output_image = images.normalized_public_image(image, output_format)
-            thumbnail = ImageOps.fit(
-                output_image,
-                images.THUMB_SIZE,
-                method=Image.Resampling.LANCZOS,
-                centering=(0.5, 0.5),
+def photo_thumbnail_response(photo_id: str, session: Session) -> FileResponse | Response:
+    photo = get_admin_photo(session, photo_id)
+    # Approved photos already have a small public derivative. Re-encoding the
+    # private original for every admin thumbnail can exhaust Raspberry Pi RAM.
+    if photo.status == "approved":
+        published_thumb = images.static_public_storage_path(photo.thumb_path)
+        if published_thumb is not None and published_thumb.is_file():
+            return FileResponse(
+                published_thumb,
+                media_type=guess_type(published_thumb.name)[0] or "application/octet-stream",
             )
-            buffer = BytesIO()
-            if output_format == "PNG":
-                thumbnail.save(buffer, "PNG", optimize=True)
-                media_type = "image/png"
-            else:
-                thumbnail.save(
-                    buffer,
-                    "JPEG",
-                    quality=images.THUMB_IMAGE_QUALITY,
-                    subsampling=images.THUMB_JPEG_SUBSAMPLING,
-                    optimize=True,
-                )
-                media_type = "image/jpeg"
-    except (UnidentifiedImageError, OSError, Image.DecompressionBombError) as exc:
-        raise HTTPException(status_code=422, detail="Photo media could not be processed") from exc
 
-    return Response(content=buffer.getvalue(), media_type=media_type)
+    path = private_photo_image_path(photo_id, session)
+    if not _uncached_thumb_slots.acquire(timeout=3):
+        raise HTTPException(
+            status_code=503,
+            detail="Photo thumbnail renderer is busy",
+            headers={"Retry-After": "2"},
+        )
+
+    try:
+        try:
+            with Image.open(path) as image:
+                # JPEG decoder subsampling and early thumbnailing avoid expanding
+                # a full-size RGB/RGBA copy before the 520px preview is created.
+                preview_size = (images.THUMB_SIZE[0] * 2, images.THUMB_SIZE[1] * 2)
+                image.draft("RGB", preview_size)
+                image.thumbnail(preview_size, resample=Image.Resampling.LANCZOS)
+                output_format = images.public_image_format(image)
+                output_image = images.normalized_public_image(image, output_format)
+                thumbnail = ImageOps.fit(
+                    output_image,
+                    images.THUMB_SIZE,
+                    method=Image.Resampling.LANCZOS,
+                    centering=(0.5, 0.5),
+                )
+                buffer = BytesIO()
+                if output_format == "PNG":
+                    thumbnail.save(buffer, "PNG", optimize=True)
+                    media_type = "image/png"
+                else:
+                    thumbnail.save(
+                        buffer,
+                        "JPEG",
+                        quality=images.THUMB_IMAGE_QUALITY,
+                        subsampling=images.THUMB_JPEG_SUBSAMPLING,
+                        optimize=True,
+                    )
+                    media_type = "image/jpeg"
+        except (UnidentifiedImageError, OSError, Image.DecompressionBombError) as exc:
+            raise HTTPException(status_code=422, detail="Photo media could not be processed") from exc
+        return Response(content=buffer.getvalue(), media_type=media_type)
+    finally:
+        _uncached_thumb_slots.release()
 
 
 @router.get("", response_model=list[PhotoAdminRead])
