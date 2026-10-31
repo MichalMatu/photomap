@@ -64,3 +64,11 @@ ssh -i /Users/michal/.ssh/id_ed25519 michal@192.168.0.23 \
 ```
 
 Oczekiwany stan: `main`, właściwy SHA, czysty worktree, port 8000, `PhotoMap runtime health: OK` i działający systemowy `cloudflared`.
+
+## Weryfikacja i porządek po wdrożeniu
+
+Przed aktualizacją kodu zachowaj spójny snapshot SQLite oraz kopię poprzedniego `frontend/dist` poza katalogiem śledzonym przez Git, np. pod `.dev/deploy/<release>/`. Nie uruchamiaj narzędzia backupu z automatycznym prune, jeżeli mogłoby usunąć starszy potrzebny punkt odzyskiwania. Po aktualizacji sprawdź `PRAGMA integrity_check`, publiczny `/api/places/map`, `/health`, frontend HTTP 200 i kontrolną liczbę rekordów z preflightu.
+
+Wysyłaj `frontend/dist` ze znanego, dokładnego SHA; po bezpiecznym zachowaniu starego builda można usunąć osierocone zahashowane pliki w docelowym `dist` przez `rsync --delete`, ale nie ingeruj w `backend/storage` ani backupy. Systemowy tunel Cloudflare powinien zachować ten sam proces. Nie usuwaj logów produkcyjnych bez retencji/analizy: sprzątanie zwykłego deployu dotyczy tylko tymczasowych plików staging i starego worktree kodu.
+
+Wzorcowy przebieg wdrożenia zoomu z 31.10.2026 opisuje [checkpoint](checkpoints/2026-10-31-macbook-trackpad-zoom-deploy.md).
