@@ -19,7 +19,7 @@ Systemowy `cloudflared` działa niezależnie od aplikacji. Zwykły deploy nie re
 2. Worktree na Pi musi być czysty; nie rób automatycznego stash/reset.
 3. Aktualizacja repo na Pi jest tylko fast-forward.
 4. `frontend/dist` buduj dla tego samego SHA na Macu i kopiuj przez `rsync`.
-5. Restartuj aplikację przez `make server-restart`.
+5. Restartuj aplikację przez aktywną usługę `sudo systemctl restart photomap.service`, nie przez ręczne uruchomienie procesu w tle.
 6. Zakończ dopiero po `/health` i potwierdzeniu SHA.
 
 ## Flow przez Local Agent
@@ -48,10 +48,18 @@ RSYNC_RSH="ssh -i $SSH_KEY -o BatchMode=yes -o StrictHostKeyChecking=yes -o Conn
   rsync -az frontend/dist/ "$PI:$PI_REPO/frontend/dist/"
 
 ssh -i "$SSH_KEY" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 "$PI" \
-  "cd /home/michal/src/PhotoMaps && PHOTOMAP_SKIP_FRONTEND_BUILD=1 make server-restart && curl -fsS --max-time 5 http://127.0.0.1:8000/health >/dev/null && test \"\$(git rev-parse HEAD)\" = \"$TARGET_SHA\" && make server-status"
+  "cd /home/michal/src/PhotoMaps && sudo -n systemctl restart photomap.service && for n in \$(seq 1 60); do curl -fsS --max-time 3 http://127.0.0.1:8000/health >/dev/null 2>&1 && break; sleep 1; done && curl -fsS --max-time 5 http://127.0.0.1:8000/health >/dev/null && test \"\$(git rev-parse HEAD)\" = \"$TARGET_SHA\" && systemctl is-active --quiet photomap.service && make server-status"
 ```
 
 `PHOTOMAP_SKIP_FRONTEND_BUILD=1` jest celowe: gotowy build jest już skopiowany z Maca.
+
+`photomap.service` ma `Restart=on-failure` i powinien pozostać aktywny po wdrożeniu.
+Ręczne `make server-start` uruchamia proces poza nadzorem systemd; po awarii OOM
+nie zostanie on automatycznie odtworzony. Jeżeli start systemd trwa dłużej na Pi Zero,
+pozwól procesowi dokończyć migracje i inicjalizację (do 60 s), zanim uznasz go za
+niesprawny. Po starcie sprawdź `systemctl is-active photomap.service`, `MainPID`
+i `Restart`. Do uruchomienia systemowego `photomap.service` nie jest wymagany
+restart `cloudflared`.
 
 ## Kontrola i logi
 
