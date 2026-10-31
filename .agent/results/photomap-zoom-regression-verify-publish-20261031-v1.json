@@ -1,0 +1,61 @@
+{
+  "allow_write": true,
+  "attempt_id": "e405b837129560226237ac61",
+  "command_timeout": 720,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 676,
+      "command": "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\nbase=/Users/michal/agent-workspace/repos/photomap/work\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 6d08908929d643f10bf58488f8b8382ba325659e\ntest \"$(git branch --show-current)\" = fix/macbook-trackpad-zoom\nprintf 'CHECK_PRE_COMMIT_STATUS\\n'\ngit status --short\ncd frontend\nnpm run format:check\nnpm run lint\nnpm run test -- src/components/map\nnpm run build\ncd ..\ngit add frontend/src/components/map/MapTrackpadZoom.tsx frontend/src/components/map/trackpadZoom.ts frontend/src/components/map/trackpadZoom.test.ts frontend/e2e/visual/map-trackpad-zoom.spec.ts\ntest -n \"$(git diff --cached --name-only)\"\ngit diff --cached --check\ngit commit -m \"fix(map): continuous trackpad zoom without repeated marker relayout\"\ngit push origin HEAD:refs/heads/fix/macbook-trackpad-zoom\nprintf 'BRANCH_SHA=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'BRANCH_DIRTY_COUNT=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\nprintf 'BASE_AGENT_BRANCH=%s\\n' \"$(git -C \"$base\" branch --show-current)\"\nprintf 'BASE_AGENT_DIRTY=%s\\n' \"$(git -C \"$base\" status --porcelain=v1 | wc -l | tr -d ' ')\"\necho PHOTOMAP_ZOOM_CONTINUOUS_VERIFIED_AND_PUBLISHED",
+      "current_rss_mb": 228.95,
+      "elapsed_seconds": 28.081,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 2048,
+      "memory_limited": false,
+      "output": "CHECK_PRE_COMMIT_STATUS\n M frontend/e2e/visual/map-trackpad-zoom.spec.ts\n M frontend/src/components/map/MapTrackpadZoom.tsx\n M frontend/src/components/map/trackpadZoom.test.ts\n M frontend/src/components/map/trackpadZoom.ts\n\n> format:check\n> prettier --check .\n\nChecking formatting...\n[warn] e2e/visual/map-tour.spec.ts\n[warn] src/components/layout/AppShell.tsx\n[warn] src/components/map/PlaceMarker.tsx\n[warn] src/components/tour/MapTour.tsx\n[warn] src/components/tour/mapTourSteps.test.ts\n[warn] src/components/tour/mapTourSteps.ts\n[warn] src/pages/PublicMapPage.tsx\n[warn] src/styles/map-tour.css\n[warn] Code style issues found in 8 files. Run Prettier with --write to fix.\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 228.95,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-10-31T00:45:26.189403+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.124,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.22,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-zoom-regression-verify-publish-20261031-v1",
+  "idle_timeout": 250,
+  "memory_limit_mb": 2048,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 28.081,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-31T00:44:54.474628+00:00",
+  "status": "failed",
+  "task_digest": "a5d926f6f9427aaf4304e100acc254a9b94b90abb85d0866b79950b7e57da6f9",
+  "task_timeout": 1150,
+  "verification": [],
+  "work_branch": "fix/macbook-trackpad-zoom"
+}

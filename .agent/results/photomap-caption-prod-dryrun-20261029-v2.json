@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "51efe5e65fb1075ba55986a7",
+  "command_timeout": 95,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 79,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && backend/.venv/bin/python .dev/editorial/caption-20261029/photo_caption_editor.py --plan .dev/editorial/caption-20261029/plan.json --database backend/data/app.db --exceptions .dev/editorial/caption-20261029/exceptions.json --audit-dir .dev/editorial/caption-20261029/audit'",
+      "current_rss_mb": 4.42,
+      "elapsed_seconds": 2.954,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 512,
+      "memory_limited": false,
+      "output": "{\"dry_run\": true, \"planned\": 27, \"protected\": 3, \"repeated_caption_groups\": 8}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 4.42,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.14",
+  "edits": {},
+  "finished_at": "2026-10-29T09:45:41.943196+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.095,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.085,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-caption-prod-dryrun-20261029-v2",
+  "idle_timeout": 85,
+  "memory_limit_mb": 512,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 2.954,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-29T09:45:37.467442+00:00",
+  "status": "done",
+  "task_digest": "1d158069a20fa35300696f198b2f9b4826b2341aefd2fc188fff9b7822fc2122",
+  "task_timeout": 195,
+  "verification": [],
+  "work_branch": "work/caption-curation-20261029"
+}

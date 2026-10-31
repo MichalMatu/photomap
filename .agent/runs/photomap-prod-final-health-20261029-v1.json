@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-prod-final-health-20261029-v1",
+  "task_digest": "1134d3b06dd600fd67003ef5713ad9d41b1bb96dc708806a67d8aa2eba7a1a57",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-29T09:55:21.939123+00:00",
+  "attempt_id": "043cedd50b5e484748491552",
+  "daemon_version": "4.20.14",
+  "daemon_pid": 5590,
+  "updated_at": "2026-10-29T09:55:22.181575+00:00",
+  "pid": 5590
+}

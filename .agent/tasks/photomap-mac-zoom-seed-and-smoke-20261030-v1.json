@@ -1,0 +1,18 @@
+{
+  "id": "photomap-mac-zoom-seed-and-smoke-20261030-v1",
+  "dedupe_key": "photomap-mac-zoom-seed-and-smoke-20261030-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/macbook-trackpad-zoom",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 1000,
+  "idle_timeout": 300,
+  "task_timeout": 1600,
+  "memory_limit_mb": 2048,
+  "commands": [
+    "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 6d08908929d643f10bf58488f8b8382ba325659e\ntest -z \"$(git status --porcelain=v1)\"\ntest -x backend/.venv/bin/python\ntest -x frontend/node_modules/.bin/vite\nfor port in 8000 5174 18110 15110; do\n  if lsof -nP -iTCP:\"$port\" -sTCP:LISTEN 2>/dev/null | grep -q LISTEN; then\n    echo \"PORT_BUSY_ABORT=$port\"\n    exit 4\n  fi\ndone\nprintf 'PREPARING_SYNTHETIC_TEST_MAP\\n'\nPERF_SEED_PLACES=120 PERF_EXPECT_MIN_PLACES=100 ./scripts/quality/perf_smoke.sh\ntest -f .dev/perf/backend-data/app.db\ntest -d .dev/perf/storage/public\nprintf 'COPYING_OWN_ISOLATED_TEST_FIXTURES\\n'\nSOURCE_DB=\"$wt/.dev/perf/backend-data/app.db\" TARGET_DB=\"$wt/backend/data/app.db\" backend/.venv/bin/python - <<'PY'\nimport os, sqlite3\nsrc=sqlite3.connect(\"file:\"+os.environ[\"SOURCE_DB\"]+\"?mode=ro\",uri=True)\ndst=sqlite3.connect(os.environ[\"TARGET_DB\"])\nsrc.backup(dst)\nassert dst.execute(\"PRAGMA integrity_check\").fetchone()[0]==\"ok\"\nplaces=dst.execute(\"SELECT COUNT(*) FROM place WHERE status='published'\").fetchone()[0]\nphotos=dst.execute(\"SELECT COUNT(*) FROM photo WHERE status='approved'\").fetchone()[0]\nprint(\"LOCAL_FIXTURE_PLACE_COUNT\",places)\nprint(\"LOCAL_FIXTURE_PHOTO_COUNT\",photos)\nassert places >= 100 and photos >= 100\ndst.close()\nsrc.close()\nPY\nrsync -a .dev/perf/storage/ backend/storage/\nprintf 'LOCAL_STORAGE_KB=%s\\n' \"$(du -sk backend/storage | awk '{print $1}')\"\nprintf 'SMOKE_LOCAL_SERVER_DEFAULT_PORTS\\n'\ncleanup() { ./scripts/devctl.sh stop >/dev/null 2>&1 || true; }\ntrap cleanup EXIT\nmake start\ncurl -fsS --max-time 10 http://127.0.0.1:8000/health\nprintf '\\nPUBLIC_MAP_RESPONSE_BYTES=%s\\n' \"$(curl -fsS --max-time 10 http://127.0.0.1:8000/api/places/map | wc -c | tr -d ' ')\"\ncurl -fsS --max-time 10 -o /dev/null -w 'FRONTEND_HTTP=%{http_code}\\n' http://127.0.0.1:5174/\ncleanup\ntrap - EXIT\nprintf 'FINAL_BRANCH=%s\\n' \"$(git branch --show-current)\"\nprintf 'FINAL_SHA=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'FINAL_DIRTY_COUNT=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\necho PHOTOMAP_MAC_ZOOM_SERVER_PREPARED_AND_SMOKED"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "8723d92a320d92b922b69bbb",
+  "command_timeout": 160,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 289,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && backend/.venv/bin/python -' <<'PY'\nimport sqlite3,json,re,collections,subprocess\nfrom pathlib import Path\nroot=Path('/home/michal/src/PhotoMaps')\ndb=root/'backend/data/app.db'\naudit=root/'.dev/editorial/caption-20261029/audit'\nplan=json.loads((root/'.dev/editorial/caption-20261029/plan.json').read_text())\nexceptions=json.loads((root/'.dev/editorial/caption-20261029/exceptions.json').read_text())\na=sqlite3.connect(db.resolve().as_uri()+'?mode=ro',uri=True)\nb=sqlite3.connect((audit/'app-before-captions.sqlite').resolve().as_uri()+'?mode=ro',uri=True)\na.row_factory=b.row_factory=sqlite3.Row\nnorm=lambda x:' '.join(re.findall(r'\\w+',(x or '').casefold()))\ngroups=collections.defaultdict(list)\nfor row in a.execute(\"SELECT p.id,p.caption,pl.slug FROM photo p JOIN place pl ON p.place_id=pl.id WHERE p.status='approved' AND pl.status='published'\"):\n if norm(row['caption']):groups[(row['slug'],norm(row['caption']))].append(row['id'])\nrepeat=sum(len(x)>=3 for x in groups.values())\nids={p['photo_id'] for p in plan['edits']}\nassert len(ids)==27\nchanged={r['id'] for r in a.execute(\"SELECT id,caption FROM photo\") if (prev:=b.execute(\"SELECT caption FROM photo WHERE id=?\",(r['id'],)).fetchone()) and r['caption']!=prev[0]}\nassert changed==ids, f'changed_ids mismatch: {len(changed)}'\nfor p in plan['edits']:\n assert a.execute(\"SELECT caption FROM photo WHERE id=?\",(p['photo_id'],)).fetchone()[0]==p['new_caption']\nfor e in exceptions['media_exceptions']:\n old=dict(b.execute(\"SELECT * FROM photo WHERE id=?\",(e['photo_id'],)).fetchone())\n new=dict(a.execute(\"SELECT * FROM photo WHERE id=?\",(e['photo_id'],)).fetchone())\n assert new==old,'protected photo changed'\njournal=[json.loads(s) for s in (audit/'changes.jsonl').read_text().splitlines() if s.strip()]\nassert len([x for x in journal if 'photo_id' in x])==27\nassert len([x for x in journal if x.get('event')=='postcheck'])==1\nassert a.execute('PRAGMA integrity_check').fetchone()[0]=='ok'\nassert b.execute('PRAGMA integrity_check').fetchone()[0]=='ok'\nassert repeat==0\nsummary={'published_places':a.execute(\"SELECT count(*) FROM place WHERE status='published'\").fetchone()[0],\n'approved_photos':a.execute(\"SELECT count(*) FROM photo WHERE status='approved'\").fetchone()[0],\n'changed_photo_captions':len(changed),'repeated_groups':repeat,'protected_identical':len(exceptions['media_exceptions']),\n'journal_updates':27,'backup_integrity':'ok','production_integrity':'ok',\n'pi_head':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()}\nprint('INDEPENDENT_CAPTION_AUDIT',json.dumps(summary,ensure_ascii=False))\nb.close();a.close()\nPY",
+      "current_rss_mb": 3.95,
+      "elapsed_seconds": 3.214,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 512,
+      "memory_limited": false,
+      "output": "INDEPENDENT_CAPTION_AUDIT {\"published_places\": 195, \"approved_photos\": 1140, \"changed_photo_captions\": 27, \"repeated_groups\": 0, \"protected_identical\": 3, \"journal_updates\": 27, \"backup_integrity\": \"ok\", \"production_integrity\": \"ok\", \"pi_head\": \"ac898d465bfca86d4259cdf76abea1dadb2e1f4c\"}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 3.95,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.14",
+  "edits": {},
+  "finished_at": "2026-10-29T09:47:43.548795+00:00",
+  "git_diff": {
+    "elapsed_seconds": 1.324,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 1.745,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-caption-independent-postcheck-20261029-v1",
+  "idle_timeout": 100,
+  "memory_limit_mb": 512,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 3.214,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-29T09:47:33.972629+00:00",
+  "status": "done",
+  "task_digest": "7a9f73dbae512d5ccf2cb002dfd3e19f352201b490228e4d7793a3e5214dcab3",
+  "task_timeout": 260,
+  "verification": [],
+  "work_branch": "main"
+}

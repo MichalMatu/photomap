@@ -1,0 +1,18 @@
+{
+  "id": "photomap-caption-prod-dryrun-20261029-v2",
+  "dedupe_key": "photomap-caption-prod-dryrun-20261029-v2",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "work/caption-curation-20261029",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 95,
+  "idle_timeout": 85,
+  "task_timeout": 195,
+  "memory_limit_mb": 512,
+  "commands": [
+    "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && backend/.venv/bin/python .dev/editorial/caption-20261029/photo_caption_editor.py --plan .dev/editorial/caption-20261029/plan.json --database backend/data/app.db --exceptions .dev/editorial/caption-20261029/exceptions.json --audit-dir .dev/editorial/caption-20261029/audit'"
+  ]
+}

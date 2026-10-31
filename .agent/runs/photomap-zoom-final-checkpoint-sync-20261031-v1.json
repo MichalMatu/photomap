@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-final-checkpoint-sync-20261031-v1",
+  "task_digest": "20124683ae26725b838996c232f73854e9fad2e8af500c7cdb1178244b02bbd5",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-31T01:07:23.357506+00:00",
+  "attempt_id": "0d75054e37e7f1c15133b884",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 51604,
+  "updated_at": "2026-10-31T01:07:23.617588+00:00",
+  "pid": 51604
+}

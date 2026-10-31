@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-caption-prod-apply-20261029-v1",
+  "task_digest": "4bfebb1b246acb15e50a255c6f9e9e2518bb502026cbd7c9c8db504e8568aee1",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-29T09:46:29.479858+00:00",
+  "attempt_id": "d4483967b24481636107a1c4",
+  "daemon_version": "4.20.14",
+  "daemon_pid": 89993,
+  "updated_at": "2026-10-29T09:46:29.742734+00:00",
+  "pid": 89993
+}

@@ -1,0 +1,18 @@
+{
+  "id": "photomap-pi-zoom-deploy-preflight-20261031-v1",
+  "dedupe_key": "photomap-pi-zoom-deploy-preflight-20261031-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/macbook-trackpad-zoom",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 220,
+  "idle_timeout": 160,
+  "task_timeout": 420,
+  "memory_limit_mb": 512,
+  "commands": [
+    "set -eu\nrepo=/Users/michal/agent-workspace/repos/photomap/work\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\nkey=/Users/michal/.ssh/id_ed25519\npi=michal@192.168.0.23\nprintf 'MAC_BASE=%s %s\\n' \"$(git -C \"$repo\" branch --show-current)\" \"$(git -C \"$repo\" rev-parse HEAD)\"\nprintf 'MAC_BASE_DIRTY_COUNT=%s\\n' \"$(git -C \"$repo\" status --porcelain=v1 | wc -l | tr -d ' ')\"\nprintf 'MAC_WORK_BRANCH=%s %s\\n' \"$(git -C \"$wt\" branch --show-current)\" \"$(git -C \"$wt\" rev-parse HEAD)\"\nprintf 'MAC_WORK_DIRTY_COUNT=%s\\n' \"$(git -C \"$wt\" status --porcelain=v1 | wc -l | tr -d ' ')\"\ntest -r \"$key\"\nprintf 'PI_PREFLIGHT_BEGIN\\n'\nssh -i \"$key\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=10 \"$pi\" '\nset -eu\ncd /home/michal/src/PhotoMaps\nprintf \"PI_BRANCH=%s\\n\" \"$(git branch --show-current)\"\nprintf \"PI_HEAD=%s\\n\" \"$(git rev-parse HEAD)\"\nprintf \"PI_DIRTY_COUNT=%s\\n\" \"$(git status --porcelain=v1 | wc -l | tr -d \" \")\"\nprintf \"PI_GIT_STATUS_BEGIN\\n\"\ngit status --short --branch\nprintf \"PI_GIT_STATUS_END\\n\"\nprintf \"PI_STORAGE\\n\"\ndf -h .\nprintf \"PI_DATA_PRESENT=%s\\n\" \"$(test -f backend/data/app.db && echo yes || echo no)\"\nprintf \"PI_DIST_PRESENT=%s\\n\" \"$(test -f frontend/dist/index.html && echo yes || echo no)\"\nprintf \"PI_DB_SIZE_BYTES=%s\\n\" \"$(test -f backend/data/app.db && stat -c %s backend/data/app.db || echo 0)\"\nprintf \"PI_SERVICE_STATUS_BEGIN\\n\"\nmake server-status\nprintf \"PI_SERVICE_STATUS_END\\n\"\nprintf \"PI_TUNNEL_STATUS_BEGIN\\n\"\nmake tunnel-status\nprintf \"PI_TUNNEL_STATUS_END\\n\"\nprintf \"PI_HTTP_HEALTH=\"\ncurl -fsS --max-time 8 http://127.0.0.1:8000/health\nprintf \"\\n\"\nprintf \"PI_FRONT_HTTP=\"\ncurl -sS --max-time 8 -o /dev/null -w \"%{http_code}\\n\" http://127.0.0.1:8000/\n'\necho PHOTOMAP_PI_READONLY_PREFLIGHT_DONE"
+  ]
+}

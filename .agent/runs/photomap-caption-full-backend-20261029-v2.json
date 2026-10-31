@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-caption-full-backend-20261029-v2",
+  "task_digest": "baf4ff29ad7ed1dea61b8f398b388fca9438d02e3e7a4146e0f1a3a4f9883b74",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-29T09:50:38.685377+00:00",
+  "attempt_id": "9924498a13a8fa398296ef02",
+  "daemon_version": "4.20.14",
+  "daemon_pid": 95893,
+  "updated_at": "2026-10-29T09:50:39.009118+00:00",
+  "pid": 95893
+}

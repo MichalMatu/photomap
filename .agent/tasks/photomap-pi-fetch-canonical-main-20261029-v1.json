@@ -1,0 +1,18 @@
+{
+  "id": "photomap-pi-fetch-canonical-main-20261029-v1",
+  "dedupe_key": "photomap-pi-fetch-canonical-main-20261029-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 160,
+  "idle_timeout": 100,
+  "task_timeout": 250,
+  "memory_limit_mb": 512,
+  "commands": [
+    "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git fetch https://github.com/MichalMatu/photomap.git main && git rev-parse FETCH_HEAD'"
+  ]
+}

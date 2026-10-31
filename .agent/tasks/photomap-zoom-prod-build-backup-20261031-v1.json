@@ -1,0 +1,18 @@
+{
+  "id": "photomap-zoom-prod-build-backup-20261031-v1",
+  "dedupe_key": "photomap-zoom-prod-build-backup-20261031-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 600,
+  "idle_timeout": 240,
+  "task_timeout": 1200,
+  "memory_limit_mb": 2048,
+  "commands": [
+    "set -eu\nMAC=/Users/michal/agent-workspace/repos/photomap/work\nTARGET=fbeefb174c309a252e82b47b20dbe3bf63217485\nPI=michal@192.168.0.23\nKEY=/Users/michal/.ssh/id_ed25519\nSSH=\"ssh -i $KEY -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=10\"\ntest -r \"$KEY\"\ntest -z \"$(git -C \"$MAC\" status --porcelain=v1)\"\ncd \"$MAC\"\ngit fetch --no-tags origin main\ntest \"$(git rev-parse refs/remotes/origin/main)\" = \"$TARGET\"\ngit switch -C agent-work refs/remotes/origin/main\ntest \"$(git rev-parse HEAD)\" = \"$TARGET\"\ntest -z \"$(git status --porcelain=v1)\"\ncd frontend\nVITE_API_BASE_URL= npm run build\ntest -f dist/index.html\nprintf 'MAC_BUILD_SHA=%s\\n' \"$TARGET\"\nprintf 'MAC_INDEX_SHA256=%s\\n' \"$(shasum -a 256 dist/index.html | awk '{print $1}')\"\ncd ..\n$SSH \"$PI\" '\nset -eu\ncd /home/michal/src/PhotoMaps\ntest \"$(git branch --show-current)\" = main\ntest -z \"$(git status --porcelain=v1)\"\ntest \"$(git rev-parse HEAD)\" = ac898d465bfca86d4259cdf76abea1dadb2e1f4c\ncurl -fsS --max-time 5 http://127.0.0.1:8000/health >/dev/null\ntest -f backend/data/app.db\ntest -f frontend/dist/index.html\nbackup=.dev/deploy/2026-10-31-trackpad-zoom-pre\nif [ -e \"$backup\" ]; then echo BACKUP_DIRECTORY_ALREADY_EXISTS; exit 4; fi\nmkdir -p \"$backup/frontend\"\npython3 - \"$backup\" <<'\"'\"'PY'\"'\"'\nimport sqlite3,sys\nfrom pathlib import Path\nroot=Path(sys.argv[1]); root.mkdir(parents=True,exist_ok=True)\nsrc=sqlite3.connect(\"file:backend/data/app.db?mode=ro\",uri=True)\ndst=sqlite3.connect(str(root/\"app-before.sqlite\"))\nsrc.backup(dst)\nassert dst.execute(\"PRAGMA integrity_check\").fetchone()[0]==\"ok\"\nfor table in (\"place\",\"photo\",\"memory\"):\n print(\"PROD_BACKUP_\"+table.upper(),dst.execute(\"SELECT COUNT(*) FROM \"+table).fetchone()[0])\ndst.close();src.close()\nprint(\"PROD_SQLITE_BACKUP_INTEGRITY=ok\")\nPY\ncp -a frontend/dist/. \"$backup/frontend/\"\ngit rev-parse HEAD > \"$backup/previous-main-sha.txt\"\nprintf \"PROD_PRE_HEAD=%s\\n\" \"$(git rev-parse HEAD)\"\nprintf \"PROD_BACKUP_ROOT=%s\\n\" \"$backup\"\nprintf \"PROD_BACKUP_INDEX_SHA256=%s\\n\" \"$(sha256sum \"$backup/frontend/index.html\" | awk \"{print \\$1}\")\"\nprintf \"PROD_REPO_ORIGIN=%s\\n\" \"$(git remote get-url origin)\"\n'\necho PHOTOMAP_MAC_BUILD_PI_BACKUP_READY"
+  ]
+}

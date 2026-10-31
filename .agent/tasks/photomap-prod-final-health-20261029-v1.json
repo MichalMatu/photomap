@@ -1,0 +1,18 @@
+{
+  "id": "photomap-prod-final-health-20261029-v1",
+  "dedupe_key": "photomap-prod-final-health-20261029-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 100,
+  "idle_timeout": 90,
+  "task_timeout": 210,
+  "memory_limit_mb": 512,
+  "commands": [
+    "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git rev-parse HEAD && curl -fsS -o /dev/null -w \"HEALTH_HTTP=%{http_code}\\n\" http://127.0.0.1:8000/health && curl -fsS -o /dev/null -w \"MAP_HTTP=%{http_code}\\n\" http://127.0.0.1:8000/api/places/map && git status --short'"
+  ]
+}

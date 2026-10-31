@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "6c5c2f3c2785c17f861d675c",
+  "command_timeout": 220,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1037,
+      "command": "set -eu\nrepo=/Users/michal/agent-workspace/repos/photomap/work\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\nkey=/Users/michal/.ssh/id_ed25519\npi=michal@192.168.0.23\nprintf 'MAC_BASE=%s %s\\n' \"$(git -C \"$repo\" branch --show-current)\" \"$(git -C \"$repo\" rev-parse HEAD)\"\nprintf 'MAC_BASE_DIRTY_COUNT=%s\\n' \"$(git -C \"$repo\" status --porcelain=v1 | wc -l | tr -d ' ')\"\nprintf 'MAC_WORK_BRANCH=%s %s\\n' \"$(git -C \"$wt\" branch --show-current)\" \"$(git -C \"$wt\" rev-parse HEAD)\"\nprintf 'MAC_WORK_DIRTY_COUNT=%s\\n' \"$(git -C \"$wt\" status --porcelain=v1 | wc -l | tr -d ' ')\"\ntest -r \"$key\"\nprintf 'PI_PREFLIGHT_BEGIN\\n'\nssh -i \"$key\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=10 \"$pi\" '\nset -eu\ncd /home/michal/src/PhotoMaps\nprintf \"PI_BRANCH=%s\\n\" \"$(git branch --show-current)\"\nprintf \"PI_HEAD=%s\\n\" \"$(git rev-parse HEAD)\"\nprintf \"PI_DIRTY_COUNT=%s\\n\" \"$(git status --porcelain=v1 | wc -l | tr -d \" \")\"\nprintf \"PI_GIT_STATUS_BEGIN\\n\"\ngit status --short --branch\nprintf \"PI_GIT_STATUS_END\\n\"\nprintf \"PI_STORAGE\\n\"\ndf -h .\nprintf \"PI_DATA_PRESENT=%s\\n\" \"$(test -f backend/data/app.db && echo yes || echo no)\"\nprintf \"PI_DIST_PRESENT=%s\\n\" \"$(test -f frontend/dist/index.html && echo yes || echo no)\"\nprintf \"PI_DB_SIZE_BYTES=%s\\n\" \"$(test -f backend/data/app.db && stat -c %s backend/data/app.db || echo 0)\"\nprintf \"PI_SERVICE_STATUS_BEGIN\\n\"\nmake server-status\nprintf \"PI_SERVICE_STATUS_END\\n\"\nprintf \"PI_TUNNEL_STATUS_BEGIN\\n\"\nmake tunnel-status\nprintf \"PI_TUNNEL_STATUS_END\\n\"\nprintf \"PI_HTTP_HEALTH=\"\ncurl -fsS --max-time 8 http://127.0.0.1:8000/health\nprintf \"\\n\"\nprintf \"PI_FRONT_HTTP=\"\ncurl -sS --max-time 8 -o /dev/null -w \"%{http_code}\\n\" http://127.0.0.1:8000/\n'\necho PHOTOMAP_PI_READONLY_PREFLIGHT_DONE",
+      "current_rss_mb": 6.53,
+      "elapsed_seconds": 2.842,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 512,
+      "memory_limited": false,
+      "output": "MAC_BASE=agent-work 524c40a218ad59d985a133efc542e99f51f5912a\nMAC_BASE_DIRTY_COUNT=0\nMAC_WORK_BRANCH=fix/macbook-trackpad-zoom 524c40a218ad59d985a133efc542e99f51f5912a\nMAC_WORK_DIRTY_COUNT=0\nPI_PREFLIGHT_BEGIN\nPI_BRANCH=main\nPI_HEAD=ac898d465bfca86d4259cdf76abea1dadb2e1f4c\nPI_DIRTY_COUNT=0\nPI_GIT_STATUS_BEGIN\n## main...origin/main\nPI_GIT_STATUS_END\nPI_STORAGE\nFilesystem      Size  Used Avail Use% Mounted on\n/dev/mmcblk0p2   58G   14G   43G  25% /\nPI_DATA_PRESENT=yes\nPI_DIST_PRESENT=yes\nPI_DB_SIZE_BYTES=19574784\nPI_SERVICE_STATUS_BEGIN\nPubliczny runtime PhotoMap:\n209472\n\nPhotoMap runtime port 8000:\nCOMMAND    PID   USER FD   TYPE DEVICE SIZE/OFF NODE NAME\npython  209472 michal 13u  IPv4 674395      0t0  TCP 127.0.0.1:8000 (LISTEN)\nPhotoMap runtime health: OK\nPI_SERVICE_STATUS_END\nPI_TUNNEL_STATUS_BEGIN\nCloudflare tunnel:\nSystemowy Cloudflare tunnel:\n222848\nConfig: brak /home/michal/src/PhotoMaps/.cloudflared/config.yml\nPI_TUNNEL_STATUS_END\nPI_HTTP_HEALTH={\"status\":\"ok\"}\nPI_FRONT_HTTP=200\nPHOTOMAP_PI_READONLY_PREFLIGHT_DONE\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 6.53,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-10-31T01:00:25.782007+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.065,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.077,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-pi-zoom-deploy-preflight-20261031-v1",
+  "idle_timeout": 160,
+  "memory_limit_mb": 512,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 2.842,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-31T01:00:21.540510+00:00",
+  "status": "done",
+  "task_digest": "fb50f78be174551e43fa90d0b2c055a0b92af4e1ddf1f5d677d8f3db25813c36",
+  "task_timeout": 420,
+  "verification": [],
+  "work_branch": "fix/macbook-trackpad-zoom"
+}

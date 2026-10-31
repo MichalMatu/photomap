@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "950f2be1e2e253ce3afc265a",
+  "command_timeout": 960,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 2678,
+      "command": "set -eu\nbase=/Users/michal/agent-workspace/repos/photomap/work\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 91334a76de1e8d239c68dff9c29002847a6c5097\ntest \"$(git branch --show-current)\" = fix/macbook-trackpad-zoom\nfor pair in \"frontend/node_modules\" \"backend/.venv\"; do\n  if test -L \"$wt/$pair\"; then\n    test \"$(readlink \"$wt/$pair\")\" = \"$base/$pair\"\n    unlink \"$wt/$pair\"\n    mkdir -p \"$wt/$pair\"\n    rsync -a \"$base/$pair/\" \"$wt/$pair/\"\n  fi\ndone\ntest ! -L frontend/node_modules\ntest ! -L backend/.venv\ntest -x frontend/node_modules/.bin/vite\ntest -x backend/.venv/bin/python\nbackend/.venv/bin/python -c 'import sys, fastapi, alembic, uvicorn; print(\"BACKEND_PYTHON_READY\",sys.prefix)'\nprintf 'FORMATTING_PROTOTYPE\\n'\nfrontend/node_modules/.bin/prettier --write frontend/src/components/map/trackpadZoom.ts frontend/src/components/map/MapTrackpadZoom.tsx frontend/src/components/map/trackpadZoom.test.ts frontend/e2e/visual/map-trackpad-zoom.spec.ts\nprintf 'TRACKPAD_TESTS_AND_BUILD\\n'\ncd frontend\nnpm run test -- src/components/map/trackpadZoom.test.ts\nnpm run build\n./node_modules/.bin/prettier --check src/components/map/trackpadZoom.ts src/components/map/MapTrackpadZoom.tsx src/components/map/trackpadZoom.test.ts e2e/visual/map-trackpad-zoom.spec.ts\ncd \"$wt\"\nprintf 'GIT_STATUS_BEFORE_COMMIT\\n'\ngit status --short\ngit add -- frontend/src/components/map/trackpadZoom.ts frontend/src/components/map/MapTrackpadZoom.tsx frontend/src/components/map/trackpadZoom.test.ts frontend/e2e/visual/map-trackpad-zoom.spec.ts\nif ! git diff --cached --quiet; then\n  git commit -m \"style(map): format experimental smooth trackpad zoom\"\n  git push origin HEAD:refs/heads/fix/macbook-trackpad-zoom\nfi\nprintf 'GIT_HEAD=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'GIT_CLEAN_COUNT=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\nprintf 'BASE_BRANCH=%s\\n' \"$(git -C \"$base\" branch --show-current)\"\necho PHOTOMAP_MAC_ZOOM_LOCAL_READY_CLEAN_COMPLETE",
+      "current_rss_mb": 23.83,
+      "elapsed_seconds": 36.895,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 2048,
+      "memory_limited": false,
+      "output": "BACKEND_PYTHON_READY /Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom/backend/.venv\nFORMATTING_PROTOTYPE\nfrontend/src/components/map/trackpadZoom.ts 69ms\nfrontend/src/components/map/MapTrackpadZoom.tsx 17ms\nfrontend/src/components/map/trackpadZoom.test.ts 7ms\nfrontend/e2e/visual/map-trackpad-zoom.spec.ts 10ms (unchanged)\nTRACKPAD_TESTS_AND_BUILD\n\n> test\n> vitest run src/components/map/trackpadZoom.test.ts\n\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv5.0.1 \u001b[39m\u001b[90m/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom/frontend\u001b[39m\n\n \u001b[32m✓\u001b[39m src/components/map/trackpadZoom.test.ts \u001b[2m(\u001b[22m\u001b[2m5 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 5\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m5 passed\u001b[39m\u001b[22m\u001b[90m (5)\u001b[39m\n\u001b[2m   Start at \u001b[22m 21:09:57\n\u001b[2m   Duration \u001b[22m 220ms\u001b[2m (transform 63%, import 21%, tests 9%, worker 7%)\u001b[22m\n\n\n> build\n> npm run typecheck && vite build\n\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\nvite v6.4.3 building for production...\ntransforming...\n✓ 2230 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                            3.00 kB │ gzip:  0.98 kB\ndist/assets/map-vendor-CIGW-MKW.css       15.61 kB │ gzip:  6.46 kB\ndist/assets/admin-C9VWJiZt.css            52.93 kB │ gzip:  7.86 kB\ndist/assets/index-DNqMNGfB.css            88.23 kB │ gzip: 14.67 kB\ndist/assets/PlaceDetailPage-Bavgz2nB.js    3.45 kB │ gzip:  1.50 kB\ndist/assets/index-BH9oIcq3.js              3.50 kB │ gzip:  1.58 kB\ndist/assets/GuidesPage-Bs_Rv1yj.js         8.53 kB │ gzip:  3.22 kB\ndist/assets/query-vendor-BLe33XlG.js      37.91 kB │ gzip: 11.44 kB\ndist/assets/react-vendor-GxMAwJfR.js     142.96 kB │ gzip: 45.76 kB\ndist/assets/map-vendor-DB9AUs6p.js       154.72 kB │ gzip: 45.15 kB\ndist/assets/admin-u8nNkPoZ.js            186.14 kB │ gzip: 51.63 kB\ndist/assets/public-map-pH774bCJ.js       187.04 kB │ gzip: 57.12 kB\n✓ built in 3.12s\nChecking formatting...\nAll matched files use Prettier code style!\nGIT_STATUS_BEFORE_COMMIT\n M frontend/src/components/map/MapTrackpadZoom.tsx\n M frontend/src/components/map/trackpadZoom.test.ts\n M frontend/src/components/map/trackpadZoom.ts\n[fix/macbook-trackpad-zoom 6d08908] style(map): format experimental smooth trackpad zoom\n 3 files changed, 14 insertions(+), 14 deletions(-)\nTo https://github.com/MichalMatu/photomap.git\n   91334a7..6d08908  HEAD -> fix/macbook-trackpad-zoom\nGIT_HEAD=6d08908929d643f10bf58488f8b8382ba325659e\nGIT_CLEAN_COUNT=0\nBASE_BRANCH=agent-work\nPHOTOMAP_MAC_ZOOM_LOCAL_READY_CLEAN_COMPLETE\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 628.16,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.15",
+  "edits": {},
+  "finished_at": "2026-10-30T20:10:11.750644+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.077,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.13,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-mac-zoom-finalize-local-20261030-v1",
+  "idle_timeout": 300,
+  "memory_limit_mb": 2048,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 36.895,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-30T20:09:33.009527+00:00",
+  "status": "done",
+  "task_digest": "0411e4189797e0c19a01cba0f0213ce9388c70377ede4367c5376675f08e37b2",
+  "task_timeout": 1500,
+  "verification": [],
+  "work_branch": "fix/macbook-trackpad-zoom"
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-mac-zoom-verify-build-20261030-v1",
+  "task_digest": "811bf830c0199ce283897942a5808b679d10ac7874370869d86b363f39fe273f",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-10-30T20:08:33.776556+00:00",
+  "attempt_id": "4d587c8772e555903f957280",
+  "daemon_version": "4.20.15",
+  "daemon_pid": 75586,
+  "updated_at": "2026-10-30T20:08:34.311329+00:00",
+  "pid": 75586
+}

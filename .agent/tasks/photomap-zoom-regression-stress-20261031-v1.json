@@ -1,0 +1,18 @@
+{
+  "id": "photomap-zoom-regression-stress-20261031-v1",
+  "dedupe_key": "photomap-zoom-regression-stress-20261031-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/macbook-trackpad-zoom",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 500,
+  "idle_timeout": 200,
+  "task_timeout": 850,
+  "memory_limit_mb": 2048,
+  "commands": [
+    "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 6d08908929d643f10bf58488f8b8382ba325659e\nfor p in 8000 5174 18080 15174; do\n if lsof -nP -iTCP:\"$p\" -sTCP:LISTEN 2>/dev/null | grep -q LISTEN; then echo \"PORT_BUSY_ABORT=$p\"; exit 3; fi\ndone\ntest -f backend/data/app.db\nbackend/.venv/bin/python - <<'PY'\nimport sqlite3\ndb=sqlite3.connect('file:backend/data/app.db?mode=ro',uri=True)\ncnt=db.execute(\"SELECT COUNT(*) FROM place WHERE status='published'\").fetchone()[0]\nprint('TEST_MAP_PUBLISHED_PLACES',cnt)\nassert cnt>=100\nPY\ncleanup(){ ./scripts/devctl.sh stop >/dev/null 2>&1 || true; }\ntrap cleanup EXIT\nmake start\ncd frontend\nnode <<'JS'\nconst {chromium}=require('@playwright/test');\nconst assert=require('node:assert/strict');\n(async () => {\nconst browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless:true});\ntry{\n const page=await browser.newPage({viewport:{width:1360,height:850}});\n await page.addInitScript(()=> {\n  localStorage.setItem('photomap-public-map-tour-v3-complete','1');\n  localStorage.setItem('photomap:moderator-recruitment:v1','dismissed');\n });\n const errors=[];\n page.on('pageerror',e=>errors.push(e.message));\n await page.goto('http://127.0.0.1:5174/',{waitUntil:'domcontentloaded'});\n await page.locator('.place-photo-marker').first().waitFor({timeout:20000});\n await page.waitForTimeout(300);\n const result=await page.evaluate(async()=>{\n  const el=document.querySelector('.place-map');\n  if(!el||!el.__photomapDebugMap)throw new Error('Map debug hook unavailable');\n  const map=el.__photomapDebugMap, r=el.getBoundingClientRect();\n  let ends=0;map.on('zoomend',()=>ends++);\n  const emit=(delta,ctrl=false) => {\n   el.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaMode:0,deltaY:delta,ctrlKey:ctrl,clientX:r.x+r.width/2,clientY:r.y+r.height/2}));\n  };\n  const initial=map.getZoom();\n  const countStart=document.querySelectorAll('.place-photo-marker').length;\n  for(let i=0;i<40;i++)emit(8);\n  await new Promise(resolve=>setTimeout(resolve,650));\n  const afterOut=map.getZoom(),endsOut=ends;\n  for(let i=0;i<40;i++)emit(-8);\n  await new Promise(resolve=>setTimeout(resolve,650));\n  return {initial,afterOut,afterIn:map.getZoom(),endsOut,endsTotal:ends,countStart,countEnd:document.querySelectorAll('.place-photo-marker').length};\n });\n console.log('REAL_120_PLACE_MAP_STRESS',JSON.stringify(result));\n console.log('BROWSER_ERRORS',JSON.stringify(errors));\n assert(result.countStart>=5,'not enough visible markers for stress');\n assert(result.afterOut<result.initial-1,'40x8 outward zoom should progress');\n assert(result.afterIn>result.afterOut+1,'40x8 inward zoom should progress');\n assert(result.endsOut<=2,'too many final zoom events on outward gesture');\n assert(result.endsTotal<=4,'too many final zoom events total');\n assert.deepEqual(errors,[]);\n}finally{await browser.close()}\n})().catch(e=>{console.error(e);process.exitCode=1});\nJS\ncd \"$wt\"\ncleanup\ntrap - EXIT\nprintf 'POST_STRESS_GIT_STATUS\\n'\ngit status --short\necho PHOTOMAP_ZOOM_REALISTIC_STRESS_PASS"
+  ]
+}

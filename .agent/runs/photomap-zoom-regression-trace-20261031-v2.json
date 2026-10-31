@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-regression-trace-20261031-v2",
+  "task_digest": "db193f155da08c1a187736c3d6c3e1177033c433b20bce8017a1566dffab779f",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-31T00:39:44.906683+00:00",
+  "attempt_id": "0c216d0d553d40ed3666b428",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 96781,
+  "updated_at": "2026-10-31T00:39:45.472242+00:00",
+  "pid": 96781
+}

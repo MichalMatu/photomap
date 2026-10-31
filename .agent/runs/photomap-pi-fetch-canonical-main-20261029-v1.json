@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-pi-fetch-canonical-main-20261029-v1",
+  "task_digest": "aef11642ec71e8a6e82ab6f45d0d4bf681f6fb70981c657d8b2bcc9e748dced9",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-29T09:54:11.555979+00:00",
+  "attempt_id": "afe629d138be5fbe5227bf38",
+  "daemon_version": "4.20.14",
+  "daemon_pid": 3198,
+  "updated_at": "2026-10-29T09:54:11.965234+00:00",
+  "pid": 3198
+}

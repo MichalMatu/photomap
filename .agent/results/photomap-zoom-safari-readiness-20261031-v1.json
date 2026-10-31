@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "bdb579094763d13cbd454774",
+  "command_timeout": 120,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 309,
+      "command": "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\nprintf 'ZOOM_BRANCH=%s\\n' \"$(git branch --show-current)\"\nprintf 'ZOOM_SHA=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'ZOOM_DIRTY=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\ncd frontend\nnode - <<'JS'\nconst fs=require('fs');\nconst {webkit}=require('@playwright/test');\nconst executable=webkit.executablePath();\nconsole.log('WEBKIT_EXECUTABLE',executable);\nconsole.log('WEBKIT_INSTALLED',fs.existsSync(executable));\nJS\nfor p in 8000 5174 18080 15174; do\n if lsof -nP -iTCP:\"$p\" -sTCP:LISTEN 2>/dev/null | grep -q LISTEN; then printf 'PORT_BUSY=%s\\n' \"$p\"; else printf 'PORT_FREE=%s\\n' \"$p\"; fi\ndone\necho PHOTOMAP_ZOOM_SAFARI_READINESS_READONLY",
+      "current_rss_mb": 76.16,
+      "elapsed_seconds": 3.779,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 256,
+      "memory_limited": false,
+      "output": "ZOOM_BRANCH=fix/macbook-trackpad-zoom\nZOOM_SHA=524c40a218ad59d985a133efc542e99f51f5912a\nZOOM_DIRTY=0\nWEBKIT_EXECUTABLE /Users/michal/Library/Caches/ms-playwright/webkit-2287/pw_run.sh\nWEBKIT_INSTALLED false\nPORT_FREE=8000\nPORT_FREE=5174\nPORT_FREE=18080\nPORT_FREE=15174\nPHOTOMAP_ZOOM_SAFARI_READINESS_READONLY\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 76.16,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-10-31T00:49:20.859094+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.09,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.222,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-zoom-safari-readiness-20261031-v1",
+  "idle_timeout": 90,
+  "memory_limit_mb": 256,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 3.779,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-31T00:49:14.552695+00:00",
+  "status": "done",
+  "task_digest": "5f5dffe58127a3a10d388f10ffb4272306fe113eec45dab5defd2ace11d2ce80",
+  "task_timeout": 300,
+  "verification": [],
+  "work_branch": "fix/macbook-trackpad-zoom"
+}

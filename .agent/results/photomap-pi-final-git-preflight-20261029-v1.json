@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "b126241c93943119b70fe2c0",
+  "command_timeout": 100,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 163,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git branch --show-current && git rev-parse HEAD && git status --short && git remote -v'",
+      "current_rss_mb": 3.67,
+      "elapsed_seconds": 1.161,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 512,
+      "memory_limited": false,
+      "output": "main\nac898d465bfca86d4259cdf76abea1dadb2e1f4c\norigin\thttps://github.com/MichalMatu/PhotoMaps.git (fetch)\norigin\thttps://github.com/MichalMatu/PhotoMaps.git (push)\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 3.67,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.14",
+  "edits": {},
+  "finished_at": "2026-10-29T09:53:26.549198+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.17,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.143,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-pi-final-git-preflight-20261029-v1",
+  "idle_timeout": 90,
+  "memory_limit_mb": 512,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 1.161,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-29T09:53:22.596234+00:00",
+  "status": "done",
+  "task_digest": "859785d3f9c0dcf1ae9881302c080167924ffb17aebbe4a226d2dead8da5c5a8",
+  "task_timeout": 200,
+  "verification": [],
+  "work_branch": "main"
+}

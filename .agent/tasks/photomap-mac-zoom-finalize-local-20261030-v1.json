@@ -1,0 +1,18 @@
+{
+  "id": "photomap-mac-zoom-finalize-local-20261030-v1",
+  "dedupe_key": "photomap-mac-zoom-finalize-local-20261030-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/macbook-trackpad-zoom",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 960,
+  "idle_timeout": 300,
+  "task_timeout": 1500,
+  "memory_limit_mb": 2048,
+  "commands": [
+    "set -eu\nbase=/Users/michal/agent-workspace/repos/photomap/work\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 91334a76de1e8d239c68dff9c29002847a6c5097\ntest \"$(git branch --show-current)\" = fix/macbook-trackpad-zoom\nfor pair in \"frontend/node_modules\" \"backend/.venv\"; do\n  if test -L \"$wt/$pair\"; then\n    test \"$(readlink \"$wt/$pair\")\" = \"$base/$pair\"\n    unlink \"$wt/$pair\"\n    mkdir -p \"$wt/$pair\"\n    rsync -a \"$base/$pair/\" \"$wt/$pair/\"\n  fi\ndone\ntest ! -L frontend/node_modules\ntest ! -L backend/.venv\ntest -x frontend/node_modules/.bin/vite\ntest -x backend/.venv/bin/python\nbackend/.venv/bin/python -c 'import sys, fastapi, alembic, uvicorn; print(\"BACKEND_PYTHON_READY\",sys.prefix)'\nprintf 'FORMATTING_PROTOTYPE\\n'\nfrontend/node_modules/.bin/prettier --write frontend/src/components/map/trackpadZoom.ts frontend/src/components/map/MapTrackpadZoom.tsx frontend/src/components/map/trackpadZoom.test.ts frontend/e2e/visual/map-trackpad-zoom.spec.ts\nprintf 'TRACKPAD_TESTS_AND_BUILD\\n'\ncd frontend\nnpm run test -- src/components/map/trackpadZoom.test.ts\nnpm run build\n./node_modules/.bin/prettier --check src/components/map/trackpadZoom.ts src/components/map/MapTrackpadZoom.tsx src/components/map/trackpadZoom.test.ts e2e/visual/map-trackpad-zoom.spec.ts\ncd \"$wt\"\nprintf 'GIT_STATUS_BEFORE_COMMIT\\n'\ngit status --short\ngit add -- frontend/src/components/map/trackpadZoom.ts frontend/src/components/map/MapTrackpadZoom.tsx frontend/src/components/map/trackpadZoom.test.ts frontend/e2e/visual/map-trackpad-zoom.spec.ts\nif ! git diff --cached --quiet; then\n  git commit -m \"style(map): format experimental smooth trackpad zoom\"\n  git push origin HEAD:refs/heads/fix/macbook-trackpad-zoom\nfi\nprintf 'GIT_HEAD=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'GIT_CLEAN_COUNT=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\nprintf 'BASE_BRANCH=%s\\n' \"$(git -C \"$base\" branch --show-current)\"\necho PHOTOMAP_MAC_ZOOM_LOCAL_READY_CLEAN_COMPLETE"
+  ]
+}

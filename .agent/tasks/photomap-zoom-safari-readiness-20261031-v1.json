@@ -1,0 +1,18 @@
+{
+  "id": "photomap-zoom-safari-readiness-20261031-v1",
+  "dedupe_key": "photomap-zoom-safari-readiness-20261031-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/macbook-trackpad-zoom",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 120,
+  "idle_timeout": 90,
+  "task_timeout": 300,
+  "memory_limit_mb": 256,
+  "commands": [
+    "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\nprintf 'ZOOM_BRANCH=%s\\n' \"$(git branch --show-current)\"\nprintf 'ZOOM_SHA=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'ZOOM_DIRTY=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\ncd frontend\nnode - <<'JS'\nconst fs=require('fs');\nconst {webkit}=require('@playwright/test');\nconst executable=webkit.executablePath();\nconsole.log('WEBKIT_EXECUTABLE',executable);\nconsole.log('WEBKIT_INSTALLED',fs.existsSync(executable));\nJS\nfor p in 8000 5174 18080 15174; do\n if lsof -nP -iTCP:\"$p\" -sTCP:LISTEN 2>/dev/null | grep -q LISTEN; then printf 'PORT_BUSY=%s\\n' \"$p\"; else printf 'PORT_FREE=%s\\n' \"$p\"; fi\ndone\necho PHOTOMAP_ZOOM_SAFARI_READINESS_READONLY"
+  ]
+}

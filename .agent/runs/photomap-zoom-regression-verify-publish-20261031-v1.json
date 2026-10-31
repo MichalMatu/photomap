@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-regression-verify-publish-20261031-v1",
+  "task_digest": "a5d926f6f9427aaf4304e100acc254a9b94b90abb85d0866b79950b7e57da6f9",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-10-31T00:45:26.189403+00:00",
+  "attempt_id": "e405b837129560226237ac61",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 6204,
+  "updated_at": "2026-10-31T00:45:26.687743+00:00",
+  "pid": 6204
+}

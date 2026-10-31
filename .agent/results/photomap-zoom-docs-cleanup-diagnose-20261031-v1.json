@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "7a78aa1a7b1102d63404fb3d",
+  "command_timeout": 120,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 776,
+      "command": "set -u\nMAC=/Users/michal/agent-workspace/repos/photomap/work\nWT=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\nprintf 'MAC_BRANCH=%s\\n' \"$(git -C \"$MAC\" branch --show-current 2>&1)\"\nprintf 'MAC_HEAD=%s\\n' \"$(git -C \"$MAC\" rev-parse HEAD 2>&1)\"\nprintf 'MAC_DIRTY_START\\n'\ngit -C \"$MAC\" status --short --branch 2>&1\nprintf 'MAC_DIRTY_END\\n'\nprintf 'REMOTE_MAIN=%s\\n' \"$(git -C \"$MAC\" rev-parse refs/remotes/origin/main 2>&1)\"\nprintf 'LOCAL_FIX=%s\\n' \"$(git -C \"$MAC\" rev-parse refs/heads/fix/macbook-trackpad-zoom 2>&1)\"\nprintf 'MAC_WORKTREE_HEAD=%s\\n' \"$(git -C \"$WT\" rev-parse HEAD 2>&1)\"\nprintf 'MAC_WORKTREE_STATUS_BEGIN\\n'\ngit -C \"$WT\" status --short --branch 2>&1\nprintf 'MAC_WORKTREE_STATUS_END\\n'\ngit -C \"$MAC\" worktree list --porcelain\nprintf 'KEY_EXISTS=%s\\n' \"$(test -r /Users/michal/.ssh/id_ed25519 && echo yes || echo no)\"\nprintf 'IS_ANCESTOR='\ngit -C \"$MAC\" merge-base --is-ancestor 524c40a218ad59d985a133efc542e99f51f5912a d21400207c121eb3169647978072ee18a99269d1 && echo yes || echo no\necho PHOTO_MAC_DIAGNOSTIC_DONE",
+      "current_rss_mb": 4.5,
+      "elapsed_seconds": 0.335,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 256,
+      "memory_limited": false,
+      "output": "MAC_BRANCH=agent-work\nMAC_HEAD=d21400207c121eb3169647978072ee18a99269d1\nMAC_DIRTY_START\n## agent-work...origin/main\nMAC_DIRTY_END\nREMOTE_MAIN=d21400207c121eb3169647978072ee18a99269d1\nLOCAL_FIX=524c40a218ad59d985a133efc542e99f51f5912a\nMAC_WORKTREE_HEAD=524c40a218ad59d985a133efc542e99f51f5912a\nMAC_WORKTREE_STATUS_BEGIN\n## fix/macbook-trackpad-zoom...origin/fix/macbook-trackpad-zoom\nMAC_WORKTREE_STATUS_END\nworktree /Users/michal/agent-workspace/repos/photomap/work\nHEAD d21400207c121eb3169647978072ee18a99269d1\nbranch refs/heads/agent-work\n\nworktree /Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\nHEAD 524c40a218ad59d985a133efc542e99f51f5912a\nbranch refs/heads/fix/macbook-trackpad-zoom\n\nKEY_EXISTS=yes\nIS_ANCESTOR=yes\nPHOTO_MAC_DIAGNOSTIC_DONE\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 4.5,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-10-31T01:05:34.053139+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.093,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.088,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-zoom-docs-cleanup-diagnose-20261031-v1",
+  "idle_timeout": 90,
+  "memory_limit_mb": 256,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.335,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-31T01:05:32.220507+00:00",
+  "status": "done",
+  "task_digest": "8f46df6e41cee737d48aee078d5b6abbcb677764f9da116e0aa705974fff097f",
+  "task_timeout": 240,
+  "verification": [],
+  "work_branch": "main"
+}

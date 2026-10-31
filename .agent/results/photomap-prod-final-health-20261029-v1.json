@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "043cedd50b5e484748491552",
+  "command_timeout": 100,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 70,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git rev-parse HEAD && curl -fsS -o /dev/null -w \"HEALTH_HTTP=%{http_code}\\n\" http://127.0.0.1:8000/health && curl -fsS -o /dev/null -w \"MAP_HTTP=%{http_code}\\n\" http://127.0.0.1:8000/api/places/map && git status --short'",
+      "current_rss_mb": 4.53,
+      "elapsed_seconds": 3.306,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 512,
+      "memory_limited": false,
+      "output": "ac898d465bfca86d4259cdf76abea1dadb2e1f4c\nHEALTH_HTTP=200\nMAP_HTTP=200\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 4.53,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.14",
+  "edits": {},
+  "finished_at": "2026-10-29T09:55:21.939123+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.071,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.081,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-prod-final-health-20261029-v1",
+  "idle_timeout": 90,
+  "memory_limit_mb": 512,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 3.306,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-29T09:55:17.167323+00:00",
+  "status": "done",
+  "task_digest": "1134d3b06dd600fd67003ef5713ad9d41b1bb96dc708806a67d8aa2eba7a1a57",
+  "task_timeout": 210,
+  "verification": [],
+  "work_branch": "main"
+}

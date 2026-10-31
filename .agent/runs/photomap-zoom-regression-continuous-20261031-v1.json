@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-regression-continuous-20261031-v1",
+  "task_digest": "8e180b9b8e20b6db67dcbd0c86f2d158cfa5a5551b20649bcbc684fb975ad7a6",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-10-31T00:36:15.764282+00:00",
+  "attempt_id": "dcd650dd245cf473664f6cb7",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 92058,
+  "updated_at": "2026-10-31T00:36:16.424634+00:00",
+  "pid": 92058
+}

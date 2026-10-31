@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "d6c46288f221a0eb50bd3b8a",
+  "command_timeout": 90,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 3632,
+      "command": "set -eu\nroot=/Users/michal/agent-workspace/repos\nrepo=\"$root/photomap/work\"\nprintf 'MAC_REPO_ROOT_EXISTS=%s\\n' \"$(test -d \"$root\" && echo yes || echo no)\"\nprintf 'PHOTOMAP_PARENT_EXISTS=%s\\n' \"$(test -d \"$root/photomap\" && echo yes || echo no)\"\nprintf 'PHOTOMAP_WORK_EXISTS=%s\\n' \"$(test -d \"$repo\" && echo yes || echo no)\"\nif test -d \"$repo\"; then\n  printf 'PHOTOMAP_WORK_GIT=%s\\n' \"$(git -C \"$repo\" rev-parse --is-inside-work-tree 2>/dev/null || echo no)\"\n  printf 'PHOTOMAP_WORK_TOP=%s\\n' \"$(git -C \"$repo\" rev-parse --show-toplevel 2>/dev/null || echo unavailable)\"\n  printf 'PHOTOMAP_WORK_HEAD=%s\\n' \"$(git -C \"$repo\" rev-parse --short=12 HEAD 2>/dev/null || echo unavailable)\"\n  printf 'PHOTOMAP_WORK_BRANCH=%s\\n' \"$(git -C \"$repo\" branch --show-current 2>/dev/null || echo unavailable)\"\n  printf 'PHOTOMAP_WORK_ORIGIN=%s\\n' \"$(git -C \"$repo\" remote get-url origin 2>/dev/null || echo unavailable)\"\n  printf 'PHOTOMAP_WORK_DIRTY_COUNT=%s\\n' \"$(git -C \"$repo\" status --porcelain=v1 2>/dev/null | wc -l | tr -d ' ')\"\n  printf 'PHOTOMAP_WORKTREES_BEGIN\\n'\n  git -C \"$repo\" worktree list --porcelain 2>/dev/null || true\n  printf 'PHOTOMAP_WORKTREES_END\\n'\nfi\nprintf 'REPO_FOLDER_MATCHES_BEGIN\\n'\nif test -d \"$root\"; then find \"$root\" -maxdepth 3 -type d -iname '*photo*' -print; fi\nprintf 'REPO_FOLDER_MATCHES_END\\n'\necho PHOTOMAP_MAC_LOCAL_REPO_LOCATION_COMPLETE",
+      "current_rss_mb": 1.23,
+      "elapsed_seconds": 0.718,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 256,
+      "memory_limited": false,
+      "output": "MAC_REPO_ROOT_EXISTS=yes\nPHOTOMAP_PARENT_EXISTS=yes\nPHOTOMAP_WORK_EXISTS=yes\nPHOTOMAP_WORK_GIT=true\nPHOTOMAP_WORK_TOP=/Users/michal/agent-workspace/repos/photomap/work\nPHOTOMAP_WORK_HEAD=858fccde063d\nPHOTOMAP_WORK_BRANCH=agent-work\nPHOTOMAP_WORK_ORIGIN=https://github.com/MichalMatu/photomap.git\nPHOTOMAP_WORK_DIRTY_COUNT=0\nPHOTOMAP_WORKTREES_BEGIN\nworktree /Users/michal/agent-workspace/repos/photomap/work\nHEAD 858fccde063d13e2a487d342a63200e3e5bfe693\nbranch refs/heads/agent-work\n\nPHOTOMAP_WORKTREES_END\nREPO_FOLDER_MATCHES_BEGIN\n/Users/michal/agent-workspace/repos/photomap\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260912-photomap-trackpad-zoom-e2e-073\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260921-photomap-popup-close-fix-029\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260912-photomap-photoqueue-race-078\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260922-photomap-map-polish-024\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260912-photomap-trackpad-zoom-070\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260919-photomap-security-config-007\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260912-photomap-fix-rejected-retention-034\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260912-photomap-admin-lazy-loading-075\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260922-photomap-user-flow-media-scheduler-071\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260922-photomap-user-flow-media-scheduler-070\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260922-photomap-preload-visible-galleries-054\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260922-photomap-preload-visible-galleries-053\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260922-photomap-map-polish-030\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260922-photomap-preload-visible-galleries-052\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260922-photomap-map-polish-123-024\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260912-photomap-trackpad-zoom-browser-073\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260919-photomap-frontend-deps-update-017\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260919-photomap-frontend-deps-update-016\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260919-photomap-frontend-deps-update-018\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260922-photomap-user-flow-media-scheduler-072\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260912-photomap-remove-photo-redaction-e2e-016\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260921-photomap-full-check-017\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260912-photomap-admin-lazy-loading-076\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260912-photomap-fix-content-block-case-collision-027\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260922-photomap-prioritize-map-covers-064\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260912-photomap-photo-detail-lazy-084\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260922-photomap-prioritize-map-covers-065\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260921-photomap-refresh-darwin-visuals-032\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260912-photomap-photo-detail-chain-lazy-086\n/Users/michal/agent-workspace/repos/photomap/checkpoints/20260921-photomap-media-e2e-contract-006\nREPO_FOLDER_MATCHES_END\nPHOTOMAP_MAC_LOCAL_REPO_LOCATION_COMPLETE\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 1.23,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.15",
+  "edits": {},
+  "finished_at": "2026-10-30T20:02:15.857037+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.09,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.097,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-mac-local-repo-location-20261030-v2",
+  "idle_timeout": 60,
+  "memory_limit_mb": 256,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.718,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-30T20:02:13.363055+00:00",
+  "status": "done",
+  "task_digest": "f98c66891d56e5ce009c8e5d835330317d04bc9002f88f2b18538f41b822fb6b",
+  "task_timeout": 300,
+  "verification": [],
+  "work_branch": "main"
+}

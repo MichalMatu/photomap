@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-safari-readiness-20261031-v1",
+  "task_digest": "5f5dffe58127a3a10d388f10ffb4272306fe113eec45dab5defd2ace11d2ce80",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-31T00:49:20.859094+00:00",
+  "attempt_id": "bdb579094763d13cbd454774",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 12239,
+  "updated_at": "2026-10-31T00:49:21.193729+00:00",
+  "pid": 12239
+}

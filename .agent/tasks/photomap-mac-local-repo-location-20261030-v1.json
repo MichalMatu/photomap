@@ -1,0 +1,18 @@
+{
+  "id": "photomap-mac-local-repo-location-20261030-v1",
+  "dedupe_key": "photomap-mac-local-repo-location-20261030-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 90,
+  "idle_timeout": 60,
+  "task_timeout": 150,
+  "memory_limit_mb": 256,
+  "commands": [
+    "set -eu\nroot=/Users/michal/agent-workspace/repos\nrepo=\"$root/photomap/work\"\nprintf 'MAC_REPO_ROOT_EXISTS=%s\\n' \"$(test -d \"$root\" && echo yes || echo no)\"\nprintf 'PHOTOMAP_PARENT_EXISTS=%s\\n' \"$(test -d \"$root/photomap\" && echo yes || echo no)\"\nprintf 'PHOTOMAP_WORK_EXISTS=%s\\n' \"$(test -d \"$repo\" && echo yes || echo no)\"\nif test -d \"$repo\"; then\n  printf 'PHOTOMAP_WORK_GIT=%s\\n' \"$(git -C \"$repo\" rev-parse --is-inside-work-tree 2>/dev/null || echo no)\"\n  printf 'PHOTOMAP_WORK_TOP=%s\\n' \"$(git -C \"$repo\" rev-parse --show-toplevel 2>/dev/null || echo unavailable)\"\n  printf 'PHOTOMAP_WORK_HEAD=%s\\n' \"$(git -C \"$repo\" rev-parse --short=12 HEAD 2>/dev/null || echo unavailable)\"\n  printf 'PHOTOMAP_WORK_BRANCH=%s\\n' \"$(git -C \"$repo\" branch --show-current 2>/dev/null || echo unavailable)\"\n  printf 'PHOTOMAP_WORK_ORIGIN=%s\\n' \"$(git -C \"$repo\" remote get-url origin 2>/dev/null || echo unavailable)\"\n  printf 'PHOTOMAP_WORK_DIRTY_COUNT=%s\\n' \"$(git -C \"$repo\" status --porcelain=v1 2>/dev/null | wc -l | tr -d ' ')\"\n  printf 'PHOTOMAP_WORKTREES_BEGIN\\n'\n  git -C \"$repo\" worktree list --porcelain 2>/dev/null || true\n  printf 'PHOTOMAP_WORKTREES_END\\n'\nfi\nprintf 'REPO_FOLDER_MATCHES_BEGIN\\n'\nif test -d \"$root\"; then find \"$root\" -maxdepth 3 -type d \\( -iname '*photomap*' -o -iname '*photomaps*' \\) -print; fi\nprintf 'REPO_FOLDER_MATCHES_END\\n'\necho PHOTOMAP_MAC_LOCAL_REPO_LOCATION_COMPLETE"
+  ]
+}

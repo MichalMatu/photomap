@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-mac-zoom-playwright-20261030-v1",
+  "task_digest": "9fe9650723b4eb45af796510c731a15e92cf83cbcfe29bfb8a1a994b5b2677e7",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-10-30T20:12:09.169389+00:00",
+  "attempt_id": "7c61167484793d146a45c1cd",
+  "daemon_version": "4.20.15",
+  "daemon_pid": 84191,
+  "updated_at": "2026-10-30T20:12:09.482971+00:00",
+  "pid": 84191
+}

@@ -1,0 +1,18 @@
+{
+  "id": "photomap-zoom-regression-inspect-leaflet-20261031-v1",
+  "dedupe_key": "photomap-zoom-regression-inspect-leaflet-20261031-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/macbook-trackpad-zoom",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 120,
+  "idle_timeout": 90,
+  "task_timeout": 300,
+  "memory_limit_mb": 256,
+  "commands": [
+    "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ntest -d \"$wt\"\ncd \"$wt\"\nprintf 'BRANCH=%s\\n' \"$(git branch --show-current)\"\nprintf 'HEAD=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'DIRTY_COUNT=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\nprintf 'LEAFLET_SOURCE_INSPECTION\\n'\nnode - <<'JS'\nconst fs=require('fs');let s=fs.readFileSync('frontend/node_modules/leaflet/dist/leaflet-src.js','utf8');\nfor(let term of ['setZoomAround: function','_move: function','_moveStart: function','_moveEnd: function','_limitZoom: function','_onWheelScroll: function','_performZoom: function','_updateMap: function','_onTouchMove: function','_onTouchEnd: function']){\n let p=s.indexOf(term);console.log('TERM',term,'FOUND',p>=0);if(p>=0)console.log(s.slice(p,p+2400));\n}\nJS\nprintf 'LOCAL_PORTS\\n'\nfor port in 8000 5174 18080 15174; do if lsof -nP -iTCP:\"$port\" -sTCP:LISTEN 2>/dev/null | grep -q LISTEN; then echo \"PORT_BUSY=$port\"; else echo \"PORT_FREE=$port\"; fi; done"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-docs-cleanup-diagnose-20261031-v1",
+  "task_digest": "8f46df6e41cee737d48aee078d5b6abbcb677764f9da116e0aa705974fff097f",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-31T01:05:34.053139+00:00",
+  "attempt_id": "7a78aa1a7b1102d63404fb3d",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 46988,
+  "updated_at": "2026-10-31T01:05:34.316470+00:00",
+  "pid": 46988
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-caption-independent-postcheck-20261029-v1",
+  "task_digest": "7a9f73dbae512d5ccf2cb002dfd3e19f352201b490228e4d7793a3e5214dcab3",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-29T09:47:43.548795+00:00",
+  "attempt_id": "8723d92a320d92b922b69bbb",
+  "daemon_version": "4.20.14",
+  "daemon_pid": 91837,
+  "updated_at": "2026-10-29T09:47:46.084015+00:00",
+  "pid": 91837
+}

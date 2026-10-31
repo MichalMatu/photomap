@@ -1,0 +1,63 @@
+{
+  "allow_write": true,
+  "attempt_id": "5a203c9ff3648535e5f1920a",
+  "command_timeout": 500,
+  "commands": [
+    {
+      "background_process_leak": true,
+      "captured_output_chars": 341,
+      "command": "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 6d08908929d643f10bf58488f8b8382ba325659e\nfor p in 8000 5174 18080 15174; do\n if lsof -nP -iTCP:\"$p\" -sTCP:LISTEN 2>/dev/null | grep -q LISTEN; then echo \"PORT_BUSY_ABORT=$p\"; exit 3; fi\ndone\ntest -f backend/data/app.db\nbackend/.venv/bin/python - <<'PY'\nimport sqlite3\ndb=sqlite3.connect('file:backend/data/app.db?mode=ro',uri=True)\ncnt=db.execute(\"SELECT COUNT(*) FROM place WHERE status='published'\").fetchone()[0]\nprint('TEST_MAP_PUBLISHED_PLACES',cnt)\nassert cnt>=100\nPY\ncleanup(){ ./scripts/devctl.sh stop >/dev/null 2>&1 || true; }\ntrap cleanup EXIT\nmake start\ncd frontend\nnode <<'JS'\nconst {chromium}=require('@playwright/test');\nconst assert=require('node:assert/strict');\n(async () => {\nconst browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless:true});\ntry{\n const page=await browser.newPage({viewport:{width:1360,height:850}});\n await page.addInitScript(()=> {\n  localStorage.setItem('photomap-public-map-tour-v3-complete','1');\n  localStorage.setItem('photomap:moderator-recruitment:v1','dismissed');\n });\n const errors=[];\n page.on('pageerror',e=>errors.push(e.message));\n await page.goto('http://127.0.0.1:5174/',{waitUntil:'domcontentloaded'});\n await page.locator('.place-photo-marker').first().waitFor({timeout:20000});\n await page.waitForTimeout(300);\n const result=await page.evaluate(async()=>{\n  const el=document.querySelector('.place-map');\n  if(!el||!el.__photomapDebugMap)throw new Error('Map debug hook unavailable');\n  const map=el.__photomapDebugMap, r=el.getBoundingClientRect();\n  let ends=0;map.on('zoomend',()=>ends++);\n  const emit=(delta,ctrl=false) => {\n   el.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaMode:0,deltaY:delta,ctrlKey:ctrl,clientX:r.x+r.width/2,clientY:r.y+r.height/2}));\n  };\n  const initial=map.getZoom();\n  const countStart=document.querySelectorAll('.place-photo-marker').length;\n  for(let i=0;i<40;i++)emit(8);\n  await new Promise(resolve=>setTimeout(resolve,650));\n  const afterOut=map.getZoom(),endsOut=ends;\n  for(let i=0;i<40;i++)emit(-8);\n  await new Promise(resolve=>setTimeout(resolve,650));\n  return {initial,afterOut,afterIn:map.getZoom(),endsOut,endsTotal:ends,countStart,countEnd:document.querySelectorAll('.place-photo-marker').length};\n });\n console.log('REAL_120_PLACE_MAP_STRESS',JSON.stringify(result));\n console.log('BROWSER_ERRORS',JSON.stringify(errors));\n assert(result.countStart>=5,'not enough visible markers for stress');\n assert(result.afterOut<result.initial-1,'40x8 outward zoom should progress');\n assert(result.afterIn>result.afterOut+1,'40x8 inward zoom should progress');\n assert(result.endsOut<=2,'too many final zoom events on outward gesture');\n assert(result.endsTotal<=4,'too many final zoom events total');\n assert.deepEqual(errors,[]);\n}finally{await browser.close()}\n})().catch(e=>{console.error(e);process.exitCode=1});\nJS\ncd \"$wt\"\ncleanup\ntrap - EXIT\nprintf 'POST_STRESS_GIT_STATUS\\n'\ngit status --short\necho PHOTOMAP_ZOOM_REALISTIC_STRESS_PASS",
+      "current_rss_mb": 31.39,
+      "direct_exit_code": 1,
+      "elapsed_seconds": 64.353,
+      "exit_code": 126,
+      "failure_reason": "command_background_process_leak",
+      "idle_timed_out": false,
+      "memory_limit_mb": 2048,
+      "memory_limited": false,
+      "output": "TEST_MAP_PUBLISHED_PLACES 120\nBackend: http://127.0.0.1:8000, PID 1135\nFrontend: http://127.0.0.1:5174, PID 1276\n\nMapa: http://127.0.0.1:5174\nAPI:  http://127.0.0.1:8000\nlocator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('.place-photo-marker').first() to be visible\n\n    at [stdin]:14:52 {\n  name: 'TimeoutError'\n}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 270.81,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_background_process_leak",
+  "finished_at": "2026-10-31T00:41:57.705142+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.129,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.161,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-zoom-regression-stress-20261031-v1",
+  "idle_timeout": 200,
+  "memory_limit_mb": 2048,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 64.353,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-31T00:40:49.153526+00:00",
+  "status": "failed",
+  "task_digest": "e8c0ca8d01093c1636af65923a29d3e5f82dc6be35d85fcd4c8e1173f00de250",
+  "task_timeout": 850,
+  "verification": [],
+  "work_branch": "fix/macbook-trackpad-zoom"
+}

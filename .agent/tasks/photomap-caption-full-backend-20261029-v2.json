@@ -1,0 +1,18 @@
+{
+  "id": "photomap-caption-full-backend-20261029-v2",
+  "dedupe_key": "photomap-caption-full-backend-20261029-v2",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "work/caption-curation-20261029",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 475,
+  "idle_timeout": 415,
+  "task_timeout": 570,
+  "memory_limit_mb": 2048,
+  "commands": [
+    "set -eu\nR=/Users/michal/agent-workspace/repos/photomap/work\nT=/tmp/photomap-caption-full-20261029\ncd \"$R\"\ngit worktree remove --force \"$T\" || true\ngit worktree add --detach \"$T\" fcd11d2006f62d6545cc2cdce506f16fddf0ccad\nmkdir -p \"$T/backend/storage/public\" \"$T/backend/storage/private\"\ncd \"$T/backend\"\n\"$R/backend/.venv/bin/python\" -m pytest app/tests -q\ncd \"$T\"\n\"$R/backend/.venv/bin/python\" -m ruff check scripts/content/photo_caption_editor.py backend/app/tests/scripts/test_photo_caption_editor.py\n\"$R/backend/.venv/bin/python\" -m ruff format --check scripts/content/photo_caption_editor.py backend/app/tests/scripts/test_photo_caption_editor.py\ncd \"$R\"\ngit worktree remove --force \"$T\"\necho PHOTO_CAPTION_FULL_BACKEND_PASS"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "f1547a341c445c00092a9c8c",
+  "command_timeout": 600,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1858,
+      "command": "set -eu\nMAC=/Users/michal/agent-workspace/repos/photomap/work\nTARGET=fbeefb174c309a252e82b47b20dbe3bf63217485\nPI=michal@192.168.0.23\nKEY=/Users/michal/.ssh/id_ed25519\nSSH=\"ssh -i $KEY -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=10\"\ntest -r \"$KEY\"\ntest -z \"$(git -C \"$MAC\" status --porcelain=v1)\"\ncd \"$MAC\"\ngit fetch --no-tags origin main\ntest \"$(git rev-parse refs/remotes/origin/main)\" = \"$TARGET\"\ngit switch -C agent-work refs/remotes/origin/main\ntest \"$(git rev-parse HEAD)\" = \"$TARGET\"\ntest -z \"$(git status --porcelain=v1)\"\ncd frontend\nVITE_API_BASE_URL= npm run build\ntest -f dist/index.html\nprintf 'MAC_BUILD_SHA=%s\\n' \"$TARGET\"\nprintf 'MAC_INDEX_SHA256=%s\\n' \"$(shasum -a 256 dist/index.html | awk '{print $1}')\"\ncd ..\n$SSH \"$PI\" '\nset -eu\ncd /home/michal/src/PhotoMaps\ntest \"$(git branch --show-current)\" = main\ntest -z \"$(git status --porcelain=v1)\"\ntest \"$(git rev-parse HEAD)\" = ac898d465bfca86d4259cdf76abea1dadb2e1f4c\ncurl -fsS --max-time 5 http://127.0.0.1:8000/health >/dev/null\ntest -f backend/data/app.db\ntest -f frontend/dist/index.html\nbackup=.dev/deploy/2026-10-31-trackpad-zoom-pre\nif [ -e \"$backup\" ]; then echo BACKUP_DIRECTORY_ALREADY_EXISTS; exit 4; fi\nmkdir -p \"$backup/frontend\"\npython3 - \"$backup\" <<'\"'\"'PY'\"'\"'\nimport sqlite3,sys\nfrom pathlib import Path\nroot=Path(sys.argv[1]); root.mkdir(parents=True,exist_ok=True)\nsrc=sqlite3.connect(\"file:backend/data/app.db?mode=ro\",uri=True)\ndst=sqlite3.connect(str(root/\"app-before.sqlite\"))\nsrc.backup(dst)\nassert dst.execute(\"PRAGMA integrity_check\").fetchone()[0]==\"ok\"\nfor table in (\"place\",\"photo\",\"memory\"):\n print(\"PROD_BACKUP_\"+table.upper(),dst.execute(\"SELECT COUNT(*) FROM \"+table).fetchone()[0])\ndst.close();src.close()\nprint(\"PROD_SQLITE_BACKUP_INTEGRITY=ok\")\nPY\ncp -a frontend/dist/. \"$backup/frontend/\"\ngit rev-parse HEAD > \"$backup/previous-main-sha.txt\"\nprintf \"PROD_PRE_HEAD=%s\\n\" \"$(git rev-parse HEAD)\"\nprintf \"PROD_BACKUP_ROOT=%s\\n\" \"$backup\"\nprintf \"PROD_BACKUP_INDEX_SHA256=%s\\n\" \"$(sha256sum \"$backup/frontend/index.html\" | awk \"{print \\$1}\")\"\nprintf \"PROD_REPO_ORIGIN=%s\\n\" \"$(git remote get-url origin)\"\n'\necho PHOTOMAP_MAC_BUILD_PI_BACKUP_READY",
+      "current_rss_mb": 6.38,
+      "elapsed_seconds": 13.939,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 2048,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\nReset branch 'agent-work'\nbranch 'agent-work' set up to track 'origin/main'.\nYour branch is up to date with 'origin/main'.\n\n> build\n> npm run typecheck && vite build\n\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\nvite v6.4.3 building for production...\ntransforming...\n✓ 2230 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                            3.00 kB │ gzip:  0.98 kB\ndist/assets/map-vendor-CIGW-MKW.css       15.61 kB │ gzip:  6.46 kB\ndist/assets/admin-C9VWJiZt.css            52.93 kB │ gzip:  7.86 kB\ndist/assets/index-DNqMNGfB.css            88.23 kB │ gzip: 14.67 kB\ndist/assets/PlaceDetailPage-D-4nkisR.js    3.45 kB │ gzip:  1.50 kB\ndist/assets/index-BEZl25VJ.js              3.50 kB │ gzip:  1.57 kB\ndist/assets/GuidesPage-XaF8S-Mc.js         8.53 kB │ gzip:  3.22 kB\ndist/assets/query-vendor-BLe33XlG.js      37.91 kB │ gzip: 11.44 kB\ndist/assets/react-vendor-GxMAwJfR.js     142.96 kB │ gzip: 45.76 kB\ndist/assets/map-vendor-DB9AUs6p.js       154.72 kB │ gzip: 45.15 kB\ndist/assets/admin-BJzsNo3F.js            186.14 kB │ gzip: 51.62 kB\ndist/assets/public-map-ClylpHlf.js       187.23 kB │ gzip: 57.27 kB\n✓ built in 1.90s\nMAC_BUILD_SHA=fbeefb174c309a252e82b47b20dbe3bf63217485\nMAC_INDEX_SHA256=d654499fcacc770517afd462bd0c3902147033e45a999655f4c8b88ab26e10cf\nPROD_BACKUP_PLACE 195\nPROD_BACKUP_PHOTO 1140\nPROD_BACKUP_MEMORY 0\nPROD_SQLITE_BACKUP_INTEGRITY=ok\nPROD_PRE_HEAD=ac898d465bfca86d4259cdf76abea1dadb2e1f4c\nPROD_BACKUP_ROOT=.dev/deploy/2026-10-31-trackpad-zoom-pre\nPROD_BACKUP_INDEX_SHA256=9095a563dbd1ef96eb3b759c0b276e234b330ef362d44276281cd34c115f3cff\nPROD_REPO_ORIGIN=https://github.com/MichalMatu/PhotoMaps.git\nPHOTOMAP_MAC_BUILD_PI_BACKUP_READY\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 541.72,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-10-31T01:02:01.846444+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.075,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.077,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-zoom-prod-build-backup-20261031-v1",
+  "idle_timeout": 240,
+  "memory_limit_mb": 2048,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 13.939,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-31T01:01:46.255222+00:00",
+  "status": "done",
+  "task_digest": "fd5e2203f43943f8764c8ce44e6d144c3b6868571460e652406406ecb4a11649",
+  "task_timeout": 1200,
+  "verification": [],
+  "work_branch": "main"
+}

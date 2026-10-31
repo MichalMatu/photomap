@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-mac-zoom-finalize-local-20261030-v1",
+  "task_digest": "0411e4189797e0c19a01cba0f0213ce9388c70377ede4367c5376675f08e37b2",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-30T20:10:11.750644+00:00",
+  "attempt_id": "950f2be1e2e253ce3afc265a",
+  "daemon_version": "4.20.15",
+  "daemon_pid": 78904,
+  "updated_at": "2026-10-30T20:10:12.006396+00:00",
+  "pid": 78904
+}

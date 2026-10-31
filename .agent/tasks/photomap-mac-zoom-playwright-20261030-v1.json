@@ -1,0 +1,18 @@
+{
+  "id": "photomap-mac-zoom-playwright-20261030-v1",
+  "dedupe_key": "photomap-mac-zoom-playwright-20261030-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/macbook-trackpad-zoom",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 500,
+  "idle_timeout": 150,
+  "task_timeout": 900,
+  "memory_limit_mb": 2048,
+  "commands": [
+    "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 6d08908929d643f10bf58488f8b8382ba325659e\ntest -z \"$(git status --porcelain=v1)\"\nprintf 'PLAYWRIGHT_CHROME_BEGIN\\n'\nE2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ./scripts/quality/e2e.sh e2e/visual/map-trackpad-zoom.spec.ts --workers=1\nprintf 'PLAYWRIGHT_CHROME_DONE\\n'\nprintf 'WORKTREE_DIRTY_COUNT=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\necho PHOTOMAP_MAC_ZOOM_PLAYWRIGHT_COMPLETE"
+  ]
+}

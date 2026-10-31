@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-regression-stress-20261031-v1",
+  "task_digest": "e8c0ca8d01093c1636af65923a29d3e5f82dc6be35d85fcd4c8e1173f00de250",
+  "status": "failed",
+  "failure_reason": "command_background_process_leak",
+  "finished_at": "2026-10-31T00:41:57.705142+00:00",
+  "attempt_id": "5a203c9ff3648535e5f1920a",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 664,
+  "updated_at": "2026-10-31T00:41:58.608640+00:00",
+  "pid": 664
+}

@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "0d75054e37e7f1c15133b884",
+  "command_timeout": 360,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 910,
+      "command": "set -eu\nMAC=/Users/michal/agent-workspace/repos/photomap/work\nKEY=/Users/michal/.ssh/id_ed25519\nPI=michal@192.168.0.23\nOLD=d21400207c121eb3169647978072ee18a99269d1\nFINAL=3d3b007c518dc6243bc5317330c025de06b30402\ntest -r \"$KEY\"\ntest \"$(git -C \"$MAC\" branch --show-current)\" = agent-work\ntest \"$(git -C \"$MAC\" rev-parse HEAD)\" = \"$FINAL\"\ntest -z \"$(git -C \"$MAC\" status --porcelain=v1)\"\ntest \"$(git -C \"$MAC\" diff --name-only \"$OLD\" \"$FINAL\")\" = docs/checkpoints/2026-10-31-macbook-trackpad-zoom-deploy.md\ntest ! -e /Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=10 \"$PI\" bash -s -- \"$OLD\" \"$FINAL\" <<'REMOTE'\nset -euo pipefail\nOLD=\"$1\"; FINAL=\"$2\"\ncd /home/michal/src/PhotoMaps\ntest \"$(git branch --show-current)\" = main\ntest \"$(git rev-parse HEAD)\" = \"$OLD\"\ntest -z \"$(git status --porcelain=v1)\"\npid_before=\"$(pgrep -f '[p]ython[^[:space:]]*[[:space:]].*/home/michal/src/PhotoMaps/server\\.py([[:space:]]|$)' | head -n1)\"\ngit fetch --no-tags origin main\ntest \"$(git rev-parse origin/main)\" = \"$FINAL\"\ngit merge --ff-only origin/main\ntest \"$(git rev-parse HEAD)\" = \"$FINAL\"\ntest -z \"$(git status --porcelain=v1)\"\npid_after=\"$(pgrep -f '[p]ython[^[:space:]]*[[:space:]].*/home/michal/src/PhotoMaps/server\\.py([[:space:]]|$)' | head -n1)\"\ntest -n \"$pid_before\" && test \"$pid_before\" = \"$pid_after\"\nprintf 'PI_FINAL_PID=%s\\n' \"$pid_after\"\nprintf 'PI_FINAL_SHA=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'PI_HEALTH='\ncurl -fsS --max-time 8 http://127.0.0.1:8000/health\nprintf '\\n'\nprintf 'PI_HOME_HTTP='\ncurl -fsS --max-time 8 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8000/\nprintf 'PI_MAP_HTTP='\ncurl -fsS --max-time 8 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8000/api/places/map\ntest -f .dev/deploy/2026-10-31-trackpad-zoom-pre/app-before.sqlite\ntest -f .dev/deploy/2026-10-31-trackpad-zoom-pre/frontend/index.html\ntest ! -e .dev/deploy/2026-10-31-trackpad-zoom-pre/frontend-next\nmake server-status\nmake tunnel-status\nREMOTE\nprintf 'MAC_FINAL_SHA=%s\\n' \"$(git -C \"$MAC\" rev-parse HEAD)\"\nprintf 'MAC_FINAL_DIRTY=%s\\n' \"$(git -C \"$MAC\" status --porcelain=v1 | wc -l | tr -d ' ')\"\nprintf 'PUBLIC_SITE_CHECK='\ncurl -sS -L --max-time 18 -o /dev/null -w '%{http_code}\\n' https://photomap.pl/ || echo EXTERNAL_HTTP_UNAVAILABLE\necho PHOTOMAP_FINAL_CHECKPOINT_SYNC_PASS",
+      "current_rss_mb": 6.73,
+      "elapsed_seconds": 6.989,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 512,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\n   d214002..3d3b007  main       -> origin/main\nUpdating d214002..3d3b007\nFast-forward\n docs/checkpoints/2026-10-31-macbook-trackpad-zoom-deploy.md | 4 +++-\n 1 file changed, 3 insertions(+), 1 deletion(-)\nPI_FINAL_PID=2260274\nPI_FINAL_SHA=3d3b007c518dc6243bc5317330c025de06b30402\nPI_HEALTH={\"status\":\"ok\"}\nPI_HOME_HTTP=200\nPI_MAP_HTTP=200\nPubliczny runtime PhotoMap:\n2260274\n\nPhotoMap runtime port 8000:\nCOMMAND     PID   USER FD   TYPE  DEVICE SIZE/OFF NODE NAME\npython  2260274 michal 13u  IPv4 7091263      0t0  TCP 127.0.0.1:8000 (LISTEN)\nPhotoMap runtime health: OK\nCloudflare tunnel:\nSystemowy Cloudflare tunnel:\n222848\nConfig: brak /home/michal/src/PhotoMaps/.cloudflared/config.yml\nMAC_FINAL_SHA=3d3b007c518dc6243bc5317330c025de06b30402\nMAC_FINAL_DIRTY=0\nPUBLIC_SITE_CHECK=200\nPHOTOMAP_FINAL_CHECKPOINT_SYNC_PASS\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 8.73,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-10-31T01:07:23.357506+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.076,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.088,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-zoom-final-checkpoint-sync-20261031-v1",
+  "idle_timeout": 180,
+  "memory_limit_mb": 512,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 6.989,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-31T01:07:13.815531+00:00",
+  "status": "done",
+  "task_digest": "20124683ae26725b838996c232f73854e9fad2e8af500c7cdb1178244b02bbd5",
+  "task_timeout": 650,
+  "verification": [],
+  "work_branch": "main"
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-regression-dense-e2e-20261031-v1",
+  "task_digest": "9ed9720211700adbf20abb5ee4262684259013b4a3e1306cae922a4897e68c22",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-31T00:43:34.629785+00:00",
+  "attempt_id": "cde881c4657fa1f251dbd789",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 4022,
+  "updated_at": "2026-10-31T00:43:35.329587+00:00",
+  "pid": 4022
+}

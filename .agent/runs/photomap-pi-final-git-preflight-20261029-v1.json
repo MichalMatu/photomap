@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-pi-final-git-preflight-20261029-v1",
+  "task_digest": "859785d3f9c0dcf1ae9881302c080167924ffb17aebbe4a226d2dead8da5c5a8",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-29T09:53:26.549198+00:00",
+  "attempt_id": "b126241c93943119b70fe2c0",
+  "daemon_version": "4.20.14",
+  "daemon_pid": 1548,
+  "updated_at": "2026-10-29T09:53:26.985436+00:00",
+  "pid": 1548
+}

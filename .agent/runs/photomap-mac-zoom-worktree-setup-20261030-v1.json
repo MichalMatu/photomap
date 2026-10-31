@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-mac-zoom-worktree-setup-20261030-v1",
+  "task_digest": "698012246fddbb8cab78146fc0e9d24199c8f6f6461c93e95a7662f88efc79e0",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-30T20:06:13.633489+00:00",
+  "attempt_id": "91d8c9f58465d6e122fc1dd4",
+  "daemon_version": "4.20.15",
+  "daemon_pid": 71563,
+  "updated_at": "2026-10-30T20:06:13.939744+00:00",
+  "pid": 71563
+}

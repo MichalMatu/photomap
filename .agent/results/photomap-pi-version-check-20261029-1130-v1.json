@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "28c3ad5bffa55f8efc2143cc",
+  "command_timeout": 100,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 93,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && echo PI_HEAD=$(git rev-parse HEAD) && echo PI_BRANCH=$(git branch --show-current) && curl -fsS -o /dev/null -w \"HEALTH_HTTP=%{http_code}\\n\" http://127.0.0.1:8000/health && curl -fsS -o /dev/null -w \"MAP_HTTP=%{http_code}\\n\" http://127.0.0.1:8000/api/places/map && git status --short'",
+      "current_rss_mb": 2.73,
+      "elapsed_seconds": 2.233,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 256,
+      "memory_limited": false,
+      "output": "PI_HEAD=ac898d465bfca86d4259cdf76abea1dadb2e1f4c\nPI_BRANCH=main\nHEALTH_HTTP=200\nMAP_HTTP=200\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 2.73,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.14",
+  "edits": {},
+  "finished_at": "2026-10-29T10:31:00.837932+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.084,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.181,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-pi-version-check-20261029-1130-v1",
+  "idle_timeout": 80,
+  "memory_limit_mb": 256,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 2.233,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-29T10:30:56.643267+00:00",
+  "status": "done",
+  "task_digest": "4d9c1bf8f38941078b26fc666dba2512193826df40ee6d843f0385065d8e3586",
+  "task_timeout": 185,
+  "verification": [],
+  "work_branch": "main"
+}

@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "71970381e731bbbd6e1827ff",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 308,
+      "command": "set -eu\nbase=/Users/michal/agent-workspace/repos/photomap/work\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\nexpected=91334a76de1e8d239c68dff9c29002847a6c5097\ntest \"$(git -C \"$wt\" rev-parse HEAD)\" = \"$expected\"\ntest \"$(git -C \"$wt\" branch --show-current)\" = fix/macbook-trackpad-zoom\ntest -z \"$(git -C \"$wt\" status --porcelain=v1)\"\ntest -x \"$base/frontend/node_modules/.bin/vite\"\ntest -x \"$base/backend/.venv/bin/python\"\ncmp \"$base/frontend/package-lock.json\" \"$wt/frontend/package-lock.json\"\nfor pair in \"frontend/node_modules\" \"backend/.venv\"; do\n  if test ! -e \"$wt/$pair\" && test ! -L \"$wt/$pair\"; then\n    ln -s \"$base/$pair\" \"$wt/$pair\"\n  fi\n  test \"$(readlink \"$wt/$pair\")\" = \"$base/$pair\"\ndone\necho PHOTOMAP_ZOOM_DEPENDENCIES_LINKED\n\"$wt/backend/.venv/bin/python\" -c 'import fastapi, alembic, sqlmodel, uvicorn; print(\"PYTHON_DEPENDENCIES_OK\")'\ncd \"$wt\"\nmkdir -p backend/data backend/storage/private backend/storage/public .dev\nif test ! -e backend/data/app.db && test -f \"$base/backend/data/app.db\"; then\n  SOURCE_DB=\"$base/backend/data/app.db\" TARGET_DB=\"$wt/backend/data/app.db\" \"$wt/backend/.venv/bin/python\" - <<'PY'\nimport os, sqlite3\nsource = sqlite3.connect(\"file:\" + os.environ[\"SOURCE_DB\"] + \"?mode=ro\", uri=True)\ntarget = sqlite3.connect(os.environ[\"TARGET_DB\"])\nsource.backup(target)\nprint(\"COPIED_MAC_SQLITE_SNAPSHOT=\" + str(target.execute(\"PRAGMA integrity_check\").fetchone()[0]))\ntarget.close()\nsource.close()\nPY\nfi\nif test -d \"$base/backend/storage\"; then\n  source_kb=$(du -sk \"$base/backend/storage\" | awk '{print $1}')\n  free_kb=$(df -Pk \"$wt\" | awk 'NR==2 {print $4}')\n  printf 'SOURCE_MEDIA_KB=%s FREE_KB=%s\\n' \"$source_kb\" \"$free_kb\"\n  if test \"$free_kb\" -gt \"$((source_kb * 2 + 1048576))\"; then\n    rsync -a --exclude='*.tmp' \"$base/backend/storage/\" \"$wt/backend/storage/\"\n    echo MAC_MEDIA_SNAPSHOT_COPIED\n  else\n    echo MAC_MEDIA_COPY_SKIPPED_INSUFFICIENT_FREE_SPACE\n  fi\nelse\n  echo MAC_SOURCE_MEDIA_NOT_PRESENT\nfi\nprintf 'LOCAL_DB=%s\\n' \"$(test -f backend/data/app.db && echo present || echo missing)\"\nprintf 'LOCAL_STORAGE_KB=%s\\n' \"$(du -sk backend/storage | awk '{print $1}')\"\nprintf 'ZOOM_HEAD=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'ZOOM_CLEAN_COUNT=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\nprintf 'AGENT_WORK_CLEAN_COUNT=%s\\n' \"$(git -C \"$base\" status --porcelain=v1 | wc -l | tr -d ' ')\"\necho PHOTOMAP_ZOOM_LOCAL_PREPARED",
+      "current_rss_mb": 76.44,
+      "elapsed_seconds": 2.74,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 1024,
+      "memory_limited": false,
+      "output": "PHOTOMAP_ZOOM_DEPENDENCIES_LINKED\nPYTHON_DEPENDENCIES_OK\nCOPIED_MAC_SQLITE_SNAPSHOT=ok\nSOURCE_MEDIA_KB=0 FREE_KB=19037236\nMAC_MEDIA_SNAPSHOT_COPIED\nLOCAL_DB=present\nLOCAL_STORAGE_KB=0\nZOOM_HEAD=91334a76de1e8d239c68dff9c29002847a6c5097\nZOOM_CLEAN_COUNT=2\nAGENT_WORK_CLEAN_COUNT=0\nPHOTOMAP_ZOOM_LOCAL_PREPARED\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 76.44,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.15",
+  "edits": {},
+  "finished_at": "2026-10-30T20:07:20.407609+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.109,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.181,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-mac-zoom-local-ready-20261030-v1",
+  "idle_timeout": 300,
+  "memory_limit_mb": 1024,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 2.74,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-30T20:07:15.665345+00:00",
+  "status": "done",
+  "task_digest": "ac895279c49422b5ccb2cdbf4e587b5793bfa74d169062fe63065ea29ffe7b36",
+  "task_timeout": 1500,
+  "verification": [],
+  "work_branch": "fix/macbook-trackpad-zoom"
+}

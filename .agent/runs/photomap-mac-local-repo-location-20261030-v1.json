@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-mac-local-repo-location-20261030-v1",
+  "task_digest": "08fde8154ff79a30e69d628c06bfc00a42223616d2ab32e2a5347eb893deaf86",
+  "status": "failed",
+  "failure_reason": "task_budget_exhausted",
+  "finished_at": "2026-10-30T20:01:43.558042+00:00",
+  "attempt_id": "cba3a0873742fb59142350b7",
+  "daemon_version": "4.20.15",
+  "daemon_pid": 63260,
+  "updated_at": "2026-10-30T20:01:43.838231+00:00",
+  "pid": 63260
+}

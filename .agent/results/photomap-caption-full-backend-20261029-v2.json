@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "9924498a13a8fa398296ef02",
+  "command_timeout": 475,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1702,
+      "command": "set -eu\nR=/Users/michal/agent-workspace/repos/photomap/work\nT=/tmp/photomap-caption-full-20261029\ncd \"$R\"\ngit worktree remove --force \"$T\" || true\ngit worktree add --detach \"$T\" fcd11d2006f62d6545cc2cdce506f16fddf0ccad\nmkdir -p \"$T/backend/storage/public\" \"$T/backend/storage/private\"\ncd \"$T/backend\"\n\"$R/backend/.venv/bin/python\" -m pytest app/tests -q\ncd \"$T\"\n\"$R/backend/.venv/bin/python\" -m ruff check scripts/content/photo_caption_editor.py backend/app/tests/scripts/test_photo_caption_editor.py\n\"$R/backend/.venv/bin/python\" -m ruff format --check scripts/content/photo_caption_editor.py backend/app/tests/scripts/test_photo_caption_editor.py\ncd \"$R\"\ngit worktree remove --force \"$T\"\necho PHOTO_CAPTION_FULL_BACKEND_PASS",
+      "current_rss_mb": 155.42,
+      "elapsed_seconds": 36.567,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 2048,
+      "memory_limited": false,
+      "output": "Preparing worktree (detached HEAD fcd11d2)\nHEAD is now at fcd11d2 docs(editorial): checkpoint reproducible caption quality work and protected photos\n........................................................................ [ 21%]\n........................................................................ [ 42%]\n........................................................................ [ 63%]\n........................................................................ [ 84%]\n...................................................                      [100%]\n=============================== warnings summary ===============================\n../../../../Users/michal/agent-workspace/repos/photomap/work/backend/.venv/lib/python3.13/site-packages/fastapi/testclient.py:1\n  /Users/michal/agent-workspace/repos/photomap/work/backend/.venv/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n../../../../Users/michal/agent-workspace/repos/photomap/work/backend/.venv/lib/python3.13/site-packages/starlette/testclient.py:53\n  /Users/michal/agent-workspace/repos/photomap/work/backend/.venv/lib/python3.13/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.\n    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n339 passed, 2 warnings in 23.92s\nAll checks passed!\n2 files already formatted\nPHOTO_CAPTION_FULL_BACKEND_PASS\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 289.38,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.14",
+  "edits": {},
+  "finished_at": "2026-10-29T09:50:38.685377+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.072,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.095,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-caption-full-backend-20261029-v2",
+  "idle_timeout": 415,
+  "memory_limit_mb": 2048,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 36.567,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-29T09:50:00.063290+00:00",
+  "status": "done",
+  "task_digest": "baf4ff29ad7ed1dea61b8f398b388fca9438d02e3e7a4146e0f1a3a4f9883b74",
+  "task_timeout": 570,
+  "verification": [],
+  "work_branch": "work/caption-curation-20261029"
+}

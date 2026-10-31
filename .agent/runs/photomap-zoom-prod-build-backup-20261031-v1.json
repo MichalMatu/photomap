@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-prod-build-backup-20261031-v1",
+  "task_digest": "fd5e2203f43943f8764c8ce44e6d144c3b6868571460e652406406ecb4a11649",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-31T01:02:01.846444+00:00",
+  "attempt_id": "f1547a341c445c00092a9c8c",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 37412,
+  "updated_at": "2026-10-31T01:02:02.063037+00:00",
+  "pid": 37412
+}

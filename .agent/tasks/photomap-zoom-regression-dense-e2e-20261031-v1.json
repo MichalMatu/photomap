@@ -1,0 +1,18 @@
+{
+  "id": "photomap-zoom-regression-dense-e2e-20261031-v1",
+  "dedupe_key": "photomap-zoom-regression-dense-e2e-20261031-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/macbook-trackpad-zoom",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 500,
+  "idle_timeout": 210,
+  "task_timeout": 800,
+  "memory_limit_mb": 2048,
+  "commands": [
+    "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 6d08908929d643f10bf58488f8b8382ba325659e\ntest \"$(git status --short | wc -l | tr -d ' ')\" = 4\nfor p in 18080 15174; do if lsof -nP -iTCP:\"$p\" -sTCP:LISTEN 2>/dev/null | grep -q LISTEN; then echo \"E2E_PORT_BUSY_ABORT=$p\"; exit 3; fi; done\nprintf 'LOCAL_PORT_DIAGNOSTICS\\n'\nfor p in 8000 5174; do lsof -nP -iTCP:\"$p\" -sTCP:LISTEN || true; done\ncat >> frontend/e2e/visual/map-trackpad-zoom.spec.ts <<'PHOTOMAP_MORE_TESTS'\n\n\ntest(\"dense map with 120 places can zoom out and in without stalls\", async ({ page }) => {\n  test.setTimeout(90_000);\n  const densePlaces = Array.from({ length: 120 }, (_, index) => ({\n    ...places[0],\n    id: \"zoom-stress-\" + index,\n    slug: \"zoom-stress-\" + index,\n    title: \"Zoom stress \" + index,\n    lat: places[0].lat + (Math.floor(index / 12) - 5) * 0.003,\n    lon: places[0].lon + ((index % 12) - 5) * 0.004,\n    score: 10 + index,\n    weight: 1 + index % 4,\n  }));\n  await page.setViewportSize({ height: 820, width: 1280 });\n  await mockSharedApi(page, densePlaces);\n  await page.goto(\"/\");\n  await expect(page.locator(\".place-photo-marker\").first()).toBeVisible();\n  const markerCount = await page.locator(\".place-photo-marker\").count();\n  expect(markerCount).toBeGreaterThan(3);\n  const start = await getMapZoom(page);\n  await dispatchWheelBurst(page, 8, 40, false);\n  await page.waitForTimeout(550);\n  const afterOut = await getMapZoom(page);\n  expect(afterOut).toBeLessThan(start - 1);\n  await dispatchWheelBurst(page, -8, 40, false);\n  await page.waitForTimeout(550);\n  const afterIn = await getMapZoom(page);\n  expect(afterIn).toBeGreaterThan(afterOut + 1);\n  console.log(\"DENSE_MAP_TRACE\", JSON.stringify({ markerCount, start, afterOut, afterIn }));\n});\nPHOTOMAP_MORE_TESTS\npython3 - <<'PY'\nfrom pathlib import Path\np=Path(\"frontend/e2e/visual/map-trackpad-zoom.spec.ts\")\ns=p.read_text()\ns=s.replace('import { mockSharedApi } from \"../support/visualApi\";','import { places } from \"../fixtures/visualData\";\\nimport { mockSharedApi } from \"../support/visualApi\";')\np.write_text(s)\nPY\ncd frontend\n./node_modules/.bin/prettier --write e2e/visual/map-trackpad-zoom.spec.ts\ncd ..\nE2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ./scripts/quality/e2e.sh e2e/visual/map-trackpad-zoom.spec.ts --workers=1 --grep \"dense map\"\necho PHOTOMAP_ZOOM_DENSE_E2E_COMPLETE"
+  ]
+}

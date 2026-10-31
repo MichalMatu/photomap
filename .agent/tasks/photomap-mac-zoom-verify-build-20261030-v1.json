@@ -1,0 +1,18 @@
+{
+  "id": "photomap-mac-zoom-verify-build-20261030-v1",
+  "dedupe_key": "photomap-mac-zoom-verify-build-20261030-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/macbook-trackpad-zoom",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 480,
+  "idle_timeout": 150,
+  "task_timeout": 900,
+  "memory_limit_mb": 2048,
+  "commands": [
+    "set -eu\nbase=/Users/michal/agent-workspace/repos/photomap/work\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 91334a76de1e8d239c68dff9c29002847a6c5097\nprintf 'DEP_SIZES_BEGIN\\n'\ndu -sh \"$base/frontend/node_modules\" \"$base/backend/.venv\"\nprintf 'DEP_SIZES_END\\n'\nprintf 'GIT_STATUS_BEFORE\\n'\ngit status --short\nprintf 'DATA_COUNTS\\n'\n\"$wt/backend/.venv/bin/python\" - <<'PY'\nimport sqlite3\ndb=sqlite3.connect('file:backend/data/app.db?mode=ro',uri=True)\ntables={x[0] for x in db.execute(\"SELECT name FROM sqlite_master WHERE type='table'\")}\nfor name in ('place','places','photo','photos','memory','memories'):\n if name in tables: print(name, db.execute('SELECT count(*) FROM \"'+name+'\"').fetchone()[0])\nprint(\"SQLITE_INTEGRITY\",db.execute(\"PRAGMA integrity_check\").fetchone()[0])\nPY\nprintf 'TRACKPAD_UNIT_TESTS\\n'\ncd frontend\nnpm run test -- src/components/map/trackpadZoom.test.ts\nprintf 'FRONTEND_BUILD\\n'\nnpm run build\nprintf 'PRETTIER_CHANGED_FILES\\n'\n./node_modules/.bin/prettier --check src/components/map/trackpadZoom.ts src/components/map/MapTrackpadZoom.tsx src/components/map/trackpadZoom.test.ts e2e/visual/map-trackpad-zoom.spec.ts\nprintf 'GIT_STATUS_AFTER\\n'\ncd \"$wt\"\ngit status --short\necho PHOTOMAP_MAC_ZOOM_VERIFY_BUILD_COMPLETE"
+  ]
+}

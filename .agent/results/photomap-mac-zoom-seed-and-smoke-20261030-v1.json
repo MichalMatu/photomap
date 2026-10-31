@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "3861b89b133ad78026bf40c4",
+  "command_timeout": 1000,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1075,
+      "command": "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 6d08908929d643f10bf58488f8b8382ba325659e\ntest -z \"$(git status --porcelain=v1)\"\ntest -x backend/.venv/bin/python\ntest -x frontend/node_modules/.bin/vite\nfor port in 8000 5174 18110 15110; do\n  if lsof -nP -iTCP:\"$port\" -sTCP:LISTEN 2>/dev/null | grep -q LISTEN; then\n    echo \"PORT_BUSY_ABORT=$port\"\n    exit 4\n  fi\ndone\nprintf 'PREPARING_SYNTHETIC_TEST_MAP\\n'\nPERF_SEED_PLACES=120 PERF_EXPECT_MIN_PLACES=100 ./scripts/quality/perf_smoke.sh\ntest -f .dev/perf/backend-data/app.db\ntest -d .dev/perf/storage/public\nprintf 'COPYING_OWN_ISOLATED_TEST_FIXTURES\\n'\nSOURCE_DB=\"$wt/.dev/perf/backend-data/app.db\" TARGET_DB=\"$wt/backend/data/app.db\" backend/.venv/bin/python - <<'PY'\nimport os, sqlite3\nsrc=sqlite3.connect(\"file:\"+os.environ[\"SOURCE_DB\"]+\"?mode=ro\",uri=True)\ndst=sqlite3.connect(os.environ[\"TARGET_DB\"])\nsrc.backup(dst)\nassert dst.execute(\"PRAGMA integrity_check\").fetchone()[0]==\"ok\"\nplaces=dst.execute(\"SELECT COUNT(*) FROM place WHERE status='published'\").fetchone()[0]\nphotos=dst.execute(\"SELECT COUNT(*) FROM photo WHERE status='approved'\").fetchone()[0]\nprint(\"LOCAL_FIXTURE_PLACE_COUNT\",places)\nprint(\"LOCAL_FIXTURE_PHOTO_COUNT\",photos)\nassert places >= 100 and photos >= 100\ndst.close()\nsrc.close()\nPY\nrsync -a .dev/perf/storage/ backend/storage/\nprintf 'LOCAL_STORAGE_KB=%s\\n' \"$(du -sk backend/storage | awk '{print $1}')\"\nprintf 'SMOKE_LOCAL_SERVER_DEFAULT_PORTS\\n'\ncleanup() { ./scripts/devctl.sh stop >/dev/null 2>&1 || true; }\ntrap cleanup EXIT\nmake start\ncurl -fsS --max-time 10 http://127.0.0.1:8000/health\nprintf '\\nPUBLIC_MAP_RESPONSE_BYTES=%s\\n' \"$(curl -fsS --max-time 10 http://127.0.0.1:8000/api/places/map | wc -c | tr -d ' ')\"\ncurl -fsS --max-time 10 -o /dev/null -w 'FRONTEND_HTTP=%{http_code}\\n' http://127.0.0.1:5174/\ncleanup\ntrap - EXIT\nprintf 'FINAL_BRANCH=%s\\n' \"$(git branch --show-current)\"\nprintf 'FINAL_SHA=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'FINAL_DIRTY_COUNT=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\necho PHOTOMAP_MAC_ZOOM_SERVER_PREPARED_AND_SMOKED",
+      "current_rss_mb": 204.97,
+      "elapsed_seconds": 13.526,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 2048,
+      "memory_limited": false,
+      "output": "PREPARING_SYNTHETIC_TEST_MAP\nBackend: http://127.0.0.1:18110, PID 82132\nFrontend: http://127.0.0.1:15110, PID 82339\n\nMapa: http://127.0.0.1:15110\nAPI:  http://127.0.0.1:18110\nperf seed ok: 120 map-ready places for wroclaw, 6 guides\nperf smoke: 5 iterations, max <= 2500 ms, avg <= 1000 ms\nhealth       avg=    8.6 ms max=   34.5 ms\ncategories   avg=    5.1 ms max=   14.4 ms\nplaces-map   avg=   31.2 ms max=   44.2 ms\nguides       avg=   24.4 ms max=   62.8 ms\nguide-detail avg=    5.5 ms max=    6.5 ms\nfrontend     avg=    2.7 ms max=    4.3 ms\nperf smoke ok\nCOPYING_OWN_ISOLATED_TEST_FIXTURES\nLOCAL_FIXTURE_PLACE_COUNT 120\nLOCAL_FIXTURE_PHOTO_COUNT 120\nLOCAL_STORAGE_KB=1440\nSMOKE_LOCAL_SERVER_DEFAULT_PORTS\nBackend: http://127.0.0.1:8000, PID 82498\nFrontend: http://127.0.0.1:5174, PID 82533\n\nMapa: http://127.0.0.1:5174\nAPI:  http://127.0.0.1:8000\n{\"status\":\"ok\"}\nPUBLIC_MAP_RESPONSE_BYTES=195501\nFRONTEND_HTTP=200\nFINAL_BRANCH=fix/macbook-trackpad-zoom\nFINAL_SHA=6d08908929d643f10bf58488f8b8382ba325659e\nFINAL_DIRTY_COUNT=0\nPHOTOMAP_MAC_ZOOM_SERVER_PREPARED_AND_SMOKED\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 555.38,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.15",
+  "edits": {},
+  "finished_at": "2026-10-30T20:11:05.863180+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.074,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.079,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-mac-zoom-seed-and-smoke-20261030-v1",
+  "idle_timeout": 300,
+  "memory_limit_mb": 2048,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 13.526,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-30T20:10:50.823127+00:00",
+  "status": "done",
+  "task_digest": "1e05cbf7c8428147fd16c62820a02c8340a335497a4c373ec129365cd17c96a9",
+  "task_timeout": 1600,
+  "verification": [],
+  "work_branch": "fix/macbook-trackpad-zoom"
+}

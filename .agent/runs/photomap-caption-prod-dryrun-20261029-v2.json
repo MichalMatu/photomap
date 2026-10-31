@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-caption-prod-dryrun-20261029-v2",
+  "task_digest": "1d158069a20fa35300696f198b2f9b4826b2341aefd2fc188fff9b7822fc2122",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-29T09:45:41.943196+00:00",
+  "attempt_id": "51efe5e65fb1075ba55986a7",
+  "daemon_version": "4.20.14",
+  "daemon_pid": 88628,
+  "updated_at": "2026-10-29T09:45:42.174543+00:00",
+  "pid": 88628
+}

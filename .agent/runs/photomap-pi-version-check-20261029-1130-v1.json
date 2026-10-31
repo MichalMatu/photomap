@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-pi-version-check-20261029-1130-v1",
+  "task_digest": "4d9c1bf8f38941078b26fc666dba2512193826df40ee6d843f0385065d8e3586",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-29T10:31:00.837932+00:00",
+  "attempt_id": "28c3ad5bffa55f8efc2143cc",
+  "daemon_version": "4.20.14",
+  "daemon_pid": 59008,
+  "updated_at": "2026-10-29T10:31:01.463782+00:00",
+  "pid": 59008
+}

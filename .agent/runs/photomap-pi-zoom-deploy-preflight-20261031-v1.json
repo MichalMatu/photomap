@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-pi-zoom-deploy-preflight-20261031-v1",
+  "task_digest": "fb50f78be174551e43fa90d0b2c055a0b92af4e1ddf1f5d677d8f3db25813c36",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-31T01:00:25.782007+00:00",
+  "attempt_id": "6c5c2f3c2785c17f861d675c",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 34076,
+  "updated_at": "2026-10-31T01:00:25.999376+00:00",
+  "pid": 34076
+}

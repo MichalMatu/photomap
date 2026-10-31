@@ -1,0 +1,18 @@
+{
+  "id": "photomap-caption-independent-postcheck-20261029-v1",
+  "dedupe_key": "photomap-caption-independent-postcheck-20261029-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 160,
+  "idle_timeout": 100,
+  "task_timeout": 260,
+  "memory_limit_mb": 512,
+  "commands": [
+    "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && backend/.venv/bin/python -' <<'PY'\nimport sqlite3,json,re,collections,subprocess\nfrom pathlib import Path\nroot=Path('/home/michal/src/PhotoMaps')\ndb=root/'backend/data/app.db'\naudit=root/'.dev/editorial/caption-20261029/audit'\nplan=json.loads((root/'.dev/editorial/caption-20261029/plan.json').read_text())\nexceptions=json.loads((root/'.dev/editorial/caption-20261029/exceptions.json').read_text())\na=sqlite3.connect(db.resolve().as_uri()+'?mode=ro',uri=True)\nb=sqlite3.connect((audit/'app-before-captions.sqlite').resolve().as_uri()+'?mode=ro',uri=True)\na.row_factory=b.row_factory=sqlite3.Row\nnorm=lambda x:' '.join(re.findall(r'\\w+',(x or '').casefold()))\ngroups=collections.defaultdict(list)\nfor row in a.execute(\"SELECT p.id,p.caption,pl.slug FROM photo p JOIN place pl ON p.place_id=pl.id WHERE p.status='approved' AND pl.status='published'\"):\n if norm(row['caption']):groups[(row['slug'],norm(row['caption']))].append(row['id'])\nrepeat=sum(len(x)>=3 for x in groups.values())\nids={p['photo_id'] for p in plan['edits']}\nassert len(ids)==27\nchanged={r['id'] for r in a.execute(\"SELECT id,caption FROM photo\") if (prev:=b.execute(\"SELECT caption FROM photo WHERE id=?\",(r['id'],)).fetchone()) and r['caption']!=prev[0]}\nassert changed==ids, f'changed_ids mismatch: {len(changed)}'\nfor p in plan['edits']:\n assert a.execute(\"SELECT caption FROM photo WHERE id=?\",(p['photo_id'],)).fetchone()[0]==p['new_caption']\nfor e in exceptions['media_exceptions']:\n old=dict(b.execute(\"SELECT * FROM photo WHERE id=?\",(e['photo_id'],)).fetchone())\n new=dict(a.execute(\"SELECT * FROM photo WHERE id=?\",(e['photo_id'],)).fetchone())\n assert new==old,'protected photo changed'\njournal=[json.loads(s) for s in (audit/'changes.jsonl').read_text().splitlines() if s.strip()]\nassert len([x for x in journal if 'photo_id' in x])==27\nassert len([x for x in journal if x.get('event')=='postcheck'])==1\nassert a.execute('PRAGMA integrity_check').fetchone()[0]=='ok'\nassert b.execute('PRAGMA integrity_check').fetchone()[0]=='ok'\nassert repeat==0\nsummary={'published_places':a.execute(\"SELECT count(*) FROM place WHERE status='published'\").fetchone()[0],\n'approved_photos':a.execute(\"SELECT count(*) FROM photo WHERE status='approved'\").fetchone()[0],\n'changed_photo_captions':len(changed),'repeated_groups':repeat,'protected_identical':len(exceptions['media_exceptions']),\n'journal_updates':27,'backup_integrity':'ok','production_integrity':'ok',\n'pi_head':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()}\nprint('INDEPENDENT_CAPTION_AUDIT',json.dumps(summary,ensure_ascii=False))\nb.close();a.close()\nPY"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-docs-sync-cleanup-20261031-v2",
+  "task_digest": "6151839663833e6364f182085bdea2b46bd17e0695db442b378655c011723539",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-31T01:06:29.241896+00:00",
+  "attempt_id": "e291ff7ef531db3447b8480d",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 48986,
+  "updated_at": "2026-10-31T01:06:29.505780+00:00",
+  "pid": 48986
+}

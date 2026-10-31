@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-mac-zoom-seed-and-smoke-20261030-v1",
+  "task_digest": "1e05cbf7c8428147fd16c62820a02c8340a335497a4c373ec129365cd17c96a9",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-30T20:11:05.863180+00:00",
+  "attempt_id": "3861b89b133ad78026bf40c4",
+  "daemon_version": "4.20.15",
+  "daemon_pid": 81805,
+  "updated_at": "2026-10-30T20:11:06.085989+00:00",
+  "pid": 81805
+}

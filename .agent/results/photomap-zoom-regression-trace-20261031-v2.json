@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "0c216d0d553d40ed3666b428",
+  "command_timeout": 600,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1396,
+      "command": "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 6d08908929d643f10bf58488f8b8382ba325659e\ntest \"$(git status --short | wc -l | tr -d ' ')\" = 4\ncat > frontend/e2e/visual/map-trackpad-zoom.spec.ts <<'PHOTOMAP_E2E'\nimport { expect, test, type Page } from \"@playwright/test\";\n\nimport { mockSharedApi } from \"../support/visualApi\";\n\ntype DebugMap = {\n  getZoom: () => number;\n  on: (name: string, cb: () => void) => void;\n};\n\nasync function getMapZoom(page: Page): Promise<number> {\n  return page.locator(\".place-map\").evaluate((element) => {\n    const map = (element as HTMLElement & { __photomapDebugMap?: DebugMap }).__photomapDebugMap;\n    if (!map) throw new Error(\"Dev-only map diagnostic hook missing\");\n    return map.getZoom();\n  });\n}\n\nasync function dispatchWheel(page: Page, deltaY: number, ctrlKey = true) {\n  await dispatchWheelBurst(page, deltaY, 1, ctrlKey);\n}\n\nasync function dispatchWheelBurst(page: Page, deltaY: number, count: number, ctrlKey = true) {\n  await page.locator(\".place-map\").evaluate((element, args) => {\n    const rect = element.getBoundingClientRect();\n    for (let index = 0; index < args.count; index++) {\n      element.dispatchEvent(new WheelEvent(\"wheel\", {\n        bubbles: true,\n        cancelable: true,\n        clientX: rect.x + rect.width / 2,\n        clientY: rect.y + rect.height / 2,\n        ctrlKey: args.ctrlKey,\n        deltaMode: 0,\n        deltaY: args.deltaY,\n      }));\n    }\n  }, { deltaY, count, ctrlKey });\n}\n\nasync function setup(page: Page) {\n  await page.setViewportSize({ height: 820, width: 1280 });\n  await mockSharedApi(page);\n  await page.goto(\"/\");\n  await expect(page.locator(\".place-photo-marker\").first()).toBeVisible();\n  await expect.poll(() => getMapZoom(page)).toBeGreaterThan(0);\n}\n\ntest(\"pinch zooms in and back out continuously and settles near starting level\", async ({ page }) => {\n  await setup(page);\n  const before = await getMapZoom(page);\n  await dispatchWheel(page, -36);\n  await expect.poll(() => getMapZoom(page)).toBeGreaterThan(before + 0.1);\n  await page.waitForTimeout(400);\n  const afterIn = await getMapZoom(page);\n  await dispatchWheel(page, 36);\n  await expect.poll(() => getMapZoom(page)).toBeLessThan(before + 0.1);\n  await page.waitForTimeout(400);\n  const afterOut = await getMapZoom(page);\n  console.log(\"PINCH_TRACE\", JSON.stringify({ before, afterIn, afterOut }));\n  expect(Math.abs(afterOut - before)).toBeLessThan(0.03);\n});\n\ntest(\"fine two-finger scroll and repeated zoom-out bursts do not stall\", async ({ page }) => {\n  await setup(page);\n  const before = await getMapZoom(page);\n  await dispatchWheelBurst(page, 12, 16, false);\n  await page.waitForTimeout(450);\n  const afterOut = await getMapZoom(page);\n  console.log(\"SCROLL_TRACE\", JSON.stringify({ before, afterOut }));\n  expect(afterOut).toBeLessThan(before - 0.5);\n  await dispatchWheelBurst(page, -12, 16, false);\n  await page.waitForTimeout(450);\n  const afterIn = await getMapZoom(page);\n  console.log(\"SCROLL_RETURN_TRACE\", JSON.stringify({ afterOut, afterIn }));\n  expect(afterIn).toBeGreaterThan(afterOut + 0.5);\n});\n\ntest(\"one continuous gesture emits one final zoomend instead of one per frame\", async ({ page }) => {\n  await setup(page);\n  await page.locator(\".place-map\").evaluate((element) => {\n    const map = (element as HTMLElement & { __photomapDebugMap?: DebugMap }).__photomapDebugMap;\n    if (!map) throw new Error(\"Missing debug map\");\n    (element as HTMLElement & { __testZoomEndCount?: number }).__testZoomEndCount = 0;\n    map.on(\"zoomend\", () => {\n      const el = element as HTMLElement & { __testZoomEndCount?: number };\n      el.__testZoomEndCount = (el.__testZoomEndCount ?? 0) + 1;\n    });\n  });\n  await dispatchWheelBurst(page, -12, 12);\n  await page.waitForTimeout(500);\n  const count = await page.locator(\".place-map\").evaluate((el) =>\n    (el as HTMLElement & { __testZoomEndCount?: number }).__testZoomEndCount,\n  );\n  console.log(\"ZOOMEND_TRACE\", count);\n  expect(count).toBe(1);\n});\n\ntest(\"mouse wheel keeps its native Leaflet handler\", async ({ page }) => {\n  await setup(page);\n  const before = await getMapZoom(page);\n  await dispatchWheel(page, -100, false);\n  await expect.poll(() => getMapZoom(page)).toBeGreaterThan(before);\n});\nPHOTOMAP_E2E\ncd frontend\n./node_modules/.bin/prettier --write e2e/visual/map-trackpad-zoom.spec.ts\ncd ..\nE2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ./scripts/quality/e2e.sh e2e/visual/map-trackpad-zoom.spec.ts --workers=1\necho PHOTOMAP_ZOOM_TRACE_PASS",
+      "current_rss_mb": 50.25,
+      "elapsed_seconds": 146.972,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 2048,
+      "memory_limited": false,
+      "output": "e2e/visual/map-trackpad-zoom.spec.ts 885ms\nBackend: http://127.0.0.1:18080, PID 97241\nFrontend: http://127.0.0.1:15174, PID 97382\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:97457) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 4 tests using 1 worker\n\n(node:97613) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\nPINCH_TRACE {\"before\":13,\"afterIn\":13.18,\"afterOut\":13}\n  ✓  1 [chromium] › e2e/visual/map-trackpad-zoom.spec.ts:52:5 › pinch zooms in and back out continuously and settles near starting level (26.6s)\nSCROLL_TRACE {\"before\":13,\"afterOut\":12.039999999999992}\nSCROLL_RETURN_TRACE {\"afterOut\":12.039999999999992,\"afterIn\":13}\n  ✓  2 [chromium] › e2e/visual/map-trackpad-zoom.spec.ts:67:5 › fine two-finger scroll and repeated zoom-out bursts do not stall (26.2s)\nZOOMEND_TRACE \u001b[33m1\u001b[39m\n  ✓  3 [chromium] › e2e/visual/map-trackpad-zoom.spec.ts:82:5 › one continuous gesture emits one final zoomend instead of one per frame (17.6s)\n  ✓  4 [chromium] › e2e/visual/map-trackpad-zoom.spec.ts:102:5 › mouse wheel keeps its native Leaflet handler (22.4s)\n\n  4 passed (2.0m)\nPHOTOMAP_ZOOM_TRACE_PASS\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 282.23,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-10-31T00:39:44.906683+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.139,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.276,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-zoom-regression-trace-20261031-v2",
+  "idle_timeout": 240,
+  "memory_limit_mb": 2048,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 146.972,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-31T00:37:12.161959+00:00",
+  "status": "done",
+  "task_digest": "db193f155da08c1a187736c3d6c3e1177033c433b20bce8017a1566dffab779f",
+  "task_timeout": 1000,
+  "verification": [],
+  "work_branch": "fix/macbook-trackpad-zoom"
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-regression-inspect-leaflet-20261031-v1",
+  "task_digest": "e92a25ba13f7cfa56bbc3fb2fc15869478d081e907456f13802f5c5832a580eb",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-31T00:33:04.592924+00:00",
+  "attempt_id": "9e17bf46f68eeff043f0e205",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 88643,
+  "updated_at": "2026-10-31T00:33:04.835587+00:00",
+  "pid": 88643
+}

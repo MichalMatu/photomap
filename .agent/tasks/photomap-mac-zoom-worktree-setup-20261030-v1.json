@@ -1,0 +1,18 @@
+{
+  "id": "photomap-mac-zoom-worktree-setup-20261030-v1",
+  "dedupe_key": "photomap-mac-zoom-worktree-setup-20261030-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/macbook-trackpad-zoom",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 240,
+  "idle_timeout": 120,
+  "task_timeout": 480,
+  "memory_limit_mb": 512,
+  "commands": [
+    "set -eu\nrepo=/Users/michal/agent-workspace/repos/photomap/work\nworktree=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\nbranch=fix/macbook-trackpad-zoom\nexpected=91334a76de1e8d239c68dff9c29002847a6c5097\ntest -d \"$repo\"\ngit -C \"$repo\" rev-parse --is-inside-work-tree | grep -qx true\ntest \"$(git -C \"$repo\" remote get-url origin)\" = \"https://github.com/MichalMatu/photomap.git\"\ntest -z \"$(git -C \"$repo\" status --porcelain=v1)\"\nprintf 'AGENT_WORK_BEFORE=%s %s\\n' \"$(git -C \"$repo\" branch --show-current)\" \"$(git -C \"$repo\" rev-parse HEAD)\"\ngit -C \"$repo\" fetch --no-tags origin \"refs/heads/main:refs/remotes/origin/main\" \"refs/heads/$branch:refs/remotes/origin/$branch\"\nactual=$(git -C \"$repo\" rev-parse \"refs/remotes/origin/$branch\")\nprintf 'ZOOM_REMOTE_SHA=%s\\n' \"$actual\"\ntest \"$actual\" = \"$expected\"\nif test -e \"$worktree\"; then\n  test -d \"$worktree\"\n  test \"$(git -C \"$worktree\" rev-parse --show-toplevel)\" = \"$worktree\"\n  test \"$(git -C \"$worktree\" branch --show-current)\" = \"$branch\"\n  test -z \"$(git -C \"$worktree\" status --porcelain=v1)\"\n  git -C \"$worktree\" merge --ff-only \"refs/remotes/origin/$branch\"\nelse\n  mkdir -p \"$(dirname \"$worktree\")\"\n  if git -C \"$repo\" show-ref --verify --quiet \"refs/heads/$branch\"; then\n    git -C \"$repo\" worktree add \"$worktree\" \"$branch\"\n    git -C \"$worktree\" merge --ff-only \"refs/remotes/origin/$branch\"\n  else\n    git -C \"$repo\" worktree add -b \"$branch\" \"$worktree\" \"refs/remotes/origin/$branch\"\n  fi\nfi\ntest \"$(git -C \"$worktree\" rev-parse HEAD)\" = \"$expected\"\ntest -z \"$(git -C \"$worktree\" status --porcelain=v1)\"\nprintf 'ZOOM_WORKTREE=%s\\n' \"$worktree\"\nprintf 'ZOOM_WORKTREE_BRANCH=%s\\n' \"$(git -C \"$worktree\" branch --show-current)\"\nprintf 'ZOOM_WORKTREE_SHA=%s\\n' \"$(git -C \"$worktree\" rev-parse HEAD)\"\nprintf 'NODE=%s\\n' \"$(node --version 2>/dev/null || echo missing)\"\nprintf 'NPM=%s\\n' \"$(npm --version 2>/dev/null || echo missing)\"\nprintf 'PYTHON=%s\\n' \"$(python3 --version 2>&1 || echo missing)\"\nfor p in \"$repo/frontend/node_modules/.bin/vite\" \"$repo/backend/.venv/bin/python\" \"$worktree/frontend/node_modules/.bin/vite\" \"$worktree/backend/.venv/bin/python\"; do\n  if test -x \"$p\"; then printf 'DEP_OK=%s\\n' \"$p\"; else printf 'DEP_MISSING=%s\\n' \"$p\"; fi\ndone\nfor port in 8000 5174 18001 15175; do\n  if lsof -nP -iTCP:\"$port\" -sTCP:LISTEN 2>/dev/null | grep -q LISTEN; then printf 'PORT_BUSY=%s\\n' \"$port\"; else printf 'PORT_FREE=%s\\n' \"$port\"; fi\ndone\nfor p in \"$repo/backend/data/app.db\" \"$worktree/backend/data/app.db\"; do\n  if test -f \"$p\"; then printf 'LOCAL_DB_PRESENT=%s\\n' \"$p\"; else printf 'LOCAL_DB_ABSENT=%s\\n' \"$p\"; fi\ndone\nprintf 'AGENT_WORK_AFTER=%s %s\\n' \"$(git -C \"$repo\" branch --show-current)\" \"$(git -C \"$repo\" rev-parse HEAD)\"\nprintf 'AGENT_WORK_DIRTY=%s\\n' \"$(git -C \"$repo\" status --porcelain=v1 | wc -l | tr -d ' ')\"\necho PHOTOMAP_MAC_ZOOM_WORKTREE_SETUP_COMPLETE"
+  ]
+}

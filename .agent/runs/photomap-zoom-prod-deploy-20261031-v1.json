@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-zoom-prod-deploy-20261031-v1",
+  "task_digest": "0d04bc5cae9d7e413aa33d4f56dae301a38e460125c8a126edc37785cacc2e73",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-10-31T01:03:15.575971+00:00",
+  "attempt_id": "273e58eaf0e0053efeb28ac2",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 39874,
+  "updated_at": "2026-10-31T01:03:15.847480+00:00",
+  "pid": 39874
+}

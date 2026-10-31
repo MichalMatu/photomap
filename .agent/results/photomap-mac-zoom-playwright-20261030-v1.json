@@ -1,0 +1,61 @@
+{
+  "allow_write": true,
+  "attempt_id": "7c61167484793d146a45c1cd",
+  "command_timeout": 500,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 3167,
+      "command": "set -eu\nwt=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\ncd \"$wt\"\ntest \"$(git rev-parse HEAD)\" = 6d08908929d643f10bf58488f8b8382ba325659e\ntest -z \"$(git status --porcelain=v1)\"\nprintf 'PLAYWRIGHT_CHROME_BEGIN\\n'\nE2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ./scripts/quality/e2e.sh e2e/visual/map-trackpad-zoom.spec.ts --workers=1\nprintf 'PLAYWRIGHT_CHROME_DONE\\n'\nprintf 'WORKTREE_DIRTY_COUNT=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\necho PHOTOMAP_MAC_ZOOM_PLAYWRIGHT_COMPLETE",
+      "current_rss_mb": 397.11,
+      "elapsed_seconds": 26.461,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 2048,
+      "memory_limited": false,
+      "output": "PLAYWRIGHT_CHROME_BEGIN\nBackend: http://127.0.0.1:18080, PID 84686\nFrontend: http://127.0.0.1:15174, PID 84823\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:84849) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 2 tests using 1 worker\n\n(node:84937) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✘  1 [chromium] › e2e/visual/map-trackpad-zoom.spec.ts:36:5 › Mac-style trackpad pinch responds to a sub-threshold delta and reverses smoothly (4.1s)\n(node:85278) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✘  2 [chromium] › e2e/visual/map-trackpad-zoom.spec.ts:52:5 › Mac-style trackpad pinch bounds a burst without quarter-step jumps (4.4s)\n\n\n  1) [chromium] › e2e/visual/map-trackpad-zoom.spec.ts:36:5 › Mac-style trackpad pinch responds to a sub-threshold delta and reverses smoothly \n\n    Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n    Expected: < \u001b[32m1\u001b[39m\n    Received:   \u001b[31m2\u001b[39m\n\n      47 |   await dispatchPinch(page, 36);\n      48 |   const reversedWidth = await settledMarkerWidth(page);\n    > 49 |   expect(Math.abs(reversedWidth - initialWidth)).toBeLessThan(1);\n         |                                                  ^\n      50 | });\n      51 |\n      52 | test(\"Mac-style trackpad pinch bounds a burst without quarter-step jumps\", async ({ page }) => {\n        at /Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom/frontend/e2e/visual/map-trackpad-zoom.spec.ts:49:50\n\n    Error Context: test-results/visual-map-trackpad-zoom-M-7765b-delta-and-reverses-smoothly-chromium/error-context.md\n\n  2) [chromium] › e2e/visual/map-trackpad-zoom.spec.ts:52:5 › Mac-style trackpad pinch bounds a burst without quarter-step jumps \n\n    Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n    Expected: > \u001b[32m74\u001b[39m\n    Received:   \u001b[31m72\u001b[39m\n\n      63 |   await dispatchPinch(page, -600);\n      64 |   const burstWidth = await settledMarkerWidth(page);\n    > 65 |   expect(burstWidth).toBeGreaterThan(smallPinchWidth);\n         |                      ^\n      66 |   expect(burstWidth).toBeGreaterThan(initialWidth);\n      67 | });\n      68 |\n        at /Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom/frontend/e2e/visual/map-trackpad-zoom.spec.ts:65:22\n\n    Error Context: test-results/visual-map-trackpad-zoom-M-db592--without-quarter-step-jumps-chromium/error-context.md\n\n  2 failed\n    [chromium] › e2e/visual/map-trackpad-zoom.spec.ts:36:5 › Mac-style trackpad pinch responds to a sub-threshold delta and reverses smoothly \n    [chromium] › e2e/visual/map-trackpad-zoom.spec.ts:52:5 › Mac-style trackpad pinch bounds a burst without quarter-step jumps \n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 600.97,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.15",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-10-30T20:12:09.169389+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.082,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.122,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-mac-zoom-playwright-20261030-v1",
+  "idle_timeout": 150,
+  "memory_limit_mb": 2048,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 26.461,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-30T20:11:40.975041+00:00",
+  "status": "failed",
+  "task_digest": "9fe9650723b4eb45af796510c731a15e92cf83cbcfe29bfb8a1a994b5b2677e7",
+  "task_timeout": 900,
+  "verification": [],
+  "work_branch": "fix/macbook-trackpad-zoom"
+}

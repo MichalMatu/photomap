@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "795be913aa9d49ba83a2a9b5",
+  "command_timeout": 1200,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 0,
+      "command": "set -eu\nMAC=/Users/michal/agent-workspace/repos/photomap/work\nWT=/Users/michal/agent-workspace/repos/photomap/worktrees/macbook-trackpad-zoom\nPI=michal@192.168.0.23\nKEY=/Users/michal/.ssh/id_ed25519\nCODE_SHA=fbeefb174c309a252e82b47b20dbe3bf63217485\nDOC_SHA=d21400207c121eb3169647978072ee18a99269d1\nFIX_SHA=524c40a218ad59d985a133efc542e99f51f5912a\nBRANCH=fix/macbook-trackpad-zoom\ntest -r \"$KEY\"\ncd \"$MAC\"\ntest \"$(git branch --show-current)\" = agent-work\ntest \"$(git rev-parse HEAD)\" = \"$CODE_SHA\"\ntest -z \"$(git status --porcelain=v1)\"\ngit fetch --no-tags origin main \"$BRANCH\"\ntest \"$(git rev-parse refs/remotes/origin/main)\" = \"$DOC_SHA\"\ngit merge-base --is-ancestor \"$FIX_SHA\" \"$DOC_SHA\"\nprintf 'DOC_ONLY_COMMIT_FILES\\n'\ngit diff --name-only \"$CODE_SHA\" \"$DOC_SHA\"\ngit diff --name-only \"$CODE_SHA\" \"$DOC_SHA\" | while IFS= read -r file; do\ncase \"$file\" in README.md|docs/checkpoints/2026-10-31-macbook-trackpad-zoom-deploy.md|docs/deploy-pi-zero2w.md|docs/dev.md|frontend/src/components/map/AGENTS.md) ;; *) echo \"UNEXPECTED_POST_DEPLOY_CODE_CHANGE=$file\"; exit 3 ;; esac\ndone\ngit merge --ff-only refs/remotes/origin/main\ntest \"$(git rev-parse HEAD)\" = \"$DOC_SHA\"\nprintf 'MAC_DOC_SYNC_HEAD=%s\\n' \"$(git rev-parse HEAD)\"\nSSH=\"ssh -i $KEY -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=10\"\n$SSH \"$PI\" bash -s -- \"$CODE_SHA\" \"$DOC_SHA\" <<'REMOTE'\nset -euo pipefail\nCODE_SHA=\"$1\"; DOC_SHA=\"$2\"\ncd /home/michal/src/PhotoMaps\ntest \"$(git branch --show-current)\" = main\ntest \"$(git rev-parse HEAD)\" = \"$CODE_SHA\"\ntest -z \"$(git status --porcelain=v1)\"\nBEFORE_PID=\"$(pgrep -f \"[p]ython[^[:space:]]*[[:space:]].*/home/michal/src/PhotoMaps/server\\\\.py([[:space:]]|$)\" | head -n 1)\"\ntest -n \"$BEFORE_PID\"\ngit fetch --no-tags origin main\ntest \"$(git rev-parse refs/remotes/origin/main)\" = \"$DOC_SHA\"\ngit merge --ff-only refs/remotes/origin/main\ntest \"$(git rev-parse HEAD)\" = \"$DOC_SHA\"\ntest -z \"$(git status --porcelain=v1)\"\nAFTER_PID=\"$(pgrep -f \"[p]ython[^[:space:]]*[[:space:]].*/home/michal/src/PhotoMaps/server\\\\.py([[:space:]]|$)\" | head -n 1)\"\ntest \"$BEFORE_PID\" = \"$AFTER_PID\"\nprintf 'PI_RUNTIME_PID_UNCHANGED=%s\\n' \"$AFTER_PID\"\nprintf 'PI_FINAL_MAIN=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'PI_FINAL_HEALTH='\ncurl -fsS --max-time 8 http://127.0.0.1:8000/health\nprintf '\\n'\nprintf 'PI_FINAL_FRONTEND_HTTP='\ncurl -fsS --max-time 8 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8000/\nprintf 'PI_FINAL_MAP_HTTP='\ncurl -fsS --max-time 8 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8000/api/places/map\ntest -f .dev/deploy/2026-10-31-trackpad-zoom-pre/app-before.sqlite\ntest -f .dev/deploy/2026-10-31-trackpad-zoom-pre/frontend/index.html\ntest ! -e .dev/deploy/2026-10-31-trackpad-zoom-pre/frontend-next\ntest \"$(sha256sum frontend/dist/index.html | awk '{print $1}')\" = d654499fcacc770517afd462bd0c3902147033e45a999655f4c8b88ab26e10cf\nprintf 'PROD_BACKUP_PRESERVED=yes\\n'\nmake server-status\nmake tunnel-status\nREMOTE\nprintf 'MAC_WORKTREE_CLEANUP_PREFLIGHT\\n'\ntest -d \"$WT\"\ntest \"$(git -C \"$WT\" rev-parse HEAD)\" = \"$FIX_SHA\"\ntest \"$(git -C \"$WT\" branch --show-current)\" = \"$BRANCH\"\ntest -z \"$(git -C \"$WT\" status --porcelain=v1)\"\ntest -z \"$(git -C \"$WT\" ls-files --others --exclude-standard)\"\nfor protected in .env .cloudflared backups research-exports; do\n  test ! -e \"$WT/$protected\" || { echo \"WORKTREE_HAS_PROTECTED_UNTRACKED=$protected\"; exit 4; }\ndone\ntest -f \"$WT/backend/data/app.db\"\nWT=\"$WT\" \"$WT/backend/.venv/bin/python\" - <<'PY'\nimport os,sqlite3\ndb=sqlite3.connect(\"file:\"+os.environ[\"WT\"]+\"/backend/data/app.db?mode=ro\",uri=True)\nplaces=db.execute(\"SELECT COUNT(*) FROM place\").fetchone()[0]\nphotos=db.execute(\"SELECT COUNT(*) FROM photo\").fetchone()[0]\nprint(\"WORKTREE_SYNTHETIC_PLACE_COUNT\",places)\nprint(\"WORKTREE_SYNTHETIC_PHOTO_COUNT\",photos)\nassert places==120 and photos==120, \"refuse to erase unexpected worktree data\"\nPY\nprintf 'WORKTREE_REMOVING_DISPOSABLE_FIXTURES\\n'\ngit worktree remove --force \"$WT\"\ngit worktree prune\ngit branch -d \"$BRANCH\"\ngit push origin --delete \"$BRANCH\"\ngit fetch --no-tags --prune origin\nprintf 'FINAL_MAC_BRANCH=%s\\n' \"$(git branch --show-current)\"\nprintf 'FINAL_MAC_SHA=%s\\n' \"$(git rev-parse HEAD)\"\nprintf 'FINAL_MAC_DIRTY_COUNT=%s\\n' \"$(git status --porcelain=v1 | wc -l | tr -d ' ')\"\ntest ! -e \"$WT\"\necho PHOTOMAP_ZOOM_DOCS_SYNC_AND_CLEANUP_PASS",
+      "elapsed_seconds": 0.391,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 1024,
+      "memory_limited": false,
+      "output": "",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": null,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-10-31T01:05:03.363884+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.069,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.074,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-zoom-docs-sync-cleanup-20261031-v1",
+  "idle_timeout": 350,
+  "memory_limit_mb": 1024,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.391,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-10-31T01:05:01.174885+00:00",
+  "status": "failed",
+  "task_digest": "cafb1383c3a674c23ae3d47fe72fe84fd929e3e88c16feb7f25f9ec03e43f0a2",
+  "task_timeout": 1800,
+  "verification": [],
+  "work_branch": "main"
+}
