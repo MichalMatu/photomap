@@ -32,6 +32,8 @@ Publiczna mapa jest glownym produktem: wizualna tablica miniaturek miejsc, warst
 ## Work Guidance
 
 - Zmiany gestosci, rozmiaru i priorytetu markerow trzymaj w helperach, z testami jednostkowymi.
+- Ciągły zoom gładzika MacBooka nie może wysyłać `zoomend` ani `moveend` w każdej klatce. Kończ gest jednym zdarzeniem terminalnym; zachowaj osobne ścieżki kółka myszy i mobilnego touch zoomu.
+- Testy zoomu sprawdzają `map.getZoom()` i liczbę końcowych zdarzeń Leaflet, nie szerokość pierwszej miniaturki (zestaw markerów zmienia się wraz z gęstością).
 - Leaflet-specific HTML i event edge cases trzymaj poza duzym komponentem mapy.
 - Sheets mapy maja byc akcjocentryczne: pokazuj tylko dane potrzebne do raportu, pamiatki, zdjecia albo podgladu.
 - Po optymalizacji danych sprawdz, czy mapa nadal ma efekt miniatur w pierwszym widoku.
