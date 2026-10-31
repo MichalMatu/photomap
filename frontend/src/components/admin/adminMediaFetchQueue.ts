@@ -39,10 +39,7 @@ function drain(): void {
   }
 }
 
-export function enqueueAdminMediaFetch(
-  run: () => Promise<Blob>,
-  signal?: AbortSignal,
-): Promise<Blob> {
+export function enqueueAdminMediaFetch(run: () => Promise<Blob>, signal?: AbortSignal): Promise<Blob> {
   return new Promise<Blob>((resolve, reject) => {
     if (signal?.aborted) {
       reject(abortError());
