@@ -1,8 +1,9 @@
-import { useEffect, useState, type ComponentPropsWithoutRef } from "react";
+import { useEffect, useRef, useState, type ComponentPropsWithoutRef } from "react";
 import { Volume2 } from "lucide-react";
 
 import { mediaUrl, requestBlob } from "../../api/http";
 import type { AudioAttachment } from "../../api/types";
+import { requestAdminImageBlob } from "./adminMediaFetchQueue";
 
 type AdminMediaImageProps = Omit<ComponentPropsWithoutRef<"img">, "src"> & {
   src: string;
@@ -12,54 +13,81 @@ function isAdminMediaPath(path: string) {
   return path.startsWith("/api/admin/");
 }
 
-function useAuthenticatedMediaUrl(path: string | null) {
-  const [objectUrl, setObjectUrl] = useState<string | null>(null);
+function useAuthenticatedMediaUrl(path: string | null, queued = false) {
+  const [loaded, setLoaded] = useState<{ path: string; url: string } | null>(null);
 
   useEffect(() => {
     if (!path || !isAdminMediaPath(path)) {
-      setObjectUrl(null);
       return undefined;
     }
 
-    let isActive = true;
+    const controller = new AbortController();
     let nextObjectUrl: string | null = null;
+    const fetchMedia = queued
+      ? requestAdminImageBlob(path, controller.signal)
+      : requestBlob(path, { signal: controller.signal });
 
-    requestBlob(path)
+    fetchMedia
       .then((blob) => {
-        if (!isActive) {
+        if (controller.signal.aborted) {
           return;
         }
         nextObjectUrl = URL.createObjectURL(blob);
-        setObjectUrl(nextObjectUrl);
+        setLoaded({ path, url: nextObjectUrl });
       })
       .catch(() => {
-        if (isActive) {
-          setObjectUrl(null);
+        if (!controller.signal.aborted) {
+          setLoaded(null);
         }
       });
 
     return () => {
-      isActive = false;
+      controller.abort();
       if (nextObjectUrl) {
         URL.revokeObjectURL(nextObjectUrl);
       }
     };
-  }, [path]);
+  }, [path, queued]);
 
   if (!path) {
     return null;
   }
-  return isAdminMediaPath(path) ? objectUrl : mediaUrl(path);
+  return isAdminMediaPath(path) ? (loaded?.path === path ? loaded.url : null) : mediaUrl(path);
 }
 
 export function AdminMediaImage({ src, ...props }: AdminMediaImageProps) {
-  const resolvedSrc = useAuthenticatedMediaUrl(src);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [visible, setVisible] = useState(false);
+  const privateMedia = isAdminMediaPath(src);
 
-  if (!resolvedSrc) {
-    return null;
-  }
+  useEffect(() => {
+    if (!privateMedia) {
+      return undefined;
+    }
+    const element = imageRef.current;
+    if (!element || typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return undefined;
+    }
 
-  return <img {...props} src={resolvedSrc} />;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "250px 0px" },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [privateMedia, src]);
+
+  const resolvedSrc = useAuthenticatedMediaUrl(!privateMedia || visible ? src : null, true);
+
+  // Keep the <img> mounted even before fetching: this allows IntersectionObserver
+  // to detect offscreen thumbnails, unlike conditional rendering of the image.
+  return <img {...props} ref={imageRef} src={resolvedSrc ?? undefined} />;
 }
 
 export function AdminAudioPlayer({ audio }: { audio: AudioAttachment | null }) {
