@@ -79,10 +79,6 @@ case "$ACTION" in
       echo 'PRoot-Distro is not installed.' >&2
       exit 3
     }
-    test -x "$PREFIX/var/lib/proot-distro/containers/photomap-dev/rootfs/opt/photomap-venv/bin/python" || {
-      echo 'Isolated Debian backend is not ready.' >&2
-      exit 3
-    }
     test -s "$ROOT/frontend/dist/index.html" || {
       echo 'Frontend build missing; run frontend-build first.' >&2
       exit 3
@@ -97,6 +93,7 @@ case "$ACTION" in
     fi
     exec proot-distro login --isolated --bind "$ROOT:/mnt" photomap-dev -- /bin/sh -c '
       set -eu
+      test -x /opt/photomap-venv/bin/python || { echo "Isolated Debian backend is not ready." >&2; exit 3; }
       export PHOTOMAP_ENV=development
       export PHOTOMAP_DATA_DIR=/mnt/.dev/termux/data
       export PHOTOMAP_STORAGE_DIR=/mnt/.dev/termux/storage
