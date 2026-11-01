@@ -1,11 +1,12 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 import type { AppConfig, PlaceMapItem } from "../../src/api/types";
 import { appConfig, places } from "../fixtures/visualData";
 import { API_URL } from "../support/config";
 import { mockSharedApi } from "../support/visualApi";
 
-test("pins retain all viewport places when photo tile density is restrictive", async ({ page }) => {
+async function openSparseMarkerMap(page: Page, mode: "pins" | "photos") {
   const visiblePlaces: PlaceMapItem[] = Array.from({ length: 40 }, (_, index) => {
     const basePlace = places[index % places.length] as PlaceMapItem;
     return {
@@ -35,19 +36,26 @@ test("pins retain all viewport places when photo tile density is restrictive", a
   };
 
   await page.setViewportSize({ width: 1280, height: 820 });
-  await page.addInitScript(() => window.localStorage.setItem("photomap:map-marker-mode:v1", "pins"));
+  if (mode === "pins") {
+    await page.addInitScript(() => window.localStorage.setItem("photomap:map-marker-mode:v1", "pins"));
+  }
   await mockSharedApi(page, visiblePlaces);
   await page.route(`${API_URL}/api/app-config`, (route) => route.fulfill({ json: sparseConfig }));
   await page.goto("/");
+}
+
+test("pins show all viewport places, including one without media, despite sparse photo density", async ({ page }) => {
+  await openSparseMarkerMap(page, "pins");
 
   await expect(page.locator(".place-map-pin-marker")).toHaveCount(40);
   await expect(page.locator(".place-photo-marker")).toHaveCount(0);
   await expect(page.locator('[title="Punkt testowy 0"]')).toHaveCount(1);
+});
 
-  await page.evaluate(() => window.localStorage.setItem("photomap:map-marker-mode:v1", "photos"));
-  await page.reload();
+test("photos retain independent density limits for the same map dataset", async ({ page }) => {
+  await openSparseMarkerMap(page, "photos");
 
-  await expect(page.locator(".place-map-pin-marker")).toHaveCount(0);
   await expect.poll(async () => page.locator(".place-photo-marker").count()).toBeGreaterThan(0);
   expect(await page.locator(".place-photo-marker").count()).toBeLessThan(40);
+  await expect(page.locator(".place-map-pin-marker")).toHaveCount(0);
 });
