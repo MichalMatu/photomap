@@ -24,6 +24,7 @@ import {
 import { MAP_DISPLAY_CONFIG } from "../components/map/mapDisplayConfig";
 import { getPlacePreviewVisual } from "../components/map/placePreview";
 import { PlaceMap } from "../components/map/PlaceMap";
+import { readMapMarkerMode, writeMapMarkerMode, type MapMarkerMode } from "../components/map/mapMarkerMode";
 import { SEOHead } from "../components/ui/SEOHead";
 import { MapTour } from "../components/tour/MapTour";
 import {
@@ -36,6 +37,8 @@ export function PublicMapPage() {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [isAudioAutoplayEnabled, setIsAudioAutoplayEnabled] = useState(false);
   const [isPinnedMediaVisible, setIsPinnedMediaVisible] = useState(true);
+  const [markerMode, setMarkerMode] = useState<MapMarkerMode>(readMapMarkerMode);
+  useEffect(() => writeMapMarkerMode(markerMode), [markerMode]);
   const [mapLayerState, setMapLayerState] = useState(DEFAULT_MAP_LAYER_STATE);
   const [tourStep, setTourStep] = useState<MapTourStep | null>(null);
   const [hasSeenTour, setHasSeenTour] = useState(isTourComplete);
@@ -211,6 +214,8 @@ export function PublicMapPage() {
                 onTourEvent={handleTourEvent}
                 mapFallback={mapFallback}
                 markerPlaces={markerPlaces}
+                markerMode={markerMode}
+                onMarkerModeChange={setMarkerMode}
                 onPinnedMediaVisibleChange={setIsPinnedMediaVisible}
                 pinnedMediaPlaces={mapPlaces}
                 placeCustomFieldDefinitions={placeCustomFieldDefinitions}

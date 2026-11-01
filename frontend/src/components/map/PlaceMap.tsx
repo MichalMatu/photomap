@@ -1,4 +1,5 @@
 import "leaflet/dist/leaflet.css";
+import { Images, MapPin } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, useMap, useMapEvents, ZoomControl } from "react-leaflet";
 
@@ -6,6 +7,7 @@ import type { AppConfigMap, PlaceCustomFieldDefinition, PlaceMapItem } from "../
 import type { MapTourEvent } from "../tour/mapTourSteps";
 import { DistanceMeasureTool } from "./DistanceMeasureTool";
 import { MAP_DISPLAY_CONFIG } from "./mapDisplayConfig";
+import type { MapMarkerMode } from "./mapMarkerMode";
 import { MapTrackpadZoom } from "./MapTrackpadZoom";
 import { PinnedMediaBoard, type PinnedMediaPlaceProjector } from "./pinned-media/PinnedMediaBoard";
 import { PlaceLayer } from "./PlaceLayer";
@@ -19,6 +21,8 @@ type Props = {
   onTourEvent?: (event: MapTourEvent) => void;
   mapFallback: AppConfigMap;
   markerPlaces: PlaceMapItem[];
+  markerMode: MapMarkerMode;
+  onMarkerModeChange: (mode: MapMarkerMode) => void;
   onPinnedMediaVisibleChange: (isVisible: boolean) => void;
   pinnedMediaPlaces: PlaceMapItem[];
   placeCustomFieldDefinitions: PlaceCustomFieldDefinition[];
@@ -123,6 +127,8 @@ export function PlaceMap({
   onTourEvent,
   mapFallback,
   markerPlaces,
+  markerMode,
+  onMarkerModeChange,
   onPinnedMediaVisibleChange,
   pinnedMediaPlaces,
   placeCustomFieldDefinitions,
@@ -173,11 +179,22 @@ export function PlaceMap({
           tourCloseOverlayToken={tourCloseOverlayToken}
           onTourEvent={onTourEvent}
           mapSettings={mapFallback}
+          markerMode={markerMode}
           places={markerPlaces}
           placeCustomFieldDefinitions={placeCustomFieldDefinitions}
           onPinMedia={handlePinMedia}
         />
       </MapContainer>
+      <button
+        className="map-marker-mode-toggle ui-button ui-button--secondary"
+        type="button"
+        aria-label={markerMode === "photos" ? "Pokaż pinezki na mapie" : "Pokaż miniatury na mapie"}
+        title={markerMode === "photos" ? "Pinezki" : "Miniatury"}
+        onClick={() => onMarkerModeChange(markerMode === "photos" ? "pins" : "photos")}
+      >
+        {markerMode === "photos" ? <MapPin aria-hidden="true" size={18} /> : <Images aria-hidden="true" size={18} />}
+        <span>{markerMode === "photos" ? "Pinezki" : "Miniatury"}</span>
+      </button>
       {showPinnedMedia ? (
         <PinnedMediaBoard
           cards={cards}

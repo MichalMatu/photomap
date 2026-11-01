@@ -26,7 +26,7 @@ Pierwszy kontakt z PhotoMap ma byc wizualny. Uzytkownik wchodzi na mape miasta i
 
 Zasady produktu:
 
-- publiczne markery to miniatury, covery albo klastry miniaturek,
+- publiczne markery domyślnie pokazują miniatury, covery albo klastry miniaturek; użytkownik może opcjonalnie przełączyć je na pinezki, bez zmiany danych miejsc ani galerii,
 - zwykle pinezki nie sa domyslnym jezykiem publicznej mapy,
 - zoom zmienia gestosc i rozmiar elementow,
 - klikniecie miniatury w galerii miejsca otwiera bezposrednio jeden lekki widok medium; nie dodajemy posredniego podgladu tego samego zdjecia,

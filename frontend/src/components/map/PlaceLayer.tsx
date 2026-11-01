@@ -12,6 +12,7 @@ import { MapPhotoGalleryGlass } from "./MapPhotoGalleryGlass";
 import { MapPhotoGalleryPane } from "./MapPhotoGalleryPane";
 import { PhotoDetailModal } from "./photo-detail/PhotoDetailModal";
 import { PlaceMarker } from "./PlaceMarker";
+import type { MapMarkerMode } from "./mapMarkerMode";
 import { getPlaceMarkerMotionSignature, getPlaceMarkerMotionState, isPlaceMarkerEntering } from "./placeMarkerMotion";
 import type { PlaceMapVisualItem } from "./placePreview";
 import { ReportSheet } from "./ReportSheet";
@@ -29,6 +30,7 @@ type PlaceLayerProps = {
   tourCloseOverlayToken?: number;
   onTourEvent?: (event: MapTourEvent) => void;
   mapSettings: AppConfigMap;
+  markerMode: MapMarkerMode;
   onPinMedia: (request: PinMediaRequest) => boolean;
   places: PlaceMapItem[];
   placeCustomFieldDefinitions: PlaceCustomFieldDefinition[];
@@ -56,6 +58,7 @@ export function PlaceLayer({
   tourCloseOverlayToken = 0,
   onTourEvent,
   mapSettings,
+  markerMode,
   onPinMedia,
   places,
   placeCustomFieldDefinitions,
@@ -192,6 +195,7 @@ export function PlaceLayer({
             }}
             displayOffset={markerDisplayOffsets.get(place.id)}
             markerScale={mapSettings.marker_scale}
+            markerMode={markerMode}
             zoom={zoom}
           />
         );
