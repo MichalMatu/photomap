@@ -38,7 +38,10 @@ test("illustrated map animates once, keeps pins and photos visible while data lo
   await page.waitForTimeout(1600);
   expect((await getAnimation()).opacity).toBe(1);
   expect(
-    await page.locator(".map-loading-route").first().evaluate((node) => Number.parseFloat(getComputedStyle(node).strokeDashoffset)),
+    await page
+      .locator(".map-loading-route")
+      .first()
+      .evaluate((node) => Number.parseFloat(getComputedStyle(node).strokeDashoffset)),
   ).toBe(0);
   await expect(splash).toBeVisible();
 
@@ -64,7 +67,10 @@ test("reduced motion immediately shows the completed artwork without animation",
   await expect(photo).toBeVisible();
   expect(await photo.evaluate((node) => getComputedStyle(node).animationName)).toBe("none");
   expect(
-    await page.locator(".map-loading-route").first().evaluate((node) => Number.parseFloat(getComputedStyle(node).strokeDashoffset)),
+    await page
+      .locator(".map-loading-route")
+      .first()
+      .evaluate((node) => Number.parseFloat(getComputedStyle(node).strokeDashoffset)),
   ).toBe(0);
 
   releasePlaces();
