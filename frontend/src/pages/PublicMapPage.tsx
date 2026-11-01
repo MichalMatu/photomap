@@ -124,8 +124,8 @@ export function PublicMapPage() {
     [layerPlaces, selectedCategoryIds],
   );
   const markerPlaces = useMemo(
-    () => visiblePlaces.filter((place) => getPlacePreviewVisual(place) !== null),
-    [visiblePlaces],
+    () => (markerMode === "pins" ? visiblePlaces : visiblePlaces.filter((place) => getPlacePreviewVisual(place) !== null)),
+    [markerMode, visiblePlaces],
   );
   const categoryFilterItems = useMemo(() => getMapCategoryFilterItems(mapPlaces), [mapPlaces]);
   const layerCounts = useMemo(() => countMapLayerPlaces(mapPlaces), [mapPlaces]);
