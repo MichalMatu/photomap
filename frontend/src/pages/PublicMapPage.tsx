@@ -112,7 +112,14 @@ export function PublicMapPage() {
     staleTime: 60_000,
   });
   useEffect(() => {
-    if (!introFinished || hasSeenTour || tourStep !== null || appConfigQuery.isLoading || placesQuery.isLoading || placesQuery.isError) {
+    if (
+      !introFinished ||
+      hasSeenTour ||
+      tourStep !== null ||
+      appConfigQuery.isLoading ||
+      placesQuery.isLoading ||
+      placesQuery.isError
+    ) {
       return;
     }
     const timer = window.setTimeout(() => {
@@ -120,7 +127,15 @@ export function PublicMapPage() {
       startTour();
     }, 900);
     return () => window.clearTimeout(timer);
-  }, [appConfigQuery.isLoading, hasSeenTour, introFinished, placesQuery.isError, placesQuery.isLoading, startTour, tourStep]);
+  }, [
+    appConfigQuery.isLoading,
+    hasSeenTour,
+    introFinished,
+    placesQuery.isError,
+    placesQuery.isLoading,
+    startTour,
+    tourStep,
+  ]);
 
   const mapPlaces = useMemo(() => placesQuery.data ?? [], [placesQuery.data]);
   const layerPlaces = useMemo(() => filterMapPlaces(mapPlaces, mapLayerState), [mapLayerState, mapPlaces]);
@@ -129,7 +144,8 @@ export function PublicMapPage() {
     [layerPlaces, selectedCategoryIds],
   );
   const markerPlaces = useMemo(
-    () => (markerMode === "pins" ? visiblePlaces : visiblePlaces.filter((place) => getPlacePreviewVisual(place) !== null)),
+    () =>
+      markerMode === "pins" ? visiblePlaces : visiblePlaces.filter((place) => getPlacePreviewVisual(place) !== null),
     [markerMode, visiblePlaces],
   );
   const categoryFilterItems = useMemo(() => getMapCategoryFilterItems(mapPlaces), [mapPlaces]);
