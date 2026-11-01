@@ -87,10 +87,15 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   expect(thumbBox.width).toBeGreaterThanOrEqual(50);
   expect(thumbBox.height).toBeGreaterThanOrEqual(38);
   expect(handleBox.height).toBeGreaterThanOrEqual(thumbBox.height + 8);
-  const collapsedCredit = await attribution.boundingBox();
-  const collapsedDrawer = await drawer.boundingBox();
-  if (!collapsedCredit || !collapsedDrawer) throw new Error("Collapsed drawer and attribution must be measurable");
-  expect(collapsedCredit.y + collapsedCredit.height).toBeLessThanOrEqual(collapsedDrawer.y - 4);
+  // Wait for the slide-down transition before measuring the attribution clearance.
+  await expect
+    .poll(async () => {
+      const collapsedCredit = await attribution.boundingBox();
+      const collapsedDrawer = await drawer.boundingBox();
+      if (!collapsedCredit || !collapsedDrawer) return -1;
+      return collapsedDrawer.y - (collapsedCredit.y + collapsedCredit.height);
+    })
+    .toBeGreaterThanOrEqual(4);
   await expect(drawer.locator(".pinned-media-drawer-handle svg")).toHaveCount(0);
   await expect(drawer.locator(".pinned-media-drawer-handle")).not.toContainText("Przypięte");
   await drawer.getByRole("button", { name: "Rozwiń szufladę zdjęć" }).click();
