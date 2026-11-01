@@ -806,8 +806,7 @@
   fill: var(--color-surface-strong);
 }
 
-/* Copyright attribution stays available without hiding the pinned drawer handle.
-   OSM's interactive-map guidelines allow a 5-second disclosure followed by an info button. */
+/* Always-readable OSM credit; no floating info icon or Leaflet watermark over the pinned drawer. */
 .map-attribution {
   bottom: 10px;
   left: 10px;
@@ -823,47 +822,18 @@
   bottom: calc(var(--pinned-drawer-height) + 10px);
 }
 
-.map-attribution-details {
-  align-items: center;
-  background: rgb(28 30 33 / 85%);
-  border-radius: var(--radius-control);
-  color: #fff;
-  display: flex;
-  font-size: 12px;
-  gap: 6px;
+.map-attribution a {
+  background: rgb(255 255 255 / 80%);
+  border-radius: 3px;
+  color: #26333c;
+  display: inline-block;
+  font-size: 11px;
   line-height: 1.4;
-  padding: 4px 7px;
+  padding: 2px 5px;
+  text-decoration: none;
 }
 
-.map-attribution-details a {
-  color: #fff;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.map-attribution-toggle,
-.map-attribution-close {
-  align-items: center;
-  background: rgb(28 30 33 / 85%);
-  border: 0;
-  border-radius: var(--radius-full);
-  color: #fff;
-  display: inline-flex;
-  justify-content: center;
-  min-height: 32px;
-  min-width: 32px;
-  padding: 0;
-}
-
-.map-attribution-close {
-  background: transparent;
-  min-height: 24px;
-  min-width: 24px;
-}
-
-.map-attribution-toggle:focus-visible,
-.map-attribution-close:focus-visible,
-.map-attribution-details a:focus-visible {
-  outline: 2px solid #fff;
+.map-attribution a:focus-visible {
+  outline: 2px solid #26333c;
   outline-offset: 2px;
 }
