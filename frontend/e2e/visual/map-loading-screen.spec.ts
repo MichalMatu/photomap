@@ -6,6 +6,7 @@ import { mockSharedApi } from "../support/visualApi";
 
 for (const viewport of [
   { width: 390, height: 844 },
+  { width: 844, height: 390 },
   { width: 1440, height: 900 },
 ]) {
   test(`loading screen covers viewport, then fades into loaded map at ${viewport.width}px`, async ({ page }) => {
@@ -30,6 +31,10 @@ for (const viewport of [
     expect(rect!.width).toBe(viewport.width);
     expect(rect!.height).toBe(viewport.height);
     await expect(page.locator(".map-loading-map")).toBeVisible();
+    const illustration = await page.locator(".map-loading-map").boundingBox();
+    expect(illustration).not.toBeNull();
+    expect(illustration!.x).toBeGreaterThanOrEqual(-1);
+    expect(illustration!.x + illustration!.width).toBeLessThanOrEqual(viewport.width + 1);
     await expect(page.locator(".map-status-panel")).toHaveCount(0);
 
     releasePlaces();
