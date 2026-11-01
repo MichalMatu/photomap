@@ -9,11 +9,20 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   await mockSharedApi(page);
   await page.goto("/");
 
-  await page.getByRole("button", { name: "Pokaż pinezki na mapie" }).click();
+  const openMapMenu = async () => {
+    await page.getByRole("button", { name: "Pokaż pasek nawigacji" }).click();
+    await page.getByRole("button", { name: "Otwórz menu" }).click();
+  };
+  await openMapMenu();
+  await page.getByRole("navigation", { name: "Widok mapy" }).getByRole("button", { name: "Pinezki" }).click();
   await expect(page.locator(".place-map-pin-marker").first()).toBeVisible();
+  await expect(page.locator(".map-marker-mode-toggle")).toHaveCount(0);
   await page.reload();
-  await expect(page.getByRole("button", { name: "Pokaż miniatury na mapie" })).toBeVisible();
-  await page.getByRole("button", { name: "Pokaż miniatury na mapie" }).click();
+  await openMapMenu();
+  await expect(
+    page.getByRole("navigation", { name: "Widok mapy" }).getByRole("button", { name: "Pinezki" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("navigation", { name: "Widok mapy" }).getByRole("button", { name: "Miniatury" }).click();
 
   await clickMapMarker(page, places[0].title);
   await clickMapMarker(page, rynekSide.caption ?? places[0].title);
@@ -21,6 +30,10 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
 
   const card = page.getByTestId("pinned-media-card");
   await expect(card).toHaveCount(1);
+  await expect(card.locator(".pinned-media-card-caption-toggle")).toHaveCount(0);
+  await expect(card.locator(".pinned-media-card-dock")).toHaveCount(0);
+  await expect(card.locator(".pinned-media-card-map-link")).toHaveCount(1);
+  await expect(card.locator(".pinned-media-card-remove")).toHaveCount(1);
   const frame = await card.boundingBox();
   if (!frame) throw new Error("Pinned card not visible");
   await page.mouse.move(frame.x + frame.width / 2, frame.y + 28);

@@ -53,8 +53,6 @@
 }
 
 .pinned-media-card-map-link,
-.pinned-media-card-caption-toggle,
-.pinned-media-card-dock,
 .pinned-media-card-remove {
   align-items: center;
   background: var(--surface-media-control);
@@ -62,6 +60,7 @@
   border-radius: var(--radius-full);
   color: var(--content-media-control);
   display: flex;
+  box-sizing: border-box;
   height: var(--control-height-small);
   justify-content: center;
   min-height: 0;
@@ -69,6 +68,15 @@
   position: absolute;
   top: var(--space-2);
   width: var(--control-height-small);
+}
+
+.pinned-media-card-map-link svg,
+.pinned-media-card-remove svg {
+  display: block;
+  flex: 0 0 auto;
+  height: 16px;
+  stroke-width: 2;
+  width: 16px;
 }
 
 .pinned-media-card-map-link {
@@ -84,25 +92,12 @@
 .pinned-media-card-remove {
   right: var(--space-2);
 }
-.pinned-media-card-dock {
-  bottom: var(--space-2);
-  left: 50%;
-  top: auto;
-  transform: translateX(-50%);
-}
-.pinned-media-card-caption-toggle {
-  bottom: var(--space-2);
-  left: var(--space-2);
-  top: auto;
-}
 .pinned-media-card.is-copy-hidden .pinned-media-card-resize {
   height: var(--space-6);
   width: var(--space-6);
 }
 
 .pinned-media-card-map-link:hover,
-.pinned-media-card-caption-toggle:hover,
-.pinned-media-card-dock:hover,
 .pinned-media-card-remove:hover {
   background: var(--surface-media-control-hover);
   color: var(--content-media-control-hover);

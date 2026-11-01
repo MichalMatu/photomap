@@ -37,9 +37,9 @@ function markerIcon(
   if (mode === "pins" && !isSelected) {
     return L.divIcon({
       className: "place-map-pin-marker",
-      html: '<span class="place-map-pin-shape" aria-hidden="true"></span>',
-      iconAnchor: [14, 32],
-      iconSize: [28, 36],
+      html: '<svg class="place-map-pin-shape" viewBox="0 0 32 40" width="32" height="40" aria-hidden="true"><path d="M16 2C8.27 2 2 8.27 2 16c0 10.5 14 22 14 22s14-11.5 14-22C30 8.27 23.73 2 16 2Z"/><circle cx="16" cy="16" r="5"/></svg>',
+      iconAnchor: [16, 38],
+      iconSize: [32, 40],
     });
   }
   const markerEnterStyle = placeMarkerEnterStyle(enterIndex);
