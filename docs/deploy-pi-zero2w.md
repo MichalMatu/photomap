@@ -19,10 +19,24 @@ Systemowy `cloudflared` działa niezależnie od aplikacji. Zwykły deploy nie re
 2. Worktree na Pi musi być czysty; nie rób automatycznego stash/reset.
 3. Aktualizacja repo na Pi jest tylko fast-forward.
 4. `frontend/dist` buduj dla tego samego SHA na Macu i kopiuj przez `rsync`.
-5. Restartuj aplikację przez aktywną usługę `sudo systemctl restart photomap.service`, nie przez ręczne uruchomienie procesu w tle.
-6. Zakończ dopiero po `/health` i potwierdzeniu SHA.
+5. Przy zmianach **wyłącznie frontendu** nie restartuj backendu ani `cloudflared`: podmieniaj tylko statyczne assety i przełączaj `index.html` atomowo. Restart `photomap.service` jest potrzebny dopiero przy zmianie kodu lub konfiguracji backendu; nigdy nie uruchamiaj procesu ręcznie w tle.
+6. Zakończ dopiero po `/health`, `/api/places/map`, potwierdzeniu SHA, hasha `index.html` oraz publicznych assetów. Nie usuwaj starych plików assetów przed potwierdzoną aktywacją nowego indeksu.
 
-## Flow przez Local Agent
+## Frontend-only: atomowy deploy na Pi Zero 2W
+
+Dla zmian mapy React/CSS (np. pinezki, szuflada, miniatury) stosuj bezpieczniejszy flow niż restart całej aplikacji:
+
+1. Po testach użyj **konkretnego SHA z `main`**, buduj `frontend/dist` na Macu w czystym worktree, z `VITE_API_BASE_URL=`; zapisz SHA256 `dist/index.html` i ścieżkę zahashowanego JS.
+2. Na Pi sprawdź czystość repo, aktualny commit, `photomap.service`, `cloudflared.service`, PID backendu, wolny RAM i swap oraz `/health`. Przerwij, jeśli host jest w stanie niebezpiecznym.
+3. Zrób kopię `frontend/dist` i spójny snapshot SQLite przez `sqlite3.Connection.backup()` w `.dev/deploy/<release>/`; nie modyfikuj produkcyjnej bazy.
+4. Zaktualizuj repo Pi przez `git fetch origin main` i `git merge --ff-only origin/main`, bez resetowania, stasha czy nowych migracji.
+5. Z Maca: `rsync -az --exclude=index.html frontend/dist/ <pi>:<repo>/frontend/dist/`, a nowy indeks skopiuj jako `frontend/dist/index.html.next`; **nie** usuwaj przy tym poprzednich zahashowanych assetów.
+6. Zweryfikuj plik `.next`, a następnie `mv frontend/dist/index.html.next frontend/dist/index.html` na Pi. Zachowaj indeks poprzedniego buildu w backupie i przy błędzie przywróć go atomowo.
+7. Porównaj SHA256 indexu Mac↔Pi, sprawdź `HTTP 200` na `/`, `/health`, `/api/places/map`, publicznym HTML oraz pliku JS z nowego indeksu, stałość PID backendu, stan tunelu, wolną pamięć i brak nowych OOM. Dopiero wtedy oznacz deploy jako `PASS`.
+
+Frontend-only deploy **nie wymaga** restartu `photomap.service`, `cloudflared` ani budowania na Pi. Wzorcowy release: [checkpoint UI + pinezki 01.11.2026](checkpoints/2026-11-01-public-map-ui-pins-closeout.md).
+
+## Flow przez Local Agent — gdy zmieniono backend
 
 ```bash
 set -eu

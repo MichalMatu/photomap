@@ -81,10 +81,10 @@ Techniczne `guide` moze zostac w backendzie i API. Produktowo w UI i dokumentacj
 Publiczna mapa jest glownym produktem i ma dzialac jak zywa tablica miniaturek miejsc, nie jak pusta mapa z pinami.
 
 - Pierwszy widok ma od razu pokazywac atrakcyjne miniatury miejsc albo klastry miniaturek.
-- Publiczne markery sa coverami/miniaturami miejsc; klasyczna pinezka zostaje tylko w adminie do wyboru lokalizacji.
+- Publiczne markery domyslnie sa coverami/miniaturami miejsc. Opcjonalny publiczny tryb pinezek pokazuje wszystkie miejsca z aktualnego viewportu po filtrach kategorii/warstw, takze bez zdjec, bez ograniczen gestosci ani rankingu kafli; domyslny tryb miniaturek zachowuje swoje limity i ochrone przed kolizjami.
 - Klikniecie miejsca pokazuje wiecej, ale nie moze byc wymagane, zeby mapa robila efekt wizualny.
 - Rozwiniety wachlarz/galeria miejsca po kliknieciu ma pokazywac wszystkie zatwierdzone zdjecia miejsca dostepne w publicznej galerii, a nie tylko `map preview`. Nie optymalizuj tego przez limit liczby kafli ani przez redukcje do `preview_items`; problemy wydajnosciowe rozwiazuj przez lekkie miniatury, cache, layout i preload, bez zmniejszania kompletnego wachlarza.
-- Zoom steruje gestoscia i rozmiarem miniaturek: daleko mniej elementow i klastry, blisko wiecej miejsc oraz galerie podgladow ulozone bez nachodzenia kafli.
+- Zoom steruje gestoscia i rozmiarem miniaturek: daleko mniej elementow i klastry, blisko wiecej miejsc oraz galerie podgladow ulozone bez nachodzenia kafli. Ograniczenia miniaturek nie ograniczaja liczby pinezek w opcjonalnym trybie pinezek.
 - Warstwy mapy sa sposobem ogladania danych. Aktualny rdzen to polecane, miejsca i pamiatki; kolekcje/trasy moga byc osobnym widokiem albo warstwa dopiero po wprowadzeniu jawnego kontraktu API i testow.
 - Kategorie pochodza z admina/API; nie hardkoduj kategorii w filtrach UI. Techniczna allowlista wspieranych ikon UI jest dopuszczalna, ale nie moze zastapic danych kategorii z API.
 - Kontekst miasta dla publicznej mapy ma byc jawny w API albo UI, gdy produkt obsluguje wiecej niz jedno miasto. Nie buduj nowych przeplywow, ktore wyprowadzaja miasto z przypadkowego pierwszego miejsca w odpowiedzi.
