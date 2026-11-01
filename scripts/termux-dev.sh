@@ -74,6 +74,41 @@ case "$ACTION" in
     cd "$ROOT"
     exec "$ROOT/backend/.venv/bin/python" "$ROOT/server.py"
     ;;
+  serve-debian)
+    command -v proot-distro >/dev/null || {
+      echo 'PRoot-Distro is not installed.' >&2
+      exit 3
+    }
+    test -x "$PREFIX/var/lib/proot-distro/containers/photomap-dev/rootfs/opt/photomap-venv/bin/python" || {
+      echo 'Isolated Debian backend is not ready.' >&2
+      exit 3
+    }
+    test -s "$ROOT/frontend/dist/index.html" || {
+      echo 'Frontend build missing; run frontend-build first.' >&2
+      exit 3
+    }
+    mkdir -p "$PHOTOMAP_DATA_DIR" "$PHOTOMAP_STORAGE_DIR/private" "$PHOTOMAP_STORAGE_DIR/public"
+    if [[ -L "$DEV/admin-token" ]]; then
+      echo 'Refusing a symlinked development token file.' >&2
+      exit 3
+    fi
+    if [[ ! -s "$DEV/admin-token" ]]; then
+      (umask 077; python3 -c 'import secrets; print(secrets.token_urlsafe(48))' > "$DEV/admin-token")
+    fi
+    exec proot-distro login --isolated --bind "$ROOT:/mnt" photomap-dev -- /bin/sh -c '
+      set -eu
+      export PHOTOMAP_ENV=development
+      export PHOTOMAP_DATA_DIR=/mnt/.dev/termux/data
+      export PHOTOMAP_STORAGE_DIR=/mnt/.dev/termux/storage
+      export PHOTOMAP_SERVER_HOST=127.0.0.1
+      export PHOTOMAP_SERVER_PORT=8010
+      export FRONTEND_ORIGINS=http://127.0.0.1:8010,http://localhost:8010
+      ADMIN_TOKEN="$(cat /mnt/.dev/termux/admin-token)"
+      export ADMIN_TOKEN
+      cd /mnt
+      exec /opt/photomap-venv/bin/python /mnt/server.py
+    '
+    ;;
   start)
     test -x "$ROOT/backend/.venv/bin/python" || {
       echo 'Isolated Python venv missing.' >&2
@@ -86,7 +121,7 @@ case "$ACTION" in
     "$ROOT/scripts/devctl.sh" stop
     ;;
   *)
-    echo 'Usage: scripts/termux-dev.sh status|requirements|frontend-build|serve|start|stop' >&2
+    echo 'Usage: scripts/termux-dev.sh status|requirements|frontend-build|serve|serve-debian|start|stop' >&2
     exit 2
     ;;
 esac
