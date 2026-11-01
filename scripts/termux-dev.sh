@@ -96,6 +96,7 @@ case "$ACTION" in
       test -x /opt/photomap-venv/bin/python || { echo "Isolated Debian backend is not ready." >&2; exit 3; }
       export PHOTOMAP_ENV=development
       export PHOTOMAP_DATA_DIR=/mnt/.dev/termux/data
+      export DATABASE_URL=sqlite:////mnt/.dev/termux/data/app.db
       export PHOTOMAP_STORAGE_DIR=/mnt/.dev/termux/storage
       export PHOTOMAP_SERVER_HOST=127.0.0.1
       export PHOTOMAP_SERVER_PORT=8010
