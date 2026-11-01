@@ -22,6 +22,14 @@ Testy: `frontend/e2e/visual/map-loading-failures.spec.ts`. Pierwsza izolowana wa
 
 ## Testy końcowe i produkcja
 
-Po zmianach wizualnych uruchom ponownie formatowanie, typecheck, ESLint, build, pełny Vitest oraz Playwright: awarie API/kafelków, mobile/desktop, reduced-motion, pinezki, atrybucję OSM i szufladę. Zbadaj także czy dodatkowe elementy nie są obcięte na małym ekranie.
+**Niezależna pełna weryfikacja na Mac Local Agent: PASS.** Dokładny przetestowany commit roboczy: `817842d23e86add9f364b98aff5dd082ce539dc3`.
+
+- Prettier, TypeScript, ESLint, Vite build i `git diff --check` — **PASS**.
+- Vitest — **366/366 PASS** (101 plików).
+- Playwright — **12/12 PASS** (awaria API, niekończące się kafelki, nowa ilustracja, reduced motion, 390×844, 844×390, 1440×900, pinezki, OSM, szuflada).
+- Worktree po testach — czyste.
+- Wynik agenta: `.agent/results/photomap-loader-hardening-visual-final-20261101-v2.json` na `agent-control`.
+
+Testy przeglądarkowe działają na kontrolowanych fixture'ach; nie są ręcznym zatwierdzeniem jakości estetycznej na rzeczywistym telefonie. Nie wykonano pomiarów wydajności na słabszych urządzeniach.
 
 **Brak wdrożenia produkcyjnego:** statyczny frontend z tej gałęzi wymaga oddzielnego zatwierdzonego deployu z backupem i kontrolą hosta zgodnie z `docs/deploy-pi-zero2w.md`. Nie restartuj backendu bez potrzeby.
