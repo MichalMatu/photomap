@@ -22,6 +22,7 @@ type PinnedMediaCardProps = {
   onBringToFront: (id: string) => void;
   onMediaSizeChange: (id: string, naturalSize: PinnedMediaNaturalSize) => void;
   onRemove: (id: string) => void;
+  onPreview: (card: ResolvedPinnedMediaCard) => void;
   onStartInteraction: (
     card: ResolvedPinnedMediaCard,
     mode: PinnedMediaInteractionMode,
@@ -38,6 +39,7 @@ export function PinnedMediaCard({
   onBringToFront,
   onMediaSizeChange,
   onRemove,
+  onPreview,
   onStartInteraction,
   onToggleMapLink,
 }: PinnedMediaCardProps) {
@@ -77,7 +79,16 @@ export function PinnedMediaCard({
       aria-label={`Przypięte medium: ${card.place.title}`}
       data-media-card-id={card.id}
       data-testid="pinned-media-card"
-      onClick={stopFloatingWindowEvent}
+      onClick={(event) => {
+        stopFloatingWindowEvent(event);
+        if (!(event.target instanceof Element) || event.target.closest("button, a, [data-drag-ignore]")) return;
+        onPreview(card);
+      }}
+      onKeyDown={(event) => {
+        if (event.target !== event.currentTarget || (event.key !== "Enter" && event.key !== " ")) return;
+        event.preventDefault();
+        onPreview(card);
+      }}
       onContextMenu={stopFloatingWindowEvent}
       onDoubleClick={stopFloatingWindowEvent}
       onFocus={() => {
@@ -95,11 +106,7 @@ export function PinnedMediaCard({
       <div
         className="pinned-media-card-image-wrap"
         style={{ height: `${card.layout.height}px` }}
-        title="Kliknij dwukrotnie, żeby pokazać miejsce na mapie"
-        onDoubleClick={(event) => {
-          event.stopPropagation();
-          onToggleMapLink(card.id);
-        }}
+        title="Otwórz podgląd zdjęcia"
       >
         <img
           className="pinned-media-card-image"

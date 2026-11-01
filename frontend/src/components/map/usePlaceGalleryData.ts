@@ -6,6 +6,7 @@ import { placeGalleryQueryOptions } from "./placeGalleryQuery";
 import { findPlaceGalleryItem, getPlaceGalleryItems, type PlaceMapVisualItem } from "./placePreview";
 
 export type PlaceVisualTarget = {
+  itemSnapshot?: PlaceMapVisualItem;
   id: string;
   kind: PlaceMapVisualItem["kind"];
   placeId: string;
@@ -14,6 +15,7 @@ export type PlaceVisualTarget = {
 type UsePlaceGalleryDataParams = {
   expandedPlace: PlaceMapItem | null;
   expandedPlaceId: string | null;
+  fallbackDetailPlace?: PlaceMapItem | null;
   markerPlaces: PlaceMapItem[];
   places: PlaceMapItem[];
   reportTarget: PlaceVisualTarget | null;
@@ -23,6 +25,7 @@ type UsePlaceGalleryDataParams = {
 export function usePlaceGalleryData({
   expandedPlace,
   expandedPlaceId,
+  fallbackDetailPlace = null,
   markerPlaces,
   places,
   reportTarget,
@@ -48,10 +51,20 @@ export function usePlaceGalleryData({
       ]),
     );
   }, [expandedPlaceId, expandedPlacePhotos, renderedMarkerPlaces]);
-  const detailPlace = visualDetail ? (places.find((place) => place.id === visualDetail.placeId) ?? null) : null;
-  const detailPlacePhotos = detailPlace?.id === expandedPlace?.id ? expandedPlacePhotos : null;
+  const detailPlace = visualDetail
+    ? (places.find((place) => place.id === visualDetail.placeId) ??
+      (fallbackDetailPlace?.id === visualDetail.placeId ? fallbackDetailPlace : null))
+    : null;
+  const detailPlacePhotosQuery = useQuery({
+    ...placeGalleryQueryOptions(detailPlace?.id ?? ""),
+    enabled: Boolean(detailPlace && visualDetail?.kind === "photo" && detailPlace.id !== expandedPlace?.id),
+  });
+  const detailPlacePhotos =
+    detailPlace?.id === expandedPlace?.id ? expandedPlacePhotos : (detailPlacePhotosQuery.data ?? null);
   const detailItem =
-    detailPlace && visualDetail ? findPlaceGalleryItem(detailPlace, visualDetail, detailPlacePhotos) : null;
+    detailPlace && visualDetail
+      ? (findPlaceGalleryItem(detailPlace, visualDetail, detailPlacePhotos) ?? visualDetail.itemSnapshot ?? null)
+      : null;
   const detailNavigationItems = useMemo(
     () =>
       detailPlace && visualDetail?.kind === "photo"

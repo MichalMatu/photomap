@@ -101,6 +101,7 @@ describe("PinnedMediaCard", () => {
         onBringToFront={vi.fn()}
         onMediaSizeChange={vi.fn()}
         onRemove={vi.fn()}
+        onPreview={vi.fn()}
         onStartInteraction={vi.fn()}
         onToggleMapLink={vi.fn()}
       />,
@@ -123,6 +124,7 @@ describe("PinnedMediaCard", () => {
         onBringToFront={vi.fn()}
         onMediaSizeChange={vi.fn()}
         onRemove={vi.fn()}
+        onPreview={vi.fn()}
         onStartInteraction={vi.fn()}
         onToggleMapLink={vi.fn()}
       />,
@@ -143,6 +145,7 @@ describe("PinnedMediaCard", () => {
         onBringToFront={vi.fn()}
         onMediaSizeChange={vi.fn()}
         onRemove={vi.fn()}
+        onPreview={vi.fn()}
         onStartInteraction={vi.fn()}
         onToggleMapLink={vi.fn()}
       />,
