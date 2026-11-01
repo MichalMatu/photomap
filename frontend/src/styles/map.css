@@ -810,9 +810,9 @@
    OSM's interactive-map guidelines allow a 5-second disclosure followed by an info button. */
 .map-attribution {
   bottom: 10px;
+  left: 10px;
   position: absolute;
-  right: 10px;
-  z-index: 810;
+  z-index: 1100;
 }
 
 .map-attribution--with-drawer {
