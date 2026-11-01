@@ -2,6 +2,7 @@
 @import "./base.css";
 @import "./layout.css";
 @import "./map.css";
+@import "./map-loading.css";
 @import "./photo-detail.css";
 @import "./pinned-media.css";
 @import "./map-tools.css";
