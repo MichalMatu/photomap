@@ -20,6 +20,9 @@ test("illustrated map animates once, keeps pins and photos visible while data lo
   const splash = page.getByTestId("map-loading-screen");
   await expect(splash).toBeVisible();
   await expect(page.locator(".map-loading-map")).toBeVisible();
+  await expect(page.locator(".map-loading-clouds")).toHaveCount(1);
+  await expect(page.locator(".map-loading-birds")).toHaveCount(1);
+  await expect(page.locator(".map-loading-compass")).toHaveCount(1);
 
   const getAnimation = () =>
     page.locator(".map-loading-pin--one").evaluate((node) => {
@@ -66,6 +69,9 @@ test("reduced motion immediately shows the completed artwork without animation",
   const photo = page.locator(".map-loading-photo--one");
   await expect(photo).toBeVisible();
   expect(await photo.evaluate((node) => getComputedStyle(node).animationName)).toBe("none");
+  for (const selector of [".map-loading-clouds", ".map-loading-birds", ".map-loading-compass"]) {
+    expect(await page.locator(selector).evaluate((node) => getComputedStyle(node).animationName)).toBe("none");
+  }
   expect(
     await page
       .locator(".map-loading-route")

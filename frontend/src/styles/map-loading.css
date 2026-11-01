@@ -25,6 +25,18 @@
   width: 100%;
 }
 
+.map-loading-clouds {
+  animation: map-intro-cloud-reveal 1050ms ease-out both;
+}
+
+.map-loading-birds {
+  animation: map-intro-ink-reveal 780ms ease-out 200ms both;
+}
+
+.map-loading-compass {
+  animation: map-intro-compass-reveal 540ms ease-out 490ms both;
+}
+
 .map-loading-screen::after {
   background: linear-gradient(
     180deg,
@@ -155,6 +167,33 @@
   width: 0;
 }
 
+@keyframes map-intro-cloud-reveal {
+  from {
+    opacity: 0.12;
+  }
+  to {
+    opacity: 0.6;
+  }
+}
+
+@keyframes map-intro-ink-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.56;
+  }
+}
+
+@keyframes map-intro-compass-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes map-intro-landscape-arrive {
   from {
     opacity: 0.66;
@@ -266,7 +305,10 @@
 @media (prefers-reduced-motion: reduce) {
   .map-loading-screen,
   .map-loading-landscape,
+  .map-loading-clouds,
+  .map-loading-birds,
   .map-loading-content,
+  .map-loading-compass,
   .map-loading-paper,
   .map-loading-route,
   .map-loading-pin,
