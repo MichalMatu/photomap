@@ -105,7 +105,13 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
         <g fill="var(--map-intro-forest)" opacity=".62">
           <path d="m85 754 20-50 20 50h-11v30H96v-30Zm26-24 17-41 17 41h-9v26h-16v-26Zm1145-20 18-45 18 45h-10v28h-16v-28Zm25 26 20-51 20 51h-11v30h-18v-30Z" />
         </g>
-        <path d="M0 863q215-75 450-24t462-7q264-80 528 3" stroke="var(--map-intro-mountain-highlight)" strokeWidth="5" fill="none" opacity=".26" />
+        <path
+          d="M0 863q215-75 450-24t462-7q264-80 528 3"
+          stroke="var(--map-intro-mountain-highlight)"
+          strokeWidth="5"
+          fill="none"
+          opacity=".26"
+        />
       </svg>
 
       <div className="map-loading-content">
@@ -172,12 +178,48 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
               opacity=".67"
             />
             <g clipPath="url(#map-intro-paper-clip)">
-              <path d="M70 196q53-40 103-18t83-4q43-16 78-1t92-23q43-20 87-5t114 13l44 18-6 68q-47 12-71 42t-74 18q-58-29-112 0t-93-7q-57-24-126 8t-131-11Z" fill="var(--map-intro-terrain)" opacity=".13" />
-              <path d="M78 328q73-34 103-9t75-9q49-31 104-7t81-10q44-23 100-9t92 8M95 210q50-30 92-18t77-4q66-23 120-5t89-14q65-27 141-8" fill="none" stroke="var(--map-intro-terrain)" strokeWidth="2.5" opacity=".32" strokeLinecap="round" />
-              <path d="m93 147 23 55 45 29m120-98-25 73 40 32m137-104-32 81 24 46m170-121-31 69 45 50m-478 90 48-39 61 23m79 18 75-51 58 20m78 36 54-35 62 22" fill="none" stroke="var(--map-intro-road)" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" opacity=".9" />
-              <path d="m93 147 23 55 45 29m120-98-25 73 40 32m137-104-32 81 24 46m170-121-31 69 45 50m-478 90 48-39 61 23m79 18 75-51 58 20m78 36 54-35 62 22" fill="none" stroke="var(--map-intro-road-secondary)" strokeWidth="1.7" strokeDasharray="4 8" opacity=".7" />
-              <path d="m231 271 48-32 33 13-17 50-57 1Zm296-70 54-19 36 32-17 36-50-8ZM89 315l54-20 22 18-28 40-54 5Z" fill="var(--map-intro-park)" opacity=".85" />
-              <path d="M112 323c8-9 19-9 27-3m105-38c14-10 23-8 37-6m261-57c16-9 28-8 40 0" fill="none" stroke="var(--map-intro-map-light)" strokeWidth="3" opacity=".8" />
+              <path
+                d="M70 196q53-40 103-18t83-4q43-16 78-1t92-23q43-20 87-5t114 13l44 18-6 68q-47 12-71 42t-74 18q-58-29-112 0t-93-7q-57-24-126 8t-131-11Z"
+                fill="var(--map-intro-terrain)"
+                opacity=".13"
+              />
+              <path
+                d="M78 328q73-34 103-9t75-9q49-31 104-7t81-10q44-23 100-9t92 8M95 210q50-30 92-18t77-4q66-23 120-5t89-14q65-27 141-8"
+                fill="none"
+                stroke="var(--map-intro-terrain)"
+                strokeWidth="2.5"
+                opacity=".32"
+                strokeLinecap="round"
+              />
+              <path
+                d="m93 147 23 55 45 29m120-98-25 73 40 32m137-104-32 81 24 46m170-121-31 69 45 50m-478 90 48-39 61 23m79 18 75-51 58 20m78 36 54-35 62 22"
+                fill="none"
+                stroke="var(--map-intro-road)"
+                strokeWidth="12"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity=".9"
+              />
+              <path
+                d="m93 147 23 55 45 29m120-98-25 73 40 32m137-104-32 81 24 46m170-121-31 69 45 50m-478 90 48-39 61 23m79 18 75-51 58 20m78 36 54-35 62 22"
+                fill="none"
+                stroke="var(--map-intro-road-secondary)"
+                strokeWidth="1.7"
+                strokeDasharray="4 8"
+                opacity=".7"
+              />
+              <path
+                d="m231 271 48-32 33 13-17 50-57 1Zm296-70 54-19 36 32-17 36-50-8ZM89 315l54-20 22 18-28 40-54 5Z"
+                fill="var(--map-intro-park)"
+                opacity=".85"
+              />
+              <path
+                d="M112 323c8-9 19-9 27-3m105-38c14-10 23-8 37-6m261-57c16-9 28-8 40 0"
+                fill="none"
+                stroke="var(--map-intro-map-light)"
+                strokeWidth="3"
+                opacity=".8"
+              />
               <g fill="var(--map-intro-city)" opacity=".88">
                 <rect x="306" y="188" width="19" height="13" rx="2" transform="rotate(13 315 195)" />
                 <rect x="331" y="195" width="11" height="24" rx="2" transform="rotate(13 336 207)" />
@@ -187,10 +229,20 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
                 <rect x="146" y="253" width="18" height="12" rx="2" />
               </g>
               <g fill="var(--map-intro-label)" fontSize="12" fontWeight="750" letterSpacing="2" opacity=".83">
-                <text x="264" y="179" transform="rotate(9 264 179)">STARE MIASTO</text>
-                <text x="542" y="273" transform="rotate(-11 542 273)" fontSize="10">PARK</text>
+                <text x="264" y="179" transform="rotate(9 264 179)">
+                  STARE MIASTO
+                </text>
+                <text x="542" y="273" transform="rotate(-11 542 273)" fontSize="10">
+                  PARK
+                </text>
               </g>
-              <path d="m347 228 40 12m-42 5 40 12" stroke="var(--map-intro-road)" strokeWidth="5" strokeLinecap="round" opacity=".95" />
+              <path
+                d="m347 228 40 12m-42 5 40 12"
+                stroke="var(--map-intro-road)"
+                strokeWidth="5"
+                strokeLinecap="round"
+                opacity=".95"
+              />
             </g>
             <path
               className="map-loading-route"
@@ -241,16 +293,34 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
             <rect x="82" y="131" width="131" height="88" rx="8" fill="var(--map-intro-photo-sky)" />
             <path d="m82 205 33-48 30 31 25-42 43 59v14H82Z" fill="var(--map-intro-mountain-mid)" />
             <path d="m82 203 38-11 31 15 35-20 27 13v19H82Z" fill="var(--map-intro-water)" />
-            <path d="m88 206 23-7 27 9 36-12 27 9" fill="none" stroke="var(--map-intro-snow)" strokeWidth="2.5" opacity=".75" />
+            <path
+              d="m88 206 23-7 27 9 36-12 27 9"
+              fill="none"
+              stroke="var(--map-intro-snow)"
+              strokeWidth="2.5"
+              opacity=".75"
+            />
             <circle cx="188" cy="150" r="8" fill="var(--map-intro-sun)" />
-            <path d="m108 191 5-14 6 14m-24 4 4-11 5 11" stroke="var(--map-intro-photo-land)" strokeWidth="4" strokeLinecap="round" fill="none" />
+            <path
+              d="m108 191 5-14 6 14m-24 4 4-11 5 11"
+              stroke="var(--map-intro-photo-land)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              fill="none"
+            />
           </g>
           <g className="map-loading-photo map-loading-photo--two">
             <rect x="400" y="35" width="142" height="102" rx="13" fill="var(--map-intro-snow)" />
             <rect x="407" y="42" width="128" height="88" rx="8" fill="var(--map-intro-photo-sky)" />
             <path d="m407 116 35-39 23 21 28-36 42 53v15H407Z" fill="var(--map-intro-mountain-mid)" />
             <path d="M407 118q32-19 66-4t62-6v22H407Z" fill="var(--map-intro-forest)" />
-            <path d="m442 113 10-31 9 31m30-4 7-24 7 24" fill="none" stroke="var(--map-intro-photo-land)" strokeWidth="5" strokeLinecap="round" />
+            <path
+              d="m442 113 10-31 9 31m30-4 7-24 7 24"
+              fill="none"
+              stroke="var(--map-intro-photo-land)"
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
             <path d="M407 124q33-8 64 2t64-4" fill="none" stroke="var(--map-intro-snow)" strokeWidth="2" opacity=".6" />
           </g>
           <g className="map-loading-photo map-loading-photo--three">
@@ -258,8 +328,20 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
             <rect x="501" y="336" width="133" height="83" rx="8" fill="var(--map-intro-photo-sky)" />
             <path d="m501 404 43-41 28 26 24-32 38 47v15H501Z" fill="var(--map-intro-mountain-mid)" />
             <path d="M501 404q40-13 65 0t68-6v21H501Z" fill="var(--map-intro-forest)" />
-            <path d="m516 401 7-21 7 21m54 0 8-28 8 28m14-3 7-19 6 19" fill="none" stroke="var(--map-intro-photo-land)" strokeWidth="4" strokeLinecap="round" />
-            <path d="m503 414 28-4 34 6 37-5 29 1" fill="none" stroke="var(--map-intro-water)" strokeWidth="2" opacity=".65" />
+            <path
+              d="m516 401 7-21 7 21m54 0 8-28 8 28m14-3 7-19 6 19"
+              fill="none"
+              stroke="var(--map-intro-photo-land)"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+            <path
+              d="m503 414 28-4 34 6 37-5 29 1"
+              fill="none"
+              stroke="var(--map-intro-water)"
+              strokeWidth="2"
+              opacity=".65"
+            />
           </g>
         </svg>
         <p className="map-loading-label">
