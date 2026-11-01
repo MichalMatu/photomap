@@ -1,3 +1,6 @@
+import type { AppConfigMap, PlaceMapItem } from "../../api/types";
+import { limitMapMarkersByDensity } from "./mapMarkerDensity";
+import type { MapMarkerMode } from "./mapMarkerMode";
 import { mapMarkerCollisionOverlapIds, resolveMapMarkerCollisions } from "./mapMarkerCollision";
 import { limitMapMarkersByScreenDensity, type ScreenDensityCandidate } from "./mapMarkerScreenDensity";
 
@@ -53,4 +56,36 @@ export function limitMapMarkersByResolvedDensity<TCandidate extends MapMarkerSel
   }
 
   return selected;
+}
+
+export type MapMarkerPlaceCandidate = MapMarkerSelectionCandidate & { place: PlaceMapItem };
+
+type MapMarkerModeSelectionOptions = MapMarkerSelectionOptions & {
+  markerDensity: AppConfigMap["marker_density"];
+  markerMode: MapMarkerMode;
+  markerPriority: AppConfigMap["marker_priority"];
+};
+
+// Pins identify every location in the viewport; only photo tiles need density and collision pruning.
+export function selectMapMarkerPlaces<TCandidate extends MapMarkerPlaceCandidate>(
+  candidates: TCandidate[],
+  options: MapMarkerModeSelectionOptions,
+): TCandidate[] {
+  if (options.markerMode === "pins") {
+    return candidates;
+  }
+
+  const densityPlaces = limitMapMarkersByDensity(
+    candidates.map((candidate) => candidate.place),
+    {
+      markerDensity: options.markerDensity,
+      markerPriority: options.markerPriority,
+      viewportHeight: options.viewportHeight,
+      viewportWidth: options.viewportWidth,
+      zoom: options.zoom,
+    },
+  );
+  const densityPlaceIds = new Set(densityPlaces.map((place) => place.id));
+  const densityCandidates = candidates.filter((candidate) => densityPlaceIds.has(candidate.place.id));
+  return limitMapMarkersByResolvedDensity(densityCandidates, options);
 }

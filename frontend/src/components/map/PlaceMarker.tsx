@@ -25,7 +25,7 @@ import { getPlacePreviewVisual, type PlaceMapVisualItem } from "./placePreview";
 const PLACE_GALLERY_DISPLAY_CONFIG = MAP_DISPLAY_CONFIG.placeGallery.display;
 
 function markerIcon(
-  previewItem: PlaceMapVisualItem,
+  previewItem: PlaceMapVisualItem | null,
   isSelected: boolean,
   layout: PlaceMarkerLayout,
   enterIndex: number,
@@ -34,7 +34,7 @@ function markerIcon(
   isAudioPlaying: boolean,
   mode: MapMarkerMode,
 ) {
-  if (mode === "pins" && !isSelected) {
+  if (mode === "pins" && (!isSelected || !previewItem)) {
     return L.divIcon({
       className: "place-map-pin-marker",
       html: '<svg class="place-map-pin-shape" viewBox="0 0 32 40" width="32" height="40" aria-hidden="true"><path d="M16 2C8.27 2 2 8.27 2 16c0 10.5 14 22 14 22s14-11.5 14-22C30 8.27 23.73 2 16 2Z"/><circle cx="16" cy="16" r="5"/></svg>',
@@ -42,6 +42,10 @@ function markerIcon(
       iconSize: [32, 40],
     });
   }
+  if (!previewItem) {
+    return null;
+  }
+
   const markerEnterStyle = placeMarkerEnterStyle(enterIndex);
   const enterClassName = isEntering ? "is-entering" : null;
   const imageUrl = escapeAttribute(mediaUrl(previewItem.thumb_path));
@@ -140,18 +144,16 @@ export function PlaceMarker({
   const isPreviewAudioPlaying = previewItem ? isMapAudioTarget(activeAudioTarget, place.id, previewItem) : false;
   const placeIcon = useMemo(
     () =>
-      previewItem
-        ? markerIcon(
-            previewItem,
-            isExpanded,
-            placeLayout,
-            enterIndex,
-            isEntering,
-            markerVisualOffset,
-            isPreviewAudioPlaying,
-            markerMode,
-          )
-        : null,
+      markerIcon(
+        previewItem,
+        isExpanded,
+        placeLayout,
+        enterIndex,
+        isEntering,
+        markerVisualOffset,
+        isPreviewAudioPlaying,
+        markerMode,
+      ),
     [
       enterIndex,
       isEntering,
@@ -248,7 +250,7 @@ export function PlaceMarker({
     [galleryAddLayout],
   );
 
-  if (!previewItem || !placeIcon) {
+  if (!placeIcon) {
     return null;
   }
 

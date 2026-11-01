@@ -3,6 +3,15 @@
 Ten dokument opisuje, jak ustawienia z panelu admina `Konfiguracja -> Mapa` w sekcjach
 `Kafelki miejsc` i `Widocznosc kafli` wplywaja na publiczna tablice miniaturek miejsc.
 
+## Tryb pinezek a tryb miniaturek
+
+- **Miniatury/kafle** korzystaja z gestosci, priorytetow, limitow na zoom i rozkladania kolizji opisanych ponizej.
+- **Pinezki** pokazuja wszystkie opublikowane miejsca pasujace do wybranych kategorii/warstw, ktorych lokalizacje znajduja sie w aktualnym obszarze mapy. Nie stosuja limitow liczby kafli, rankingu widocznosci ani odrzucania nakladajacych sie markerow.
+- Kategorie i warstwy nadal filtrują obie prezentacje; zmiana trybu nie resetuje ich wyboru.
+- Pinezki nie uruchamiaja masowego pobierania galerii i miniaturek dla calego viewportu. Pelna galeria jest pobierana dopiero przy interakcji z miejscem.
+
+Ustawienia tej strony sluza do strojenia **kafli**, a nie liczby pinezek. Gdy kilka pinezek znajduje sie w tym samym punkcie, moga sie nakladac; nie wolno przez to ukrywac lokalizacji.
+
 Kafel miejsca nie ma jednego stalego rozmiaru. Rozmiar koncowy powstaje z trzech warstw:
 
 ```txt

@@ -39,6 +39,7 @@ type PlaceLayerProps = {
 };
 
 const EMPTY_PLACE_GALLERY_ITEMS: PlaceMapVisualItem[] = [];
+const EMPTY_PRELOAD_PLACES: PlaceMapItem[] = [];
 
 function readMapViewport(map: LeafletMap): MapViewport {
   const size = map.getSize();
@@ -86,9 +87,10 @@ export function PlaceLayer({
     map,
     mapSettings,
     mapViewport,
+    markerMode,
     places,
   });
-  useVisiblePlaceGalleriesPreload(markerPlaces);
+  useVisiblePlaceGalleriesPreload(markerMode === "photos" ? markerPlaces : EMPTY_PRELOAD_PLACES);
   const { closePlaceGallery, expandedPlace, expandedPlaceId, isGalleryInteractionLocked, togglePlaceGallery } =
     useCenteredPlaceGallery(map, places);
   const {

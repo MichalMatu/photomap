@@ -3,9 +3,10 @@ import { useMemo } from "react";
 
 import type { AppConfigMap, PlaceMapItem } from "../../api/types";
 import { resolveMapMarkerCollisions } from "./mapMarkerCollision";
-import { getMapPlacePriority, limitMapMarkersByDensity } from "./mapMarkerDensity";
+import { getMapPlacePriority } from "./mapMarkerDensity";
 import type { MarkerDisplayOffset } from "./mapMarkerDisplayOffset";
-import { limitMapMarkersByResolvedDensity } from "./mapMarkerSelection";
+import { selectMapMarkerPlaces } from "./mapMarkerSelection";
+import type { MapMarkerMode } from "./mapMarkerMode";
 import { getPlaceMarkerLayout } from "./mapMarkerScale";
 import { filterMapMarkersByViewport } from "./mapMarkerViewport";
 
@@ -32,10 +33,11 @@ type UseMapMarkerLayoutParams = {
   map: LeafletMap;
   mapSettings: AppConfigMap;
   mapViewport: MapViewport;
+  markerMode: MapMarkerMode;
   places: PlaceMapItem[];
 };
 
-export function useMapMarkerLayout({ map, mapSettings, mapViewport, places }: UseMapMarkerLayoutParams) {
+export function useMapMarkerLayout({ map, mapSettings, mapViewport, markerMode, places }: UseMapMarkerLayoutParams) {
   const zoom = mapViewport.zoom;
   const viewportCenterLat = mapViewport.centerLat;
   const viewportCenterLon = mapViewport.centerLon;
@@ -86,47 +88,42 @@ export function useMapMarkerLayout({ map, mapSettings, mapViewport, places }: Us
       }),
     [projectedPlaces, viewportHeight, viewportWidth],
   );
-  const markerProjectedPlaces = useMemo(() => {
-    const densityPlaces = limitMapMarkersByDensity(
-      viewportProjectedPlaces.map((projectedPlace) => projectedPlace.place),
-      {
-        markerDensity: mapSettings.marker_density,
-        markerPriority: mapSettings.marker_priority,
-        viewportHeight,
-        viewportWidth,
-        zoom,
-      },
-    );
-    const densityPlaceIds = new Set(densityPlaces.map((place) => place.id));
-    const densityProjectedPlaces = viewportProjectedPlaces.filter((projectedPlace) =>
-      densityPlaceIds.has(projectedPlace.place.id),
-    );
-
-    return limitMapMarkersByResolvedDensity(
-      densityProjectedPlaces.map((projectedPlace) => ({
-        ...projectedPlace,
-        cityId: projectedPlace.place.city_id,
-        id: projectedPlace.place.id,
-      })),
-      {
-        viewportHeight,
-        viewportWidth,
-        zoom,
-      },
-    );
-  }, [
-    mapSettings.marker_density,
-    mapSettings.marker_priority,
-    viewportHeight,
-    viewportProjectedPlaces,
-    viewportWidth,
-    zoom,
-  ]);
+  const markerProjectedPlaces = useMemo(
+    () =>
+      selectMapMarkerPlaces(
+        viewportProjectedPlaces.map((projectedPlace) => ({
+          ...projectedPlace,
+          cityId: projectedPlace.place.city_id,
+          id: projectedPlace.place.id,
+        })),
+        {
+          markerDensity: mapSettings.marker_density,
+          markerMode,
+          markerPriority: mapSettings.marker_priority,
+          viewportHeight,
+          viewportWidth,
+          zoom,
+        },
+      ),
+    [
+      mapSettings.marker_density,
+      mapSettings.marker_priority,
+      markerMode,
+      viewportHeight,
+      viewportProjectedPlaces,
+      viewportWidth,
+      zoom,
+    ],
+  );
   const markerPlaces = useMemo(
     () => markerProjectedPlaces.map((projectedPlace) => projectedPlace.place),
     [markerProjectedPlaces],
   );
   const markerDisplayOffsets = useMemo(() => {
+    if (markerMode === "pins") {
+      return new Map<string, MarkerDisplayOffset>();
+    }
+
     const collisionLayouts = resolveMapMarkerCollisions(
       markerProjectedPlaces.map((projectedPlace) => ({
         height: projectedPlace.height,
@@ -143,7 +140,7 @@ export function useMapMarkerLayout({ map, mapSettings, mapViewport, places }: Us
     );
 
     return new Map<string, MarkerDisplayOffset>(collisionLayouts.map((layout) => [layout.id, layout.offset]));
-  }, [markerProjectedPlaces, viewportHeight, viewportWidth, zoom]);
+  }, [markerMode, markerProjectedPlaces, viewportHeight, viewportWidth, zoom]);
 
   return { markerDisplayOffsets, markerPlaces };
 }
