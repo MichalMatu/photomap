@@ -321,11 +321,29 @@
   display: flex;
   gap: var(--space-1);
 }
+.pinned-media-drawer-grab-line {
+  background: var(--content-tertiary);
+  border-radius: var(--radius-full);
+  display: block;
+  height: 3px;
+  opacity: 0.7;
+  width: 34px;
+}
+.pinned-media-drawer-drag-label {
+  color: var(--content-secondary);
+  font-size: var(--text-caption);
+}
 .pinned-media-drawer-handle-thumbs img {
   border-radius: var(--radius-control);
   height: 24px;
   object-fit: cover;
   width: 32px;
+}
+.pinned-media-drawer.is-open .pinned-media-drawer-handle {
+  height: 24px;
+}
+.pinned-media-drawer.is-open .pinned-media-drawer-content {
+  height: calc(100% - 24px);
 }
 .pinned-media-drawer-content {
   height: calc(100% - 38px);

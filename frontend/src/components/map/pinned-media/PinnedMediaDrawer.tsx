@@ -1,4 +1,3 @@
-import { ChevronDown, ChevronUp } from "lucide-react";
 import { type PointerEvent as ReactPointerEvent, useRef } from "react";
 import { mediaUrl } from "../../../api/http";
 import type { ResolvedPinnedMediaCard } from "./pinnedMediaBoardTypes";
@@ -60,15 +59,17 @@ export function PinnedMediaDrawer({
           onToggle();
         }}
       >
-        {isOpen ? <ChevronDown size={18} aria-hidden="true" /> : <ChevronUp size={18} aria-hidden="true" />}
-        <span>Przypięte ({cards.length})</span>
-        {!isOpen ? (
+        {isOpen ? (
+          <span className="pinned-media-drawer-grab-line" aria-hidden="true" />
+        ) : cards.length > 0 ? (
           <span className="pinned-media-drawer-handle-thumbs" aria-hidden="true">
             {cards.slice(0, 3).map((card) => (
               <img key={card.id} src={mediaUrl(card.item.thumb_path)} alt="" />
             ))}
           </span>
-        ) : null}
+        ) : (
+          <span className="pinned-media-drawer-drag-label">Przeciągnij zdjęcie tutaj</span>
+        )}
       </button>
       <div className="pinned-media-drawer-content">
         {cards.length === 0 ? <p className="pinned-media-drawer-hint">Przeciągnij przypięte zdjęcie tutaj</p> : null}

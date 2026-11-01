@@ -152,6 +152,7 @@ export function PlaceMap({
   const { cards, notice, onBringToFront, onDock, onUndock, onLayoutChange, onMediaSizeChange, onRemove, pinMedia } =
     usePinnedMediaBoard(pinnedMediaPlaces);
   const [isPinnedDrawerOpen, setIsPinnedDrawerOpen] = useState(false);
+  const hasDockedMedia = cards.some((card) => card.docked);
   const [pinnedPreview, setPinnedPreview] = useState<{
     card: ResolvedPinnedMediaCard;
     target: PlaceVisualTarget;
@@ -184,7 +185,7 @@ export function PlaceMap({
         zoomSnap={MAP_DISPLAY_CONFIG.mapContainer.zoomSnap}
       >
         <MapSizeUpdater />
-        <MapDrawerInset expanded={showPinnedMedia && isPinnedDrawerOpen && cards.length > 0} />
+        <MapDrawerInset expanded={showPinnedMedia && isPinnedDrawerOpen && hasDockedMedia} />
         <MapTrackpadZoom />
         {showPinnedMedia && cards.length > 0 ? (
           <MapProjectionTracker onProjectorChange={handleProjectorChange} />
@@ -207,8 +208,8 @@ export function PlaceMap({
         />
       </MapContainer>
       <MapAttribution
-        hasPinnedDrawer={showPinnedMedia && cards.length > 0}
-        isPinnedDrawerOpen={showPinnedMedia && isPinnedDrawerOpen && cards.length > 0}
+        hasPinnedDrawer={showPinnedMedia && hasDockedMedia}
+        isPinnedDrawerOpen={showPinnedMedia && isPinnedDrawerOpen && hasDockedMedia}
       />
       {showPinnedMedia ? (
         <PinnedMediaBoard

@@ -107,6 +107,22 @@ export function PinnedMediaBoard({
   }, [floatingCards, linkedCardId]);
 
   useEffect(() => {
+    if (dockedCards.length === 0 && isDrawerOpen) onDrawerOpenChange(false);
+  }, [dockedCards.length, isDrawerOpen, onDrawerOpenChange]);
+
+  useEffect(() => {
+    if (!isDrawerOpen || dockedCards.length === 0) return;
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (isDragging || interactionRef.current || undockRef.current) return;
+      if (!(event.target instanceof Element)) return;
+      if (event.target.closest(".pinned-media-drawer, .pinned-media-card, [role='dialog']")) return;
+      onDrawerOpenChange(false);
+    };
+    document.addEventListener("pointerdown", closeOnOutsidePointer, true);
+    return () => document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
+  }, [dockedCards.length, isDragging, isDrawerOpen, onDrawerOpenChange]);
+
+  useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
       const undock = undockRef.current;
       if (undock && undock.pointerId === event.pointerId) {
@@ -281,7 +297,7 @@ export function PinnedMediaBoard({
           onToggleMapLink={toggleMapLink}
         />
       ))}
-      {cards.length > 0 ? (
+      {dockedCards.length > 0 || isDragging ? (
         <PinnedMediaDrawer
           cards={dockedCards}
           isOpen={isDrawerOpen}
