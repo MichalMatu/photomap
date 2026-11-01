@@ -6,14 +6,17 @@ import { API_URL } from "../support/config";
 import { mockSharedApi } from "../support/visualApi";
 
 test("pins retain all viewport places when photo tile density is restrictive", async ({ page }) => {
-  const visiblePlaces: PlaceMapItem[] = Array.from({ length: 40 }, (_, index) => ({
-    ...places[index % places.length],
-    id: `coverage-place-${index}`,
-    slug: `coverage-place-${index}`,
-    title: `Punkt testowy ${index}`,
-    lat: 51.1079 + (index % 5) * 0.001,
-    lon: 17.0385 + Math.floor(index / 5) * 0.001,
-  }));
+  const visiblePlaces: PlaceMapItem[] = Array.from({ length: 40 }, (_, index) => {
+    const basePlace = places[index % places.length] as PlaceMapItem;
+    return {
+      ...basePlace,
+      id: `coverage-place-${index}`,
+      slug: `coverage-place-${index}`,
+      title: `Punkt testowy ${index}`,
+      lat: 51.1079 + (index % 5) * 0.001,
+      lon: 17.0385 + Math.floor(index / 5) * 0.001,
+    };
+  });
   visiblePlaces[0] = { ...visiblePlaces[0], cover_photo: null, preview_items: [] };
 
   const sparseConfig: AppConfig = {
