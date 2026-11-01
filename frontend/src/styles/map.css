@@ -1,4 +1,5 @@
 .map-frame {
+  --pinned-drawer-height: min(196px, 32dvh);
   height: 100vh;
   height: 100dvh;
   min-height: 100vh;
@@ -19,6 +20,11 @@
   --map-marker-selected-scale: 1.045;
   --map-gallery-hover-scale: 1.045;
   width: 100%;
+}
+
+.place-map--drawer-open {
+  height: calc(100% - var(--pinned-drawer-height));
+  min-height: 0;
 }
 
 .place-map.is-photo-gallery-open .leaflet-control-container {

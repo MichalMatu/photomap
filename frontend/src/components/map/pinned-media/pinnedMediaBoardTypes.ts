@@ -21,6 +21,7 @@ export type RectLike = {
 
 export type PinnedMediaLayout = {
   aspectRatio: number;
+  captionHidden?: boolean;
   height: number;
   width: number;
   x: number;
@@ -40,6 +41,7 @@ export type PinnedMediaPoint = {
 
 export type StoredPinnedMediaCard = {
   createdAt: number;
+  docked?: boolean;
   id: string;
   itemId: string;
   itemSnapshot?: PlaceMapVisualItem;

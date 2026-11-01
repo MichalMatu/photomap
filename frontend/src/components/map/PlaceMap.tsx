@@ -136,8 +136,9 @@ export function PlaceMap({
 }: Props) {
   const center: [number, number] = [mapFallback.fallback_center.lat, mapFallback.fallback_center.lon];
   const mapStartKey = `${mapFallback.fallback_center.lat}:${mapFallback.fallback_center.lon}:${mapFallback.fallback_zoom}`;
-  const { cards, notice, onBringToFront, onLayoutChange, onMediaSizeChange, onRemove, pinMedia } =
+  const { cards, notice, onBringToFront, onDock, onUndock, onToggleCaption, onLayoutChange, onMediaSizeChange, onRemove, pinMedia } =
     usePinnedMediaBoard(pinnedMediaPlaces);
+  const [isPinnedDrawerOpen, setIsPinnedDrawerOpen] = useState(false);
   const [projectPlacePoint, setProjectPlacePoint] = useState<PinnedMediaPlaceProjector | null>(null);
   const handleProjectorChange = useCallback((projector: PinnedMediaPlaceProjector | null) => {
     setProjectPlacePoint(() => projector);
@@ -157,7 +158,7 @@ export function PlaceMap({
       <MapContainer
         center={center}
         zoom={mapFallback.fallback_zoom}
-        className="place-map"
+        className={showPinnedMedia && isPinnedDrawerOpen && cards.length > 0 ? "place-map place-map--drawer-open" : "place-map"}
         key={mapStartKey}
         scrollWheelZoom={MAP_DISPLAY_CONFIG.mapContainer.scrollWheelZoom}
         zoomDelta={MAP_DISPLAY_CONFIG.mapContainer.zoomDelta}
@@ -200,6 +201,11 @@ export function PlaceMap({
           cards={cards}
           notice={notice}
           onBringToFront={onBringToFront}
+          onDock={onDock}
+          onUndock={onUndock}
+          onToggleCaption={onToggleCaption}
+          isDrawerOpen={isPinnedDrawerOpen}
+          onDrawerOpenChange={setIsPinnedDrawerOpen}
           onLayoutChange={onLayoutChange}
           onMediaSizeChange={onMediaSizeChange}
           onRemove={onRemove}

@@ -4,6 +4,7 @@ import type { Category, PlaceMapItem, PlaceMapPhoto, PlaceMapPreviewItem } from 
 import { bringPinnedMediaCardToFront, resolvePinnedMediaCards, upsertPinnedMediaCard } from "./pinnedMediaBoardCards";
 import {
   clampPinnedMediaLayout,
+  pinnedMediaChromeHeight,
   defaultPinnedMediaLayout,
   snapPinnedMediaLayout,
   snapPinnedMediaResizeLayout,
@@ -207,7 +208,7 @@ describe("pinned media board helpers", () => {
 
     expect(layout.width).toBeLessThanOrEqual(336);
     expect(layout.x).toBeGreaterThanOrEqual(12);
-    expect(layout.y + layout.height + 72).toBeLessThanOrEqual(628);
+    expect(layout.y + layout.height + pinnedMediaChromeHeight(layout)).toBeLessThanOrEqual(628);
   });
 
   it("keeps cards inside offset map frame bounds", () => {
@@ -292,8 +293,16 @@ describe("pinned media board helpers", () => {
     );
 
     expect(layout.aspectRatio).toBe(1);
-    expect(layout.width).toBe(180);
-    expect(layout.height).toBe(180);
+    expect(layout.width).toBe(120);
+    expect(layout.height).toBe(120);
+  });
+
+  it("can collapse captions automatically for compact thumbnails", () => {
+    const layout = clampPinnedMediaLayout({aspectRatio: 1.6, height: 75, width: 120, x: 10, y: 10, zIndex: 1}, {height: 800, left: 0, top: 0, width: 360});
+    expect(layout.width).toBe(120);
+    expect(pinnedMediaChromeHeight(layout)).toBe(0);
+    expect(pinnedMediaChromeHeight({...layout, width: 240})).toBe(72);
+    expect(pinnedMediaChromeHeight({...layout, width: 240, captionHidden: true})).toBe(0);
   });
 
   it("keeps wide media readable with a minimum image height", () => {
@@ -309,8 +318,8 @@ describe("pinned media board helpers", () => {
       { height: 900, left: 0, top: 0, width: 1200 },
     );
 
-    expect(layout.width).toBe(288);
-    expect(layout.height).toBe(120);
+    expect(layout.width).toBe(149);
+    expect(layout.height).toBeCloseTo(62, 0);
   });
 
   it("snaps lightly to map frame edges and other cards", () => {
