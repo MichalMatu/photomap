@@ -21,6 +21,7 @@ Software-only buildy i testy moga byc wykonywane w sandboxie ChatGPT z zaleznosc
 - [Sandbox / ChatGPT Library](docs/SANDBOX_EXECUTION_FLOW.md)
 - [Content pipeline](docs/content-pipeline.md)
 - [Workflow mediow redakcyjnych](docs/editorial-media-workflow.md)
+- [Checkpoint końcowy: reaudyt mapy, szuflady i pinezek (01.11.2026)](docs/checkpoints/2026-11-01-public-map-ui-pins-closeout.md)
 - [Checkpoint: płynny zoom MacBooka i wdrożenie Pi Zero (31.10.2026)](docs/checkpoints/2026-10-31-macbook-trackpad-zoom-deploy.md)
 - [Checkpoint wcześniejszego sprintu — korekta 27 podpisów](docs/checkpoints/2026-10-29-caption-curation.md)
 - [Operacje, diagnostyka i storage](docs/ops.md)
