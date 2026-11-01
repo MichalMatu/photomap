@@ -6,6 +6,8 @@ import type { AppConfigMap, PlaceCustomFieldDefinition, PlaceMapItem } from "../
 import type { MapTourEvent } from "../tour/mapTourSteps";
 import { DistanceMeasureTool } from "./DistanceMeasureTool";
 import { MapAttribution } from "./MapAttribution";
+import type { PlaceVisualTarget } from "./usePlaceGalleryData";
+import type { ResolvedPinnedMediaCard } from "./pinned-media/pinnedMediaBoardTypes";
 import { MAP_DISPLAY_CONFIG } from "./mapDisplayConfig";
 import type { MapMarkerMode } from "./mapMarkerMode";
 import { MapTrackpadZoom } from "./MapTrackpadZoom";
@@ -150,6 +152,10 @@ export function PlaceMap({
   const { cards, notice, onBringToFront, onDock, onUndock, onLayoutChange, onMediaSizeChange, onRemove, pinMedia } =
     usePinnedMediaBoard(pinnedMediaPlaces);
   const [isPinnedDrawerOpen, setIsPinnedDrawerOpen] = useState(false);
+  const [pinnedPreview, setPinnedPreview] = useState<{
+    card: ResolvedPinnedMediaCard;
+    target: PlaceVisualTarget;
+  } | null>(null);
   const [projectPlacePoint, setProjectPlacePoint] = useState<PinnedMediaPlaceProjector | null>(null);
   const handleProjectorChange = useCallback((projector: PinnedMediaPlaceProjector | null) => {
     setProjectPlacePoint(() => projector);
@@ -197,6 +203,7 @@ export function PlaceMap({
           places={markerPlaces}
           placeCustomFieldDefinitions={placeCustomFieldDefinitions}
           onPinMedia={handlePinMedia}
+          pinnedPreview={pinnedPreview}
         />
       </MapContainer>
       <MapAttribution
@@ -215,6 +222,12 @@ export function PlaceMap({
           onLayoutChange={onLayoutChange}
           onMediaSizeChange={onMediaSizeChange}
           onRemove={onRemove}
+          onPreview={(card) =>
+            setPinnedPreview({
+              card,
+              target: { id: card.item.id, kind: card.item.kind, placeId: card.place.id, itemSnapshot: card.item },
+            })
+          }
           projectPlacePoint={projectPlacePoint}
         />
       ) : null}

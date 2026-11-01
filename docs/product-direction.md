@@ -164,3 +164,5 @@ Nowa praca wchodzi tylko wtedy, gdy poprawia czytelnosc mapy, pokazanie miejsca 
 - Akcje przypiętych miniatur zanikają po 2,5 s i powracają po dotknięciu; obsługa klawiaturą i preferencji ograniczonych animacji pozostaje dostępna.
 
 - Atrybucja OpenStreetMap to stale dostępny, mały odsyłacz tekstowy w lewym dolnym rogu, nad zwiniętą lub rozwiniętą szufladą. Nie wyświetla ikony informacji ani nakładki Leafleta. Wymagane oznaczenie źródła pozostaje czytelne.
+
+- Przypięte zdjęcia: pojedyncze dotknięcie pływającej miniatury na mapie lub miniatury w szufladzie otwiera bezpośrednio ten sam `PhotoDetailModal` co wachlarz miejsca (wraz z nawigacją i danymi zdjęcia). Dotknięcie w szufladzie nie odpina zdjęcia; do przeniesienia z szuflady na mapę służy wyłącznie przeciągnięcie poza obszar szuflady, a do szuflady przeciągnięcie karty na jej obszar. Ruch/resize nie może otworzyć modalu. Zdjęcia przypięte spoza lekkiego podglądu mapy mają zachowany snapshot do podglądu podczas ładowania pełnej galerii.

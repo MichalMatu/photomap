@@ -1,5 +1,6 @@
 import type { Map as LeafletMap } from "leaflet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { ResolvedPinnedMediaCard } from "./pinned-media/pinnedMediaBoardTypes";
 import { useMap, useMapEvents } from "react-leaflet";
 
 import type { AppConfigMap, PlaceCustomFieldDefinition, PlaceMapItem } from "../../api/types";
@@ -32,6 +33,7 @@ type PlaceLayerProps = {
   mapSettings: AppConfigMap;
   markerMode: MapMarkerMode;
   onPinMedia: (request: PinMediaRequest) => boolean;
+  pinnedPreview?: { card: ResolvedPinnedMediaCard; target: PlaceVisualTarget } | null;
   places: PlaceMapItem[];
   placeCustomFieldDefinitions: PlaceCustomFieldDefinition[];
 };
@@ -60,6 +62,7 @@ export function PlaceLayer({
   mapSettings,
   markerMode,
   onPinMedia,
+  pinnedPreview = null,
   places,
   placeCustomFieldDefinitions,
 }: PlaceLayerProps) {
@@ -103,7 +106,15 @@ export function PlaceLayer({
     places,
     reportTarget,
     visualDetail,
+    fallbackDetailPlace: pinnedPreview?.card.place ?? null,
   });
+
+  useEffect(() => {
+    if (pinnedPreview) {
+      prioritizeMediaItem(pinnedPreview.card.item);
+      setVisualDetail(pinnedPreview.target);
+    }
+  }, [pinnedPreview, prioritizeMediaItem]);
 
   useEffect(() => {
     if (tourCloseMediaToken === lastTourCloseToken.current) return;
@@ -142,14 +153,18 @@ export function PlaceLayer({
     if (memoryPlace && !places.some((place) => place.id === memoryPlace.id)) {
       setMemoryPlace(null);
     }
-    if (visualDetail && !places.some((place) => place.id === visualDetail.placeId)) {
+    if (
+      visualDetail &&
+      !places.some((place) => place.id === visualDetail.placeId) &&
+      pinnedPreview?.card.place.id !== visualDetail.placeId
+    ) {
       setVisualDetail(null);
       setActiveAudioTarget(null);
     }
     if (reportTarget && !places.some((place) => place.id === reportTarget.placeId)) {
       setReportTarget(null);
     }
-  }, [memoryPlace, places, reportTarget, visualDetail]);
+  }, [memoryPlace, places, pinnedPreview, reportTarget, visualDetail]);
 
   return (
     <>

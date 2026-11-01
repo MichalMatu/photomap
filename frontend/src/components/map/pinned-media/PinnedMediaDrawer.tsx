@@ -9,7 +9,7 @@ type Props = {
   isDragging: boolean;
   isDropActive: boolean;
   onToggle: () => void;
-  onUndock: (id: string) => void;
+  onPreview: (card: ResolvedPinnedMediaCard) => void;
   onStartUndock: (card: ResolvedPinnedMediaCard, event: ReactPointerEvent<HTMLElement>) => void;
 };
 
@@ -19,7 +19,7 @@ export function PinnedMediaDrawer({
   isDragging,
   isDropActive,
   onToggle,
-  onUndock,
+  onPreview,
   onStartUndock,
 }: Props) {
   const gesture = useRef<{ y: number; swiped: boolean } | null>(null);
@@ -78,12 +78,10 @@ export function PinnedMediaDrawer({
               key={card.id}
               type="button"
               className="pinned-media-drawer-item"
-              title={`Przenieś na mapę: ${card.place.title}`}
-              aria-label={`Przenieś na mapę: ${card.place.title}`}
+              title={`Otwórz podgląd: ${card.place.title}`}
+              aria-label={`Otwórz podgląd: ${card.place.title}`}
               onPointerDown={(event) => onStartUndock(card, event)}
-              onClick={(event) => {
-                if (event.detail === 0) onUndock(card.id);
-              }}
+              onClick={() => onPreview(card)}
             >
               <img src={mediaUrl(card.item.thumb_path)} alt="" draggable={false} />
               <span>{card.place.title}</span>

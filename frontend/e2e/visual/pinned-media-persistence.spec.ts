@@ -82,4 +82,9 @@ test("pinned full-gallery photo survives reload when it is absent from map previ
   await expect(restoredCard).toBeVisible();
   await expect(restoredCard).toContainText(hiddenPhoto.caption);
   await expect(restoredCard.locator("img")).toHaveAttribute("alt", hiddenPhoto.caption);
+  await restoredCard.click({ position: { x: 60, y: 65 } });
+  await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: places[0].title })).toContainText(hiddenPhoto.caption);
 });
+
+// Persisted full-gallery media must remain openable from the same fan detail viewer after reload.

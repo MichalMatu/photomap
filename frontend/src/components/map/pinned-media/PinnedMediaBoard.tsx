@@ -40,6 +40,7 @@ type PinnedMediaBoardProps = {
   onBringToFront: (id: string) => void;
   onDock: (id: string) => void;
   onUndock: (id: string) => void;
+  onPreview: (card: ResolvedPinnedMediaCard) => void;
   onLayoutChange: (id: string, layout: PinnedMediaLayout) => void;
   onMediaSizeChange: (id: string, naturalSize: PinnedMediaNaturalSize) => void;
   onRemove: (id: string) => void;
@@ -62,6 +63,7 @@ export function PinnedMediaBoard({
   onBringToFront,
   onDock,
   onUndock,
+  onPreview,
   onLayoutChange,
   onMediaSizeChange,
   onRemove,
@@ -71,6 +73,8 @@ export function PinnedMediaBoard({
   const cardElementsRef = useRef(new Map<string, HTMLElement>());
   const interactionRef = useRef<PinnedMediaInteractionState | null>(null);
   const undockRef = useRef<UndockInteraction | null>(null);
+  const suppressFloatingClickRef = useRef(false);
+  const suppressDrawerClickRef = useRef(false);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const [cardRects, setCardRects] = useState<Record<string, RectLike>>({});
   const [linkedCardId, setLinkedCardId] = useState<string | null>(null);
@@ -106,7 +110,10 @@ export function PinnedMediaBoard({
     const handlePointerMove = (event: PointerEvent) => {
       const undock = undockRef.current;
       if (undock && undock.pointerId === event.pointerId) {
-        if (Math.hypot(event.clientX - undock.startX, event.clientY - undock.startY) > 8) undock.moved = true;
+        if (Math.hypot(event.clientX - undock.startX, event.clientY - undock.startY) > 8) {
+          undock.moved = true;
+          suppressDrawerClickRef.current = true;
+        }
         return;
       }
       const interaction = interactionRef.current;
@@ -124,6 +131,7 @@ export function PinnedMediaBoard({
         .map((card) => card.layout);
       const deltaX = event.clientX - interaction.startClientX;
       const deltaY = event.clientY - interaction.startClientY;
+      if (Math.hypot(deltaX, deltaY) > 8) suppressFloatingClickRef.current = true;
       const bounds = getPinnedMediaBounds();
       const nextLayout =
         interaction.mode === "drag"
@@ -151,15 +159,13 @@ export function PinnedMediaBoard({
         undockRef.current = null;
         const bounds = getPinnedMediaBounds();
         const overDrawer = isPinnedMediaDrawerDropTarget(event.clientX, event.clientY, bounds, isDrawerOpen);
-        if (!undock.moved || !overDrawer) {
+        if (undock.moved && !overDrawer) {
           onUndock(undock.card.id);
-          if (undock.moved) {
-            onLayoutChange(undock.card.id, {
-              ...undock.card.layout,
-              x: event.clientX - undock.card.layout.width / 2,
-              y: event.clientY - undock.card.layout.height / 2,
-            });
-          }
+          onLayoutChange(undock.card.id, {
+            ...undock.card.layout,
+            x: event.clientX - undock.card.layout.width / 2,
+            y: event.clientY - undock.card.layout.height / 2,
+          });
           onBringToFront(undock.card.id);
         }
         return;
@@ -196,6 +202,7 @@ export function PinnedMediaBoard({
     (card: ResolvedPinnedMediaCard, mode: PinnedMediaInteractionMode, event: ReactPointerEvent<HTMLElement>) => {
       event.stopPropagation();
       if (event.button !== 0 || (mode === "drag" && isInteractiveDragTarget(event.target))) return;
+      suppressFloatingClickRef.current = mode === "resize";
       onBringToFront(card.id);
       setActiveCardId(card.id);
       interactionRef.current = {
@@ -218,6 +225,7 @@ export function PinnedMediaBoard({
   const startUndock = useCallback((card: ResolvedPinnedMediaCard, event: ReactPointerEvent<HTMLElement>) => {
     if (event.button !== 0) return;
     event.stopPropagation();
+    suppressDrawerClickRef.current = false;
     undockRef.current = {
       card,
       pointerId: event.pointerId,
@@ -226,6 +234,26 @@ export function PinnedMediaBoard({
       moved: false,
     };
   }, []);
+  const previewFloatingCard = useCallback(
+    (card: ResolvedPinnedMediaCard) => {
+      if (suppressFloatingClickRef.current) {
+        suppressFloatingClickRef.current = false;
+        return;
+      }
+      onPreview(card);
+    },
+    [onPreview],
+  );
+  const previewDockedCard = useCallback(
+    (card: ResolvedPinnedMediaCard) => {
+      if (suppressDrawerClickRef.current) {
+        suppressDrawerClickRef.current = false;
+        return;
+      }
+      onPreview(card);
+    },
+    [onPreview],
+  );
   const linkedCard = linkedCardId ? (floatingCards.find((card) => card.id === linkedCardId) ?? null) : null;
   const linkedTarget = linkedCard && projectPlacePoint ? projectPlacePoint(linkedCard.place) : null;
   const linkedFrame = linkedCard ? (cardRects[linkedCard.id] ?? null) : null;
@@ -248,6 +276,7 @@ export function PinnedMediaBoard({
           onBringToFront={onBringToFront}
           onMediaSizeChange={onMediaSizeChange}
           onRemove={onRemove}
+          onPreview={previewFloatingCard}
           onStartInteraction={startInteraction}
           onToggleMapLink={toggleMapLink}
         />
@@ -259,7 +288,7 @@ export function PinnedMediaBoard({
           isDragging={isDragging}
           isDropActive={isDropActive}
           onToggle={() => onDrawerOpenChange(!isDrawerOpen)}
-          onUndock={onUndock}
+          onPreview={previewDockedCard}
           onStartUndock={startUndock}
         />
       ) : null}

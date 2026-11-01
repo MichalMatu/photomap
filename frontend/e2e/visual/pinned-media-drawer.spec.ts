@@ -50,7 +50,7 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   await page.mouse.up();
 
   await expect(page.getByTestId("pinned-media-card")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: `Przenieś na mapę: ${places[0].title}` })).toBeVisible();
+  await expect(page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` })).toBeVisible();
   await expect(page.locator(".place-map")).toHaveClass(/place-map--drawer-open/);
   await expect(attribution).toHaveClass(/map-attribution--drawer-open/);
   const expandedCredit = await attribution.boundingBox();
@@ -59,6 +59,22 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   expect(expandedCredit.y + expandedCredit.height).toBeLessThanOrEqual(expandedDrawer.y - 4);
   await page.reload();
   await page.getByRole("button", { name: "Rozwiń szufladę zdjęć" }).click();
-  await page.getByRole("button", { name: `Przenieś na mapę: ${places[0].title}` }).click();
+  await page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` }).click();
+  await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
+  await expect(page.getByTestId("pinned-media-card")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` })).toHaveCount(1);
+  await page.getByRole("button", { name: "Zamknij modal" }).click();
+  // Moving out of the drawer is still a drag gesture, never a single click.
+  const dockedItem = page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` });
+  const thumbnail = await dockedItem.boundingBox();
+  if (!thumbnail) throw new Error("Missing docked media thumbnail");
+  await page.mouse.move(thumbnail.x + thumbnail.width / 2, thumbnail.y + 30);
+  await page.mouse.down();
+  await page.mouse.move(200, 300, { steps: 12 });
+  await page.mouse.up();
+  await expect(page.getByTestId("pinned-media-card")).toHaveCount(1);
+  await expect(page.getByRole("dialog", { name: places[0].title })).toHaveCount(0);
+  await page.getByTestId("pinned-media-card").click({ position: { x: 60, y: 55 } });
+  await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
   await expect(page.getByTestId("pinned-media-card")).toHaveCount(1);
 });
