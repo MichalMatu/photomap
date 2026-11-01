@@ -1,0 +1,24 @@
+import { expect, test } from "@playwright/test";
+import { places, rynekSide } from "../fixtures/visualData";
+import { clickMapMarker } from "../support/mapInteractions";
+import { mockSharedApi } from "../support/visualApi";
+test("pinned photo icons fade and reappear on interaction", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await mockSharedApi(page);
+  await page.goto("/");
+  await clickMapMarker(page, places[0].title);
+  await clickMapMarker(page, rynekSide.caption ?? places[0].title);
+  await page.getByRole("dialog", { name: places[0].title }).getByRole("button", { name: "Przypnij zdjęcie" }).click();
+  const card = page.getByTestId("pinned-media-card");
+  await expect(card).toHaveCount(1);
+  await expect(card).toHaveClass(/is-controls-hidden/, { timeout: 6000 });
+  const buttons = card.locator(".pinned-media-card-map-link, .pinned-media-card-remove");
+  await expect(buttons).toHaveCount(2);
+  await expect(buttons.first()).toHaveCSS("opacity", "0");
+  await card.click({ position: { x: 60, y: 70 } });
+  await expect(card).not.toHaveClass(/is-controls-hidden/);
+  await expect(buttons.first()).toHaveCSS("opacity", "1");
+  await expect(card).toHaveClass(/is-controls-hidden/, { timeout: 6000 });
+  await page.reload();
+  await expect(page.getByTestId("pinned-media-card")).toHaveCount(1);
+});

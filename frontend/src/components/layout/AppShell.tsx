@@ -5,7 +5,12 @@ import { AppShellDrawer } from "./AppShellDrawer";
 import { AppShellMenuButton } from "./AppShellMenuButton";
 import { AppShellRail } from "./AppShellRail";
 import { primaryItems } from "./appShellItems";
-import { getNextAppShellNavigationState, type AppShellNavigationState } from "./appShellNavigation";
+import {
+  getNextAppShellNavigationState,
+  getSwipeAppShellNavigationState,
+  type AppShellNavigationState,
+  type AppShellSwipeSurface,
+} from "./appShellNavigation";
 import type {
   AppSection,
   AppShellAdminAction,
@@ -91,6 +96,45 @@ export function AppShell({
     };
   }, [isNavigationOpen]);
 
+  useEffect(() => {
+    if (tourShowDrawer) return;
+    let start: { id: number; x: number; y: number; surface: AppShellSwipeSurface } | null = null;
+    const down = (event: PointerEvent) => {
+      if (event.pointerType !== "touch" || !event.isPrimary) return;
+      const target = event.target instanceof Element ? event.target : null;
+      let surface: AppShellSwipeSurface = "outside";
+      if (target?.closest(".side-drawer")) surface = "drawer";
+      else if (target?.closest(".side-rail")) surface = "rail";
+      else if (event.clientX >= 24 && event.clientX <= 76) surface = "edge";
+      start = { id: event.pointerId, x: event.clientX, y: event.clientY, surface };
+    };
+    const up = (event: PointerEvent) => {
+      if (!start || start.id !== event.pointerId) return;
+      const gesture = start;
+      start = null;
+      const next = getSwipeAppShellNavigationState(
+        navigationState,
+        gesture.x,
+        gesture.y,
+        event.clientX,
+        event.clientY,
+        gesture.surface,
+      );
+      if (next !== navigationState) setNavigationState(next);
+    };
+    const cancel = () => {
+      start = null;
+    };
+    document.addEventListener("pointerdown", down, true);
+    document.addEventListener("pointerup", up, true);
+    document.addEventListener("pointercancel", cancel, true);
+    return () => {
+      document.removeEventListener("pointerdown", down, true);
+      document.removeEventListener("pointerup", up, true);
+      document.removeEventListener("pointercancel", cancel, true);
+    };
+  }, [navigationState, tourShowDrawer]);
+
   return (
     <div className={`app-shell app-shell--${activeSection} app-shell--${navigationState}`}>
       <AppShellMenuButton
@@ -103,8 +147,6 @@ export function AppShell({
         activeSection={activeSection}
         adminAction={adminAction}
         isOpen={isRailOpen}
-        mapAudioControl={mapAudioControl}
-        mapCategoryControls={mapCategoryControls}
         mapLayerControls={mapLayerControls}
         mapPinnedMediaControl={mapPinnedMediaControl}
         railItems={railItems}

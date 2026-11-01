@@ -376,3 +376,27 @@
     transition: none;
   }
 }
+
+.pinned-media-card-map-link,
+.pinned-media-card-remove {
+  opacity: 1;
+  transition: opacity 240ms ease;
+}
+.pinned-media-card.is-controls-hidden .pinned-media-card-map-link,
+.pinned-media-card.is-controls-hidden .pinned-media-card-remove {
+  opacity: 0;
+  pointer-events: none;
+}
+.pinned-media-card.is-controls-hidden:focus-visible .pinned-media-card-map-link,
+.pinned-media-card.is-controls-hidden:focus-visible .pinned-media-card-remove,
+.pinned-media-card.is-controls-hidden .pinned-media-card-map-link:focus-visible,
+.pinned-media-card.is-controls-hidden .pinned-media-card-remove:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pinned-media-card-map-link,
+  .pinned-media-card-remove {
+    transition: none;
+  }
+}

@@ -159,3 +159,6 @@ Nowa praca wchodzi tylko wtedy, gdy poprawia czytelnosc mapy, pokazanie miejsca 
 
 - Widok miniatury/pinezki jest wybierany w menu bocznym; miniatury pozostają domyślne.
 - Przypięte karty pokazują wyłącznie dwie symetryczne górne akcje. Opis chowa się automatycznie przy zmniejszaniu; do szuflady przenosi się przez przeciągnięcie.
+
+- Mały pasek to tylko Trasy, Warstwy i Przypięte. Audio oraz kategorie pozostają w pełnym menu, a Warstwy otwierają pełne ustawienia. Menu przyjmuje poziome gesty w obie strony, bez kolizji z panowaniem mapy.
+- Akcje przypiętych miniatur zanikają po 2,5 s i powracają po dotknięciu; obsługa klawiaturą i preferencji ograniczonych animacji pozostaje dostępna.
