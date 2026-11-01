@@ -286,13 +286,13 @@
   overflow: hidden;
   pointer-events: auto;
   position: fixed;
-  transform: translateY(calc(100% - 38px));
+  transform: translateY(calc(100% - 54px));
   transition: transform var(--motion-duration-regular) var(--motion-ease-emphasised);
   width: 100%;
   z-index: 600;
 }
 .pinned-media-drawer.is-peeking {
-  transform: translateY(calc(100% - 68px));
+  transform: translateY(calc(100% - 80px));
 }
 .pinned-media-drawer.is-drop-active {
   box-shadow:
@@ -310,7 +310,7 @@
   display: flex;
   font-size: var(--text-caption);
   gap: var(--space-2);
-  height: 38px;
+  height: 54px;
   justify-content: center;
   min-height: 0;
   padding: 0 var(--space-3);
@@ -335,9 +335,9 @@
 }
 .pinned-media-drawer-handle-thumbs img {
   border-radius: var(--radius-control);
-  height: 24px;
+  height: 40px;
   object-fit: cover;
-  width: 32px;
+  width: 54px;
 }
 .pinned-media-drawer.is-open .pinned-media-drawer-handle {
   height: 24px;
@@ -346,7 +346,7 @@
   height: calc(100% - 24px);
 }
 .pinned-media-drawer-content {
-  height: calc(100% - 38px);
+  height: calc(100% - 54px);
   overflow-x: auto;
   overflow-y: hidden;
   padding: var(--space-2) var(--space-3);
@@ -364,8 +364,8 @@
   text-align: center;
 }
 .pinned-media-drawer-item {
-  background: var(--surface-inset);
-  border: 1px solid var(--border-subtle);
+  background: transparent;
+  border: 0;
   border-radius: var(--radius-control);
   color: var(--content-primary);
   display: grid;
@@ -373,13 +373,18 @@
   font-size: var(--text-micro);
   gap: var(--space-1);
   min-height: 0;
-  padding: var(--space-1);
+  padding: 0;
   text-align: left;
   touch-action: none;
 }
+.pinned-media-drawer-item:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
 .pinned-media-drawer-item img {
   border-radius: var(--radius-control);
-  height: 82px;
+  display: block;
+  height: 96px;
   object-fit: cover;
   pointer-events: none;
   width: 100%;
