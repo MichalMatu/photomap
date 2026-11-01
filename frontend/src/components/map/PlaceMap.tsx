@@ -65,6 +65,19 @@ function MapSizeUpdater() {
   return null;
 }
 
+function MapDrawerInset({ expanded }: { expanded: boolean }) {
+  const map = useMap();
+
+  useEffect(() => {
+    const element = map.getContainer();
+    element.classList.toggle("place-map--drawer-open", expanded);
+    map.invalidateSize();
+    return () => element.classList.remove("place-map--drawer-open");
+  }, [expanded, map]);
+
+  return null;
+}
+
 function MapProjectionTracker({
   onProjectorChange,
 }: {
@@ -158,7 +171,7 @@ export function PlaceMap({
       <MapContainer
         center={center}
         zoom={mapFallback.fallback_zoom}
-        className={showPinnedMedia && isPinnedDrawerOpen && cards.length > 0 ? "place-map place-map--drawer-open" : "place-map"}
+        className="place-map"
         key={mapStartKey}
         scrollWheelZoom={MAP_DISPLAY_CONFIG.mapContainer.scrollWheelZoom}
         zoomDelta={MAP_DISPLAY_CONFIG.mapContainer.zoomDelta}
@@ -166,6 +179,7 @@ export function PlaceMap({
         zoomSnap={MAP_DISPLAY_CONFIG.mapContainer.zoomSnap}
       >
         <MapSizeUpdater />
+        <MapDrawerInset expanded={showPinnedMedia && isPinnedDrawerOpen && cards.length > 0} />
         <MapTrackpadZoom />
         {showPinnedMedia && cards.length > 0 ? (
           <MapProjectionTracker onProjectorChange={handleProjectorChange} />
