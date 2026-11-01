@@ -152,7 +152,16 @@ export function PlaceMarker({
             markerMode,
           )
         : null,
-    [enterIndex, isEntering, isExpanded, isPreviewAudioPlaying, markerVisualOffset, markerMode, placeLayout, previewItem],
+    [
+      enterIndex,
+      isEntering,
+      isExpanded,
+      isPreviewAudioPlaying,
+      markerVisualOffset,
+      markerMode,
+      placeLayout,
+      previewItem,
+    ],
   );
   useEffect(() => {
     if (isExpanded) {
@@ -282,7 +291,7 @@ export function PlaceMarker({
                 pane={PHOTO_GALLERY_PANE}
                 position={layout.position}
                 riseOnHover
-                title={isTourActive ? undefined : item.caption ?? place.title}
+                title={isTourActive ? undefined : (item.caption ?? place.title)}
                 zIndexOffset={1300 + index}
                 eventHandlers={{
                   click: (event) => {

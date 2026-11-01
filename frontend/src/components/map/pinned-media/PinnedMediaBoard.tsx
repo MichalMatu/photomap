@@ -23,7 +23,11 @@ import { isPinnedMediaDrawerDropTarget } from "./pinnedMediaDrawerGeometry";
 import { pinnedMediaConnectionGeometry } from "./pinnedMediaBoardLinkGeometry";
 import type { PinnedMediaInteractionMode, PinnedMediaInteractionState } from "./pinnedMediaBoardInteraction";
 import type {
-  PinnedMediaLayout, PinnedMediaNaturalSize, PinnedMediaPoint, RectLike, ResolvedPinnedMediaCard,
+  PinnedMediaLayout,
+  PinnedMediaNaturalSize,
+  PinnedMediaPoint,
+  RectLike,
+  ResolvedPinnedMediaCard,
 } from "./pinnedMediaBoardTypes";
 
 export type PinnedMediaPlaceProjector = (place: Pick<PlaceMapItem, "lat" | "lon">) => PinnedMediaPoint | null;
@@ -52,8 +56,18 @@ type UndockInteraction = {
 };
 
 export function PinnedMediaBoard({
-  cards, notice, isDrawerOpen, onDrawerOpenChange, onBringToFront, onDock, onUndock,
-  onToggleCaption, onLayoutChange, onMediaSizeChange, onRemove, projectPlacePoint = null,
+  cards,
+  notice,
+  isDrawerOpen,
+  onDrawerOpenChange,
+  onBringToFront,
+  onDock,
+  onUndock,
+  onToggleCaption,
+  onLayoutChange,
+  onMediaSizeChange,
+  onRemove,
+  projectPlacePoint = null,
 }: PinnedMediaBoardProps) {
   const cardsRef = useRef(cards);
   const cardElementsRef = useRef(new Map<string, HTMLElement>());
@@ -68,7 +82,10 @@ export function PinnedMediaBoard({
   const dockedCards = cards.filter((card) => card.docked);
 
   const measureCardRects = useCallback(() => {
-    const nextRects = measurePinnedMediaCardRects(cardsRef.current.filter((card) => !card.docked), cardElementsRef.current);
+    const nextRects = measurePinnedMediaCardRects(
+      cardsRef.current.filter((card) => !card.docked),
+      cardElementsRef.current,
+    );
     setCardRects((current) => (rectRecordsEqual(current, nextRects) ? current : nextRects));
   }, []);
   const setCardElement = useCallback((id: string, element: HTMLElement | null) => {
@@ -104,19 +121,27 @@ export function PinnedMediaBoard({
       const currentCards = cardsRef.current;
       const currentCard = currentCards.find((card) => card.id === interaction.cardId);
       const zIndex = currentCard?.layout.zIndex ?? interaction.startLayout.zIndex;
-      const otherLayouts = currentCards.filter((card) => card.id !== interaction.cardId && !card.docked).map((card) => card.layout);
+      const otherLayouts = currentCards
+        .filter((card) => card.id !== interaction.cardId && !card.docked)
+        .map((card) => card.layout);
       const deltaX = event.clientX - interaction.startClientX;
       const deltaY = event.clientY - interaction.startClientY;
       const bounds = getPinnedMediaBounds();
-      const nextLayout = interaction.mode === "drag" ? {
-        ...interaction.startLayout,
-        x: interaction.startLayout.x + deltaX,
-        y: interaction.startLayout.y + deltaY,
-        zIndex,
-      } : resizePinnedMediaLayoutFromPointer(interaction.startLayout, deltaX, deltaY, zIndex);
-      onLayoutChange(interaction.cardId, interaction.mode === "resize"
-        ? snapPinnedMediaResizeLayout(nextLayout, otherLayouts, bounds)
-        : snapPinnedMediaLayout(nextLayout, otherLayouts, bounds));
+      const nextLayout =
+        interaction.mode === "drag"
+          ? {
+              ...interaction.startLayout,
+              x: interaction.startLayout.x + deltaX,
+              y: interaction.startLayout.y + deltaY,
+              zIndex,
+            }
+          : resizePinnedMediaLayoutFromPointer(interaction.startLayout, deltaX, deltaY, zIndex);
+      onLayoutChange(
+        interaction.cardId,
+        interaction.mode === "resize"
+          ? snapPinnedMediaResizeLayout(nextLayout, otherLayouts, bounds)
+          : snapPinnedMediaLayout(nextLayout, otherLayouts, bounds),
+      );
       if (interaction.mode === "drag" && Math.hypot(deltaX, deltaY) > 8) {
         setIsDragging(true);
         setIsDropActive(isPinnedMediaDrawerDropTarget(event.clientX, event.clientY, bounds, isDrawerOpen));
@@ -146,7 +171,11 @@ export function PinnedMediaBoard({
       if (interaction.hasPointerCapture && interaction.captureTarget.hasPointerCapture(interaction.pointerId)) {
         interaction.captureTarget.releasePointerCapture(interaction.pointerId);
       }
-      if (interaction.mode === "drag" && isDragging && isPinnedMediaDrawerDropTarget(event.clientX, event.clientY, getPinnedMediaBounds(), isDrawerOpen)) {
+      if (
+        interaction.mode === "drag" &&
+        isDragging &&
+        isPinnedMediaDrawerDropTarget(event.clientX, event.clientY, getPinnedMediaBounds(), isDrawerOpen)
+      ) {
         onDock(interaction.cardId);
         onDrawerOpenChange(true);
       }
@@ -165,51 +194,87 @@ export function PinnedMediaBoard({
     };
   }, [isDrawerOpen, isDragging, onBringToFront, onDock, onDrawerOpenChange, onLayoutChange, onUndock]);
 
-  const startInteraction = useCallback((card: ResolvedPinnedMediaCard, mode: PinnedMediaInteractionMode, event: ReactPointerEvent<HTMLElement>) => {
-    event.stopPropagation();
-    if (event.button !== 0 || (mode === "drag" && isInteractiveDragTarget(event.target))) return;
-    onBringToFront(card.id);
-    setActiveCardId(card.id);
-    interactionRef.current = {
-      cardId: card.id, captureTarget: event.currentTarget, hasPointerCapture: mode === "resize",
-      mode, pointerId: event.pointerId, startClientX: event.clientX, startClientY: event.clientY,
-      startLayout: card.layout,
-    };
-    if (mode === "resize") {
-      event.currentTarget.setPointerCapture(event.pointerId);
-      event.preventDefault();
-    }
-  }, [onBringToFront]);
+  const startInteraction = useCallback(
+    (card: ResolvedPinnedMediaCard, mode: PinnedMediaInteractionMode, event: ReactPointerEvent<HTMLElement>) => {
+      event.stopPropagation();
+      if (event.button !== 0 || (mode === "drag" && isInteractiveDragTarget(event.target))) return;
+      onBringToFront(card.id);
+      setActiveCardId(card.id);
+      interactionRef.current = {
+        cardId: card.id,
+        captureTarget: event.currentTarget,
+        hasPointerCapture: mode === "resize",
+        mode,
+        pointerId: event.pointerId,
+        startClientX: event.clientX,
+        startClientY: event.clientY,
+        startLayout: card.layout,
+      };
+      if (mode === "resize") {
+        event.currentTarget.setPointerCapture(event.pointerId);
+        event.preventDefault();
+      }
+    },
+    [onBringToFront],
+  );
   const startUndock = useCallback((card: ResolvedPinnedMediaCard, event: ReactPointerEvent<HTMLElement>) => {
     if (event.button !== 0) return;
     event.stopPropagation();
-    undockRef.current = {card, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, moved: false};
+    undockRef.current = {
+      card,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      moved: false,
+    };
   }, []);
   const linkedCard = linkedCardId ? (floatingCards.find((card) => card.id === linkedCardId) ?? null) : null;
   const linkedTarget = linkedCard && projectPlacePoint ? projectPlacePoint(linkedCard.place) : null;
   const linkedFrame = linkedCard ? (cardRects[linkedCard.id] ?? null) : null;
-  const linkGeometry = linkedCard && linkedTarget && linkedFrame ? pinnedMediaConnectionGeometry(linkedFrame, linkedTarget) : null;
-  const toggleMapLink = useCallback((id: string) => setLinkedCardId((current) => current === id ? null : id), []);
+  const linkGeometry =
+    linkedCard && linkedTarget && linkedFrame ? pinnedMediaConnectionGeometry(linkedFrame, linkedTarget) : null;
+  const toggleMapLink = useCallback((id: string) => setLinkedCardId((current) => (current === id ? null : id)), []);
 
   return (
     <div className="pinned-media-board" aria-live="polite">
-      {linkedCard && linkGeometry ? <PinnedMediaMapLink geometry={linkGeometry} zIndex={linkedCard.layout.zIndex + 1} /> : null}
+      {linkedCard && linkGeometry ? (
+        <PinnedMediaMapLink geometry={linkGeometry} zIndex={linkedCard.layout.zIndex + 1} />
+      ) : null}
       {floatingCards.map((card) => (
         <PinnedMediaCard
-          key={card.id} card={card} cardRef={(element) => setCardElement(card.id, element)}
-          isActive={activeCardId === card.id} isLinked={linkedCardId === card.id}
-          onBringToFront={onBringToFront} onMediaSizeChange={onMediaSizeChange}
-          onRemove={onRemove} onDock={(id) => { onDock(id); onDrawerOpenChange(true); }} onToggleCaption={onToggleCaption}
-          onStartInteraction={startInteraction} onToggleMapLink={toggleMapLink}
+          key={card.id}
+          card={card}
+          cardRef={(element) => setCardElement(card.id, element)}
+          isActive={activeCardId === card.id}
+          isLinked={linkedCardId === card.id}
+          onBringToFront={onBringToFront}
+          onMediaSizeChange={onMediaSizeChange}
+          onRemove={onRemove}
+          onDock={(id) => {
+            onDock(id);
+            onDrawerOpenChange(true);
+          }}
+          onToggleCaption={onToggleCaption}
+          onStartInteraction={startInteraction}
+          onToggleMapLink={toggleMapLink}
         />
       ))}
       {cards.length > 0 ? (
         <PinnedMediaDrawer
-          cards={dockedCards} isOpen={isDrawerOpen} isDragging={isDragging} isDropActive={isDropActive}
-          onToggle={() => onDrawerOpenChange(!isDrawerOpen)} onUndock={onUndock} onStartUndock={startUndock}
+          cards={dockedCards}
+          isOpen={isDrawerOpen}
+          isDragging={isDragging}
+          isDropActive={isDropActive}
+          onToggle={() => onDrawerOpenChange(!isDrawerOpen)}
+          onUndock={onUndock}
+          onStartUndock={startUndock}
         />
       ) : null}
-      {notice ? <div className="pinned-media-notice" role="status">{notice}</div> : null}
+      {notice ? (
+        <div className="pinned-media-notice" role="status">
+          {notice}
+        </div>
+      ) : null}
     </div>
   );
 }

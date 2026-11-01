@@ -23,7 +23,10 @@ export function getPinnedMediaBounds(): PinnedMediaBounds {
     return { height: 768, left: 0, top: 0, width: 1024 };
   }
 
-  const mapFrameRect = (document.querySelector<HTMLElement>(".place-map") ?? document.querySelector<HTMLElement>(".map-frame"))?.getBoundingClientRect() ?? null;
+  const mapFrameRect =
+    (
+      document.querySelector<HTMLElement>(".place-map") ?? document.querySelector<HTMLElement>(".map-frame")
+    )?.getBoundingClientRect() ?? null;
   const bounds =
     mapFrameRect && mapFrameRect.width > 0 && mapFrameRect.height > 0
       ? mapFrameRect
@@ -56,7 +59,10 @@ export function clampPinnedMediaLayout(layout: PinnedMediaLayout, bounds: Pinned
   const maxWidth = frameMaxWidth;
   const minWidth = Math.min(Math.max(MIN_CARD_WIDTH, MIN_CARD_IMAGE_HEIGHT * aspectRatio), maxWidth);
   let width = clamp(layout.width, minWidth, maxWidth);
-  const maxImageHeight = Math.max(62, bounds.height - PINNED_MEDIA_FRAME_MARGIN * 2 - pinnedMediaChromeHeight({ ...layout, width }));
+  const maxImageHeight = Math.max(
+    62,
+    bounds.height - PINNED_MEDIA_FRAME_MARGIN * 2 - pinnedMediaChromeHeight({ ...layout, width }),
+  );
   let height = width / aspectRatio;
 
   if (height > maxImageHeight) {

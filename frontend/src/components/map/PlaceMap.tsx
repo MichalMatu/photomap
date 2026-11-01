@@ -149,8 +149,18 @@ export function PlaceMap({
 }: Props) {
   const center: [number, number] = [mapFallback.fallback_center.lat, mapFallback.fallback_center.lon];
   const mapStartKey = `${mapFallback.fallback_center.lat}:${mapFallback.fallback_center.lon}:${mapFallback.fallback_zoom}`;
-  const { cards, notice, onBringToFront, onDock, onUndock, onToggleCaption, onLayoutChange, onMediaSizeChange, onRemove, pinMedia } =
-    usePinnedMediaBoard(pinnedMediaPlaces);
+  const {
+    cards,
+    notice,
+    onBringToFront,
+    onDock,
+    onUndock,
+    onToggleCaption,
+    onLayoutChange,
+    onMediaSizeChange,
+    onRemove,
+    pinMedia,
+  } = usePinnedMediaBoard(pinnedMediaPlaces);
   const [isPinnedDrawerOpen, setIsPinnedDrawerOpen] = useState(false);
   const [projectPlacePoint, setProjectPlacePoint] = useState<PinnedMediaPlaceProjector | null>(null);
   const handleProjectorChange = useCallback((projector: PinnedMediaPlaceProjector | null) => {

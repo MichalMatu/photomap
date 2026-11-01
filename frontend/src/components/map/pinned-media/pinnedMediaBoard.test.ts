@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import type { Category, PlaceMapItem, PlaceMapPhoto, PlaceMapPreviewItem } from "../../../api/types";
-import { bringPinnedMediaCardToFront, resolvePinnedMediaCards, updatePinnedMediaCaption, updatePinnedMediaDock, upsertPinnedMediaCard } from "./pinnedMediaBoardCards";
+import {
+  bringPinnedMediaCardToFront,
+  resolvePinnedMediaCards,
+  updatePinnedMediaCaption,
+  updatePinnedMediaDock,
+  upsertPinnedMediaCard,
+} from "./pinnedMediaBoardCards";
 import {
   clampPinnedMediaLayout,
   pinnedMediaChromeHeight,
@@ -308,11 +314,14 @@ describe("pinned media board helpers", () => {
   });
 
   it("can collapse captions automatically for compact thumbnails", () => {
-    const layout = clampPinnedMediaLayout({aspectRatio: 1.6, height: 75, width: 120, x: 10, y: 10, zIndex: 1}, {height: 800, left: 0, top: 0, width: 360});
+    const layout = clampPinnedMediaLayout(
+      { aspectRatio: 1.6, height: 75, width: 120, x: 10, y: 10, zIndex: 1 },
+      { height: 800, left: 0, top: 0, width: 360 },
+    );
     expect(layout.width).toBe(120);
     expect(pinnedMediaChromeHeight(layout)).toBe(0);
-    expect(pinnedMediaChromeHeight({...layout, width: 240})).toBe(72);
-    expect(pinnedMediaChromeHeight({...layout, width: 240, captionHidden: true})).toBe(0);
+    expect(pinnedMediaChromeHeight({ ...layout, width: 240 })).toBe(72);
+    expect(pinnedMediaChromeHeight({ ...layout, width: 240, captionHidden: true })).toBe(0);
   });
 
   it("keeps wide media readable with a minimum image height", () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { isPinnedMediaDrawerDropTarget } from "./pinnedMediaDrawerGeometry";
-const bounds = {top: 0, left: 0, width: 360, height: 800};
+const bounds = { top: 0, left: 0, width: 360, height: 800 };
 describe("pinned drawer drop zone", () => {
   it("peeks only when a pointer is close to the bottom", () => {
     expect(isPinnedMediaDrawerDropTarget(200, 750, bounds, false)).toBe(true);

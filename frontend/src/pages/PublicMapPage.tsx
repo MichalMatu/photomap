@@ -28,8 +28,14 @@ import { readMapMarkerMode, writeMapMarkerMode, type MapMarkerMode } from "../co
 import { SEOHead } from "../components/ui/SEOHead";
 import { MapTour } from "../components/tour/MapTour";
 import {
-  isTourComplete, nextStepOnEvent, nextTourStepForPhoto, previousTourStepForPhoto, skipUnavailableTourStep,
-  rememberTourComplete, type MapTourEvent, type MapTourStep,
+  isTourComplete,
+  nextStepOnEvent,
+  nextTourStepForPhoto,
+  previousTourStepForPhoto,
+  skipUnavailableTourStep,
+  rememberTourComplete,
+  type MapTourEvent,
+  type MapTourStep,
 } from "../components/tour/mapTourSteps";
 import { DEFAULT_SEO_DESCRIPTION, DEFAULT_SEO_TITLE } from "../seo/pageSeo";
 
@@ -69,7 +75,12 @@ export function PublicMapPage() {
     if (tourStep === "pinned" || tourStep === "memory-form") {
       setCloseTourOverlayToken((current) => current + 1);
     }
-    setTourStep(nextTourStepForPhoto(tourStep, Boolean(document.querySelector(".system-modal--media .photo-detail-audio-toggle"))));
+    setTourStep(
+      nextTourStepForPhoto(
+        tourStep,
+        Boolean(document.querySelector(".system-modal--media .photo-detail-audio-toggle")),
+      ),
+    );
   }, [endTour, tourStep]);
 
   const skipUnavailableStep = useCallback(() => {
@@ -230,7 +241,12 @@ export function PublicMapPage() {
           step={tourStep}
           onBack={() => {
             if (tourStep === "memory-form") setCloseTourOverlayToken((current) => current + 1);
-            setTourStep(previousTourStepForPhoto(tourStep, Boolean(document.querySelector(".system-modal--media .photo-detail-audio-toggle"))));
+            setTourStep(
+              previousTourStepForPhoto(
+                tourStep,
+                Boolean(document.querySelector(".system-modal--media .photo-detail-audio-toggle")),
+              ),
+            );
           }}
           onNext={advanceTour}
           onSkipStep={skipUnavailableStep}

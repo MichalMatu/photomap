@@ -13,7 +13,19 @@ describe("map marker mode", () => {
     expect(setItem).toHaveBeenCalledWith(MAP_MARKER_MODE_STORAGE_KEY, "photos");
   });
   it("fails safe when storage throws", () => {
-    expect(readMapMarkerMode({ getItem: () => { throw Error("blocked"); } })).toBe("photos");
-    expect(() => writeMapMarkerMode("pins", { setItem: () => { throw Error("blocked"); } })).not.toThrow();
+    expect(
+      readMapMarkerMode({
+        getItem: () => {
+          throw Error("blocked");
+        },
+      }),
+    ).toBe("photos");
+    expect(() =>
+      writeMapMarkerMode("pins", {
+        setItem: () => {
+          throw Error("blocked");
+        },
+      }),
+    ).not.toThrow();
   });
 });

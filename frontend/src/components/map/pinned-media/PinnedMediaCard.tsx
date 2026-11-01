@@ -51,7 +51,12 @@ export function PinnedMediaCard({
 
   return (
     <article
-      className={["pinned-media-card", isActive ? "is-active" : null, isLinked ? "has-map-link" : null, copyHidden ? "is-copy-hidden" : null]
+      className={[
+        "pinned-media-card",
+        isActive ? "is-active" : null,
+        isLinked ? "has-map-link" : null,
+        copyHidden ? "is-copy-hidden" : null,
+      ]
         .filter(Boolean)
         .join(" ")}
       ref={cardRef}
@@ -112,7 +117,10 @@ export function PinnedMediaCard({
           title={copyHidden ? "Pokaż opis" : "Ukryj opis"}
           aria-label={copyHidden ? "Pokaż opis przypiętego zdjęcia" : "Ukryj opis przypiętego zdjęcia"}
           data-drag-ignore
-          onClick={(event) => { event.stopPropagation(); onToggleCaption(card.id); }}
+          onClick={(event) => {
+            event.stopPropagation();
+            onToggleCaption(card.id);
+          }}
         >
           {copyHidden ? <ChevronUp aria-hidden="true" size={14} /> : <ChevronDown aria-hidden="true" size={14} />}
         </button>
@@ -122,7 +130,10 @@ export function PinnedMediaCard({
           aria-label="Odłóż zdjęcie do szuflady"
           title="Odłóż do szuflady"
           data-drag-ignore
-          onClick={(event) => { event.stopPropagation(); onDock(card.id); }}
+          onClick={(event) => {
+            event.stopPropagation();
+            onDock(card.id);
+          }}
         >
           <PanelBottom aria-hidden="true" size={14} />
         </button>
@@ -140,11 +151,13 @@ export function PinnedMediaCard({
           <X aria-hidden="true" size={14} />
         </button>
       </div>
-      {!copyHidden ? <div className="pinned-media-card-copy">
-        <span className="pinned-media-card-eyebrow">{categoryLabel}</span>
-        <span className="pinned-media-card-title">{card.place.title}</span>
-        {display.title ? <span className="pinned-media-card-caption">{display.title}</span> : null}
-      </div> : null}
+      {!copyHidden ? (
+        <div className="pinned-media-card-copy">
+          <span className="pinned-media-card-eyebrow">{categoryLabel}</span>
+          <span className="pinned-media-card-title">{card.place.title}</span>
+          {display.title ? <span className="pinned-media-card-caption">{display.title}</span> : null}
+        </div>
+      ) : null}
       <button
         className="pinned-media-card-resize"
         type="button"
