@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 
+import type { PlaceMapItem } from "../../api/types";
+
 import { hasMapMarkerCollisionOverlaps, resolveMapMarkerCollisions } from "./mapMarkerCollision";
-import { limitMapMarkersByResolvedDensity, type MapMarkerSelectionCandidate } from "./mapMarkerSelection";
+import { limitMapMarkersByResolvedDensity, selectMapMarkerPlaces, type MapMarkerSelectionCandidate } from "./mapMarkerSelection";
+import { MAP_DISPLAY_CONFIG } from "./mapDisplayConfig";
+import { filterMapMarkersByViewport } from "./mapMarkerViewport";
 
 function marker(index: number, overrides: Partial<MapMarkerSelectionCandidate> = {}): MapMarkerSelectionCandidate {
   return {
@@ -71,5 +75,65 @@ describe("limitMapMarkersByResolvedDensity", () => {
 
     expect(selected.map((item) => item.id)).toContain("isolated-detail-place");
     expect(hasMapMarkerCollisionOverlaps(layouts)).toBe(false);
+  });
+});
+
+function candidateWithPlace(index: number, point = { x: 260, y: 180 }) {
+  const place = {
+    id: `place-${index}`,
+    city_id: "wroclaw",
+    city: { id: "wroclaw", name: "Wrocław", sort_order: 0 },
+    weight: index % 5 === 0 ? 5 : 1,
+    score: 1,
+    photo_count: 1,
+    memory_count: 0,
+    preview_items: [],
+    cover_photo: null,
+  } as PlaceMapItem;
+
+  return {
+    ...marker(index, { point, id: place.id }),
+    place,
+  };
+}
+
+const modeSelectionOptions = {
+  markerDensity: MAP_DISPLAY_CONFIG.fallback.emptyCountryMap.marker_density,
+  markerPriority: MAP_DISPLAY_CONFIG.fallback.emptyCountryMap.marker_priority,
+  viewportHeight: 400,
+  viewportWidth: 520,
+  zoom: 11,
+};
+
+describe("map marker selection by display mode", () => {
+  it("shows all visible pins regardless of photo-tile density, overlap, priority or cover", () => {
+    const candidates = Array.from({ length: 40 }, (_, index) => candidateWithPlace(index));
+    const pins = selectMapMarkerPlaces(candidates, { ...modeSelectionOptions, markerMode: "pins" });
+    const photos = selectMapMarkerPlaces(candidates, { ...modeSelectionOptions, markerMode: "photos" });
+
+    expect(pins).toBe(candidates);
+    expect(pins.map((candidate) => candidate.id)).toEqual(candidates.map((candidate) => candidate.id));
+    expect(photos.length).toBeLessThan(candidates.length);
+  });
+
+  it("limits pin rendering only to the map viewport and restores the tile policy on mode switch", () => {
+    const candidates = [
+      candidateWithPlace(0, { x: 0, y: 0 }),
+      candidateWithPlace(1, { x: 520, y: 400 }),
+      candidateWithPlace(2, { x: -10, y: 100 }),
+      candidateWithPlace(3, { x: 600, y: 100 }),
+    ];
+    const visible = filterMapMarkersByViewport(candidates, modeSelectionOptions);
+
+    expect(selectMapMarkerPlaces(visible, { ...modeSelectionOptions, markerMode: "pins" }).map((item) => item.id)).toEqual([
+      "place-0",
+      "place-1",
+    ]);
+    expect(
+      selectMapMarkerPlaces(
+        Array.from({ length: 40 }, (_, index) => candidateWithPlace(index)),
+        { ...modeSelectionOptions, markerMode: "photos" },
+      ).length,
+    ).toBeLessThan(40);
   });
 });
