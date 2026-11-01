@@ -156,39 +156,79 @@
 }
 
 @keyframes map-intro-landscape-arrive {
-  from { opacity: 0.66; }
-  to { opacity: 1; }
+  from {
+    opacity: 0.66;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes map-intro-content-arrive {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes map-intro-unfold {
-  from { opacity: 0.75; transform: translateY(9px) scaleY(0.83); }
-  to { opacity: 1; transform: translateY(0) scaleY(1); }
+  from {
+    opacity: 0.75;
+    transform: translateY(9px) scaleY(0.83);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
 }
 
 @keyframes map-intro-draw {
-  from { stroke-dashoffset: 900; }
-  to { stroke-dashoffset: 0; }
+  from {
+    stroke-dashoffset: 900;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 @keyframes map-intro-place {
-  from { opacity: 0; transform: translateY(10px) scale(0.42); }
-  72% { opacity: 1; transform: translateY(-2px) scale(1.07); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.42);
+  }
+  72% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.07);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes map-intro-photo {
-  from { opacity: 0; transform: translateY(13px) scale(0.87) rotate(-2deg); }
-  75% { opacity: 1; transform: translateY(-2px) scale(1.025) rotate(0); }
-  to { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+  from {
+    opacity: 0;
+    transform: translateY(13px) scale(0.87) rotate(-2deg);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.025) rotate(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0);
+  }
 }
 
 @keyframes map-intro-ellipsis {
-  to { width: 1.15em; }
+  to {
+    width: 1.15em;
+  }
 }
 
 @media (max-width: 700px) {
@@ -236,6 +276,10 @@
     transition: none;
   }
 
-  .map-loading-route { stroke-dashoffset: 0; }
-  .map-loading-ellipsis { width: 1.15em; }
+  .map-loading-route {
+    stroke-dashoffset: 0;
+  }
+  .map-loading-ellipsis {
+    width: 1.15em;
+  }
 }
