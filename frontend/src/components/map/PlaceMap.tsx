@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, useMap, useMapEvents, ZoomControl } from "reac
 import type { AppConfigMap, PlaceCustomFieldDefinition, PlaceMapItem } from "../../api/types";
 import type { MapTourEvent } from "../tour/mapTourSteps";
 import { DistanceMeasureTool } from "./DistanceMeasureTool";
+import { MapAttribution } from "./MapAttribution";
 import { MAP_DISPLAY_CONFIG } from "./mapDisplayConfig";
 import type { MapMarkerMode } from "./mapMarkerMode";
 import { MapTrackpadZoom } from "./MapTrackpadZoom";
@@ -173,6 +174,7 @@ export function PlaceMap({
         scrollWheelZoom={MAP_DISPLAY_CONFIG.mapContainer.scrollWheelZoom}
         zoomDelta={MAP_DISPLAY_CONFIG.mapContainer.zoomDelta}
         zoomControl={MAP_DISPLAY_CONFIG.mapContainer.zoomControl}
+        attributionControl={false}
         zoomSnap={MAP_DISPLAY_CONFIG.mapContainer.zoomSnap}
       >
         <MapSizeUpdater />
@@ -197,6 +199,10 @@ export function PlaceMap({
           onPinMedia={handlePinMedia}
         />
       </MapContainer>
+      <MapAttribution
+        hasPinnedDrawer={showPinnedMedia && cards.length > 0}
+        isPinnedDrawerOpen={showPinnedMedia && isPinnedDrawerOpen && cards.length > 0}
+      />
       {showPinnedMedia ? (
         <PinnedMediaBoard
           cards={cards}

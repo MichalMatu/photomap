@@ -30,6 +30,13 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
 
   const card = page.getByTestId("pinned-media-card");
   await expect(card).toHaveCount(1);
+  const attribution = page.getByTestId("map-attribution");
+  const drawer = page.getByTestId("pinned-media-drawer");
+  await expect(attribution).toHaveClass(/map-attribution--with-drawer/);
+  const closedCredit = await attribution.boundingBox();
+  const closedDrawer = await drawer.boundingBox();
+  if (!closedCredit || !closedDrawer) throw new Error("Attribution and pinned drawer must be measurable");
+  expect(closedCredit.y + closedCredit.height).toBeLessThanOrEqual(closedDrawer.y - 4);
   await expect(card.locator(".pinned-media-card-caption-toggle")).toHaveCount(0);
   await expect(card.locator(".pinned-media-card-dock")).toHaveCount(0);
   await expect(card.locator(".pinned-media-card-map-link")).toHaveCount(1);
@@ -45,6 +52,11 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   await expect(page.getByTestId("pinned-media-card")).toHaveCount(0);
   await expect(page.getByRole("button", { name: `Przenieś na mapę: ${places[0].title}` })).toBeVisible();
   await expect(page.locator(".place-map")).toHaveClass(/place-map--drawer-open/);
+  await expect(attribution).toHaveClass(/map-attribution--drawer-open/);
+  const expandedCredit = await attribution.boundingBox();
+  const expandedDrawer = await drawer.boundingBox();
+  if (!expandedCredit || !expandedDrawer) throw new Error("Expanded drawer and attribution must be measurable");
+  expect(expandedCredit.y + expandedCredit.height).toBeLessThanOrEqual(expandedDrawer.y - 4);
   await page.reload();
   await page.getByRole("button", { name: "Rozwiń szufladę zdjęć" }).click();
   await page.getByRole("button", { name: `Przenieś na mapę: ${places[0].title}` }).click();

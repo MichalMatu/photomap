@@ -805,3 +805,65 @@
 .place-map-pin-shape circle {
   fill: var(--color-surface-strong);
 }
+
+/* Copyright attribution stays available without hiding the pinned drawer handle.
+   OSM's interactive-map guidelines allow a 5-second disclosure followed by an info button. */
+.map-attribution {
+  bottom: 10px;
+  position: absolute;
+  right: 10px;
+  z-index: 810;
+}
+
+.map-attribution--with-drawer {
+  bottom: 46px;
+}
+
+.map-attribution--drawer-open {
+  bottom: calc(var(--pinned-drawer-height) + 10px);
+}
+
+.map-attribution-details {
+  align-items: center;
+  background: rgb(28 30 33 / 85%);
+  border-radius: var(--radius-control);
+  color: #fff;
+  display: flex;
+  font-size: 12px;
+  gap: 6px;
+  line-height: 1.4;
+  padding: 4px 7px;
+}
+
+.map-attribution-details a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.map-attribution-toggle,
+.map-attribution-close {
+  align-items: center;
+  background: rgb(28 30 33 / 85%);
+  border: 0;
+  border-radius: var(--radius-full);
+  color: #fff;
+  display: inline-flex;
+  justify-content: center;
+  min-height: 32px;
+  min-width: 32px;
+  padding: 0;
+}
+
+.map-attribution-close {
+  background: transparent;
+  min-height: 24px;
+  min-width: 24px;
+}
+
+.map-attribution-toggle:focus-visible,
+.map-attribution-close:focus-visible,
+.map-attribution-details a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
