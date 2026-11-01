@@ -153,30 +153,70 @@
 }
 
 @keyframes map-intro-paper {
-  0%, 100% { opacity: .82; transform: scaleY(.78); }
-  18%, 93% { opacity: 1; transform: scaleY(1); }
+  0%,
+  100% {
+    opacity: 0.82;
+    transform: scaleY(0.78);
+  }
+  18%,
+  93% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 }
 
 @keyframes map-intro-draw {
-  0%, 15% { stroke-dashoffset: 900; }
-  46%, 93% { stroke-dashoffset: 0; }
-  100% { stroke-dashoffset: 900; }
+  0%,
+  15% {
+    stroke-dashoffset: 900;
+  }
+  46%,
+  93% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 900;
+  }
 }
 
 @keyframes map-intro-pop {
-  0%, 42% { opacity: 0; transform: scale(.2) translateY(12px); }
-  54%, 91% { opacity: 1; transform: scale(1) translateY(0); }
-  100% { opacity: 0; transform: scale(.2) translateY(12px); }
+  0%,
+  42% {
+    opacity: 0;
+    transform: scale(0.2) translateY(12px);
+  }
+  54%,
+  91% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.2) translateY(12px);
+  }
 }
 
 @keyframes map-intro-photo {
-  0%, 60% { opacity: 0; transform: scale(.72) translateY(14px); }
-  72%, 91% { opacity: 1; transform: scale(1) translateY(0); }
-  100% { opacity: 0; transform: scale(.72) translateY(14px); }
+  0%,
+  60% {
+    opacity: 0;
+    transform: scale(0.72) translateY(14px);
+  }
+  72%,
+  91% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.72) translateY(14px);
+  }
 }
 
 @keyframes map-intro-ellipsis {
-  to { width: 1.15em; }
+  to {
+    width: 1.15em;
+  }
 }
 
 @media (max-width: 700px) {
@@ -222,6 +262,10 @@
     transition: none;
   }
 
-  .map-loading-route { stroke-dashoffset: 0; }
-  .map-loading-ellipsis { width: 1.15em; }
+  .map-loading-route {
+    stroke-dashoffset: 0;
+  }
+  .map-loading-ellipsis {
+    width: 1.15em;
+  }
 }
