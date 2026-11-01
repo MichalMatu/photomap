@@ -101,6 +101,7 @@ describe("PinnedMediaCard", () => {
         onBringToFront={vi.fn()}
         onMediaSizeChange={vi.fn()}
         onRemove={vi.fn()}
+        onDock={vi.fn()}
         onToggleCaption={vi.fn()}
         onStartInteraction={vi.fn()}
         onToggleMapLink={vi.fn()}
@@ -113,7 +114,7 @@ describe("PinnedMediaCard", () => {
   });
 
   it("collapses the description for small cards", () => {
-    const markup = renderToStaticMarkup(<PinnedMediaCard card={card({layout: {...card().layout, width: 120, height: 75}})} cardRef={() => undefined} isActive={false} isLinked={false} onBringToFront={vi.fn()} onMediaSizeChange={vi.fn()} onRemove={vi.fn()} onToggleCaption={vi.fn()} onStartInteraction={vi.fn()} onToggleMapLink={vi.fn()} />);
+    const markup = renderToStaticMarkup(<PinnedMediaCard card={card({layout: {...card().layout, width: 120, height: 75}})} cardRef={() => undefined} isActive={false} isLinked={false} onBringToFront={vi.fn()} onMediaSizeChange={vi.fn()} onRemove={vi.fn()} onDock={vi.fn()} onToggleCaption={vi.fn()} onStartInteraction={vi.fn()} onToggleMapLink={vi.fn()} />);
     expect(markup).toContain("is-copy-hidden");
     expect(markup).toContain("Pokaż opis przypiętego zdjęcia");
     expect(markup).not.toContain("pinned-media-card-copy");
@@ -129,6 +130,7 @@ describe("PinnedMediaCard", () => {
         onBringToFront={vi.fn()}
         onMediaSizeChange={vi.fn()}
         onRemove={vi.fn()}
+        onDock={vi.fn()}
         onToggleCaption={vi.fn()}
         onStartInteraction={vi.fn()}
         onToggleMapLink={vi.fn()}

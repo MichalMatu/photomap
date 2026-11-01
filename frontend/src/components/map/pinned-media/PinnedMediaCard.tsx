@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, MapPinned, X } from "lucide-react";
+import { ChevronDown, ChevronUp, MapPinned, PanelBottom, X } from "lucide-react";
 import { type CSSProperties, type PointerEvent as ReactPointerEvent, type RefCallback } from "react";
 
 import { mediaUrl } from "../../../api/http";
@@ -16,6 +16,7 @@ type PinnedMediaCardProps = {
   onBringToFront: (id: string) => void;
   onMediaSizeChange: (id: string, naturalSize: PinnedMediaNaturalSize) => void;
   onRemove: (id: string) => void;
+  onDock: (id: string) => void;
   onToggleCaption: (id: string) => void;
   onStartInteraction: (
     card: ResolvedPinnedMediaCard,
@@ -33,6 +34,7 @@ export function PinnedMediaCard({
   onBringToFront,
   onMediaSizeChange,
   onRemove,
+  onDock,
   onToggleCaption,
   onStartInteraction,
   onToggleMapLink,
@@ -113,6 +115,16 @@ export function PinnedMediaCard({
           onClick={(event) => { event.stopPropagation(); onToggleCaption(card.id); }}
         >
           {copyHidden ? <ChevronUp aria-hidden="true" size={14} /> : <ChevronDown aria-hidden="true" size={14} />}
+        </button>
+        <button
+          className="pinned-media-card-dock"
+          type="button"
+          aria-label="Odłóż zdjęcie do szuflady"
+          title="Odłóż do szuflady"
+          data-drag-ignore
+          onClick={(event) => { event.stopPropagation(); onDock(card.id); }}
+        >
+          <PanelBottom aria-hidden="true" size={14} />
         </button>
         <button
           className="pinned-media-card-remove"

@@ -54,6 +54,7 @@
 
 .pinned-media-card-map-link,
 .pinned-media-card-caption-toggle,
+.pinned-media-card-dock,
 .pinned-media-card-remove {
   align-items: center;
   background: var(--surface-media-control);
@@ -83,6 +84,12 @@
 .pinned-media-card-remove {
   right: var(--space-2);
 }
+.pinned-media-card-dock {
+  bottom: var(--space-2);
+  left: 50%;
+  top: auto;
+  transform: translateX(-50%);
+}
 .pinned-media-card-caption-toggle {
   bottom: var(--space-2);
   left: var(--space-2);
@@ -96,6 +103,7 @@
 
 .pinned-media-card-map-link:hover,
 .pinned-media-card-caption-toggle:hover,
+.pinned-media-card-dock:hover,
 .pinned-media-card-remove:hover {
   background: var(--surface-media-control-hover);
   color: var(--content-media-control-hover);

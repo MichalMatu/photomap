@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { Category, PlaceMapItem, PlaceMapPhoto, PlaceMapPreviewItem } from "../../../api/types";
-import { bringPinnedMediaCardToFront, resolvePinnedMediaCards, upsertPinnedMediaCard } from "./pinnedMediaBoardCards";
+import { bringPinnedMediaCardToFront, resolvePinnedMediaCards, updatePinnedMediaCaption, updatePinnedMediaDock, upsertPinnedMediaCard } from "./pinnedMediaBoardCards";
 import {
   clampPinnedMediaLayout,
   pinnedMediaChromeHeight,
@@ -134,6 +134,16 @@ describe("pinned media board helpers", () => {
 
     expect(JSON.parse(storage.getItem(PINNED_MEDIA_STORAGE_KEY) ?? "{}")).toMatchObject({ version: 1 });
     expect(readPinnedMediaCards(storage)).toEqual(cards);
+  });
+
+  it("persists docked state and manual description mode without dropping existing pins", () => {
+    const storage = new MemoryStorage();
+    const first = updatePinnedMediaDock([storedCard(1)], "place-1:photo:photo-1", true);
+    const cards = updatePinnedMediaCaption(first, "place-1:photo:photo-1");
+    writePinnedMediaCards(cards, storage);
+    expect(readPinnedMediaCards(storage)).toEqual(cards);
+    expect(cards[0].docked).toBe(true);
+    expect(cards[0].layout.captionHidden).toBe(true);
   });
 
   it("limits pinned cards to eight without removing older cards", () => {
@@ -318,8 +328,8 @@ describe("pinned media board helpers", () => {
       { height: 900, left: 0, top: 0, width: 1200 },
     );
 
-    expect(layout.width).toBe(149);
-    expect(layout.height).toBeCloseTo(62, 0);
+    expect(layout.width).toBe(180);
+    expect(layout.height).toBe(75);
   });
 
   it("snaps lightly to map frame edges and other cards", () => {

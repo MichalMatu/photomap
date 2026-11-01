@@ -199,7 +199,7 @@ export function PinnedMediaBoard({
           key={card.id} card={card} cardRef={(element) => setCardElement(card.id, element)}
           isActive={activeCardId === card.id} isLinked={linkedCardId === card.id}
           onBringToFront={onBringToFront} onMediaSizeChange={onMediaSizeChange}
-          onRemove={onRemove} onToggleCaption={onToggleCaption}
+          onRemove={onRemove} onDock={(id) => { onDock(id); onDrawerOpenChange(true); }} onToggleCaption={onToggleCaption}
           onStartInteraction={startInteraction} onToggleMapLink={toggleMapLink}
         />
       ))}
