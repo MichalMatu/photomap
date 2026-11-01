@@ -1,87 +1,41 @@
-# PhotoMap — Termux development copy
+# PhotoMap — izolowana kopia testowa na Samsungu (Termux)
 
-This setup is independent of PhotoMap production on Raspberry Pi and the existing IleStoi service on Samsung.
+**Stan końcowy: 01.11.2026 — test użytkownika PASS, serwer testowy wyłączony.**
+To archiwum operacyjne zakończonego sprintu, nie instrukcja wdrożenia produkcyjnego.
+Szczegóły w [checkpoincie zamknięcia](checkpoints/2026-11-01-samsung-termux-photo-data-test-closeout.md).
 
-## Isolation
+## Izolacja i zachowane dane
 
-- Clone: `$HOME/Projects/PhotoMap` (private Termux HOME).
-- DB: `.dev/termux/data/app.db` (never the Pi production SQLite).
-- Media: `.dev/termux/storage/{private,public}`.
-- Process logs/PIDs: `.dev/termux/process`.
-- Backend: `127.0.0.1:8010`; Vite: `127.0.0.1:5178`.
-- No Cloudflare, production SSH keys, or Pi media transfer in this stage.
+- Kod: `$HOME/Projects/PhotoMap` w prywatnym katalogu Termuxa, bazowy `main` `28ec394b43584eae34a2c521798d682c42b8b746` (przed końcową aktualizacją dokumentacji).
+- Runtime: Debian 12 ARM64 PRoot `photomap-dev`, Python 3.11; frontend TypeScript/Vite zbudowany w Termuxie.
+- **Zachowana na Samsungu testowa kopia danych Raspberry Pi:** `.dev/termux/data/app.db`, `.dev/termux/storage/private`, `.dev/termux/storage/public`. Nie są to współdzielone pliki produkcyjne.
+- SQLite: 19 574 784 bajtów, SHA-256 `24814f4084ef6989e4e7966d77d9f7cf88f033cd619d8c37eb66516adf3f3ede`; `integrity_check=ok`, `foreign_key_check=0`. **195 miejsc, 1082 rekordy zdjęć, 0 pamiątek** w migawce.
+- Media: **1098 plików prywatnych (4 084 122 798 bajtów)** i **1098 publicznych (154 437 872 bajtów)**. Liczba plików różni się od liczby rekordów zdjęć.
+- Dane i kod produkcyjnego PhotoMap na Raspberry Pi oraz działający na telefonie **IleStoi nie były zmieniane**.
 
-## Confirmed preflight, 2026-11-01
+## Wyniki testów
 
-Samsung ARM64, Python 3.14.6, Node 26.4.0, npm 11.19.0, Git and SQLite are available. Around 158 GiB free storage and ~2.1 GiB available RAM were reported at initial preflight. The separate IleStoi HTTP readiness check passed before and after cloning. Rust and Cargo were **subsequently installed**, both version 1.99.1, from an isolated APT source pointing to `packages.termux.dev`; only `rust` and `rust-std-aarch64-linux-android` were added (no upgrades/removals). `proot-distro` was absent at initial preflight and was subsequently installed for the isolated Debian backend.
+- Frontend: TypeScript/Vite PASS, Vitest **366/366** w 101 plikach.
+- Backend: Debian `pytest -q` **344 passed**, 2 ostrzeżenia zależności, 0 błędów.
+- Migracje Alembic i integralność osobnej SQLite: PASS.
+- Po podłączeniu kopii: `/`, `/health`, `/api/places/map`, `/openapi.json`: **HTTP 200**. IleStoi `127.0.0.1:8001/api/health/ready`: **HTTP 200**.
+- Użytkownik otworzył stronę `http://127.0.0.1:8010/` w przeglądarce Samsunga, potwierdził wyświetlanie rzeczywistych zdjęć i miejsc: **manual acceptance PASS**.
+- Test restartu całego telefonu i długotrwałej pracy po restarcie nie były wykonywane.
 
-## Build only in this repository
+## Transfer — uznana metoda
 
-1. Run `bash scripts/termux-dev.sh requirements`. This creates `.dev/termux/requirements-native.txt`, replacing only `uvicorn[standard]` with base `uvicorn` in a **local generated copy**, leaving production requirements unchanged.
-2. Use project-local `backend/.venv` and install from the generated requirements there. Other native packages, notably `pydantic-core` and Pillow, may still require compatible Android wheels, native source builds or isolated Debian `proot-distro`. Never change IleStoi's Python to make PhotoMap work.
-3. After `npm ci` in `frontend/`, use `bash scripts/termux-dev.sh frontend-build`. The helper calls TypeScript and Vite via Node CLI, avoiding Termux npm script-shell ambiguity. If npm 11 flags esbuild installation scripts, review and approve the single dependency instead of globally disabling checks.
-4. The accepted Debian path is `bash scripts/termux-dev.sh serve-debian` for a **foreground API + built frontend** at `127.0.0.1:8010`. It validates Python inside the PRoot guest and explicitly sets `DATABASE_URL=sqlite:////mnt/.dev/termux/data/app.db`, because `backend/alembic.ini` otherwise defaults to an unrelated relative SQLite path. `serve` and the two-process native `start`/`stop` are not the accepted Debian path.
+1. Raspberry Pi: read-only `sqlite3.Connection.backup()` do kontrolowanej, czasowej migawki; oryginalna produkcyjna baza i serwer bez zmian.
+2. Raspberry Pi → MacBook: `rsync` pełnej bazy i obu katalogów mediów, po odczycie kontrolnym i porównaniu SHA bazy.
+3. MacBook → Samsung: bazę przesłano `tar`/SSH, pliki mediów przez **USB ADB forward → SSH Termux → tar**. Potwierdzono liczby i sumę bajtów 2196 plików oraz SHA-256 bazy.
+4. Kopię podłączono tylko do instancji testowej, z zachowaniem poprzedniej pustej bazy do momentu zatwierdzenia. Runit został zrestartowany bez ingerencji w IleStoi.
+5. Sprzątanie: **~4 GB kopii transferowej na MacBooku usunięto; czasowy eksport SQLite na Pi usunięto**. Przed usunięciem wykonano walidację źródła; produkcyjne usługi Pi i tunel Cloudflare pozostały aktywne, `/health=200`.
 
-## Acceptance boundary
+Nie powtarzaj wcześniejszych nieudanych prób instalacji `pydantic-core` przez natywną kompilację Androida ani błędnej ścieżki SQLite w PRoot. `rsync` w Termuxie zwracał `Permission denied` nawet na własnym katalogu; połączenie SSH po Wi-Fi zrywało strumień. Potwierdzonym kanałem dla dużego transferu jest połączenie USB ADB z przekierowaniem do Termux SSH.
 
-Require Python imports, successful Alembic migration against the separate SQLite, frontend build, later independent HTTP/PID check and unchanged IleStoi readiness at `127.0.0.1:8001`. Local Agent may terminate or lose background children after command completion, so a successful start request is **not** persistence evidence. Qualify a separate `photomap-dev` runit service if persistent hosting is subsequently requested.
+## Stan serwisu po zakończeniu
 
-Do not copy Pi SQLite or photographs until an explicit second-stage, consistent backup and integrity-checked media transfer. Do not mistake a build PASS for complete end-to-end browser tests on Android.
+**PhotoMap na telefonie jest wyłączony**: zatrzymano jego proces wewnątrz PRoot i wyrejestrowano wyłącznie dowiązanie `$PREFIX/var/service/photomap-dev` (brak automatycznego ponownego startu tej usługi). Konfigurację środowiska oraz importowaną bazę i zdjęcia zachowano na potrzeby przyszłych testów. Nie usuwaj `.dev/termux/data` ani `.dev/termux/storage` podczas sprzątania.
 
-## Accepted Samsung-only test server (2026-11-01)
+Wcześniejsza komenda `sv up "$PREFIX/var/service/photomap-dev"` nie wystarczy, gdy serwis nie jest już zarejestrowany. Wznowienie testów wymaga świadomego sprawdzenia konfiguracji `.dev/termux/process/runit/photomap-dev` i ponownego zarejestrowania usługi. Normalnie serwer testowy pozostaje wyłączony.
 
-Scope is **development/testing only** on Samsung S22+ Termux, with no public
-Cloudflare endpoint, no Raspberry Pi SQLite/media copied, and no changes to
-the existing IleStoi service. PhotoMap uses a private checkout on `main`,
-its own Debian Bookworm 12 ARM64 PRoot container `photomap-dev`, Python
-3.11.2, and separate `.dev/termux/data/app.db` plus media/log directories.
-
-Verified Local Agent evidence:
-
-- Frontend: TypeScript/Vite build **PASS**, Vitest **366/366 PASS in 101 files**
-  on the earlier `c0be509` main frontend. Later Termux changes did not modify
-  frontend source.
-- Runtime: Debian and its ARM64 binary-wheel dependencies **PASS**, including
-  FastAPI, SQLModel, Alembic, Pillow and `pydantic-core`. Native Android
-  `maturin` source compilation previously timed out after 2000 seconds; it
-  is no longer required and must not be repeated blindly.
-- Backend: Debian `pytest -q` **344 passed, 2 dependency deprecation
-  warnings, 0 failures** in 307.09 seconds. Test tools (pytest, httpx,
-  ruff, coverage, schemathesis) installed in Debian only.
-- Source: local Samsung checkout clean and fast-forwarded to exact
-  `cbeadcdc3b8cf3b2d91ca804e9c4628083f886f0` before SQLite and HTTP
-  acceptance. Fixes in `scripts/termux-dev.sh`: check the Python executable
-  *inside* Debian, and set an explicit SQLite `DATABASE_URL` in that guest.
-- SQLite: standalone Alembic `upgrade head` **PASS** on the separate test
-  database; `integrity_check=ok`, **11 tables**, **0 foreign-key errors**,
-  **1 Alembic version row**.
-- Foreground smoke: `/health`, `/` (HTML) and `/openapi.json` all
-  **HTTP 200** on `127.0.0.1:8010`. The smoke-created foreground process
-  was stopped cleanly afterward.
-- Persistent test instance: a separately named private runit service
-  `$PREFIX/var/service/photomap-dev` supervises `serve-debian` and logs
-  under `.dev/termux/process/log`. Local Agent start receipt **PASS** with
-  three HTTP 200 endpoints. An independent Mac-to-Samsung SSH readback
-  observed `sv status` **run** after 77 seconds, with the frontend and API
-  both HTTP 200; this is supervised live acceptance, not an unattended
-  reboot/endurance test.
-- IleStoi readiness remained **HTTP 200** before and after the migration,
-  foreground smoke and test service start. No source or data was transferred
-  from Raspberry Pi.
-
-### Operate the isolated test instance
-
-On Samsung **Termux**, use:
-
-```sh
-sv status "$PREFIX/var/service/photomap-dev"
-curl -fsS http://127.0.0.1:8010/health
-sv down "$PREFIX/var/service/photomap-dev"  # only to intentionally stop the test service
-sv up "$PREFIX/var/service/photomap-dev"    # only to intentionally resume it
-```
-
-The last two commands are lifecycle controls, not a requirement for a health
-check. The test service listens on loopback only. Do not attach it to
-Cloudflare, alter IleStoi runit/services or import production PhotoMap data
-without a separate explicit assignment. Existing failed/timeout/UNKNOWN
-Local Agent receipts are preserved and are not reclassified as PASS.
+Adres `http://127.0.0.1:8010/` dotyczy tylko tego Samsunga, gdy usługa została świadomie uruchomiona. Nie udostępniaj instancji testowej przez Cloudflare ani publiczny interfejs.
