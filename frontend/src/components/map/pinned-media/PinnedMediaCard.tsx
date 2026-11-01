@@ -1,5 +1,11 @@
 import { MapPinned, X } from "lucide-react";
-import { type CSSProperties, type PointerEvent as ReactPointerEvent, type RefCallback } from "react";
+import {
+  useEffect,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+  type RefCallback,
+} from "react";
 
 import { mediaUrl } from "../../../api/http";
 import { stopFloatingWindowEvent } from "../../ui/useDraggableWindow";
@@ -36,6 +42,15 @@ export function PinnedMediaCard({
   onToggleMapLink,
 }: PinnedMediaCardProps) {
   const copyHidden = isPinnedMediaCaptionHidden(card.layout);
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const [interactionRevision, setInteractionRevision] = useState(0);
+  useEffect(() => {
+    setControlsVisible(true);
+    if (isActive) return;
+    const timeout = window.setTimeout(() => setControlsVisible(false), 2500);
+    return () => window.clearTimeout(timeout);
+  }, [card.id, isActive, interactionRevision]);
+  const revealControls = () => setInteractionRevision((revision) => revision + 1);
   const display = mapMediaDisplay(card.item.kind, card.item.caption, card.place.description);
   const categoryLabel = card.place.categories[0]?.label ?? (card.item.kind === "memory" ? "Pamiątka" : "Zdjęcie");
   const style = {
@@ -52,6 +67,7 @@ export function PinnedMediaCard({
         isActive ? "is-active" : null,
         isLinked ? "has-map-link" : null,
         copyHidden ? "is-copy-hidden" : null,
+        !controlsVisible && !isActive ? "is-controls-hidden" : null,
       ]
         .filter(Boolean)
         .join(" ")}
@@ -64,9 +80,15 @@ export function PinnedMediaCard({
       onClick={stopFloatingWindowEvent}
       onContextMenu={stopFloatingWindowEvent}
       onDoubleClick={stopFloatingWindowEvent}
-      onFocus={() => onBringToFront(card.id)}
+      onFocus={() => {
+        onBringToFront(card.id);
+        revealControls();
+      }}
       onMouseDown={stopFloatingWindowEvent}
-      onPointerDown={(event) => onStartInteraction(card, "drag", event)}
+      onPointerDown={(event) => {
+        revealControls();
+        onStartInteraction(card, "drag", event);
+      }}
       onTouchStart={stopFloatingWindowEvent}
       onWheel={stopFloatingWindowEvent}
     >

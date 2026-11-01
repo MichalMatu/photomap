@@ -78,7 +78,7 @@
   border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-  gap: var(--space-7);
+  gap: var(--space-4);
   height: 100vh;
   height: 100dvh;
   left: 0;
@@ -523,4 +523,10 @@ h2 {
 .stat-grid span {
   color: var(--color-muted);
   font-size: 0.9rem;
+}
+
+/* Allow vertical drawer scrolling while keeping horizontal pointer swipes available. */
+.side-rail,
+.side-drawer {
+  touch-action: pan-y;
 }
