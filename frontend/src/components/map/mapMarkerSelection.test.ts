@@ -1,9 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import type { PlaceMapItem } from "../../api/types";
+import type { City, PlaceMapItem } from "../../api/types";
 
 import { hasMapMarkerCollisionOverlaps, resolveMapMarkerCollisions } from "./mapMarkerCollision";
-import { limitMapMarkersByResolvedDensity, selectMapMarkerPlaces, type MapMarkerSelectionCandidate } from "./mapMarkerSelection";
+import {
+  limitMapMarkersByResolvedDensity,
+  selectMapMarkerPlaces,
+  type MapMarkerSelectionCandidate,
+} from "./mapMarkerSelection";
 import { MAP_DISPLAY_CONFIG } from "./mapDisplayConfig";
 import { filterMapMarkersByViewport } from "./mapMarkerViewport";
 
@@ -79,17 +83,35 @@ describe("limitMapMarkersByResolvedDensity", () => {
 });
 
 function candidateWithPlace(index: number, point = { x: 260, y: 180 }) {
-  const place = {
-    id: `place-${index}`,
-    city_id: "wroclaw",
-    city: { id: "wroclaw", name: "Wrocław", sort_order: 0 },
-    weight: index % 5 === 0 ? 5 : 1,
-    score: 1,
-    photo_count: 1,
-    memory_count: 0,
-    preview_items: [],
+  const city: City = {
+    default_zoom: 13,
+    id: "wroclaw",
+    lat: 51.1,
+    lon: 17.03,
+    name: "Wrocław",
+    region: "Dolnośląskie",
+    sort_order: 0,
+    status: "active",
+  };
+  const place: PlaceMapItem = {
+    categories: [],
+    category_ids: [],
+    city,
+    city_id: city.id,
     cover_photo: null,
-  } as PlaceMapItem;
+    custom_fields: {},
+    description: null,
+    id: `place-${index}`,
+    lat: 51.1,
+    lon: 17.03,
+    memory_count: 0,
+    photo_count: 1,
+    preview_items: [],
+    score: 1,
+    slug: `place-${index}`,
+    title: `Place ${index}`,
+    weight: index % 5 === 0 ? 5 : 1,
+  };
 
   return {
     ...marker(index, { point, id: place.id }),
@@ -125,10 +147,9 @@ describe("map marker selection by display mode", () => {
     ];
     const visible = filterMapMarkersByViewport(candidates, modeSelectionOptions);
 
-    expect(selectMapMarkerPlaces(visible, { ...modeSelectionOptions, markerMode: "pins" }).map((item) => item.id)).toEqual([
-      "place-0",
-      "place-1",
-    ]);
+    expect(
+      selectMapMarkerPlaces(visible, { ...modeSelectionOptions, markerMode: "pins" }).map((item) => item.id),
+    ).toEqual(["place-0", "place-1"]);
     expect(
       selectMapMarkerPlaces(
         Array.from({ length: 40 }, (_, index) => candidateWithPlace(index)),
