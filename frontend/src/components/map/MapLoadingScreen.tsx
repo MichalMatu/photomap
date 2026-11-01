@@ -229,7 +229,7 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
                 <rect x="146" y="253" width="18" height="12" rx="2" />
               </g>
               <g fill="var(--map-intro-label)" fontSize="12" fontWeight="750" letterSpacing="2" opacity=".83">
-                <text x="264" y="179" transform="rotate(9 264 179)">
+                <text x="244" y="179" transform="rotate(9 244 179)" fontSize="10" letterSpacing="1.3">
                   STARE MIASTO
                 </text>
                 <text x="542" y="273" transform="rotate(-11 542 273)" fontSize="10">
