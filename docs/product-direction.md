@@ -163,4 +163,4 @@ Nowa praca wchodzi tylko wtedy, gdy poprawia czytelnosc mapy, pokazanie miejsca 
 - Mały pasek to tylko Trasy, Warstwy i Przypięte. Audio oraz kategorie pozostają w pełnym menu, a Warstwy otwierają pełne ustawienia. Menu przyjmuje poziome gesty w obie strony, bez kolizji z panowaniem mapy.
 - Akcje przypiętych miniatur zanikają po 2,5 s i powracają po dotknięciu; obsługa klawiaturą i preferencji ograniczonych animacji pozostaje dostępna.
 
-- Atrybucja OpenStreetMap jest widoczna po załadowaniu mapy, a po 5 sekundach przechodzi w mały przycisk informacji; dotknięcie pokazuje link do źródła i licencji. Kontrolka jest odsunięta nad szufladę przypiętych zdjęć zarówno w stanie zwiniętym, jak i rozwiniętym. Nie usuwamy wymaganego oznaczenia źródła.
+- Atrybucja OpenStreetMap to stale dostępny, mały odsyłacz tekstowy w lewym dolnym rogu, nad zwiniętą lub rozwiniętą szufladą. Nie wyświetla ikony informacji ani nakładki Leafleta. Wymagane oznaczenie źródła pozostaje czytelne.
