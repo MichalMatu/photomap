@@ -1,0 +1,227 @@
+.map-loading-screen {
+  background: var(--map-intro-sky-top);
+  display: grid;
+  inset: 0;
+  isolation: isolate;
+  opacity: 1;
+  overflow: hidden;
+  place-items: center;
+  position: fixed;
+  transition: opacity 520ms var(--motion-ease-standard);
+  z-index: 2000;
+}
+
+.map-loading-screen--fading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.map-loading-landscape {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.map-loading-screen::after {
+  background: linear-gradient(
+    180deg,
+    var(--map-intro-overlay-top) 0%,
+    transparent 53%,
+    var(--map-intro-overlay-bottom) 100%
+  );
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.map-loading-content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  justify-content: center;
+  max-height: 100dvh;
+  padding: var(--space-8) var(--space-5);
+  position: relative;
+  width: min(100%, 940px);
+  z-index: 1;
+}
+
+.map-loading-brand {
+  align-items: center;
+  color: var(--map-intro-brand-blue);
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.map-loading-logo {
+  height: clamp(54px, 10dvh, 90px);
+  width: auto;
+}
+
+.map-loading-brand-name {
+  font-size: clamp(2.1rem, 6vw, 3.6rem);
+  font-weight: 780;
+  letter-spacing: -0.065em;
+  line-height: 1.1;
+}
+
+.map-loading-brand-name span {
+  color: var(--map-intro-brand-green);
+}
+
+.map-loading-brand p {
+  color: var(--map-intro-brand-blue);
+  font-size: clamp(var(--text-body-small), 2vw, var(--text-title));
+  font-weight: 550;
+  line-height: 1.35;
+  margin: var(--space-2) 0 0;
+  text-wrap: balance;
+}
+
+.map-loading-map {
+  display: block;
+  filter: drop-shadow(0 18px 26px var(--map-intro-map-shadow));
+  flex: 0 1 auto;
+  max-height: 49dvh;
+  overflow: visible;
+  width: min(86vw, 710px);
+}
+
+.map-loading-paper {
+  animation: map-intro-paper 4.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: 50% 75%;
+}
+
+.map-loading-route {
+  animation: map-intro-draw 4.4s ease-in-out infinite;
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+}
+
+.map-loading-route--secondary {
+  animation-delay: 120ms;
+}
+
+.map-loading-pin {
+  animation: map-intro-pop 4.4s ease-out infinite;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+
+.map-loading-pin--two {
+  animation-delay: 160ms;
+}
+
+.map-loading-pin--three {
+  animation-delay: 320ms;
+}
+
+.map-loading-photo {
+  animation: map-intro-photo 4.4s ease-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.map-loading-photo--two {
+  animation-delay: 180ms;
+}
+
+.map-loading-photo--three {
+  animation-delay: 360ms;
+}
+
+.map-loading-label {
+  color: var(--map-intro-snow);
+  font-size: clamp(var(--text-body), 2.6vw, var(--text-title));
+  font-weight: 650;
+  margin: 0;
+  text-shadow: 0 2px 12px var(--map-intro-map-shadow);
+}
+
+.map-loading-ellipsis {
+  animation: map-intro-ellipsis 1.2s steps(4, end) infinite;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  width: 0;
+}
+
+@keyframes map-intro-paper {
+  0%, 100% { opacity: .82; transform: scaleY(.78); }
+  18%, 93% { opacity: 1; transform: scaleY(1); }
+}
+
+@keyframes map-intro-draw {
+  0%, 15% { stroke-dashoffset: 900; }
+  46%, 93% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 900; }
+}
+
+@keyframes map-intro-pop {
+  0%, 42% { opacity: 0; transform: scale(.2) translateY(12px); }
+  54%, 91% { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(.2) translateY(12px); }
+}
+
+@keyframes map-intro-photo {
+  0%, 60% { opacity: 0; transform: scale(.72) translateY(14px); }
+  72%, 91% { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(.72) translateY(14px); }
+}
+
+@keyframes map-intro-ellipsis {
+  to { width: 1.15em; }
+}
+
+@media (max-width: 700px) {
+  .map-loading-content {
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-3);
+  }
+
+  .map-loading-map {
+    max-height: 43dvh;
+    width: 95vw;
+  }
+}
+
+@media (max-height: 570px) {
+  .map-loading-content {
+    flex-direction: row;
+    gap: var(--space-3);
+  }
+
+  .map-loading-brand {
+    flex: 0 0 34%;
+  }
+
+  .map-loading-map {
+    max-height: 78dvh;
+    width: min(57vw, 600px);
+  }
+
+  .map-loading-label {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-loading-screen,
+  .map-loading-paper,
+  .map-loading-route,
+  .map-loading-pin,
+  .map-loading-photo,
+  .map-loading-ellipsis {
+    animation: none;
+    transition: none;
+  }
+
+  .map-loading-route { stroke-dashoffset: 0; }
+  .map-loading-ellipsis { width: 1.15em; }
+}
