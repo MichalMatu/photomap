@@ -56,10 +56,41 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   const expandedDrawer = await drawer.boundingBox();
   if (!expandedCredit || !expandedDrawer) throw new Error("Expanded drawer and attribution must be measurable");
   expect(expandedCredit.y + expandedCredit.height).toBeLessThanOrEqual(expandedDrawer.y - 4);
+  // Full-bleed thumbnails must not sit inside another framed or padded tile.
+  const tile = drawer.locator(".pinned-media-drawer-item").first();
+  const expandedStyle = await tile.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const image = element.querySelector("img");
+    if (!image) throw new Error("Missing expanded drawer image");
+    return {
+      background: style.backgroundColor,
+      border: style.borderTopWidth,
+      padding: style.paddingLeft,
+      imageHeight: image.getBoundingClientRect().height,
+      imageWidth: image.getBoundingClientRect().width,
+      tileWidth: element.getBoundingClientRect().width,
+    };
+  });
+  expect(expandedStyle.background).toBe("rgba(0, 0, 0, 0)");
+  expect(expandedStyle.border).toBe("0px");
+  expect(expandedStyle.padding).toBe("0px");
+  expect(expandedStyle.imageWidth).toBe(expandedStyle.tileWidth);
+  expect(expandedStyle.imageHeight).toBeGreaterThanOrEqual(90);
   // Collapsed drawer shows thumbnails only, with no header text or arrow.
   await drawer.getByRole("button", { name: "Zwiń szufladę zdjęć" }).click();
   await expect(drawer).not.toHaveClass(/is-open/);
   await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(1);
+  const collapsedThumb = drawer.locator(".pinned-media-drawer-handle-thumbs img").first();
+  const thumbBox = await collapsedThumb.boundingBox();
+  const handleBox = await drawer.locator(".pinned-media-drawer-handle").boundingBox();
+  if (!thumbBox || !handleBox) throw new Error("Collapsed thumbnail or handle is missing");
+  expect(thumbBox.width).toBeGreaterThanOrEqual(50);
+  expect(thumbBox.height).toBeGreaterThanOrEqual(38);
+  expect(handleBox.height).toBeGreaterThanOrEqual(thumbBox.height + 8);
+  const collapsedCredit = await attribution.boundingBox();
+  const collapsedDrawer = await drawer.boundingBox();
+  if (!collapsedCredit || !collapsedDrawer) throw new Error("Collapsed drawer and attribution must be measurable");
+  expect(collapsedCredit.y + collapsedCredit.height).toBeLessThanOrEqual(collapsedDrawer.y - 4);
   await expect(drawer.locator(".pinned-media-drawer-handle svg")).toHaveCount(0);
   await expect(drawer.locator(".pinned-media-drawer-handle")).not.toContainText("Przypięte");
   await drawer.getByRole("button", { name: "Rozwiń szufladę zdjęć" }).click();
