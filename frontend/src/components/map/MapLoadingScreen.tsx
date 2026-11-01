@@ -15,9 +15,10 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
   useEffect(() => {
     if (!ready || phase !== "visible") return;
 
-    const delay = Math.max(0, MIN_VISIBLE_MS - (Date.now() - startedAt.current));
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const delay = reducedMotion ? 0 : Math.max(0, MIN_VISIBLE_MS - (Date.now() - startedAt.current));
     const timeout = window.setTimeout(() => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (reducedMotion) {
         setPhase("finished");
         onExited();
       } else {
