@@ -28,6 +28,7 @@ Zasady produktu:
 
 - publiczne markery domyślnie pokazują miniatury, covery albo klastry miniaturek; użytkownik może opcjonalnie przełączyć je na pinezki, bez zmiany danych miejsc ani galerii,
 - zwykle pinezki nie sa domyslnym jezykiem publicznej mapy,
+- tryb `Pinezki` pokazuje wszystkie przefiltrowane miejsca w aktualnym viewportcie (takze bez mediów), bez ograniczen gestosci i rankingu miniaturek; tryb `Miniatury` zachowuje limity kafli i rozklad kolizji,
 - zoom zmienia gestosc i rozmiar elementow,
 - klikniecie miniatury w galerii miejsca otwiera bezposrednio jeden lekki widok medium; nie dodajemy posredniego podgladu tego samego zdjecia,
 - widok medium eksponuje obraz, nazwe miejsca, opcjonalne audio oraz jeden kompaktowy blok tekstu: podpis zdjecia z opisem miejsca albo dane pamiatki,
