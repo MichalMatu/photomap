@@ -67,7 +67,23 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
         </defs>
         <rect width="1440" height="900" fill="url(#map-intro-sky)" />
         <circle cx="1150" cy="360" r="360" fill="url(#map-intro-sun-glow)" />
+        <circle cx="1150" cy="360" r="96" fill="none" stroke="var(--map-intro-cloud)" strokeWidth="2" opacity=".25" />
         <circle cx="1150" cy="360" r="48" fill="var(--map-intro-sun)" opacity=".75" />
+        <g className="map-loading-clouds" fill="var(--map-intro-cloud)" opacity=".6">
+          <path d="M85 208h218c17 0 27-10 27-21 0-12-10-23-24-23-7-26-37-41-60-25-17-19-49-15-61 9-27-11-54 6-54 25-25-1-46 14-46 35Z" />
+          <path d="M1050 138h195c16 0 28-11 28-24 0-17-14-28-31-26-13-23-44-30-63-12-23-15-52-1-55 19-36-5-60 15-74 43Z" opacity=".72" />
+          <path d="M762 246h144c12 0 19-8 19-17 0-11-9-19-21-19-10-18-32-22-47-9-21-12-42-2-45 15-24-3-41 9-50 30Z" opacity=".45" />
+        </g>
+        <path
+          className="map-loading-birds"
+          d="m984 214 13-6 13 6m14-13 9-5 9 5m-131 26 10-5 10 5"
+          stroke="var(--map-intro-ink)"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+          opacity=".56"
+        />
         <path
           d="M0 545 145 445 260 492 400 335 545 482 664 391 818 521 942 383 1130 502 1280 380 1440 488V900H0Z"
           fill="var(--map-intro-mountain-far)"
@@ -243,6 +259,28 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
                 strokeLinecap="round"
                 opacity=".95"
               />
+              <g className="map-loading-groves" fill="var(--map-intro-grove)" opacity=".67">
+                <circle cx="117" cy="332" r="10" />
+                <circle cx="134" cy="337" r="7" />
+                <circle cx="105" cy="349" r="6" />
+                <circle cx="551" cy="190" r="9" />
+                <circle cx="570" cy="184" r="7" />
+                <circle cx="564" cy="207" r="6" />
+                <circle cx="427" cy="326" r="8" />
+                <circle cx="439" cy="336" r="6" />
+              </g>
+              <g fill="none" stroke="var(--map-intro-ink)" strokeWidth="2" opacity=".55">
+                <path d="m125 323 6-9 6 9m412-136 5-8 6 8m-141 139 5-8 6 8" strokeLinecap="round" />
+                <path d="M155 272v-15l10-7 11 7v15m-21-13h21m-15 3v10m7-10v10" />
+                <path d="M465 179v-16l12-8 12 8v16m-24-16h24m-18 6h12" />
+              </g>
+            </g>
+            <g className="map-loading-compass" transform="translate(617 210)" aria-hidden="true">
+              <circle r="24" fill="var(--map-intro-cloud)" opacity=".76" />
+              <circle r="20" fill="none" stroke="var(--map-intro-ink)" opacity=".35" />
+              <path d="M0-17 5-5 17 0 5 5 0 17-5 5-17 0-5-5Z" fill="var(--map-intro-ink)" opacity=".8" />
+              <path d="M0-17 5-5 0 0-5-5Z" fill="var(--map-intro-pin)" />
+              <circle r="3" fill="var(--map-intro-cloud)" />
             </g>
             <path
               className="map-loading-route"
@@ -300,7 +338,9 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
               strokeWidth="2.5"
               opacity=".75"
             />
+            <circle cx="188" cy="150" r="14" fill="var(--map-intro-photo-highlight)" opacity=".38" />
             <circle cx="188" cy="150" r="8" fill="var(--map-intro-sun)" />
+            <path d="m91 147 9-4 9 4m2-6 7-3 7 3" stroke="var(--map-intro-photo-highlight)" strokeWidth="3" strokeLinecap="round" fill="none" opacity=".8" />
             <path
               d="m108 191 5-14 6 14m-24 4 4-11 5 11"
               stroke="var(--map-intro-photo-land)"
@@ -322,6 +362,7 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
               strokeLinecap="round"
             />
             <path d="M407 124q33-8 64 2t64-4" fill="none" stroke="var(--map-intro-snow)" strokeWidth="2" opacity=".6" />
+            <path d="m415 106 18-10 17 6m56-9 13-8 10 7" fill="none" stroke="var(--map-intro-photo-highlight)" strokeWidth="2" opacity=".66" />
           </g>
           <g className="map-loading-photo map-loading-photo--three">
             <rect x="494" y="329" width="147" height="97" rx="13" fill="var(--map-intro-snow)" />
@@ -341,6 +382,14 @@ export function MapLoadingScreen({ ready, onExited }: Props) {
               stroke="var(--map-intro-water)"
               strokeWidth="2"
               opacity=".65"
+            />
+            <path
+              d="M514 396h108m-97 0c11-13 24-13 35 0m10 0c11-13 25-13 38 0"
+              stroke="var(--map-intro-photo-highlight)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              fill="none"
+              opacity=".78"
             />
           </g>
         </svg>
