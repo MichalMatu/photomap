@@ -40,6 +40,28 @@
     --radius-sheet: var(--radius-xl);
     --radius-map-pin: 50% 50% 50% 0;
 
+    --map-intro-sky-top: #c4e2fa;
+    --map-intro-sky-bottom: #eff4f5;
+    --map-intro-horizon: #f6d7a0;
+    --map-intro-sun: #ffe5a2;
+    --map-intro-snow: #ffffff;
+    --map-intro-mountain-far: #9cb6cd;
+    --map-intro-mountain-mid: #5a8b8c;
+    --map-intro-mountain-near: #2e6871;
+    --map-intro-forest: #1f5448;
+    --map-intro-map-light: #dfefcc;
+    --map-intro-map-green: #90c69c;
+    --map-intro-map-fold: #6da58a;
+    --map-intro-water: #50b6db;
+    --map-intro-route: #fff2a0;
+    --map-intro-pin: #ec6344;
+    --map-intro-photo-sky: #8ed2ed;
+    --map-intro-brand-blue: #123950;
+    --map-intro-brand-green: #267c47;
+    --map-intro-map-shadow: rgb(7 41 43 / 25%);
+    --map-intro-overlay-top: rgb(255 255 255 / 7%);
+    --map-intro-overlay-bottom: rgb(1 29 31 / 22%);
+
     --surface-canvas: #f5f5f7;
     --surface-card: rgb(255 255 255 / 90%);
     --surface-elevated: rgb(255 255 255 / 88%);

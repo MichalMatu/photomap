@@ -23,6 +23,7 @@ import {
 } from "../components/map/mapLayers";
 import { MAP_DISPLAY_CONFIG } from "../components/map/mapDisplayConfig";
 import { getPlacePreviewVisual } from "../components/map/placePreview";
+import { MapLoadingScreen } from "../components/map/MapLoadingScreen";
 import { PlaceMap } from "../components/map/PlaceMap";
 import { readMapMarkerMode, writeMapMarkerMode, type MapMarkerMode } from "../components/map/mapMarkerMode";
 import { SEOHead } from "../components/ui/SEOHead";
@@ -46,6 +47,10 @@ export function PublicMapPage() {
   const [markerMode, setMarkerMode] = useState<MapMarkerMode>(readMapMarkerMode);
   useEffect(() => writeMapMarkerMode(markerMode), [markerMode]);
   const [mapLayerState, setMapLayerState] = useState(DEFAULT_MAP_LAYER_STATE);
+  const [mapTilesReady, setMapTilesReady] = useState(false);
+  const [introFinished, setIntroFinished] = useState(false);
+  const handleInitialTilesReady = useCallback(() => setMapTilesReady(true), []);
+  const handleIntroExited = useCallback(() => setIntroFinished(true), []);
   const [tourStep, setTourStep] = useState<MapTourStep | null>(null);
   const [hasSeenTour, setHasSeenTour] = useState(isTourComplete);
   const [closeTourMediaToken, setCloseTourMediaToken] = useState(0);
@@ -107,7 +112,14 @@ export function PublicMapPage() {
     staleTime: 60_000,
   });
   useEffect(() => {
-    if (hasSeenTour || tourStep !== null || appConfigQuery.isLoading || placesQuery.isLoading || placesQuery.isError) {
+    if (
+      !introFinished ||
+      hasSeenTour ||
+      tourStep !== null ||
+      appConfigQuery.isLoading ||
+      placesQuery.isLoading ||
+      placesQuery.isError
+    ) {
       return;
     }
     const timer = window.setTimeout(() => {
@@ -115,7 +127,15 @@ export function PublicMapPage() {
       startTour();
     }, 900);
     return () => window.clearTimeout(timer);
-  }, [appConfigQuery.isLoading, hasSeenTour, placesQuery.isError, placesQuery.isLoading, startTour, tourStep]);
+  }, [
+    appConfigQuery.isLoading,
+    hasSeenTour,
+    introFinished,
+    placesQuery.isError,
+    placesQuery.isLoading,
+    startTour,
+    tourStep,
+  ]);
 
   const mapPlaces = useMemo(() => placesQuery.data ?? [], [placesQuery.data]);
   const layerPlaces = useMemo(() => filterMapPlaces(mapPlaces, mapLayerState), [mapLayerState, mapPlaces]);
@@ -124,7 +144,8 @@ export function PublicMapPage() {
     [layerPlaces, selectedCategoryIds],
   );
   const markerPlaces = useMemo(
-    () => (markerMode === "pins" ? visiblePlaces : visiblePlaces.filter((place) => getPlacePreviewVisual(place) !== null)),
+    () =>
+      markerMode === "pins" ? visiblePlaces : visiblePlaces.filter((place) => getPlacePreviewVisual(place) !== null),
     [markerMode, visiblePlaces],
   );
   const categoryFilterItems = useMemo(() => getMapCategoryFilterItems(mapPlaces), [mapPlaces]);
@@ -135,6 +156,12 @@ export function PublicMapPage() {
   const placeCustomFieldDefinitions = appConfigQuery.data?.place_custom_fields ?? [];
   const isMapLoading = placesQuery.isLoading || appConfigQuery.isLoading;
   const isMapError = placesQuery.isError;
+  // A stalled tile server must never leave the page blocked indefinitely.
+  useEffect(() => {
+    if (isMapLoading || isMapError || mapTilesReady) return;
+    const timeout = window.setTimeout(() => setMapTilesReady(true), 5000);
+    return () => window.clearTimeout(timeout);
+  }, [isMapError, isMapLoading, mapTilesReady]);
   const hasActiveFilters =
     selectedCategoryIds.length > 0 ||
     (!isAllLayerActive && hasAnyLayerActive) ||
@@ -183,13 +210,9 @@ export function PublicMapPage() {
         }}
       >
         <main className="page-shell map-page">
-          {isMapLoading || isMapError ? (
-            <div
-              className={isMapError ? "ui-panel map-status-panel map-status-panel--error" : "ui-panel map-status-panel"}
-              role="status"
-            >
-              {isMapLoading ? <p>Ładowanie mapy...</p> : null}
-              {isMapError ? <p className="error-text">Nie udało się pobrać mapy</p> : null}
+          {isMapError ? (
+            <div className="ui-panel map-status-panel map-status-panel--error" role="alert">
+              <p className="error-text">Nie udało się pobrać mapy</p>
             </div>
           ) : null}
           {showEmptyMapState ? (
@@ -220,6 +243,7 @@ export function PublicMapPage() {
             <div className="map-frame">
               <PlaceMap
                 isAudioAutoplayEnabled={isAudioAutoplayEnabled}
+                onInitialTilesReady={handleInitialTilesReady}
                 isTourActive={tourStep !== null}
                 tourCloseMediaToken={closeTourMediaToken}
                 tourCloseOverlayToken={closeTourOverlayToken}
@@ -236,6 +260,9 @@ export function PublicMapPage() {
           ) : null}
         </main>
       </AppShell>
+      {!introFinished ? (
+        <MapLoadingScreen ready={!isMapLoading && (isMapError || mapTilesReady)} onExited={handleIntroExited} />
+      ) : null}
       {tourStep !== null ? (
         <MapTour
           step={tourStep}

@@ -17,6 +17,7 @@ import { type PinMediaRequest, usePinnedMediaBoard } from "./pinned-media/usePin
 
 type Props = {
   isAudioAutoplayEnabled: boolean;
+  onInitialTilesReady?: () => void;
   isTourActive?: boolean;
   tourCloseMediaToken?: number;
   tourCloseOverlayToken?: number;
@@ -135,6 +136,7 @@ function MapProjectionTracker({
 
 export function PlaceMap({
   isAudioAutoplayEnabled,
+  onInitialTilesReady,
   isTourActive = false,
   tourCloseMediaToken = 0,
   tourCloseOverlayToken = 0,
@@ -192,7 +194,11 @@ export function PlaceMap({
         ) : null}
         <DistanceMeasureTool />
         <ZoomControl position={MAP_DISPLAY_CONFIG.mapControls.zoomControlPosition} />
-        <TileLayer attribution={MAP_DISPLAY_CONFIG.tileLayer.attribution} url={MAP_DISPLAY_CONFIG.tileLayer.url} />
+        <TileLayer
+          attribution={MAP_DISPLAY_CONFIG.tileLayer.attribution}
+          url={MAP_DISPLAY_CONFIG.tileLayer.url}
+          eventHandlers={onInitialTilesReady ? { load: onInitialTilesReady } : undefined}
+        />
         <PlaceLayer
           isAudioAutoplayEnabled={isAudioAutoplayEnabled}
           isTourActive={isTourActive}
