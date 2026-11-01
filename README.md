@@ -16,6 +16,7 @@ Software-only buildy i testy moga byc wykonywane w sandboxie ChatGPT z zaleznosc
 
 ## Dokumenty
 
+- [PhotoMap na Samsungu: transfer danych Pi, test PASS i końcowe sprzątanie (01.11.2026)](docs/checkpoints/2026-11-01-samsung-termux-photo-data-test-closeout.md)
 - [Kierunek produktu](docs/product-direction.md)
 - [Interaktywny samouczek mapy i lokalny podgląd Mac](docs/interactive-map-tour.md)
 - [Sandbox / ChatGPT Library](docs/SANDBOX_EXECUTION_FLOW.md)
