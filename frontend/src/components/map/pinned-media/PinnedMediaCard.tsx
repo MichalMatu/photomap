@@ -1,4 +1,4 @@
-import { MapPinned, X } from "lucide-react";
+import { ChevronDown, ChevronUp, MapPinned, PanelBottom, X } from "lucide-react";
 import { type CSSProperties, type PointerEvent as ReactPointerEvent, type RefCallback } from "react";
 
 import { mediaUrl } from "../../../api/http";
@@ -6,6 +6,7 @@ import { stopFloatingWindowEvent } from "../../ui/useDraggableWindow";
 import { mapMediaDisplay } from "../mediaDisplayText";
 import type { PinnedMediaInteractionMode } from "./pinnedMediaBoardInteraction";
 import type { PinnedMediaNaturalSize, ResolvedPinnedMediaCard } from "./pinnedMediaBoardTypes";
+import { isPinnedMediaCaptionHidden } from "./pinnedMediaBoardLayout";
 
 type PinnedMediaCardProps = {
   card: ResolvedPinnedMediaCard;
@@ -15,6 +16,8 @@ type PinnedMediaCardProps = {
   onBringToFront: (id: string) => void;
   onMediaSizeChange: (id: string, naturalSize: PinnedMediaNaturalSize) => void;
   onRemove: (id: string) => void;
+  onDock: (id: string) => void;
+  onToggleCaption: (id: string) => void;
   onStartInteraction: (
     card: ResolvedPinnedMediaCard,
     mode: PinnedMediaInteractionMode,
@@ -31,9 +34,12 @@ export function PinnedMediaCard({
   onBringToFront,
   onMediaSizeChange,
   onRemove,
+  onDock,
+  onToggleCaption,
   onStartInteraction,
   onToggleMapLink,
 }: PinnedMediaCardProps) {
+  const copyHidden = isPinnedMediaCaptionHidden(card.layout);
   const display = mapMediaDisplay(card.item.kind, card.item.caption, card.place.description);
   const categoryLabel = card.place.categories[0]?.label ?? (card.item.kind === "memory" ? "Pamiątka" : "Zdjęcie");
   const style = {
@@ -45,7 +51,12 @@ export function PinnedMediaCard({
 
   return (
     <article
-      className={["pinned-media-card", isActive ? "is-active" : null, isLinked ? "has-map-link" : null]
+      className={[
+        "pinned-media-card",
+        isActive ? "is-active" : null,
+        isLinked ? "has-map-link" : null,
+        copyHidden ? "is-copy-hidden" : null,
+      ]
         .filter(Boolean)
         .join(" ")}
       ref={cardRef}
@@ -101,6 +112,32 @@ export function PinnedMediaCard({
           <MapPinned aria-hidden="true" size={14} />
         </button>
         <button
+          className="pinned-media-card-caption-toggle"
+          type="button"
+          title={copyHidden ? "Pokaż opis" : "Ukryj opis"}
+          aria-label={copyHidden ? "Pokaż opis przypiętego zdjęcia" : "Ukryj opis przypiętego zdjęcia"}
+          data-drag-ignore
+          onClick={(event) => {
+            event.stopPropagation();
+            onToggleCaption(card.id);
+          }}
+        >
+          {copyHidden ? <ChevronUp aria-hidden="true" size={14} /> : <ChevronDown aria-hidden="true" size={14} />}
+        </button>
+        <button
+          className="pinned-media-card-dock"
+          type="button"
+          aria-label="Odłóż zdjęcie do szuflady"
+          title="Odłóż do szuflady"
+          data-drag-ignore
+          onClick={(event) => {
+            event.stopPropagation();
+            onDock(card.id);
+          }}
+        >
+          <PanelBottom aria-hidden="true" size={14} />
+        </button>
+        <button
           className="pinned-media-card-remove"
           type="button"
           aria-label="Odepnij medium"
@@ -114,11 +151,13 @@ export function PinnedMediaCard({
           <X aria-hidden="true" size={14} />
         </button>
       </div>
-      <div className="pinned-media-card-copy">
-        <span className="pinned-media-card-eyebrow">{categoryLabel}</span>
-        <span className="pinned-media-card-title">{card.place.title}</span>
-        {display.title ? <span className="pinned-media-card-caption">{display.title}</span> : null}
-      </div>
+      {!copyHidden ? (
+        <div className="pinned-media-card-copy">
+          <span className="pinned-media-card-eyebrow">{categoryLabel}</span>
+          <span className="pinned-media-card-title">{card.place.title}</span>
+          {display.title ? <span className="pinned-media-card-caption">{display.title}</span> : null}
+        </div>
+      ) : null}
       <button
         className="pinned-media-card-resize"
         type="button"

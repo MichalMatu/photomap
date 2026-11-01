@@ -69,6 +69,7 @@ function isStoredPinnedMediaCard(value: unknown): value is StoredPinnedMediaCard
     (card.kind === "photo" || card.kind === "memory") &&
     Number.isFinite(card.createdAt) &&
     isPinnedMediaLayout(card.layout) &&
+    (card.docked === undefined || typeof card.docked === "boolean") &&
     (card.itemSnapshot === undefined || isPinnedMediaItemSnapshot(card.itemSnapshot, card.kind, card.itemId))
   );
 }
@@ -135,6 +136,7 @@ function isPinnedMediaLayout(value: unknown): value is PinnedMediaLayout {
 
   const layout = value as Partial<PinnedMediaLayout>;
   return (
+    (layout.captionHidden === undefined || typeof layout.captionHidden === "boolean") &&
     Number.isFinite(layout.aspectRatio) &&
     Number.isFinite(layout.height) &&
     Number.isFinite(layout.width) &&

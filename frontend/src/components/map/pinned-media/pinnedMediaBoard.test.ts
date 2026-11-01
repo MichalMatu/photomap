@@ -1,9 +1,16 @@
 import { describe, expect, it } from "vitest";
 
 import type { Category, PlaceMapItem, PlaceMapPhoto, PlaceMapPreviewItem } from "../../../api/types";
-import { bringPinnedMediaCardToFront, resolvePinnedMediaCards, upsertPinnedMediaCard } from "./pinnedMediaBoardCards";
+import {
+  bringPinnedMediaCardToFront,
+  resolvePinnedMediaCards,
+  updatePinnedMediaCaption,
+  updatePinnedMediaDock,
+  upsertPinnedMediaCard,
+} from "./pinnedMediaBoardCards";
 import {
   clampPinnedMediaLayout,
+  pinnedMediaChromeHeight,
   defaultPinnedMediaLayout,
   snapPinnedMediaLayout,
   snapPinnedMediaResizeLayout,
@@ -135,6 +142,16 @@ describe("pinned media board helpers", () => {
     expect(readPinnedMediaCards(storage)).toEqual(cards);
   });
 
+  it("persists docked state and manual description mode without dropping existing pins", () => {
+    const storage = new MemoryStorage();
+    const first = updatePinnedMediaDock([storedCard(1)], "place-1:photo:photo-1", true);
+    const cards = updatePinnedMediaCaption(first, "place-1:photo:photo-1");
+    writePinnedMediaCards(cards, storage);
+    expect(readPinnedMediaCards(storage)).toEqual(cards);
+    expect(cards[0].docked).toBe(true);
+    expect(cards[0].layout.captionHidden).toBe(true);
+  });
+
   it("limits pinned cards to eight without removing older cards", () => {
     const cards = Array.from({ length: MAX_PINNED_MEDIA_CARDS }, (_, index) => storedCard(index + 1));
     const result = upsertPinnedMediaCard(
@@ -207,7 +224,7 @@ describe("pinned media board helpers", () => {
 
     expect(layout.width).toBeLessThanOrEqual(336);
     expect(layout.x).toBeGreaterThanOrEqual(12);
-    expect(layout.y + layout.height + 72).toBeLessThanOrEqual(628);
+    expect(layout.y + layout.height + pinnedMediaChromeHeight(layout)).toBeLessThanOrEqual(628);
   });
 
   it("keeps cards inside offset map frame bounds", () => {
@@ -292,8 +309,19 @@ describe("pinned media board helpers", () => {
     );
 
     expect(layout.aspectRatio).toBe(1);
-    expect(layout.width).toBe(180);
-    expect(layout.height).toBe(180);
+    expect(layout.width).toBe(120);
+    expect(layout.height).toBe(120);
+  });
+
+  it("can collapse captions automatically for compact thumbnails", () => {
+    const layout = clampPinnedMediaLayout(
+      { aspectRatio: 1.6, height: 75, width: 120, x: 10, y: 10, zIndex: 1 },
+      { height: 800, left: 0, top: 0, width: 360 },
+    );
+    expect(layout.width).toBe(120);
+    expect(pinnedMediaChromeHeight(layout)).toBe(0);
+    expect(pinnedMediaChromeHeight({ ...layout, width: 240 })).toBe(72);
+    expect(pinnedMediaChromeHeight({ ...layout, width: 240, captionHidden: true })).toBe(0);
   });
 
   it("keeps wide media readable with a minimum image height", () => {
@@ -309,8 +337,8 @@ describe("pinned media board helpers", () => {
       { height: 900, left: 0, top: 0, width: 1200 },
     );
 
-    expect(layout.width).toBe(288);
-    expect(layout.height).toBe(120);
+    expect(layout.width).toBe(180);
+    expect(layout.height).toBe(75);
   });
 
   it("snaps lightly to map frame edges and other cards", () => {

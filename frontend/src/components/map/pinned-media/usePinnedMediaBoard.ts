@@ -7,6 +7,8 @@ import {
   resolvePinnedMediaCards,
   toStoredPinnedMediaCard,
   updatePinnedMediaLayout,
+  updatePinnedMediaDock,
+  updatePinnedMediaCaption,
   upsertPinnedMediaCard,
 } from "./pinnedMediaBoardCards";
 import { clampPinnedMediaLayout, getPinnedMediaBounds, safeAspectRatio } from "./pinnedMediaBoardLayout";
@@ -31,6 +33,9 @@ type UsePinnedMediaBoardResult = {
   cards: ResolvedPinnedMediaCard[];
   notice: string | null;
   onBringToFront: (id: string) => void;
+  onDock: (id: string) => void;
+  onUndock: (id: string) => void;
+  onToggleCaption: (id: string) => void;
   onLayoutChange: (id: string, layout: PinnedMediaLayout) => void;
   onMediaSizeChange: (id: string, naturalSize: PinnedMediaNaturalSize) => void;
   onRemove: (id: string) => void;
@@ -109,8 +114,12 @@ export function usePinnedMediaBoard(places: PlaceMapItem[]): UsePinnedMediaBoard
     };
 
     window.addEventListener("resize", handleResize);
+    const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(handleResize);
+    const mapElement = document.querySelector(".place-map");
+    if (mapElement) resizeObserver?.observe(mapElement);
 
     return () => {
+      resizeObserver?.disconnect();
       if (frameId !== null) {
         window.cancelAnimationFrame(frameId);
       }
@@ -206,6 +215,30 @@ export function usePinnedMediaBoard(places: PlaceMapItem[]): UsePinnedMediaBoard
     });
   }, []);
 
+  const onDock = useCallback((id: string) => {
+    setStoredCards((currentCards) => {
+      const nextCards = updatePinnedMediaDock(currentCards, id, true);
+      cardsRef.current = nextCards;
+      return nextCards;
+    });
+  }, []);
+
+  const onUndock = useCallback((id: string) => {
+    setStoredCards((currentCards) => {
+      const nextCards = updatePinnedMediaDock(currentCards, id, false);
+      cardsRef.current = nextCards;
+      return nextCards;
+    });
+  }, []);
+
+  const onToggleCaption = useCallback((id: string) => {
+    setStoredCards((currentCards) => {
+      const nextCards = updatePinnedMediaCaption(currentCards, id);
+      cardsRef.current = nextCards;
+      return nextCards;
+    });
+  }, []);
+
   const onRemove = useCallback((id: string) => {
     setStoredCards((currentCards) => {
       const nextCards = currentCards.filter((card) => card.id !== id);
@@ -218,6 +251,9 @@ export function usePinnedMediaBoard(places: PlaceMapItem[]): UsePinnedMediaBoard
     cards: resolvedCards,
     notice,
     onBringToFront,
+    onDock,
+    onUndock,
+    onToggleCaption,
     onLayoutChange,
     onMediaSizeChange,
     onRemove,

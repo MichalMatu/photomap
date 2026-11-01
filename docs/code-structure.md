@@ -54,6 +54,10 @@ Publiczna mapa trzyma reguły wizualnego układu w małych helperach w `frontend
 
 Pierwszy widok mapy renderuje elementy z lekkiego `map preview` (bez `description_blocks` zdjęć). Rozwinięta galeria miejsca po kliknięciu pobiera lekką publiczną listę zdjęć miejsca i pokazuje wszystkie zatwierdzone zdjęcia w wachlarzu. Opis TTS jednego medium ładuje endpoint detail zdjęcia dopiero w modalu. Nie ma stałego niskiego limitu widocznych miniaturek: obszar ma rosnąć na większych ekranach i dla gęstszych zestawów, ale musi pozostać bez nachodzenia kafli i bez wychodzenia poza ramkę mapy. Ten kontrakt chronią testy jednostkowe `mapMotion.test.ts` oraz E2E `frontend/e2e/visual/map-gallery-sizing.spec.ts` i `frontend/e2e/visual/map.spec.ts`.
 
+## Przypięte zdjęcia i szuflada
+
+Przypięte zdjęcia można układać swobodnie nad mapą albo odkładać do dolnej szuflady. Podczas przeciągania szuflada sygnalizuje obszar upuszczenia, a jej otwarcie zmniejsza wysokość mapy i uruchamia przeliczenie Leaflet. Przypięcia, położenia, stan opisów i informacja o odłożeniu do szuflady pozostają w dotychczasowym versioned localStorage; nie zmienia to publicznego API ani magazynu zdjęć. Miniatury w szufladzie używają ścieżek thumb. Dostępność: przyciski do odkładania i wyciągania działają także bez przeciągania.
+
 ## Media Storage Contract
 
 - Redakcyjne `Photo`: jeden niemodyfikowalny oryginal w `backend/storage/private`, publiczny endpoint `/api/places/{place_id}/photos/{photo_id}/media/image` serwuje dokladnie jego bajty dla zatwierdzonego zdjecia, a fizycznie generowana jest tylko miniatura.

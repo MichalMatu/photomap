@@ -18,7 +18,7 @@ Publiczna mapa jest glownym produktem: wizualna tablica miniaturek miejsc, warst
 ## Local Contracts
 
 - Pierwszy widok mapy nie moze byc pusty wizualnie; powinien pokazac miniatury miejsc albo klastry miniaturek.
-- Publiczne markery sa wizualnymi miniaturami miejsc; klasyczna pinezka nie jest publicznym domyslem.
+- Publiczne markery domyślnie są miniaturami miejsc; jawny przełącznik widoku pozwala wyświetlić opcjonalne pinezki, zachowując ten sam wybór miejsc i dostęp do galerii.
 - `map preview` pozostaje lekkim kontraktem: miejsce, miasto, kategorie, score, liczniki, cover i kilka podgladow.
 - Nie pobieraj pelnych galerii ani pelnych pamiatek tylko po to, zeby wyrenderowac pierwszy widok mapy.
 - Warstwy mapy sa sposobem ogladania danych; kategorie i filtry maja byc dynamiczne z API.

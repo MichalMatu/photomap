@@ -5,6 +5,7 @@ import { Marker, useMap } from "react-leaflet";
 import { mediaUrl } from "../../api/http";
 import type { AppConfigMapMarkerScale, PlaceMapItem } from "../../api/types";
 import { MAP_DISPLAY_CONFIG } from "./mapDisplayConfig";
+import type { MapMarkerMode } from "./mapMarkerMode";
 import { isMapAudioTarget, type MapAudioTarget } from "./mapAudioPlayback";
 import { audioWaveformHtml, escapeAttribute } from "./mapHtml";
 import { isMapKeyboardActivationKey } from "./mapKeyboardActivation";
@@ -31,7 +32,16 @@ function markerIcon(
   isEntering: boolean,
   displayOffset: MarkerDisplayOffset | null | undefined,
   isAudioPlaying: boolean,
+  mode: MapMarkerMode,
 ) {
+  if (mode === "pins" && !isSelected) {
+    return L.divIcon({
+      className: "place-map-pin-marker",
+      html: '<span class="place-map-pin-shape" aria-hidden="true"></span>',
+      iconAnchor: [14, 32],
+      iconSize: [28, 36],
+    });
+  }
   const markerEnterStyle = placeMarkerEnterStyle(enterIndex);
   const enterClassName = isEntering ? "is-entering" : null;
   const imageUrl = escapeAttribute(mediaUrl(previewItem.thumb_path));
@@ -92,6 +102,7 @@ type Props = {
   isTourActive?: boolean;
   isEntering: boolean;
   markerScale: AppConfigMapMarkerScale;
+  markerMode: MapMarkerMode;
   onMediaOpen: (place: PlaceMapItem, item: PlaceMapVisualItem) => void;
   onMemoryOpen: (place: PlaceMapItem) => void;
   onPrefetchGallery: () => void;
@@ -109,6 +120,7 @@ export function PlaceMarker({
   isTourActive = false,
   isEntering,
   markerScale,
+  markerMode,
   onMediaOpen,
   onMemoryOpen,
   onPrefetchGallery,
@@ -137,9 +149,19 @@ export function PlaceMarker({
             isEntering,
             markerVisualOffset,
             isPreviewAudioPlaying,
+            markerMode,
           )
         : null,
-    [enterIndex, isEntering, isExpanded, isPreviewAudioPlaying, markerVisualOffset, placeLayout, previewItem],
+    [
+      enterIndex,
+      isEntering,
+      isExpanded,
+      isPreviewAudioPlaying,
+      markerVisualOffset,
+      markerMode,
+      placeLayout,
+      previewItem,
+    ],
   );
   useEffect(() => {
     if (isExpanded) {
@@ -269,7 +291,7 @@ export function PlaceMarker({
                 pane={PHOTO_GALLERY_PANE}
                 position={layout.position}
                 riseOnHover
-                title={isTourActive ? undefined : item.caption ?? place.title}
+                title={isTourActive ? undefined : (item.caption ?? place.title)}
                 zIndexOffset={1300 + index}
                 eventHandlers={{
                   click: (event) => {

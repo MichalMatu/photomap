@@ -35,7 +35,10 @@ export function upsertPinnedMediaCard(
         )
       : cards;
     return {
-      cards: bringPinnedMediaCardToFront(cardsWithFreshSnapshot, id),
+      cards: bringPinnedMediaCardToFront(
+        cardsWithFreshSnapshot.map((card) => (card.id === id ? { ...card, docked: false } : card)),
+        id,
+      ),
       status: "updated",
     };
   }
@@ -82,6 +85,20 @@ export function bringPinnedMediaCardToFront(cards: StoredPinnedMediaCard[], id: 
   );
 }
 
+export function updatePinnedMediaDock(
+  cards: StoredPinnedMediaCard[],
+  id: string,
+  docked: boolean,
+): StoredPinnedMediaCard[] {
+  return cards.map((card) => (card.id === id ? { ...card, docked } : card));
+}
+
+export function updatePinnedMediaCaption(cards: StoredPinnedMediaCard[], id: string): StoredPinnedMediaCard[] {
+  return cards.map((card) =>
+    card.id === id ? { ...card, layout: { ...card.layout, captionHidden: !card.layout.captionHidden } } : card,
+  );
+}
+
 export function updatePinnedMediaLayout(
   cards: StoredPinnedMediaCard[],
   id: string,
@@ -123,6 +140,7 @@ export function resolvePinnedMediaCards(
 export function toStoredPinnedMediaCard(card: ResolvedPinnedMediaCard): StoredPinnedMediaCard {
   return {
     createdAt: card.createdAt,
+    ...(card.docked ? { docked: true } : {}),
     id: card.id,
     itemId: card.itemId,
     itemSnapshot: card.item,

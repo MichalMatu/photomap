@@ -24,11 +24,18 @@ import {
 import { MAP_DISPLAY_CONFIG } from "../components/map/mapDisplayConfig";
 import { getPlacePreviewVisual } from "../components/map/placePreview";
 import { PlaceMap } from "../components/map/PlaceMap";
+import { readMapMarkerMode, writeMapMarkerMode, type MapMarkerMode } from "../components/map/mapMarkerMode";
 import { SEOHead } from "../components/ui/SEOHead";
 import { MapTour } from "../components/tour/MapTour";
 import {
-  isTourComplete, nextStepOnEvent, nextTourStepForPhoto, previousTourStepForPhoto, skipUnavailableTourStep,
-  rememberTourComplete, type MapTourEvent, type MapTourStep,
+  isTourComplete,
+  nextStepOnEvent,
+  nextTourStepForPhoto,
+  previousTourStepForPhoto,
+  skipUnavailableTourStep,
+  rememberTourComplete,
+  type MapTourEvent,
+  type MapTourStep,
 } from "../components/tour/mapTourSteps";
 import { DEFAULT_SEO_DESCRIPTION, DEFAULT_SEO_TITLE } from "../seo/pageSeo";
 
@@ -36,6 +43,8 @@ export function PublicMapPage() {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [isAudioAutoplayEnabled, setIsAudioAutoplayEnabled] = useState(false);
   const [isPinnedMediaVisible, setIsPinnedMediaVisible] = useState(true);
+  const [markerMode, setMarkerMode] = useState<MapMarkerMode>(readMapMarkerMode);
+  useEffect(() => writeMapMarkerMode(markerMode), [markerMode]);
   const [mapLayerState, setMapLayerState] = useState(DEFAULT_MAP_LAYER_STATE);
   const [tourStep, setTourStep] = useState<MapTourStep | null>(null);
   const [hasSeenTour, setHasSeenTour] = useState(isTourComplete);
@@ -66,7 +75,12 @@ export function PublicMapPage() {
     if (tourStep === "pinned" || tourStep === "memory-form") {
       setCloseTourOverlayToken((current) => current + 1);
     }
-    setTourStep(nextTourStepForPhoto(tourStep, Boolean(document.querySelector(".system-modal--media .photo-detail-audio-toggle"))));
+    setTourStep(
+      nextTourStepForPhoto(
+        tourStep,
+        Boolean(document.querySelector(".system-modal--media .photo-detail-audio-toggle")),
+      ),
+    );
   }, [endTour, tourStep]);
 
   const skipUnavailableStep = useCallback(() => {
@@ -211,6 +225,8 @@ export function PublicMapPage() {
                 onTourEvent={handleTourEvent}
                 mapFallback={mapFallback}
                 markerPlaces={markerPlaces}
+                markerMode={markerMode}
+                onMarkerModeChange={setMarkerMode}
                 onPinnedMediaVisibleChange={setIsPinnedMediaVisible}
                 pinnedMediaPlaces={mapPlaces}
                 placeCustomFieldDefinitions={placeCustomFieldDefinitions}
@@ -225,7 +241,12 @@ export function PublicMapPage() {
           step={tourStep}
           onBack={() => {
             if (tourStep === "memory-form") setCloseTourOverlayToken((current) => current + 1);
-            setTourStep(previousTourStepForPhoto(tourStep, Boolean(document.querySelector(".system-modal--media .photo-detail-audio-toggle"))));
+            setTourStep(
+              previousTourStepForPhoto(
+                tourStep,
+                Boolean(document.querySelector(".system-modal--media .photo-detail-audio-toggle")),
+              ),
+            );
           }}
           onNext={advanceTour}
           onSkipStep={skipUnavailableStep}

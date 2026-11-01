@@ -6,15 +6,27 @@ const PINNED_MEDIA_CARD_CHROME_HEIGHT = 72;
 
 const DEFAULT_ASPECT_RATIO = 16 / 10;
 const MIN_CARD_ASPECT_RATIO = 1;
-const MIN_CARD_IMAGE_HEIGHT = 120;
-const MIN_CARD_WIDTH = 180;
+const MIN_CARD_IMAGE_HEIGHT = 62;
+const MIN_CARD_WIDTH = 120;
+const COMPACT_CARD_WIDTH = 188;
+
+export function isPinnedMediaCaptionHidden(layout: Pick<PinnedMediaLayout, "width" | "captionHidden">) {
+  return layout.captionHidden === true || layout.width < COMPACT_CARD_WIDTH;
+}
+
+export function pinnedMediaChromeHeight(layout: Pick<PinnedMediaLayout, "width" | "captionHidden">) {
+  return isPinnedMediaCaptionHidden(layout) ? 0 : PINNED_MEDIA_CARD_CHROME_HEIGHT;
+}
 
 export function getPinnedMediaBounds(): PinnedMediaBounds {
   if (typeof window === "undefined") {
     return { height: 768, left: 0, top: 0, width: 1024 };
   }
 
-  const mapFrameRect = document.querySelector<HTMLElement>(".map-frame")?.getBoundingClientRect() ?? null;
+  const mapFrameRect =
+    (
+      document.querySelector<HTMLElement>(".place-map") ?? document.querySelector<HTMLElement>(".map-frame")
+    )?.getBoundingClientRect() ?? null;
   const bounds =
     mapFrameRect && mapFrameRect.width > 0 && mapFrameRect.height > 0
       ? mapFrameRect
@@ -46,8 +58,11 @@ export function clampPinnedMediaLayout(layout: PinnedMediaLayout, bounds: Pinned
   const frameMaxWidth = Math.max(MIN_CARD_WIDTH, bounds.width - PINNED_MEDIA_FRAME_MARGIN * 2);
   const maxWidth = frameMaxWidth;
   const minWidth = Math.min(Math.max(MIN_CARD_WIDTH, MIN_CARD_IMAGE_HEIGHT * aspectRatio), maxWidth);
-  const maxImageHeight = Math.max(96, bounds.height - PINNED_MEDIA_FRAME_MARGIN * 2 - PINNED_MEDIA_CARD_CHROME_HEIGHT);
   let width = clamp(layout.width, minWidth, maxWidth);
+  const maxImageHeight = Math.max(
+    62,
+    bounds.height - PINNED_MEDIA_FRAME_MARGIN * 2 - pinnedMediaChromeHeight({ ...layout, width }),
+  );
   let height = width / aspectRatio;
 
   if (height > maxImageHeight) {
@@ -60,11 +75,12 @@ export function clampPinnedMediaLayout(layout: PinnedMediaLayout, bounds: Pinned
   const maxX = Math.max(minX, bounds.left + bounds.width - width - PINNED_MEDIA_FRAME_MARGIN);
   const maxY = Math.max(
     minY,
-    bounds.top + bounds.height - height - PINNED_MEDIA_CARD_CHROME_HEIGHT - PINNED_MEDIA_FRAME_MARGIN,
+    bounds.top + bounds.height - height - pinnedMediaChromeHeight({ ...layout, width }) - PINNED_MEDIA_FRAME_MARGIN,
   );
 
   return {
     aspectRatio,
+    ...(layout.captionHidden !== undefined ? { captionHidden: layout.captionHidden } : {}),
     height: roundPixel(height),
     width: roundPixel(width),
     x: roundPixel(clamp(layout.x, minX, maxX)),
@@ -143,7 +159,7 @@ export function snapPinnedMediaResizeLayout(
   }
 
   for (const target of bottomEdgeTargets) {
-    const imageHeight = target - clampedLayout.y - PINNED_MEDIA_CARD_CHROME_HEIGHT;
+    const imageHeight = target - clampedLayout.y - pinnedMediaChromeHeight(clampedLayout);
     const snapOption = snapResizeOption(
       imageHeight * aspectRatio,
       Math.abs(clampedLayout.y + cardTotalHeight(clampedLayout) - target),
@@ -180,8 +196,8 @@ export function defaultPinnedMediaLayout({
   const normalizedAspectRatio = safeAspectRatio(aspectRatio);
   const defaultWidth =
     bounds.width <= 640
-      ? clamp(Math.round(bounds.width * 0.58), MIN_CARD_WIDTH, 260)
-      : clamp(Math.round(bounds.width * 0.18), 220, 320);
+      ? clamp(Math.round(bounds.width * 0.46), MIN_CARD_WIDTH, 220)
+      : clamp(Math.round(bounds.width * 0.18), 180, 300);
   const baseLayout = clampPinnedMediaLayout(
     {
       aspectRatio: normalizedAspectRatio,
@@ -240,8 +256,8 @@ export function nextPinnedMediaZIndex(cards: Pick<StoredPinnedMediaCard, "layout
   return cards.reduce((maxZIndex, card) => Math.max(maxZIndex, normalizeZIndex(card.layout.zIndex)), 0) + 1;
 }
 
-function cardTotalHeight(layout: Pick<PinnedMediaLayout, "height">) {
-  return layout.height + PINNED_MEDIA_CARD_CHROME_HEIGHT;
+function cardTotalHeight(layout: Pick<PinnedMediaLayout, "height" | "width" | "captionHidden">) {
+  return layout.height + pinnedMediaChromeHeight(layout);
 }
 
 function normalizeZIndex(value: number) {
