@@ -10,11 +10,11 @@ const MIN_CARD_IMAGE_HEIGHT = 62;
 const MIN_CARD_WIDTH = 120;
 const COMPACT_CARD_WIDTH = 188;
 
-export function isPinnedMediaCaptionHidden(layout: PinnedMediaLayout) {
+export function isPinnedMediaCaptionHidden(layout: Pick<PinnedMediaLayout, "width" | "captionHidden">) {
   return layout.captionHidden === true || layout.width < COMPACT_CARD_WIDTH;
 }
 
-export function pinnedMediaChromeHeight(layout: PinnedMediaLayout) {
+export function pinnedMediaChromeHeight(layout: Pick<PinnedMediaLayout, "width" | "captionHidden">) {
   return isPinnedMediaCaptionHidden(layout) ? 0 : PINNED_MEDIA_CARD_CHROME_HEIGHT;
 }
 
@@ -250,7 +250,7 @@ export function nextPinnedMediaZIndex(cards: Pick<StoredPinnedMediaCard, "layout
   return cards.reduce((maxZIndex, card) => Math.max(maxZIndex, normalizeZIndex(card.layout.zIndex)), 0) + 1;
 }
 
-function cardTotalHeight(layout: Pick<PinnedMediaLayout, "height">) {
+function cardTotalHeight(layout: Pick<PinnedMediaLayout, "height" | "width" | "captionHidden">) {
   return layout.height + pinnedMediaChromeHeight(layout);
 }
 
