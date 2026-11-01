@@ -101,8 +101,6 @@ describe("PinnedMediaCard", () => {
         onBringToFront={vi.fn()}
         onMediaSizeChange={vi.fn()}
         onRemove={vi.fn()}
-        onDock={vi.fn()}
-        onToggleCaption={vi.fn()}
         onStartInteraction={vi.fn()}
         onToggleMapLink={vi.fn()}
       />,
@@ -111,6 +109,8 @@ describe("PinnedMediaCard", () => {
     expect(markup).toContain('class="pinned-media-card-map-link"');
     expect(markup).toContain('aria-pressed="false"');
     expect(markup).toContain('aria-label="Pokaż miejsce na mapie: Miejsce"');
+    expect(markup).toContain('aria-label="Odepnij medium"');
+    expect(markup).not.toContain("Odłóż zdjęcie do szuflady");
   });
 
   it("collapses the description for small cards", () => {
@@ -123,14 +123,13 @@ describe("PinnedMediaCard", () => {
         onBringToFront={vi.fn()}
         onMediaSizeChange={vi.fn()}
         onRemove={vi.fn()}
-        onDock={vi.fn()}
-        onToggleCaption={vi.fn()}
         onStartInteraction={vi.fn()}
         onToggleMapLink={vi.fn()}
       />,
     );
     expect(markup).toContain("is-copy-hidden");
-    expect(markup).toContain("Pokaż opis przypiętego zdjęcia");
+    expect(markup).not.toContain("pinned-media-card-caption-toggle");
+    expect(markup).not.toContain("pinned-media-card-dock");
     expect(markup).not.toContain("pinned-media-card-copy");
   });
 
@@ -144,8 +143,6 @@ describe("PinnedMediaCard", () => {
         onBringToFront={vi.fn()}
         onMediaSizeChange={vi.fn()}
         onRemove={vi.fn()}
-        onDock={vi.fn()}
-        onToggleCaption={vi.fn()}
         onStartInteraction={vi.fn()}
         onToggleMapLink={vi.fn()}
       />,

@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import type { MapMarkerMode } from "../map/mapMarkerMode";
 
 export type AppSection = "map" | "admin" | "guides" | "places";
 
@@ -16,6 +17,11 @@ export type AppShellMapLayerControls = {
     label: string;
   }>;
   onToggle: (layerId: string) => void;
+};
+
+export type AppShellMapMarkerModeControl = {
+  mode: MapMarkerMode;
+  onChange: (mode: MapMarkerMode) => void;
 };
 
 export type AppShellMapPinnedMediaControl = {

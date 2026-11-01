@@ -4,7 +4,6 @@ import type { Category, PlaceMapItem, PlaceMapPhoto, PlaceMapPreviewItem } from 
 import {
   bringPinnedMediaCardToFront,
   resolvePinnedMediaCards,
-  updatePinnedMediaCaption,
   updatePinnedMediaDock,
   upsertPinnedMediaCard,
 } from "./pinnedMediaBoardCards";
@@ -145,7 +144,7 @@ describe("pinned media board helpers", () => {
   it("persists docked state and manual description mode without dropping existing pins", () => {
     const storage = new MemoryStorage();
     const first = updatePinnedMediaDock([storedCard(1)], "place-1:photo:photo-1", true);
-    const cards = updatePinnedMediaCaption(first, "place-1:photo:photo-1");
+    const cards = first.map((item) => ({ ...item, layout: { ...item.layout, captionHidden: true } }));
     writePinnedMediaCards(cards, storage);
     expect(readPinnedMediaCards(storage)).toEqual(cards);
     expect(cards[0].docked).toBe(true);

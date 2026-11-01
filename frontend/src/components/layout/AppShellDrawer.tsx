@@ -1,5 +1,5 @@
 import { APP_NAME } from "../../config/app";
-import { CircleHelp } from "lucide-react";
+import { CircleHelp, Images, MapPin } from "lucide-react";
 import { DrawerAdminAction } from "./AppShellAdminAction";
 import { DrawerMapAudioControl } from "./AppShellMapAudioControl";
 import { DrawerMapCategoryControls } from "./AppShellMapCategoryControls";
@@ -11,6 +11,7 @@ import type {
   AppShellMapAudioControl,
   AppShellMapCategoryControls,
   AppShellMapLayerControls,
+  AppShellMapMarkerModeControl,
   AppShellMapPinnedMediaControl,
   AppShellPrimaryItem,
 } from "./appShellTypes";
@@ -22,6 +23,7 @@ type Props = {
   mapAudioControl?: AppShellMapAudioControl;
   mapCategoryControls?: AppShellMapCategoryControls;
   mapLayerControls?: AppShellMapLayerControls;
+  mapMarkerModeControl?: AppShellMapMarkerModeControl;
   mapPinnedMediaControl?: AppShellMapPinnedMediaControl;
   primaryItems: AppShellPrimaryItem[];
   onAdminAction: () => void;
@@ -36,6 +38,7 @@ export function AppShellDrawer({
   mapAudioControl,
   mapCategoryControls,
   mapLayerControls,
+  mapMarkerModeControl,
   mapPinnedMediaControl,
   onAdminAction,
   onStartTour,
@@ -76,6 +79,34 @@ export function AppShellDrawer({
 
       {isMapSection && mapLayerControls ? (
         <DrawerMapLayerControls controls={mapLayerControls} onClose={onClose} />
+      ) : null}
+      {isMapSection && mapMarkerModeControl ? (
+        <nav className="drawer-section drawer-section--layers" aria-label="Widok mapy">
+          <button
+            className={mapMarkerModeControl.mode === "photos" ? "drawer-item is-active" : "drawer-item"}
+            type="button"
+            aria-pressed={mapMarkerModeControl.mode === "photos"}
+            onClick={() => {
+              mapMarkerModeControl.onChange("photos");
+              onClose();
+            }}
+          >
+            <Images aria-hidden="true" size={24} />
+            <span>Miniatury</span>
+          </button>
+          <button
+            className={mapMarkerModeControl.mode === "pins" ? "drawer-item is-active" : "drawer-item"}
+            type="button"
+            aria-pressed={mapMarkerModeControl.mode === "pins"}
+            onClick={() => {
+              mapMarkerModeControl.onChange("pins");
+              onClose();
+            }}
+          >
+            <MapPin aria-hidden="true" size={24} />
+            <span>Pinezki</span>
+          </button>
+        </nav>
       ) : null}
       {isMapSection && mapPinnedMediaControl ? (
         <DrawerPinnedMediaControl control={mapPinnedMediaControl} onClose={onClose} />

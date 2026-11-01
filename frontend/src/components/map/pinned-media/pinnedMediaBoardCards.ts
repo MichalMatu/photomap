@@ -93,12 +93,6 @@ export function updatePinnedMediaDock(
   return cards.map((card) => (card.id === id ? { ...card, docked } : card));
 }
 
-export function updatePinnedMediaCaption(cards: StoredPinnedMediaCard[], id: string): StoredPinnedMediaCard[] {
-  return cards.map((card) =>
-    card.id === id ? { ...card, layout: { ...card.layout, captionHidden: !card.layout.captionHidden } } : card,
-  );
-}
-
 export function updatePinnedMediaLayout(
   cards: StoredPinnedMediaCard[],
   id: string,

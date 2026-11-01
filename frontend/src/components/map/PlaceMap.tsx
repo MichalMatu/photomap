@@ -1,5 +1,4 @@
 import "leaflet/dist/leaflet.css";
-import { Images, MapPin } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, useMap, useMapEvents, ZoomControl } from "react-leaflet";
 
@@ -22,7 +21,6 @@ type Props = {
   mapFallback: AppConfigMap;
   markerPlaces: PlaceMapItem[];
   markerMode: MapMarkerMode;
-  onMarkerModeChange: (mode: MapMarkerMode) => void;
   onPinnedMediaVisibleChange: (isVisible: boolean) => void;
   pinnedMediaPlaces: PlaceMapItem[];
   placeCustomFieldDefinitions: PlaceCustomFieldDefinition[];
@@ -141,7 +139,6 @@ export function PlaceMap({
   mapFallback,
   markerPlaces,
   markerMode,
-  onMarkerModeChange,
   onPinnedMediaVisibleChange,
   pinnedMediaPlaces,
   placeCustomFieldDefinitions,
@@ -149,18 +146,8 @@ export function PlaceMap({
 }: Props) {
   const center: [number, number] = [mapFallback.fallback_center.lat, mapFallback.fallback_center.lon];
   const mapStartKey = `${mapFallback.fallback_center.lat}:${mapFallback.fallback_center.lon}:${mapFallback.fallback_zoom}`;
-  const {
-    cards,
-    notice,
-    onBringToFront,
-    onDock,
-    onUndock,
-    onToggleCaption,
-    onLayoutChange,
-    onMediaSizeChange,
-    onRemove,
-    pinMedia,
-  } = usePinnedMediaBoard(pinnedMediaPlaces);
+  const { cards, notice, onBringToFront, onDock, onUndock, onLayoutChange, onMediaSizeChange, onRemove, pinMedia } =
+    usePinnedMediaBoard(pinnedMediaPlaces);
   const [isPinnedDrawerOpen, setIsPinnedDrawerOpen] = useState(false);
   const [projectPlacePoint, setProjectPlacePoint] = useState<PinnedMediaPlaceProjector | null>(null);
   const handleProjectorChange = useCallback((projector: PinnedMediaPlaceProjector | null) => {
@@ -210,16 +197,6 @@ export function PlaceMap({
           onPinMedia={handlePinMedia}
         />
       </MapContainer>
-      <button
-        className="map-marker-mode-toggle ui-button ui-button--secondary"
-        type="button"
-        aria-label={markerMode === "photos" ? "Pokaż pinezki na mapie" : "Pokaż miniatury na mapie"}
-        title={markerMode === "photos" ? "Pinezki" : "Miniatury"}
-        onClick={() => onMarkerModeChange(markerMode === "photos" ? "pins" : "photos")}
-      >
-        {markerMode === "photos" ? <MapPin aria-hidden="true" size={18} /> : <Images aria-hidden="true" size={18} />}
-        <span>{markerMode === "photos" ? "Pinezki" : "Miniatury"}</span>
-      </button>
       {showPinnedMedia ? (
         <PinnedMediaBoard
           cards={cards}
@@ -227,7 +204,6 @@ export function PlaceMap({
           onBringToFront={onBringToFront}
           onDock={onDock}
           onUndock={onUndock}
-          onToggleCaption={onToggleCaption}
           isDrawerOpen={isPinnedDrawerOpen}
           onDrawerOpenChange={setIsPinnedDrawerOpen}
           onLayoutChange={onLayoutChange}

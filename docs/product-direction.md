@@ -156,3 +156,6 @@ To lista rzeczy odlozonych. Nie wybieramy ich jako kolejnych prac bez osobnej de
 - pelne galerie albo pelne pamiatki w pierwszym renderze mapy.
 
 Nowa praca wchodzi tylko wtedy, gdy poprawia czytelnosc mapy, pokazanie miejsca albo utrzymanie danych.
+
+- Widok miniatury/pinezki jest wybierany w menu bocznym; miniatury pozostają domyślne.
+- Przypięte karty pokazują wyłącznie dwie symetryczne górne akcje. Opis chowa się automatycznie przy zmniejszaniu; do szuflady przenosi się przez przeciągnięcie.

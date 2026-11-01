@@ -40,7 +40,6 @@ type PinnedMediaBoardProps = {
   onBringToFront: (id: string) => void;
   onDock: (id: string) => void;
   onUndock: (id: string) => void;
-  onToggleCaption: (id: string) => void;
   onLayoutChange: (id: string, layout: PinnedMediaLayout) => void;
   onMediaSizeChange: (id: string, naturalSize: PinnedMediaNaturalSize) => void;
   onRemove: (id: string) => void;
@@ -63,7 +62,6 @@ export function PinnedMediaBoard({
   onBringToFront,
   onDock,
   onUndock,
-  onToggleCaption,
   onLayoutChange,
   onMediaSizeChange,
   onRemove,
@@ -250,11 +248,6 @@ export function PinnedMediaBoard({
           onBringToFront={onBringToFront}
           onMediaSizeChange={onMediaSizeChange}
           onRemove={onRemove}
-          onDock={(id) => {
-            onDock(id);
-            onDrawerOpenChange(true);
-          }}
-          onToggleCaption={onToggleCaption}
           onStartInteraction={startInteraction}
           onToggleMapLink={toggleMapLink}
         />

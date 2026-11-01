@@ -12,6 +12,7 @@ import type {
   AppShellMapAudioControl,
   AppShellMapCategoryControls,
   AppShellMapLayerControls,
+  AppShellMapMarkerModeControl,
   AppShellMapPinnedMediaControl,
 } from "./appShellTypes";
 
@@ -23,6 +24,7 @@ type Props = {
   tourShowDrawer?: boolean;
   mapAudioControl?: AppShellMapAudioControl;
   mapLayerControls?: AppShellMapLayerControls;
+  mapMarkerModeControl?: AppShellMapMarkerModeControl;
   mapPinnedMediaControl?: AppShellMapPinnedMediaControl;
   mapCategoryControls?: AppShellMapCategoryControls;
 };
@@ -42,6 +44,7 @@ export function AppShell({
   mapAudioControl,
   mapCategoryControls,
   mapLayerControls,
+  mapMarkerModeControl,
   mapPinnedMediaControl,
 }: Props) {
   const [navigationState, setNavigationState] = useState<AppShellNavigationState>("collapsed");
@@ -120,11 +123,21 @@ export function AppShell({
         mapAudioControl={mapAudioControl}
         mapCategoryControls={mapCategoryControls}
         mapLayerControls={mapLayerControls}
+        mapMarkerModeControl={mapMarkerModeControl}
         mapPinnedMediaControl={mapPinnedMediaControl}
         primaryItems={primaryItems}
-        onStartTour={onStartTour ? () => { closeNavigation(); onStartTour(); } : undefined}
+        onStartTour={
+          onStartTour
+            ? () => {
+                closeNavigation();
+                onStartTour();
+              }
+            : undefined
+        }
         onAdminAction={handleAdminAction}
-        onClose={() => { if (!tourShowDrawer) closeNavigation(); }}
+        onClose={() => {
+          if (!tourShowDrawer) closeNavigation();
+        }}
       />
 
       <div className="app-content">{children}</div>

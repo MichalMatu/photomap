@@ -175,6 +175,7 @@ export function PublicMapPage() {
             handleTourEvent("layer-toggled");
           },
         }}
+        mapMarkerModeControl={{ mode: markerMode, onChange: setMarkerMode }}
         mapPinnedMediaControl={{
           active: isPinnedMediaVisible,
           label: "Przypięte",
@@ -226,7 +227,6 @@ export function PublicMapPage() {
                 mapFallback={mapFallback}
                 markerPlaces={markerPlaces}
                 markerMode={markerMode}
-                onMarkerModeChange={setMarkerMode}
                 onPinnedMediaVisibleChange={setIsPinnedMediaVisible}
                 pinnedMediaPlaces={mapPlaces}
                 placeCustomFieldDefinitions={placeCustomFieldDefinitions}
