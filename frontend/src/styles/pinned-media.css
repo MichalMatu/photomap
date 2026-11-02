@@ -402,7 +402,7 @@
 .pinned-media-drawer-item img {
   border-radius: var(--radius-control);
   display: block;
-  height: min(210px, 24dvh);
+  height: min(260px, 32dvh);
   object-fit: cover;
   pointer-events: none;
   width: 100%;
