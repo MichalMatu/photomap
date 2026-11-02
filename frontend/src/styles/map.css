@@ -1,5 +1,5 @@
 .map-frame {
-  --pinned-drawer-height: min(196px, 32dvh);
+  --pinned-drawer-height: min(340px, 42dvh);
   height: 100vh;
   height: 100dvh;
   min-height: 100vh;
@@ -814,8 +814,14 @@
   z-index: 1100;
 }
 
+@media (max-width: 600px) {
+  .map-frame {
+    --pinned-drawer-height: min(300px, 38dvh);
+  }
+}
+
 .map-attribution--with-drawer {
-  bottom: 62px;
+  bottom: 92px;
 }
 
 .map-attribution--drawer-open {

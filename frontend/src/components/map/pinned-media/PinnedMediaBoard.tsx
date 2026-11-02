@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import type { PlaceMapItem } from "../../../api/types";
+import type { MapDiscoveryItem } from "../discoveryRecommendations";
 import { isInteractiveDragTarget } from "../../ui/useDraggableWindow";
 import { PinnedMediaCard } from "./PinnedMediaCard";
 import { PinnedMediaDrawer } from "./PinnedMediaDrawer";
@@ -34,6 +35,8 @@ export type PinnedMediaPlaceProjector = (place: Pick<PlaceMapItem, "lat" | "lon"
 
 type PinnedMediaBoardProps = {
   cards: ResolvedPinnedMediaCard[];
+  recommendedItems: MapDiscoveryItem[];
+  onSelectRecommendedPlace: (placeId: string) => void;
   notice: string | null;
   isDrawerOpen: boolean;
   onDrawerOpenChange: (isOpen: boolean) => void;
@@ -53,10 +56,13 @@ type UndockInteraction = {
   startX: number;
   startY: number;
   moved: boolean;
+  captureTarget: HTMLElement;
 };
 
 export function PinnedMediaBoard({
   cards,
+  recommendedItems,
+  onSelectRecommendedPlace,
   notice,
   isDrawerOpen,
   onDrawerOpenChange,
@@ -82,6 +88,10 @@ export function PinnedMediaBoard({
   const [isDropActive, setIsDropActive] = useState(false);
   const floatingCards = cards.filter((card) => !card.docked);
   const dockedCards = cards.filter((card) => card.docked);
+  const pinnedItemKeys = new Set(cards.map((card) => `${card.place.id}:${card.item.kind}:${card.item.id}`));
+  const availableRecommendations = recommendedItems.filter(
+    ({ place, item }) => !pinnedItemKeys.has(`${place.id}:${item.kind}:${item.id}`),
+  );
 
   const measureCardRects = useCallback(() => {
     const nextRects = measurePinnedMediaCardRects(
@@ -107,11 +117,7 @@ export function PinnedMediaBoard({
   }, [floatingCards, linkedCardId]);
 
   useEffect(() => {
-    if (dockedCards.length === 0 && isDrawerOpen) onDrawerOpenChange(false);
-  }, [dockedCards.length, isDrawerOpen, onDrawerOpenChange]);
-
-  useEffect(() => {
-    if (!isDrawerOpen || dockedCards.length === 0) return;
+    if (!isDrawerOpen) return;
     const closeOnOutsidePointer = (event: PointerEvent) => {
       if (isDragging || interactionRef.current || undockRef.current) return;
       if (!(event.target instanceof Element)) return;
@@ -120,12 +126,13 @@ export function PinnedMediaBoard({
     };
     document.addEventListener("pointerdown", closeOnOutsidePointer, true);
     return () => document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
-  }, [dockedCards.length, isDragging, isDrawerOpen, onDrawerOpenChange]);
+  }, [isDragging, isDrawerOpen, onDrawerOpenChange]);
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
       const undock = undockRef.current;
       if (undock && undock.pointerId === event.pointerId) {
+        if (event.cancelable) event.preventDefault();
         if (Math.hypot(event.clientX - undock.startX, event.clientY - undock.startY) > 8) {
           undock.moved = true;
           suppressDrawerClickRef.current = true;
@@ -173,6 +180,9 @@ export function PinnedMediaBoard({
       const undock = undockRef.current;
       if (undock && undock.pointerId === event.pointerId) {
         undockRef.current = null;
+        if (undock.captureTarget.hasPointerCapture(event.pointerId)) {
+          undock.captureTarget.releasePointerCapture(event.pointerId);
+        }
         const bounds = getPinnedMediaBounds();
         const overDrawer = isPinnedMediaDrawerDropTarget(event.clientX, event.clientY, bounds, isDrawerOpen);
         if (undock.moved && !overDrawer) {
@@ -204,13 +214,31 @@ export function PinnedMediaBoard({
       setIsDragging(false);
       setIsDropActive(false);
     };
+    const handlePointerCancel = (event: PointerEvent) => {
+      const undock = undockRef.current;
+      if (undock?.pointerId === event.pointerId) {
+        undockRef.current = null;
+        suppressDrawerClickRef.current = true;
+        if (undock.captureTarget.hasPointerCapture(event.pointerId)) {
+          undock.captureTarget.releasePointerCapture(event.pointerId);
+        }
+        return;
+      }
+      const interaction = interactionRef.current;
+      if (interaction?.pointerId === event.pointerId) {
+        interactionRef.current = null;
+        setActiveCardId(null);
+        setIsDragging(false);
+        setIsDropActive(false);
+      }
+    };
     document.addEventListener("pointermove", handlePointerMove);
     document.addEventListener("pointerup", handlePointerEnd);
-    document.addEventListener("pointercancel", handlePointerEnd);
+    document.addEventListener("pointercancel", handlePointerCancel);
     return () => {
       document.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("pointerup", handlePointerEnd);
-      document.removeEventListener("pointercancel", handlePointerEnd);
+      document.removeEventListener("pointercancel", handlePointerCancel);
     };
   }, [isDrawerOpen, isDragging, onBringToFront, onDock, onDrawerOpenChange, onLayoutChange, onUndock]);
 
@@ -241,8 +269,13 @@ export function PinnedMediaBoard({
   const startUndock = useCallback((card: ResolvedPinnedMediaCard, event: ReactPointerEvent<HTMLElement>) => {
     if (event.button !== 0) return;
     event.stopPropagation();
+    if (event.cancelable) event.preventDefault();
     suppressDrawerClickRef.current = false;
+    // Capturing the pointer keeps the drag alive on Windows when leaving the
+    // horizontally scrollable drawer and prevents native image drag selection.
+    event.currentTarget.setPointerCapture(event.pointerId);
     undockRef.current = {
+      captureTarget: event.currentTarget,
       card,
       pointerId: event.pointerId,
       startX: event.clientX,
@@ -297,9 +330,10 @@ export function PinnedMediaBoard({
           onToggleMapLink={toggleMapLink}
         />
       ))}
-      {dockedCards.length > 0 || isDragging ? (
-        <PinnedMediaDrawer
+      <PinnedMediaDrawer
           cards={dockedCards}
+          recommendedItems={availableRecommendations}
+          onSelectRecommendedPlace={onSelectRecommendedPlace}
           isOpen={isDrawerOpen}
           isDragging={isDragging}
           isDropActive={isDropActive}
@@ -307,7 +341,6 @@ export function PinnedMediaBoard({
           onPreview={previewDockedCard}
           onStartUndock={startUndock}
         />
-      ) : null}
       {notice ? (
         <div className="pinned-media-notice" role="status">
           {notice}

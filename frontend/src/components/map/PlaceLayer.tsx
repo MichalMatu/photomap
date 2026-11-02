@@ -34,6 +34,7 @@ type PlaceLayerProps = {
   markerMode: MapMarkerMode;
   onPinMedia: (request: PinMediaRequest) => boolean;
   pinnedPreview?: { card: ResolvedPinnedMediaCard; target: PlaceVisualTarget } | null;
+  recommendedPlaceRequest?: { placeId: string; serial: number } | null;
   places: PlaceMapItem[];
   placeCustomFieldDefinitions: PlaceCustomFieldDefinition[];
 };
@@ -64,6 +65,7 @@ export function PlaceLayer({
   markerMode,
   onPinMedia,
   pinnedPreview = null,
+  recommendedPlaceRequest = null,
   places,
   placeCustomFieldDefinitions,
 }: PlaceLayerProps) {
@@ -81,6 +83,7 @@ export function PlaceLayer({
   const [isThanksOpen, setIsThanksOpen] = useState(false);
   const lastTourCloseToken = useRef(tourCloseMediaToken);
   const lastTourOverlayToken = useRef(tourCloseOverlayToken);
+  const lastRecommendedSerial = useRef<number | null>(null);
   const zoom = mapViewport.zoom;
   const { prefetchPlaceGallery, prioritizeMediaItem, prioritizePlaceGallery } = usePlaceGalleryPreloadControls();
   const { markerDisplayOffsets, markerPlaces } = useMapMarkerLayout({
@@ -110,6 +113,16 @@ export function PlaceLayer({
     visualDetail,
     fallbackDetailPlace: pinnedPreview?.card.place ?? null,
   });
+
+  useEffect(() => {
+    if (!recommendedPlaceRequest || lastRecommendedSerial.current === recommendedPlaceRequest.serial) return;
+    lastRecommendedSerial.current = recommendedPlaceRequest.serial;
+    const place = places.find((candidate) => candidate.id === recommendedPlaceRequest.placeId);
+    if (place && expandedPlaceId !== place.id) {
+      prioritizePlaceGallery(place);
+      togglePlaceGallery(place);
+    }
+  }, [recommendedPlaceRequest, places, expandedPlaceId, prioritizePlaceGallery, togglePlaceGallery]);
 
   useEffect(() => {
     if (pinnedPreview) {

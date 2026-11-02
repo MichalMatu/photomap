@@ -5,6 +5,8 @@ import { MapContainer, TileLayer, useMap, useMapEvents, ZoomControl } from "reac
 import type { AppConfigMap, PlaceCustomFieldDefinition, PlaceMapItem } from "../../api/types";
 import type { MapTourEvent } from "../tour/mapTourSteps";
 import { DistanceMeasureTool } from "./DistanceMeasureTool";
+import { MapDiscoveryViewport } from "./MapDiscoveryViewport";
+import type { MapDiscoveryItem } from "./discoveryRecommendations";
 import { MapAttribution } from "./MapAttribution";
 import type { PlaceVisualTarget } from "./usePlaceGalleryData";
 import type { ResolvedPinnedMediaCard } from "./pinned-media/pinnedMediaBoardTypes";
@@ -153,8 +155,20 @@ export function PlaceMap({
   const mapStartKey = `${mapFallback.fallback_center.lat}:${mapFallback.fallback_center.lon}:${mapFallback.fallback_zoom}`;
   const { cards, notice, onBringToFront, onDock, onUndock, onLayoutChange, onMediaSizeChange, onRemove, pinMedia } =
     usePinnedMediaBoard(pinnedMediaPlaces);
-  const [isPinnedDrawerOpen, setIsPinnedDrawerOpen] = useState(false);
-  const hasDockedMedia = cards.some((card) => card.docked);
+  const [isPinnedDrawerOpen, setIsPinnedDrawerOpen] = useState(true);
+  const [recommendedItems, setRecommendedItems] = useState<MapDiscoveryItem[]>([]);
+  const [recommendedPlaceRequest, setRecommendedPlaceRequest] = useState<{ placeId: string; serial: number } | null>(
+    null,
+  );
+  const hasDrawerContent = cards.some((card) => card.docked) || recommendedItems.length > 0;
+  const handleDiscoveryChange = useCallback((items: MapDiscoveryItem[]) => {
+    setRecommendedItems((current) =>
+      current.length === items.length &&
+      current.every((entry, index) => entry.place.id === items[index].place.id && entry.item.id === items[index].item.id)
+        ? current
+        : items,
+    );
+  }, []);
   const [pinnedPreview, setPinnedPreview] = useState<{
     card: ResolvedPinnedMediaCard;
     target: PlaceVisualTarget;
@@ -187,7 +201,8 @@ export function PlaceMap({
         zoomSnap={MAP_DISPLAY_CONFIG.mapContainer.zoomSnap}
       >
         <MapSizeUpdater />
-        <MapDrawerInset expanded={showPinnedMedia && isPinnedDrawerOpen && hasDockedMedia} />
+        <MapDiscoveryViewport places={markerPlaces} priority={mapFallback.marker_priority} onItemsChange={handleDiscoveryChange} />
+        <MapDrawerInset expanded={showPinnedMedia && isPinnedDrawerOpen && hasDrawerContent} />
         <MapTrackpadZoom />
         {showPinnedMedia && cards.length > 0 ? (
           <MapProjectionTracker onProjectorChange={handleProjectorChange} />
@@ -211,15 +226,20 @@ export function PlaceMap({
           placeCustomFieldDefinitions={placeCustomFieldDefinitions}
           onPinMedia={handlePinMedia}
           pinnedPreview={pinnedPreview}
+          recommendedPlaceRequest={recommendedPlaceRequest}
         />
       </MapContainer>
       <MapAttribution
-        hasPinnedDrawer={showPinnedMedia && hasDockedMedia}
-        isPinnedDrawerOpen={showPinnedMedia && isPinnedDrawerOpen && hasDockedMedia}
+        hasPinnedDrawer={showPinnedMedia}
+        isPinnedDrawerOpen={showPinnedMedia && isPinnedDrawerOpen && hasDrawerContent}
       />
       {showPinnedMedia ? (
         <PinnedMediaBoard
           cards={cards}
+          recommendedItems={recommendedItems}
+          onSelectRecommendedPlace={(placeId) =>
+            setRecommendedPlaceRequest((current) => ({ placeId, serial: (current?.serial ?? 0) + 1 }))
+          }
           notice={notice}
           onBringToFront={onBringToFront}
           onDock={onDock}

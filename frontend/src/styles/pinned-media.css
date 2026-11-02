@@ -281,24 +281,24 @@
   bottom: 0;
   box-shadow: var(--elevation-floating);
   color: var(--content-primary);
-  height: var(--pinned-drawer-height, 196px);
+  height: var(--pinned-drawer-height, 340px);
   left: 0;
   overflow: hidden;
   pointer-events: auto;
   position: fixed;
-  transform: translateY(calc(100% - 54px));
+  transform: translateY(calc(100% - 80px));
   transition: transform var(--motion-duration-regular) var(--motion-ease-emphasised);
   width: 100%;
   z-index: 600;
 }
 .pinned-media-drawer.is-peeking {
-  transform: translateY(calc(100% - 80px));
+  transform: translateY(calc(100% - 110px));
 }
 .pinned-media-drawer.is-drop-active {
   box-shadow:
     var(--elevation-spotlight),
     inset 0 0 0 2px var(--accent-primary);
-  transform: translateY(calc(100% - 112px));
+  transform: translateY(calc(100% - 140px));
 }
 .pinned-media-drawer.is-open {
   transform: translateY(0);
@@ -310,7 +310,7 @@
   display: flex;
   font-size: var(--text-caption);
   gap: var(--space-2);
-  height: 54px;
+  height: 80px;
   justify-content: center;
   min-height: 0;
   padding: 0 var(--space-3);
@@ -335,18 +335,18 @@
 }
 .pinned-media-drawer-handle-thumbs img {
   border-radius: var(--radius-control);
-  height: 40px;
+  height: 56px;
   object-fit: cover;
-  width: 54px;
+  width: 76px;
 }
 .pinned-media-drawer.is-open .pinned-media-drawer-handle {
-  height: 24px;
+  height: 30px;
 }
 .pinned-media-drawer.is-open .pinned-media-drawer-content {
-  height: calc(100% - 24px);
+  height: calc(100% - 30px);
 }
 .pinned-media-drawer-content {
-  height: calc(100% - 54px);
+  height: calc(100% - 80px);
   overflow-x: auto;
   overflow-y: hidden;
   padding: var(--space-2) var(--space-3);
@@ -369,13 +369,31 @@
   border-radius: var(--radius-control);
   color: var(--content-primary);
   display: grid;
-  flex: 0 0 112px;
+  flex: 0 0 clamp(170px, 18vw, 230px);
   font-size: var(--text-micro);
   gap: var(--space-1);
   min-height: 0;
   padding: 0;
   text-align: left;
   touch-action: none;
+  user-select: none;
+}
+.pinned-media-drawer-item--recommended {
+  touch-action: pan-x;
+}
+.pinned-media-drawer-item--pinned {
+  position: relative;
+}
+.pinned-media-drawer-item--pinned::after {
+  background: var(--surface-panel);
+  border-radius: var(--radius-control);
+  color: var(--content-primary);
+  content: "Przypięte";
+  font-size: var(--text-micro);
+  padding: var(--space-1);
+  position: absolute;
+  right: var(--space-2);
+  top: var(--space-2);
 }
 .pinned-media-drawer-item:focus-visible {
   outline: 2px solid var(--accent-primary);
@@ -384,10 +402,21 @@
 .pinned-media-drawer-item img {
   border-radius: var(--radius-control);
   display: block;
-  height: 96px;
+  height: min(210px, 24dvh);
   object-fit: cover;
   pointer-events: none;
   width: 100%;
+}
+@media (max-width: 600px) {
+  .pinned-media-drawer {
+    height: min(300px, 38dvh);
+  }
+  .pinned-media-drawer-item {
+    flex-basis: 152px;
+  }
+  .pinned-media-drawer-item img {
+    height: 126px;
+  }
 }
 .pinned-media-drawer-item span {
   overflow: hidden;

@@ -32,9 +32,10 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   await expect(card).toHaveCount(1);
   const attribution = page.getByTestId("map-attribution");
   const drawer = page.getByTestId("pinned-media-drawer");
-  // Empty drawer is never visible: only an active drag reveals the drop zone.
-  await expect(drawer).toHaveCount(0);
-  await expect(attribution).not.toHaveClass(/map-attribution--with-drawer/);
+  // The discovery drawer stays visible even before photos are docked.
+  await expect(drawer).toBeVisible();
+  await expect(drawer.getByRole("button", { name: `Pokaż na mapie: ${places[0].title}` })).toBeVisible();
+  await expect(attribution).toHaveClass(/map-attribution--with-drawer/);
   await expect(card.locator(".pinned-media-card-caption-toggle")).toHaveCount(0);
   await expect(card.locator(".pinned-media-card-dock")).toHaveCount(0);
   await expect(card.locator(".pinned-media-card-map-link")).toHaveCount(1);
@@ -104,7 +105,7 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   await expect(drawer).not.toHaveClass(/is-open/);
   await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(1);
   await page.reload();
-  await page.getByRole("button", { name: "Rozwiń szufladę zdjęć" }).click();
+  await expect(drawer).toHaveClass(/is-open/);
   await page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` }).click();
   await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
   await expect(page.getByTestId("pinned-media-card")).toHaveCount(0);
@@ -119,7 +120,7 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   await page.mouse.move(200, 300, { steps: 12 });
   await page.mouse.up();
   await expect(page.getByTestId("pinned-media-card")).toHaveCount(1);
-  await expect(page.getByTestId("pinned-media-drawer")).toHaveCount(0);
+  await expect(page.getByTestId("pinned-media-drawer")).toBeVisible();
   await expect(page.getByRole("dialog", { name: places[0].title })).toHaveCount(0);
   await page.getByTestId("pinned-media-card").click({ position: { x: 60, y: 55 } });
   await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
