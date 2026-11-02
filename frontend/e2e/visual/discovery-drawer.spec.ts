@@ -19,6 +19,7 @@ test("desktop discovery drawer renders map recommendations and opens the existin
   expect(bounds.height).toBeGreaterThanOrEqual(300);
   expect(bounds.y + bounds.height).toBeLessThanOrEqual(801);
   await expect(page.locator(".place-map")).toHaveClass(/place-map--drawer-open/);
+  await expect(page.getByTestId("map-loading-screen")).toHaveCount(0, { timeout: 15_000 });
   await page.screenshot({ path: testInfo.outputPath("desktop-discovery-expanded.png"), animations: "disabled" });
 
   await drawer.getByRole("button", { name: `Pokaż na mapie: ${places[0].title}` }).click();
