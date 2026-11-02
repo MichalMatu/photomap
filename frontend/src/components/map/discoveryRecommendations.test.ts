@@ -8,6 +8,23 @@ const priority: AppConfigMapMarkerPriority = MAP_DISPLAY_CONFIG.fallback.emptyCo
 function makePlace(id: string, weight: number, hasPhoto = true): PlaceMapItem {
   return {
     id,
+    slug: id,
+    title: id,
+    city_id: "city-1",
+    description: null,
+    category_ids: [],
+    categories: [],
+    custom_fields: {},
+    city: {
+      default_zoom: 13,
+      id: "city-1",
+      lat: 51.1,
+      lon: 17.03,
+      name: "Wrocław",
+      region: "Dolnośląskie",
+      sort_order: 1,
+      status: "active",
+    },
     weight,
     photo_count: hasPhoto ? 1 : 0,
     memory_count: 0,
