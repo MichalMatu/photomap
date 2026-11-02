@@ -4,7 +4,7 @@ import { places, rynekSide } from "../fixtures/visualData";
 import { clickMapMarker } from "../support/mapInteractions";
 import { mockSharedApi } from "../support/visualApi";
 
-test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
+test("mobile pin mode and bottom drawer survive reload", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await mockSharedApi(page);
   await page.goto("/");
@@ -36,6 +36,7 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   await expect(drawer).toBeVisible();
   await expect(drawer.getByRole("button", { name: `Pokaż na mapie: ${places[0].title}` })).toBeVisible();
   await expect(attribution).toHaveClass(/map-attribution--with-drawer/);
+  await page.screenshot({ path: testInfo.outputPath("mobile-discovery-with-floating-photo.png"), animations: "disabled" });
   await expect(card.locator(".pinned-media-card-caption-toggle")).toHaveCount(0);
   await expect(card.locator(".pinned-media-card-dock")).toHaveCount(0);
   await expect(card.locator(".pinned-media-card-map-link")).toHaveCount(1);
@@ -51,6 +52,10 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   await expect(page.getByTestId("pinned-media-card")).toHaveCount(0);
   await expect(attribution).toHaveClass(/map-attribution--with-drawer/);
   await expect(page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` })).toBeVisible();
+  await expect(drawer.locator(".pinned-media-drawer-item--pinned")).toHaveCount(1);
+  await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(2);
+  await expect(drawer.locator(".pinned-media-drawer-item").first()).toHaveClass(/pinned-media-drawer-item--pinned/);
+  await page.screenshot({ path: testInfo.outputPath("mobile-discovery-expanded-with-pinned-first.png"), animations: "disabled" });
   await expect(page.locator(".place-map")).toHaveClass(/place-map--drawer-open/);
   await expect(attribution).toHaveClass(/map-attribution--drawer-open/);
   const expandedCredit = await attribution.boundingBox();
@@ -80,7 +85,7 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   // Collapsed drawer shows thumbnails only, with no header text or arrow.
   await drawer.getByRole("button", { name: "Zwiń szufladę zdjęć" }).click();
   await expect(drawer).not.toHaveClass(/is-open/);
-  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(1);
+  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(3);
   const collapsedThumb = drawer.locator(".pinned-media-drawer-handle-thumbs img").first();
   const thumbBox = await collapsedThumb.boundingBox();
   const handleBox = await drawer.locator(".pinned-media-drawer-handle").boundingBox();
@@ -97,13 +102,14 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
       return collapsedDrawer.y - (collapsedCredit.y + collapsedCredit.height);
     })
     .toBeGreaterThanOrEqual(4);
+  await page.screenshot({ path: testInfo.outputPath("mobile-discovery-collapsed.png"), animations: "disabled" });
   await expect(drawer.locator(".pinned-media-drawer-handle svg")).toHaveCount(0);
   await expect(drawer.locator(".pinned-media-drawer-handle")).not.toContainText("Przypięte");
   await drawer.getByRole("button", { name: "Rozwiń szufladę zdjęć" }).click();
   await expect(drawer).toHaveClass(/is-open/);
   await page.locator(".place-map").click({ position: { x: 25, y: 320 }, force: true });
   await expect(drawer).not.toHaveClass(/is-open/);
-  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(1);
+  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(3);
   await page.reload();
   await expect(drawer).toHaveClass(/is-open/);
   await page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` }).click();
@@ -120,7 +126,9 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }) => {
   await page.mouse.move(200, 300, { steps: 12 });
   await page.mouse.up();
   await expect(page.getByTestId("pinned-media-card")).toHaveCount(1);
+  await expect(drawer.locator(".pinned-media-drawer-item--pinned")).toHaveCount(0);
   await expect(page.getByTestId("pinned-media-drawer")).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("mobile-discovery-after-undock.png"), animations: "disabled" });
   await expect(page.getByRole("dialog", { name: places[0].title })).toHaveCount(0);
   await page.getByTestId("pinned-media-card").click({ position: { x: 60, y: 55 } });
   await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
