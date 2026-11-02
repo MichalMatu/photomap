@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-loader-format-diff-20261101-v1",
+  "task_digest": "76e36ccab98ca896077db685fa215220d1eebc83630493a092d27157e6c9795a",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T15:17:42.226721+00:00",
+  "attempt_id": "b607b81883fbdafad4f18502",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 30076,
+  "updated_at": "2026-11-01T15:17:42.541396+00:00",
+  "pid": 30076
+}

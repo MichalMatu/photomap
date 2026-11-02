@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "72b65f5e830e1ea587b1f9dc",
+  "command_timeout": 1250,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 847,
+      "command": "set -eu\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/prod-loader-artwork-pr65-20261101\nKEY=/Users/michal/.ssh/id_ed25519\nPI=michal@192.168.0.23\nREMOTE=/home/michal/src/PhotoMaps/frontend/dist\nINDEX_SHA=81a61c28810e1acd90a69056b87775d261bbd120cc6587fb6f8c3fee6cc1b4fa\ntest \"$(git -C \"$TREE\" rev-parse HEAD)\" = deaa562cdeaffff0b14beafa2a2bd1a128bf38fe\ntest \"$(shasum -a 256 \"$TREE/frontend/dist/index.html\" | awk '{print $1}')\" = \"$INDEX_SHA\"\ntest -f \"$TREE/frontend/dist/assets/public-map-Bh9Dah7-.js\"\ntest -f \"$TREE/frontend/dist/assets/index-WJR2wAcC.css\"\nexport RSYNC_RSH=\"ssh -i $KEY -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8\"\nrsync -az --exclude=index.html \"$TREE/frontend/dist/\" \"$PI:$REMOTE/\"\nrsync -az \"$TREE/frontend/dist/index.html\" \"$PI:$REMOTE/index.html.next\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 \"$PI\" '\nset -eu\ncd /home/michal/src/PhotoMaps\nBACKUP=.dev/deploy/2026-11-01-loader-artwork-pr65-deaa562\ntest \"$(git branch --show-current)\" = main\ntest \"$(git rev-parse HEAD)\" = deaa562cdeaffff0b14beafa2a2bd1a128bf38fe\ntest -z \"$(git status --porcelain)\"\ntest -s \"$BACKUP/dist-before/index.html\"\ntest -s \"$BACKUP/app-before.db\"\ntest \"$(cat \"$BACKUP/backend-pid-before\")\" = 2765142\ntest \"$(cat \"$BACKUP/tunnel-pid-before\")\" = 222848\ntest -f frontend/dist/assets/public-map-Bh9Dah7-.js\ntest -f frontend/dist/assets/index-WJR2wAcC.css\nsha256sum frontend/dist/index.html.next | grep -q 81a61c28810e1acd90a69056b87775d261bbd120cc6587fb6f8c3fee6cc1b4fa\nsystemctl is-active --quiet photomap.service\nsystemctl is-active --quiet cloudflared.service\ntest \"$(systemctl show photomap.service -p MainPID --value)\" = 2765142\ntest \"$(systemctl show cloudflared.service -p MainPID --value)\" = 222848\nrollback_index() {\n  echo \"===PRODUCTION_RELEASE_CHECK_FAILED_RESTORING_INDEX===\"\n  cp -p \"$BACKUP/dist-before/index.html\" frontend/dist/index.html.rollback\n  mv -f frontend/dist/index.html.rollback frontend/dist/index.html\n}\nmv -f frontend/dist/index.html.next frontend/dist/index.html\nif ! sha256sum frontend/dist/index.html | grep -q 81a61c28810e1acd90a69056b87775d261bbd120cc6587fb6f8c3fee6cc1b4fa; then rollback_index; exit 1; fi\nfor ENDPOINT in / /health /api/places/map /assets/public-map-Bh9Dah7-.js /assets/index-WJR2wAcC.css; do\n CODE=$(curl -sS -o /dev/null -w \"%{http_code}\" --max-time 20 \"http://127.0.0.1:8000$ENDPOINT\") || { rollback_index; exit 1; }\n echo \"PI_HTTP $ENDPOINT $CODE\"\n if [ \"$CODE\" != 200 ]; then rollback_index; exit 1; fi\ndone\nif ! systemctl is-active --quiet photomap.service || ! systemctl is-active --quiet cloudflared.service; then rollback_index; exit 1; fi\nif [ \"$(systemctl show photomap.service -p MainPID --value)\" != 2765142 ]; then rollback_index; exit 1; fi\nif [ \"$(systemctl show cloudflared.service -p MainPID --value)\" != 222848 ]; then rollback_index; exit 1; fi\nprintf \"PI_ACTIVE_INDEX_SHA=\"; sha256sum frontend/dist/index.html\nfree -k\necho ===PI_PR65_ATOMIC_FRONTEND_DEPLOY_PASS_NO_RESTART===\n'\nfor ENDPOINT in / /health /api/places/map /assets/public-map-Bh9Dah7-.js /assets/index-WJR2wAcC.css; do\n CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 25 \"https://photomap.pl$ENDPOINT\")\n echo \"PUBLIC_HTTP $ENDPOINT $CODE\"\n test \"$CODE\" = 200\ndone\nfor URL in https://photomap.pl/ 'https://photomap.pl/?release=deaa562'; do\n HTML=$(curl -fsSL -H 'Cache-Control: no-cache' --max-time 25 \"$URL\")\n if printf '%s' \"$HTML\" | grep -Fq /assets/public-map-Bh9Dah7-.js; then\n   echo \"PUBLIC_NEW_ASSET_IN_HTML_PASS URL=$URL\"\n else\n   echo \"PUBLIC_NEW_ASSET_IN_HTML_MISSING URL=$URL\"\n   exit 1\n fi\ndone\necho ===PR65_PUBLIC_PRODUCTION_RELEASE_PASS===\n",
+      "current_rss_mb": 10.66,
+      "elapsed_seconds": 13.517,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 1200,
+      "memory_limited": false,
+      "output": "PI_HTTP / 200\nPI_HTTP /health 200\nPI_HTTP /api/places/map 200\nPI_HTTP /assets/public-map-Bh9Dah7-.js 200\nPI_HTTP /assets/index-WJR2wAcC.css 200\nPI_ACTIVE_INDEX_SHA=81a61c28810e1acd90a69056b87775d261bbd120cc6587fb6f8c3fee6cc1b4fa  frontend/dist/index.html\n               total        used        free      shared  buff/cache   available\nMem:          426136      298716       99116         240       82552      127420\nSwap:         425980      236272      189708\n===PI_PR65_ATOMIC_FRONTEND_DEPLOY_PASS_NO_RESTART===\nPUBLIC_HTTP / 200\nPUBLIC_HTTP /health 200\nPUBLIC_HTTP /api/places/map 200\nPUBLIC_HTTP /assets/public-map-Bh9Dah7-.js 200\nPUBLIC_HTTP /assets/index-WJR2wAcC.css 200\nPUBLIC_NEW_ASSET_IN_HTML_PASS URL=https://photomap.pl/\nPUBLIC_NEW_ASSET_IN_HTML_PASS URL=https://photomap.pl/?release=deaa562\n===PR65_PUBLIC_PRODUCTION_RELEASE_PASS===\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 10.7,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T15:31:17.340990+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.07,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.106,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-pr65-production-activate-20261101-v1",
+  "idle_timeout": 500,
+  "memory_limit_mb": 1200,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 13.517,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T15:31:00.709224+00:00",
+  "status": "done",
+  "task_digest": "09a14daf31313049bc0e6daeb0ee4c78550850ccedb28cfb9c4737733d9d3ace",
+  "task_timeout": 1850,
+  "verification": [],
+  "work_branch": "main"
+}

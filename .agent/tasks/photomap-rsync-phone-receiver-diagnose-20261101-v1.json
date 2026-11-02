@@ -1,0 +1,18 @@
+{
+  "id": "photomap-rsync-phone-receiver-diagnose-20261101-v1",
+  "dedupe_key": "photomap-rsync-phone-receiver-diagnose-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 180,
+  "idle_timeout": 120,
+  "task_timeout": 370,
+  "memory_limit_mb": 500,
+  "commands": [
+    "python3 - <<'PY'\nimport tomllib,subprocess,shlex,json\nfrom pathlib import Path\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nssh=['ssh','-i',str(Path(h['identity_file']).expanduser()),'-p',str(h['port']),'-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=8']\nrsh=' '.join(shlex.quote(a) for a in ssh)\nuser=f\"{h['user']}@{h['host']}\"\nsrc=str(Path.home()/'.cache/photomap-rsync-relay-20261101-v1/data/app.db')\nbase='/data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data/'\nfor label,dest,extra in [\n ('default_absolute',user+':'+base,[]),\n ('explicit_binary',user+':'+base,['--rsync-path=/data/data/com.termux/files/usr/bin/rsync']),\n ('home_relative',user+':Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data/',[])]:\n a=['rsync','-ani','-e',rsh,*extra,src,dest]\n try:p=subprocess.run(a,capture_output=True,text=True,timeout=55);print(json.dumps({'test':label,'exit':p.returncode,'out':p.stdout[-1300:],'err':p.stderr[-1300:]},ensure_ascii=False),flush=True)\n except subprocess.TimeoutExpired:print(json.dumps({'test':label,'error':'timeout'}),flush=True)\nPY"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "allow_write": false,
+  "attempt_id": "790e8cdbda4f4f9c9719175f",
+  "command_timeout": 6900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1802,
+      "command": "python3 - <<'PY'\nimport os,sys,json,hashlib,shlex,subprocess,time,tomllib\nfrom pathlib import Path\nROOT=Path.home()/'.cache/photomap-rsync-relay-20261101-v1'\nassert ROOT.is_dir() and not ROOT.is_symlink()\nMEDIA=ROOT/'storage'\nPHONE_BASE='/data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1'\ncfg=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']\nh=cfg['termux-phone']\nkey=Path(h['identity_file']).expanduser()\nssh=['ssh','-i',str(key),'-p',str(h['port']),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=9','-o','ConnectionAttempts=1','-o','ServerAliveInterval=30','-o','ServerAliveCountMax=5',str(h['user'])+'@'+str(h['host'])]\nbase_preflight=r'''set -eu\nD=\"$HOME/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1\"\ntest -d \"$D\"\ntest -f \"$D/data/app.db\"\ntest ! -L \"$D\" && test ! -L \"$D/storage\" && test ! -L \"$D/storage/private\" && test ! -L \"$D/storage/public\"\nprintf 'PHONE_STAGE='; du -sk \"$D\" | cut -f1\nprintf 'PHONE_FREE='; df -h \"$HOME\" | tail -1\nprintf 'PHOTO_HTTP='; curl -fsS --max-time 6 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8010/health\nprintf 'ILESTOI_HTTP='; curl -fsS --max-time 6 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8001/api/health/ready\n'''\np=subprocess.run(ssh+['bash -c '+shlex.quote(base_preflight)],text=True,capture_output=True,timeout=65)\nprint('PREFLIGHT='+json.dumps({'rc':p.returncode,'out':p.stdout,'err':p.stderr[-600:]},ensure_ascii=False),flush=True)\nassert p.returncode==0 and 'PHOTO_HTTP=200' in p.stdout and 'ILESTOI_HTTP=200' in p.stdout\nsrc_expected={}\nfor kind in ('private','public'):\n d=MEDIA/kind\n files=[q for q in d.rglob('*') if q.is_file() and not q.is_symlink()]\n assert len(files)==1098,(kind,len(files))\n assert not any(q.is_symlink() for q in d.rglob('*'))\n src_expected[kind]={'count':len(files),'bytes':sum(q.stat().st_size for q in files)}\nprint('SOURCE='+json.dumps(src_expected),flush=True)\ntar_argv=['tar','-C',str(ROOT),'-cf','-','storage/private','storage/public']\nremote=r'''set -eu\nD=\"$HOME/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1\"\ntest -d \"$D/data\" && test -d \"$D/storage/private\" && test -d \"$D/storage/public\"\ncd \"$D\"\ntar -xf -\nprintf 'PHONE_EXTRACT_COMPLETE\\n'\n'''\nenv=dict(os.environ)\nenv['COPYFILE_DISABLE']='1'\nt=time.monotonic()\ntar_proc=subprocess.Popen(tar_argv,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env)\ntry:\n recv=subprocess.run(ssh+['bash -c '+shlex.quote(remote)],stdin=tar_proc.stdout,capture_output=True,text=True,timeout=6200)\nfinally:\n if tar_proc.stdout:tar_proc.stdout.close()\ntar_err=tar_proc.stderr.read().decode(errors='replace')[-900:]\ntar_ret=tar_proc.wait(timeout=60)\nprint('TAR_STREAM='+json.dumps({'elapsed_s':round(time.monotonic()-t,1),'mac_rc':tar_ret,'phone_rc':recv.returncode,'out':recv.stdout[-600:],'err':recv.stderr[-1300:],'tar_err':tar_err},ensure_ascii=False),flush=True)\nassert tar_ret==0 and recv.returncode==0\ncheck_script=r'''set -eu\nD=\"$HOME/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1\"\npython3 - <<'PYREAD'\nimport os,json,hashlib,sqlite3\nfrom pathlib import Path\nd=Path.home()/'Projects/PhotoMap/.dev/termux/import-pi-20261101-v1'\nb=d/'data/app.db'\nassert b.exists()\nwith sqlite3.connect('file:'+str(b)+'?mode=ro',uri=True) as c:\n assert c.execute('pragma integrity_check').fetchone()[0]=='ok'\n assert c.execute('pragma foreign_key_check').fetchall()==[]\nz={}\nfor kind in ('private','public'):\n p=d/'storage'/kind\n files=[f for f in p.rglob('*') if f.is_file() and not f.is_symlink()]\n assert len(files)==1098, (kind,len(files))\n z[kind]={'count':len(files),'bytes':sum(f.stat().st_size for f in files)}\nprint('PHONE_PRECHECK='+json.dumps({'db_sha256':hashlib.sha256(b.read_bytes()).hexdigest(),'media':z}),flush=True)\nPYREAD\nprintf 'PHOTO_HTTP='; curl -fsS --max-time 6 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8010/health\nprintf 'ILESTOI_HTTP='; curl -fsS --max-time 6 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8001/api/health/ready\n'''\nc=subprocess.run(ssh+['bash -c '+shlex.quote(check_script)],capture_output=True,text=True,timeout=210)\nprint('PHONE_PRECHECK_RESULT='+json.dumps({'rc':c.returncode,'out':c.stdout[-2500:],'err':c.stderr[-1000:]},ensure_ascii=False),flush=True)\nassert c.returncode==0 and 'PHOTO_HTTP=200' in c.stdout and 'ILESTOI_HTTP=200' in c.stdout\nobj=json.loads([line.removeprefix('PHONE_PRECHECK=') for line in c.stdout.splitlines() if line.startswith('PHONE_PRECHECK=')][-1])\nassert obj['db_sha256']=='24814f4084ef6989e4e7966d77d9f7cf88f033cd619d8c37eb66516adf3f3ede'\nassert obj['media']==src_expected\nprint('PHOTO_MEDIA_PHONE_STAGED_COUNT_SIZE_PASS',flush=True)\n\nPY",
+      "current_rss_mb": 14.56,
+      "elapsed_seconds": 72.167,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 750,
+      "memory_limited": false,
+      "output": "PREFLIGHT={\"rc\": 0, \"out\": \"PHONE_STAGE=19158\\nPHONE_FREE=/dev/block/dm-55 225G  72G  153G  32% /storage/emulated/0/Android/obb\\nPHOTO_HTTP=200\\nILESTOI_HTTP=200\\n\", \"err\": \"\"}\nSOURCE={\"private\": {\"count\": 1098, \"bytes\": 4084122798}, \"public\": {\"count\": 1098, \"bytes\": 154437872}}\nTAR_STREAM={\"elapsed_s\": 69.5, \"mac_rc\": 1, \"phone_rc\": 255, \"out\": \"\", \"err\": \": Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\nRead from remote host 192.168.0.100: Operation timed out\\nclient_loop: send disconnect: Broken pipe\\n\", \"tar_err\": \"tar: Write error\\n\"}\nTraceback (most recent call last):\n  File \"<stdin>\", line 51, in <module>\nAssertionError\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 98.19,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-01T19:56:58.878618+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.072,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.092,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-tar-phone-media-transfer-20261101-v1",
+  "idle_timeout": 3600,
+  "memory_limit_mb": 750,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 72.167,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T19:55:45.091176+00:00",
+  "status": "failed",
+  "task_digest": "30db2c5ca24146500adf6606220ef8ec0ee5349c2ab7383484cc3dd839d88f1b",
+  "task_timeout": 7050,
+  "verification": [],
+  "work_branch": "main"
+}

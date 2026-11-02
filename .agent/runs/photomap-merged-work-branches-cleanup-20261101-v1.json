@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-merged-work-branches-cleanup-20261101-v1",
+  "task_digest": "d41b4d0201e4d6b391f208805d08df74655d96111b77130ba351475c9587a6d9",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T15:41:25.740239+00:00",
+  "attempt_id": "f9559355ba845f0c4b883c9f",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 57333,
+  "updated_at": "2026-11-01T15:41:25.986817+00:00",
+  "pid": 57333
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-usb-adb-forward-termux-ssh-smoke-20261101-v1",
+  "task_digest": "30845c5da0cd1650eca512abdd62cc1168e951c70c741e77bf059429213e4a0c",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T20:00:13.966657+00:00",
+  "attempt_id": "015e350a7769291eb757c017",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 65111,
+  "updated_at": "2026-11-01T20:00:14.336539+00:00",
+  "pid": 65111
+}

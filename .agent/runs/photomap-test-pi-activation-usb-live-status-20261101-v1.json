@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-test-pi-activation-usb-live-status-20261101-v1",
+  "task_digest": "e464b19d212fb82498612000718627846e93a875aa3719107643369b7cf54ffc",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T20:14:10.244090+00:00",
+  "attempt_id": "79a1e3e047e1b52f553e9b56",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 82653,
+  "updated_at": "2026-11-01T20:14:11.567918+00:00",
+  "pid": 82653
+}

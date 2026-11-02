@@ -1,0 +1,18 @@
+{
+  "id": "photomap-usb-adb-forward-termux-ssh-smoke-20261101-v1",
+  "dedupe_key": "photomap-usb-adb-forward-termux-ssh-smoke-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 250,
+  "idle_timeout": 170,
+  "task_timeout": 430,
+  "memory_limit_mb": 400,
+  "commands": [
+    "python3 - <<'PY'\nimport json,subprocess,tomllib,shlex,os\nfrom pathlib import Path\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nkey=Path(h['identity_file']).expanduser()\nlines=subprocess.run(['adb','devices','-l'],capture_output=True,text=True,timeout=25).stdout.splitlines()[1:]\nusb=[line.split()[0] for line in lines if len(line.split())>1 and line.split()[1]=='device' and ':' not in line.split()[0]]\nassert len(usb)==1\nsid=usb[0]\nport='18122'\nknown=Path.home()/'.cache/photomap-rsync-relay-20261101-v1/adb_usb_known_hosts'\nhostid=f\"[{h['host']}]:{h['port']}\"\nget=subprocess.run(['ssh-keygen','-F',hostid],capture_output=True,text=True,timeout=20)\nprint('KNOWN_HOST_FOUND',get.returncode==0,flush=True)\nentries=[line.split() for line in get.stdout.splitlines() if line and not line.startswith('#')]\nassert entries, 'Termux host SSH key not found in Mac known hosts'\nos.umask(0o077)\nknown.write_text(''.join(f'[127.0.0.1]:{port} {parts[1]} {parts[2]}\\n' for parts in entries if len(parts)>2))\nos.chmod(known,0o600)\nf=subprocess.run(['adb','-s',sid,'forward','tcp:'+port,'tcp:8022'],capture_output=True,text=True,timeout=25)\nprint('USB_FORWARD='+json.dumps({'exit':f.returncode,'out':f.stdout[-100:],'err':f.stderr[-300:]}),flush=True)\nassert f.returncode==0\ntry:\n remote=r'''set -eu\nprintf 'TERMUX_HOME=%s\\n' \"$HOME\"\nprintf 'TERMUX_ID='; id -u\nprintf 'PHOTO_HEALTH='; curl -sS --max-time 7 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8010/health\nprintf 'ILESTOI_HEALTH='; curl -sS --max-time 7 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8001/api/health/ready\nprintf 'IMPORT_STAGE='; du -sk \"$HOME/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1\" 2>/dev/null | cut -f1\n'''\n a=['ssh','-i',str(key),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile='+str(known),'-o','ConnectTimeout=10','-p',port,str(h['user'])+'@127.0.0.1','bash -c '+shlex.quote(remote)]\n p=subprocess.run(a,capture_output=True,text=True,timeout=65)\n print('USB_SSH='+json.dumps({'exit':p.returncode,'stdout':p.stdout[-1500:],'stderr':p.stderr[-850:]},ensure_ascii=False),flush=True)\n assert p.returncode==0 and 'PHOTO_HEALTH=200' in p.stdout and 'ILESTOI_HEALTH=200' in p.stdout\n print('USB_ADB_TUNNEL_TERMUX_SSH_PASS',flush=True)\nfinally:\n subprocess.run(['adb','-s',sid,'forward','--remove','tcp:'+port],capture_output=True,timeout=20)\nPY"
+  ]
+}

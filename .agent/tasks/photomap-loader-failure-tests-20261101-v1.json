@@ -1,0 +1,19 @@
+{
+  "id": "photomap-loader-failure-tests-20261101-v1",
+  "dedupe_key": "photomap-loader-failure-tests-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "work/map-loader-hardening-artwork-20261101",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 900,
+  "idle_timeout": 600,
+  "task_timeout": 1600,
+  "memory_limit_mb": 2900,
+  "commands": [
+    "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/map-loader-hardening-20261101-v1\ngit -C \"$ROOT\" fetch origin work/map-loader-hardening-artwork-20261101\ntest \"$(git -C \"$ROOT\" rev-parse FETCH_HEAD)\" = 8e04b7bbb225b7b543185a4f4cb1db7ca6fd6396\ntest ! -e \"$TREE\"\ngit -C \"$ROOT\" worktree add --detach \"$TREE\" 8e04b7bbb225b7b543185a4f4cb1db7ca6fd6396\ncd \"$TREE/frontend\"\nnpm ci --prefer-offline --no-audit --no-fund\n./node_modules/.bin/prettier --check e2e/visual/map-loading-failures.spec.ts\nnpm run lint\necho ===LOAD_FAILURE_PREFLIGHT_PASS===",
+    "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/map-loader-hardening-20261101-v1\ncd \"$TREE\"\nPYTHON=\"$ROOT/backend/.venv/bin/python\" E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ./scripts/quality/e2e.sh e2e/visual/map-loading-failures.spec.ts e2e/visual/map-loading-screen.spec.ts e2e/visual/map-loading-polish.spec.ts --workers=1\necho ===LOADER_FAILURE_TESTS_PASS===\ngit status --short"
+  ]
+}

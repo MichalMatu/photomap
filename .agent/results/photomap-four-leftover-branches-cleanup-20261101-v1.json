@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "b362bd6d305a639cfd8a5a8b",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1355,
+      "command": "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nMAIN=c0be5094789730d8bf013fec3baff262e8b1f006\ngit -C \"$ROOT\" fetch origin main\ntest \"$(git -C \"$ROOT\" rev-parse origin/main)\" = \"$MAIN\"\ntest \"$(git -C \"$ROOT\" show \"$MAIN:docs/termux-dev.md\" | git hash-object --stdin)\" = ee4dda9cf07eb37c11f3d18c6726cabb31b0e072\ntest \"$(git -C \"$ROOT\" show \"$MAIN:scripts/termux-dev.sh\" | git hash-object --stdin)\" = d5727f5672865ab2092b56d30aaae8d8ae799866\necho ===TERMUX_CONTENT_VERIFIED_IN_MAIN===\nfor PR in 45 46 66; do\n echo \"HISTORICAL_PR_RETAINED=$PR\"\ndone\nwhile read -r BRANCH SHA; do\n  case \"$BRANCH\" in main|agent-control) echo \"REF_PROTECTED\"; exit 8;; esac\n  ACTUAL=$(git -C \"$ROOT\" ls-remote --heads origin \"refs/heads/$BRANCH\" | cut -f1)\n  test \"$ACTUAL\" = \"$SHA\"\n  echo \"SAFE_REF=$BRANCH\"\ndone <<'REFS'\ndev/distributed-verify-v1 3b62769b81de5d14b3b5da94d529f8a7425cd7d3\nwork/editorial-quality-flow-20261027 76e62577c5f7665e5b0f8b4cd0a7cce874663bf5\nwork/photo-visual-quality-audit-20261027 7a2a09160f9122b2dcd57d83d482d44a2d9e7ffe\nwork/termux-dev-runtime b84a1e7eea183f8a6e59226b398729d16edb3b9b\nchore/termux-dev-helper-consolidation-20261101 c8e73e3000496921310a25180e792061280b0bcd\nREFS\necho ===ALL_SHA_GUARDS_PASS===\nwhile read -r BRANCH SHA; do\n  ACTUAL=$(git -C \"$ROOT\" ls-remote --heads origin \"refs/heads/$BRANCH\" | cut -f1)\n  test \"$ACTUAL\" = \"$SHA\"\n  git -C \"$ROOT\" push origin --delete \"$BRANCH\"\n  echo \"DELETED=$BRANCH\"\ndone <<'REFS'\ndev/distributed-verify-v1 3b62769b81de5d14b3b5da94d529f8a7425cd7d3\nwork/editorial-quality-flow-20261027 76e62577c5f7665e5b0f8b4cd0a7cce874663bf5\nwork/photo-visual-quality-audit-20261027 7a2a09160f9122b2dcd57d83d482d44a2d9e7ffe\nwork/termux-dev-runtime b84a1e7eea183f8a6e59226b398729d16edb3b9b\nchore/termux-dev-helper-consolidation-20261101 c8e73e3000496921310a25180e792061280b0bcd\nREFS\ntest \"$(git -C \"$ROOT\" ls-remote --heads origin | wc -l | tr -d ' ')\" = 2\ngit -C \"$ROOT\" ls-remote --exit-code --heads origin refs/heads/main refs/heads/agent-control\necho ===PHOTO_MAP_CLEAN_ONLY_MAIN_AND_AGENT_CONTROL_PASS===",
+      "current_rss_mb": 22.48,
+      "elapsed_seconds": 15.674,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 650,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\n===TERMUX_CONTENT_VERIFIED_IN_MAIN===\nHISTORICAL_PR_RETAINED=45\nHISTORICAL_PR_RETAINED=46\nHISTORICAL_PR_RETAINED=66\nSAFE_REF=dev/distributed-verify-v1\nSAFE_REF=work/editorial-quality-flow-20261027\nSAFE_REF=work/photo-visual-quality-audit-20261027\nSAFE_REF=work/termux-dev-runtime\nSAFE_REF=chore/termux-dev-helper-consolidation-20261101\n===ALL_SHA_GUARDS_PASS===\nTo https://github.com/MichalMatu/photomap.git\n - [deleted]         dev/distributed-verify-v1\nDELETED=dev/distributed-verify-v1\nTo https://github.com/MichalMatu/photomap.git\n - [deleted]         work/editorial-quality-flow-20261027\nDELETED=work/editorial-quality-flow-20261027\nTo https://github.com/MichalMatu/photomap.git\n - [deleted]         work/photo-visual-quality-audit-20261027\nDELETED=work/photo-visual-quality-audit-20261027\nTo https://github.com/MichalMatu/photomap.git\n - [deleted]         work/termux-dev-runtime\nDELETED=work/termux-dev-runtime\nTo https://github.com/MichalMatu/photomap.git\n - [deleted]         chore/termux-dev-helper-consolidation-20261101\nDELETED=chore/termux-dev-helper-consolidation-20261101\nf885eb0e8b748494259e5dd14f30324429f76c4b\trefs/heads/agent-control\nc0be5094789730d8bf013fec3baff262e8b1f006\trefs/heads/main\n===PHOTO_MAP_CLEAN_ONLY_MAIN_AND_AGENT_CONTROL_PASS===\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 22.48,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T15:48:09.603650+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.07,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.084,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-four-leftover-branches-cleanup-20261101-v1",
+  "idle_timeout": 420,
+  "memory_limit_mb": 650,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 15.674,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T15:47:51.837583+00:00",
+  "status": "done",
+  "task_digest": "9f7b65c8e598d8ef35d1b0a00713636a7f16680c0d5142401133376e0bb63aee",
+  "task_timeout": 1200,
+  "verification": [],
+  "work_branch": "main"
+}

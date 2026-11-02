@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-map-intro-polish-prod-prepare-20261101-v1",
+  "task_digest": "3e1bb211aef23aa7eeadc1e59ac7071ecc737a43195c5509844bc9a45f181277",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T14:20:10.932849+00:00",
+  "attempt_id": "994362829112c9433e2ec61a",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 27557,
+  "updated_at": "2026-11-01T14:20:11.156101+00:00",
+  "pid": 27557
+}

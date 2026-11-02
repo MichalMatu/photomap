@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-map-intro-polish-worktree-clean-20261101-v1",
+  "task_digest": "8aaabcff0691840778bb855acc4063a6b2582472782e24ba601834c9f3cac504",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T14:18:14.130432+00:00",
+  "attempt_id": "869508d3c7f7c2df08cc67c4",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 25436,
+  "updated_at": "2026-11-01T14:18:14.362503+00:00",
+  "pid": 25436
+}

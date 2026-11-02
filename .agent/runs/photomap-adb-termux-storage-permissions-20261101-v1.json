@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-adb-termux-storage-permissions-20261101-v1",
+  "task_digest": "acf71d627dc41d0a63f9689bb42fe10f446de944b5c63bd3289e35c862d53768",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T19:58:59.634695+00:00",
+  "attempt_id": "3e99dcb8e32027c541b847d1",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 63009,
+  "updated_at": "2026-11-01T19:58:59.889261+00:00",
+  "pid": 63009
+}

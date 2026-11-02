@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-rsync-termux-local-permission-test-20261101-v1",
+  "task_digest": "01f6f48d837fd5db1aaa168c287a74cd08b3e209cd2bc082f260394366af025b",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T19:49:04.490471+00:00",
+  "attempt_id": "f7a379467b78e66080013940",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 49641,
+  "updated_at": "2026-11-01T19:49:04.978480+00:00",
+  "pid": 49641
+}

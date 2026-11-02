@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-rsync-phone-receiver-diagnose-20261101-v1",
+  "task_digest": "2384106f8df99aa16df2bed8d509a89e0016d9f5a46ae76910ccbeb473a6a0f6",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T19:48:14.669423+00:00",
+  "attempt_id": "9f7a106296e7dae09d595655",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 48327,
+  "updated_at": "2026-11-01T19:48:14.972395+00:00",
+  "pid": 48327
+}

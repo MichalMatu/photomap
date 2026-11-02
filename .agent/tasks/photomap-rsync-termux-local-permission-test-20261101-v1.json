@@ -1,0 +1,18 @@
+{
+  "id": "photomap-rsync-termux-local-permission-test-20261101-v1",
+  "dedupe_key": "photomap-rsync-termux-local-permission-test-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 120,
+  "idle_timeout": 100,
+  "task_timeout": 320,
+  "memory_limit_mb": 390,
+  "commands": [
+    "python3 - <<'PY'\nimport tomllib,subprocess,shlex,json\nfrom pathlib import Path\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nscript=r'''set -u\nD=\"$HOME/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data\"\nprintf 'IDS='; id\nprintf 'RSYNC_LOCAL_DRYRUN='; rsync -ani /dev/null \"$D/\" 2>&1; echo \"CODE=$?\"\nprintf 'RSYNC_HOME_DRYRUN='; rsync -ani /dev/null \"$HOME/\" 2>&1; echo \"CODE=$?\"\nprintf 'RSYNC_PWD_DRYRUN='; cd \"$D\" && rsync -ani /dev/null ./ 2>&1; echo \"CODE=$?\"\nprintf 'BIN='; command -v rsync\nprintf 'FILE_SELINUX='; ls -Zd \"$D\" \"$HOME\" 2>/dev/null || true\n'''\nargv=['ssh','-i',str(Path(h['identity_file']).expanduser()),'-p',str(h['port']),'-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=8',str(h['user'])+'@'+str(h['host']),'bash -c '+shlex.quote(script)]\np=subprocess.run(argv,capture_output=True,text=True,timeout=70)\nprint(json.dumps({'code':p.returncode,'out':p.stdout[-8000:],'err':p.stderr[-500:]},ensure_ascii=False))\nPY"
+  ]
+}

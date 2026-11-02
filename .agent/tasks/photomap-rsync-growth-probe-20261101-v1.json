@@ -1,0 +1,18 @@
+{
+  "id": "photomap-rsync-growth-probe-20261101-v1",
+  "dedupe_key": "photomap-rsync-growth-probe-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 120,
+  "idle_timeout": 100,
+  "task_timeout": 300,
+  "memory_limit_mb": 350,
+  "commands": [
+    "set -eu\nD=\"$HOME/.cache/photomap-rsync-relay-20261101-v1\"\ndate -u\nif test -d \"$D\"; then du -sk \"$D\"; find \"$D/storage\" -type f | wc -l; ls -lh \"$D/data/app.db\" 2>/dev/null || true; else echo 'STAGING_ABSENT'; fi\nps -axo pid,etime,comm | grep -E 'rsync|ssh' | head -n 20 || true\n"
+  ]
+}

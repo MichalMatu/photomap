@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-test-import-postactivation-readback-20261101-v1",
+  "task_digest": "95189da8fb59fb488b7237efec72cd4bb78a28bd36be9eca933808d19a400ac9",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T20:17:46.229205+00:00",
+  "attempt_id": "ffb5452ceed24a05695c26f1",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 87144,
+  "updated_at": "2026-11-01T20:17:46.600313+00:00",
+  "pid": 87144
+}

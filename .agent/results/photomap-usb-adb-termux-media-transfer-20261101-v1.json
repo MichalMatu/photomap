@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "7678b919d5e08cbe5acad599",
+  "command_timeout": 6800,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1424,
+      "command": "python3 - <<'PY'\nimport os,json,subprocess,shlex,tomllib,time,hashlib\nfrom pathlib import Path\nroot=Path.home()/'.cache/photomap-rsync-relay-20261101-v1'\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nkey=Path(h['identity_file']).expanduser(); known=root/'adb_usb_known_hosts'\nassert known.is_file() and key.is_file() and (root/'data/app.db').is_file()\nusb=[r.split()[0] for r in subprocess.run(['adb','devices','-l'],capture_output=True,text=True,timeout=25).stdout.splitlines()[1:] if len(r.split())>1 and r.split()[1]=='device' and ':' not in r.split()[0]]\nassert len(usb)==1\nserial=usb[0];port='18122'\nssh=['ssh','-i',str(key),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile='+str(known),'-o','ConnectTimeout=12','-o','ServerAliveInterval=20','-o','ServerAliveCountMax=10','-p',port,str(h['user'])+'@127.0.0.1']\nf=subprocess.run(['adb','-s',serial,'forward','tcp:'+port,'tcp:8022'],capture_output=True,text=True,timeout=25)\nassert f.returncode==0,f.stderr\nprint('USB_FORWARD_PASS',flush=True)\ndef remote(script,timeout=60):\n return subprocess.run(ssh+['bash -c '+shlex.quote(script)],capture_output=True,text=True,timeout=timeout)\ntry:\n check=r'''set -eu\nD=\"$HOME/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1\"\ntest -d \"$D/data\" && test -f \"$D/data/app.db\"\ntest -d \"$D/storage/private\" && test -d \"$D/storage/public\"\ntest ! -L \"$D\" && test ! -L \"$D/storage/private\" && test ! -L \"$D/storage/public\"\nprintf 'STAGE_KIB='; du -sk \"$D\"|cut -f1\nprintf 'PHOTO_HTTP='; curl -sS -m 6 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8010/health\nprintf 'ILESTOI_HTTP='; curl -sS -m 6 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8001/api/health/ready\n'''\n before=remote(check)\n print('USB_PHONE_PREFLIGHT='+json.dumps({'exit':before.returncode,'out':before.stdout[-1000:],'err':before.stderr[-500:]}),flush=True)\n assert before.returncode==0 and 'PHOTO_HTTP=200' in before.stdout and 'ILESTOI_HTTP=200' in before.stdout\n expected={}\n for kind in ('private','public'):\n  d=root/'storage'/kind\n  assert not any(p.is_symlink() for p in d.rglob('*'))\n  files=[p for p in d.rglob('*') if p.is_file()]\n  assert len(files)==1098,(kind,len(files))\n  expected[kind]={'count':len(files),'bytes':sum(p.stat().st_size for p in files)}\n print('EXPECTED='+json.dumps(expected),flush=True)\n extract=r'''set -eu\nD=\"$HOME/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1\"\ncd \"$D\"\ntar -xf -\necho 'TERMUX_TAR_EXTRACT_DONE'\n'''\n env=dict(os.environ);env['COPYFILE_DISABLE']='1'\n t=time.monotonic()\n sender=subprocess.Popen(['tar','-C',str(root),'-cf','-','storage/private','storage/public'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env)\n try:receiver=subprocess.run(ssh+['bash -c '+shlex.quote(extract)],stdin=sender.stdout,capture_output=True,text=True,timeout=5900)\n finally:sender.stdout.close()\n err=sender.stderr.read().decode(errors='replace')[-900:]\n sr=sender.wait(timeout=90)\n print('USB_TRANSFER='+json.dumps({'elapsed_s':round(time.monotonic()-t,1),'mac_exit':sr,'phone_exit':receiver.returncode,'phone_out':receiver.stdout[-600:],'phone_err':receiver.stderr[-700:],'mac_err':err},ensure_ascii=False),flush=True)\n assert sr==0 and receiver.returncode==0,'USB tar stream incomplete'\n verify=r'''set -eu\npython3 -B - <<'PYVERIFY'\nimport hashlib,json,sqlite3\nfrom pathlib import Path\nd=Path.home()/'Projects/PhotoMap/.dev/termux/import-pi-20261101-v1'\nb=d/'data/app.db'\nwith sqlite3.connect('file:'+str(b)+'?mode=ro',uri=True) as c:\n assert c.execute('pragma integrity_check').fetchone()[0]=='ok'\n assert c.execute('pragma foreign_key_check').fetchall()==[]\nz={}\nfor k in ('private','public'):\n files=[p for p in (d/'storage'/k).rglob('*') if p.is_file() and not p.is_symlink()]\n z[k]={'count':len(files),'bytes':sum(p.stat().st_size for p in files)}\nprint('PHONE_STAGE='+json.dumps({'db_sha256':hashlib.sha256(b.read_bytes()).hexdigest(),'media':z}),flush=True)\nPYVERIFY\nprintf 'PHOTO_HTTP='; curl -sS -m 7 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8010/health\nprintf 'ILESTOI_HTTP='; curl -sS -m 7 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8001/api/health/ready\n'''\n done=remote(verify,220)\n print('USB_STAGE_VERIFY='+json.dumps({'exit':done.returncode,'out':done.stdout[-2800:],'err':done.stderr[-900:]},ensure_ascii=False),flush=True)\n assert done.returncode==0\n result=json.loads([s.removeprefix('PHONE_STAGE=') for s in done.stdout.splitlines() if s.startswith('PHONE_STAGE=')][-1])\n assert result['db_sha256']=='24814f4084ef6989e4e7966d77d9f7cf88f033cd619d8c37eb66516adf3f3ede'\n assert result['media']==expected\n assert 'PHOTO_HTTP=200' in done.stdout and 'ILESTOI_HTTP=200' in done.stdout\n print('USB_TAR_MEDIA_FULL_SIZE_COUNT_AND_DB_PASS',flush=True)\nfinally:\n subprocess.run(['adb','-s',serial,'forward','--remove','tcp:'+port],capture_output=True,timeout=30)\nPY",
+      "current_rss_mb": 15.22,
+      "elapsed_seconds": 133.554,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 750,
+      "memory_limited": false,
+      "output": "USB_FORWARD_PASS\nUSB_PHONE_PREFLIGHT={\"exit\": 0, \"out\": \"STAGE_KIB=89387\\nPHOTO_HTTP=200\\nILESTOI_HTTP=200\\n\", \"err\": \"\"}\nEXPECTED={\"private\": {\"count\": 1098, \"bytes\": 4084122798}, \"public\": {\"count\": 1098, \"bytes\": 154437872}}\nUSB_TRANSFER={\"elapsed_s\": 127.5, \"mac_exit\": 0, \"phone_exit\": 0, \"phone_out\": \"TERMUX_TAR_EXTRACT_DONE\\n\", \"phone_err\": \"provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\ntar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'\\n\", \"mac_err\": \"\"}\nUSB_STAGE_VERIFY={\"exit\": 0, \"out\": \"PHONE_STAGE={\\\"db_sha256\\\": \\\"24814f4084ef6989e4e7966d77d9f7cf88f033cd619d8c37eb66516adf3f3ede\\\", \\\"media\\\": {\\\"private\\\": {\\\"count\\\": 1098, \\\"bytes\\\": 4084122798}, \\\"public\\\": {\\\"count\\\": 1098, \\\"bytes\\\": 154437872}}}\\nPHOTO_HTTP=200\\nILESTOI_HTTP=200\\n\", \"err\": \"\"}\nUSB_TAR_MEDIA_FULL_SIZE_COUNT_AND_DB_PASS\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 29.48,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T20:04:10.505623+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.072,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.099,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-usb-adb-termux-media-transfer-20261101-v1",
+  "idle_timeout": 3500,
+  "memory_limit_mb": 750,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 133.554,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T20:01:55.409791+00:00",
+  "status": "done",
+  "task_digest": "99649f3237560ef567d998479e083753681ff284061263598522e8fc201d71ad",
+  "task_timeout": 7000,
+  "verification": [],
+  "work_branch": "main"
+}

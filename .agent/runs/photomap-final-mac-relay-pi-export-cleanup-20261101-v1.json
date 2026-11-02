@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-final-mac-relay-pi-export-cleanup-20261101-v1",
+  "task_digest": "d0693231fb915fd423b98f3d103bc46b67a041efe3b0265f7a3d7ad9e92f9a06",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T20:39:29.705300+00:00",
+  "attempt_id": "76c77b5625bd870eaa182851",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 9857,
+  "updated_at": "2026-11-01T20:39:29.964314+00:00",
+  "pid": 9857
+}

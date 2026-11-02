@@ -1,0 +1,18 @@
+{
+  "id": "photomap-map-intro-polish-worktree-clean-20261101-v1",
+  "dedupe_key": "photomap-map-intro-polish-worktree-clean-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "refine/map-loading-artwork-motion-20261101",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 100,
+  "idle_timeout": 80,
+  "task_timeout": 200,
+  "memory_limit_mb": 300,
+  "commands": [
+    "set -eu\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/map-intro-polish-final-20261101\ntest -L \"$TREE/frontend/node_modules\"\ntest \"$(git -C \"$TREE\" rev-parse HEAD)\" = c2311ec33af4218aa8793bd3d7b29fbb507fd55e\nunlink \"$TREE/frontend/node_modules\"\ntest -z \"$(git -C \"$TREE\" status --porcelain)\"\ngit -C \"$TREE\" diff --check a87d08c4f59cb4f7988e4e68b407072f25876b4e..HEAD\necho ===FINAL_TEST_TREE_CLEAN==="
+  ]
+}

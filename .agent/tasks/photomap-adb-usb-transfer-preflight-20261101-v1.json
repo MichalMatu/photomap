@@ -1,0 +1,18 @@
+{
+  "id": "photomap-adb-usb-transfer-preflight-20261101-v1",
+  "dedupe_key": "photomap-adb-usb-transfer-preflight-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 200,
+  "idle_timeout": 150,
+  "task_timeout": 420,
+  "memory_limit_mb": 400,
+  "commands": [
+    "python3 - <<'PY'\nimport subprocess,json,shutil,re\nif not shutil.which('adb'):\n print('ADB_NOT_INSTALLED')\n raise SystemExit(0)\np=subprocess.run(['adb','devices','-l'],capture_output=True,text=True,timeout=28)\nprint('ADB_EXIT',p.returncode)\nrows=[line.strip().split() for line in p.stdout.splitlines()[1:] if line.strip()]\nprint('ADB_DEVICE_COUNT',len(rows))\nfor i,row in enumerate(rows):\n if len(row)<2: continue\n serial,state=row[0],row[1]\n is_network=':' in serial\n print(json.dumps({'device':i,'connected':state=='device','transport':'network' if is_network else 'usb','state':state,'model':next((v.split(':',1)[1] for v in row[2:] if v.startswith('model:')),None)}))\n if state=='device':\n  q=subprocess.run(['adb','-s',serial,'shell','sh','-c','echo ADB_SHELL_READY; ls -ld /sdcard/Download; if test -w /sdcard/Download; then echo DOWNLOAD_WRITABLE=yes; else echo DOWNLOAD_WRITABLE=no; fi'],capture_output=True,text=True,timeout=35)\n  print(json.dumps({'device':i,'probe_rc':q.returncode,'out':q.stdout[-1500:],'err':q.stderr[-400:]},ensure_ascii=False))\nPY"
+  ]
+}

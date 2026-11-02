@@ -1,0 +1,18 @@
+{
+  "id": "photomap-loader-format-diff-20261101-v1",
+  "dedupe_key": "photomap-loader-format-diff-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "work/map-loader-hardening-artwork-20261101",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 180,
+  "idle_timeout": 120,
+  "task_timeout": 300,
+  "memory_limit_mb": 900,
+  "commands": [
+    "set -eu\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/loader-hardening-visual-final-20261101-v1\ncd \"$TREE/frontend\"\n./node_modules/.bin/prettier --write src/components/map/MapLoadingScreen.tsx\ncd \"$TREE\"\ngit diff --check\necho ===PRETTIER_PATCH_BEGIN===\ngit diff -- frontend/src/components/map/MapLoadingScreen.tsx\necho ===PRETTIER_PATCH_END===\n"
+  ]
+}

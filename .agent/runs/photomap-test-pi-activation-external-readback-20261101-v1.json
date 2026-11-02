@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-test-pi-activation-external-readback-20261101-v1",
+  "task_digest": "c810332cdc92da6ce07b27ee434e7d89a7f0a043e702bf1bbd68499063056f61",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T20:12:48.040924+00:00",
+  "attempt_id": "cac6118e0f95bb52de3b368f",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 80791,
+  "updated_at": "2026-11-01T20:12:48.304191+00:00",
+  "pid": 80791
+}

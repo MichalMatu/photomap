@@ -1,0 +1,88 @@
+{
+  "allow_write": false,
+  "attempt_id": "6504ac44cb6b639a2ac5e25d",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 997,
+      "command": "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/map-loader-hardening-20261101-v1\ngit -C \"$ROOT\" fetch origin work/map-loader-hardening-artwork-20261101\ntest \"$(git -C \"$ROOT\" rev-parse FETCH_HEAD)\" = 8e04b7bbb225b7b543185a4f4cb1db7ca6fd6396\ntest ! -e \"$TREE\"\ngit -C \"$ROOT\" worktree add --detach \"$TREE\" 8e04b7bbb225b7b543185a4f4cb1db7ca6fd6396\ncd \"$TREE/frontend\"\nnpm ci --prefer-offline --no-audit --no-fund\n./node_modules/.bin/prettier --check e2e/visual/map-loading-failures.spec.ts\nnpm run lint\necho ===LOAD_FAILURE_PREFLIGHT_PASS===",
+      "current_rss_mb": 382.11,
+      "elapsed_seconds": 20.573,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 2900,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            work/map-loader-hardening-artwork-20261101 -> FETCH_HEAD\nPreparing worktree (detached HEAD 8e04b7b)\nHEAD is now at 8e04b7b test(map): cover API failure and stalled tile fallback\n\nadded 220 packages in 4s\nnpm warn allow-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn allow-scripts   esbuild@0.25.12 (postinstall: node install.js)\nnpm warn allow-scripts   fsevents@2.3.3 (install: (install scripts present))\nnpm warn allow-scripts   fsevents@2.3.2 (install: (install scripts present))\nnpm warn allow-scripts\nnpm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.\nChecking formatting...\nAll matched files use Prettier code style!\n\n> lint\n> npm run typecheck && eslint . --max-warnings=0\n\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\n===LOAD_FAILURE_PREFLIGHT_PASS===\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 454.08,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    },
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1619,
+      "command": "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/map-loader-hardening-20261101-v1\ncd \"$TREE\"\nPYTHON=\"$ROOT/backend/.venv/bin/python\" E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ./scripts/quality/e2e.sh e2e/visual/map-loading-failures.spec.ts e2e/visual/map-loading-screen.spec.ts e2e/visual/map-loading-polish.spec.ts --workers=1\necho ===LOADER_FAILURE_TESTS_PASS===\ngit status --short",
+      "current_rss_mb": 76.75,
+      "elapsed_seconds": 54.92,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 2900,
+      "memory_limited": false,
+      "output": "Backend: http://127.0.0.1:18080, PID 23328\nFrontend: http://127.0.0.1:15174, PID 23372\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:23403) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 7 tests using 1 worker\n\n(node:23429) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  1 [chromium] › e2e/visual/map-loading-failures.spec.ts:6:5 › failed map API closes the loading scene and exposes the error state (9.1s)\n  ✓  2 [chromium] › e2e/visual/map-loading-failures.spec.ts:19:5 › a stalled tile server releases the map after the five-second fallback (6.8s)\n  ✓  3 [chromium] › e2e/visual/map-loading-polish.spec.ts:7:5 › illustrated map animates once, keeps pins and photos visible while data loads (4.3s)\n  ✓  4 [chromium] › e2e/visual/map-loading-polish.spec.ts:53:5 › reduced motion immediately shows the completed artwork without animation (927ms)\n  ✓  5 [chromium] › e2e/visual/map-loading-screen.spec.ts:11:7 › loading screen covers viewport, then fades into loaded map at 390px (2.6s)\n  ✓  6 [chromium] › e2e/visual/map-loading-screen.spec.ts:11:7 › loading screen covers viewport, then fades into loaded map at 1440px (2.7s)\n  ✓  7 [chromium] › e2e/visual/map-loading-screen.spec.ts:42:5 › reduced motion shows static illustration and removes splash without fade (2.0s)\n\n  7 passed (48.8s)\n===LOADER_FAILURE_TESTS_PASS===\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 405.44,
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T15:13:30.336093+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.069,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.125,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-loader-failure-tests-20261101-v1",
+  "idle_timeout": 600,
+  "memory_limit_mb": 2900,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 20.573,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2
+    },
+    {
+      "elapsed_seconds": 54.92,
+      "outcome": "passed",
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-01T15:12:12.745654+00:00",
+  "status": "done",
+  "task_digest": "b65861e0b5f8f2ff823b12477f82d91e90cc25d780479134f720bc69952b937d",
+  "task_timeout": 1600,
+  "verification": [],
+  "work_branch": "work/map-loader-hardening-artwork-20261101"
+}

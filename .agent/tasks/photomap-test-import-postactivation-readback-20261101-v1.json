@@ -1,0 +1,18 @@
+{
+  "id": "photomap-test-import-postactivation-readback-20261101-v1",
+  "dedupe_key": "photomap-test-import-postactivation-readback-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 200,
+  "idle_timeout": 150,
+  "task_timeout": 380,
+  "memory_limit_mb": 380,
+  "commands": [
+    "python3 - <<'PY'\nimport tomllib,subprocess,shlex,json\nfrom pathlib import Path\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nkey=Path(h['identity_file']).expanduser()\nknown=Path.home()/'.cache/photomap-rsync-relay-20261101-v1/adb_usb_known_hosts'\np=subprocess.run(['adb','devices','-l'],capture_output=True,text=True,timeout=20)\nusb=[row.split()[0] for row in p.stdout.splitlines()[1:] if len(row.split())>=2 and row.split()[1]=='device' and ':' not in row.split()[0]]\nassert len(usb)==1\nf=subprocess.run(['adb','-s',usb[0],'forward','tcp:18122','tcp:8022'],capture_output=True,text=True,timeout=20)\nassert f.returncode==0\ntry:\n remote=r'''set -u\nD=\"$HOME/Projects/PhotoMap/.dev/termux\"\nprintf 'ACTIVE_MARKER='; test -f \"$D/pi-import-active-20261101-v1.json\" && echo yes || echo no\nprintf 'BACKUP='; test -d \"$D/rollback-prepi-20261101-v1/data\" && echo yes || echo no\nprintf 'DB_BYTES='; stat -c %s \"$D/data/app.db\" 2>/dev/null || true\nprintf 'STAGED_DB='; test -f \"$D/import-pi-20261101-v1/data/app.db\" && echo yes || echo no\nprintf 'CURRENT_PRIVATE='; find \"$D/storage/private\" -type f 2>/dev/null | wc -l\nprintf 'CURRENT_PUBLIC='; find \"$D/storage/public\" -type f 2>/dev/null | wc -l\nprintf 'SERVICE='; sv status \"$PREFIX/var/service/photomap-dev\" || true\nfor path in /health /api/places/map /; do printf 'PHOTO_%s=' \"$path\"; curl -sS -m 8 -o /dev/null -w '%{http_code}\\n' \"http://127.0.0.1:8010$path\" || true; done\nprintf 'ILESTOI='; curl -sS -m 8 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8001/api/health/ready || true\n'''\n a=['ssh','-i',str(key),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile='+str(known),'-o','ConnectTimeout=9','-p','18122',str(h['user'])+'@127.0.0.1','bash -c '+shlex.quote(remote)]\n q=subprocess.run(a,capture_output=True,text=True,timeout=130)\n print(json.dumps({'exit':q.returncode,'out':q.stdout[-7000:],'err':q.stderr[-500:]},ensure_ascii=False),flush=True)\nfinally:\n subprocess.run(['adb','-s',usb[0],'forward','--remove','tcp:18122'],capture_output=True,timeout=20)\nPY"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "9f7a106296e7dae09d595655",
+  "command_timeout": 180,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1082,
+      "command": "python3 - <<'PY'\nimport tomllib,subprocess,shlex,json\nfrom pathlib import Path\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nssh=['ssh','-i',str(Path(h['identity_file']).expanduser()),'-p',str(h['port']),'-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=8']\nrsh=' '.join(shlex.quote(a) for a in ssh)\nuser=f\"{h['user']}@{h['host']}\"\nsrc=str(Path.home()/'.cache/photomap-rsync-relay-20261101-v1/data/app.db')\nbase='/data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data/'\nfor label,dest,extra in [\n ('default_absolute',user+':'+base,[]),\n ('explicit_binary',user+':'+base,['--rsync-path=/data/data/com.termux/files/usr/bin/rsync']),\n ('home_relative',user+':Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data/',[])]:\n a=['rsync','-ani','-e',rsh,*extra,src,dest]\n try:p=subprocess.run(a,capture_output=True,text=True,timeout=55);print(json.dumps({'test':label,'exit':p.returncode,'out':p.stdout[-1300:],'err':p.stderr[-1300:]},ensure_ascii=False),flush=True)\n except subprocess.TimeoutExpired:print(json.dumps({'test':label,'error':'timeout'}),flush=True)\nPY",
+      "current_rss_mb": 17.39,
+      "elapsed_seconds": 2.558,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 500,
+      "memory_limited": false,
+      "output": "{\"test\": \"default_absolute\", \"exit\": 3, \"out\": \"\", \"err\": \"rsync: [Receiver] change_dir#1 \\\"/data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data/\\\" failed: Permission denied (13)\\nrsync error: errors selecting input/output files, dirs (code 3) at main.c(768) [Receiver=3.5.0]\\nrsync(48530): error: unexpected end of file\\n\"}\n{\"test\": \"explicit_binary\", \"exit\": 3, \"out\": \"\", \"err\": \"rsync: [Receiver] change_dir#1 \\\"/data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data/\\\" failed: Permission denied (13)\\nrsync error: errors selecting input/output files, dirs (code 3) at main.c(768) [Receiver=3.5.0]\\nrsync(48544): error: unexpected end of file\\n\"}\n{\"test\": \"home_relative\", \"exit\": 3, \"out\": \"\", \"err\": \"rsync: [Receiver] change_dir#1 \\\"/data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data/\\\" failed: Permission denied (13)\\nrsync error: errors selecting input/output files, dirs (code 3) at main.c(768) [Receiver=3.5.0]\\nrsync(48573): error: unexpected end of file\\n\"}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 17.39,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T19:48:14.669423+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.07,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.28,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-rsync-phone-receiver-diagnose-20261101-v1",
+  "idle_timeout": 120,
+  "memory_limit_mb": 500,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 2.558,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T19:48:10.195647+00:00",
+  "status": "done",
+  "task_digest": "2384106f8df99aa16df2bed8d509a89e0016d9f5a46ae76910ccbeb473a6a0f6",
+  "task_timeout": 370,
+  "verification": [],
+  "work_branch": "main"
+}

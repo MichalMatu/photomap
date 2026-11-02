@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-tar-phone-media-transfer-20261101-v1",
+  "task_digest": "30db2c5ca24146500adf6606220ef8ec0ee5349c2ab7383484cc3dd839d88f1b",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-01T19:56:58.878618+00:00",
+  "attempt_id": "790e8cdbda4f4f9c9719175f",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 58005,
+  "updated_at": "2026-11-01T19:56:59.295834+00:00",
+  "pid": 58005
+}

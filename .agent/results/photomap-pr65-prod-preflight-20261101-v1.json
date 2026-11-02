@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "d3c481451b82afff86aab7f9",
+  "command_timeout": 230,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1106,
+      "command": "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nKEY=/Users/michal/.ssh/id_ed25519\nPI=michal@192.168.0.23\nMAIN=373d45dbaa7fa18ca7d37f32c75b1808f17bbcd0\nTARGET=b590626897118361ad4afd263c8494641a027e0e\ntest -f \"$KEY\"\ngit -C \"$ROOT\" fetch origin main work/map-loader-hardening-artwork-20261101\ntest \"$(git -C \"$ROOT\" rev-parse origin/main)\" = \"$MAIN\"\ntest \"$(git -C \"$ROOT\" rev-parse origin/work/map-loader-hardening-artwork-20261101)\" = \"$TARGET\"\ngit -C \"$ROOT\" merge-base --is-ancestor \"$MAIN\" \"$TARGET\"\necho ===MAIN_AND_RELEASE_CANDIDATE_VERIFIED===\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 \"$PI\" '\nset -eu\ncd /home/michal/src/PhotoMaps\nprintf \"PI_HEAD=\"; git rev-parse HEAD\nprintf \"PI_BRANCH=\"; git branch --show-current\ntest \"$(git branch --show-current)\" = main\ntest -z \"$(git status --porcelain)\"\nsystemctl is-active --quiet photomap.service\nsystemctl is-active --quiet cloudflared.service\nprintf \"BACKEND_PID=\"; systemctl show photomap.service -p MainPID --value\nprintf \"TUNNEL_PID=\"; systemctl show cloudflared.service -p MainPID --value\nprintf \"PI_INDEX_SHA=\"; sha256sum frontend/dist/index.html | awk \"{print \\$1}\"\nprintf \"PI_PUBLIC_MAP_ASSET=\"; grep -o \"/assets/public-map-[^\\\"]*\\.js\" frontend/dist/index.html | head -1 || true\necho ===RAM_AND_STORAGE===\nfree -k\ndf -k .\necho ===DB_CANDIDATES===\nfind backend/data -maxdepth 2 -type f \\( -name \"*.db\" -o -name \"*.sqlite\" -o -name \"*.sqlite3\" \\) -print 2>/dev/null | head -10 || true\nfor P in / /health /api/places/map; do\n  CODE=$(curl -sS -o /dev/null -w \"%{http_code}\" --max-time 18 \"http://127.0.0.1:8000$P\")\n  echo \"PI_HTTP $P $CODE\"\n  test \"$CODE\" = 200\ndone\necho ===PI_PREFLIGHT_HEALTHY_NO_CHANGES===\n'\nfor P in / /health; do CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 18 \"https://photomap.pl$P\"); echo \"PUBLIC_HTTP $P $CODE\"; test \"$CODE\" = 200; done\necho ===PR65_PREFLIGHT_PASS===",
+      "current_rss_mb": 3.38,
+      "elapsed_seconds": 8.06,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 750,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\n * branch            work/map-loader-hardening-artwork-20261101 -> FETCH_HEAD\n   817842d..b590626  work/map-loader-hardening-artwork-20261101 -> origin/work/map-loader-hardening-artwork-20261101\n===MAIN_AND_RELEASE_CANDIDATE_VERIFIED===\nPI_HEAD=373d45dbaa7fa18ca7d37f32c75b1808f17bbcd0\nPI_BRANCH=main\nBACKEND_PID=2765142\nTUNNEL_PID=222848\nPI_INDEX_SHA=a55bffefe3405e101b72874f60411b9c6483bc0d086dc39323afc258d5aa7520\nPI_PUBLIC_MAP_ASSET=/assets/public-map-B7iFSmHx.js\n===RAM_AND_STORAGE===\n               total        used        free      shared  buff/cache   available\nMem:          426136      329200       36676         228      115164       96936\nSwap:         425980      195568      230412\nFilesystem     1K-blocks     Used Available Use% Mounted on\n/dev/mmcblk0p2  60799768 14150740  44106452  25% /\n===DB_CANDIDATES===\nbackend/data/app.db\nPI_HTTP / 200\nPI_HTTP /health 200\nPI_HTTP /api/places/map 200\n===PI_PREFLIGHT_HEALTHY_NO_CHANGES===\nPUBLIC_HTTP / 200\nPUBLIC_HTTP /health 200\n===PR65_PREFLIGHT_PASS===\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 3.44,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T15:25:48.333012+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.127,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.236,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-pr65-prod-preflight-20261101-v1",
+  "idle_timeout": 130,
+  "memory_limit_mb": 750,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 8.06,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T15:25:37.494134+00:00",
+  "status": "done",
+  "task_digest": "305af188c2fdd86ad9c26d32d6386d1688d5415e43c91c254ee514a7504d241d",
+  "task_timeout": 380,
+  "verification": [],
+  "work_branch": "main"
+}

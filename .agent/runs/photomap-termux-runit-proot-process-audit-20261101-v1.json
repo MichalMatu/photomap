@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-termux-runit-proot-process-audit-20261101-v1",
+  "task_digest": "fd6537c065e2324a9ff797cdeaeb64cac1c3d7d39cf0e76a3eb25fed9f6ea5ad",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T20:21:43.484718+00:00",
+  "attempt_id": "7f58b9166770cbeed442b026",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 91399,
+  "updated_at": "2026-11-01T20:21:43.723490+00:00",
+  "pid": 91399
+}

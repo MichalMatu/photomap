@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "869508d3c7f7c2df08cc67c4",
+  "command_timeout": 100,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 28,
+      "command": "set -eu\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/map-intro-polish-final-20261101\ntest -L \"$TREE/frontend/node_modules\"\ntest \"$(git -C \"$TREE\" rev-parse HEAD)\" = c2311ec33af4218aa8793bd3d7b29fbb507fd55e\nunlink \"$TREE/frontend/node_modules\"\ntest -z \"$(git -C \"$TREE\" status --porcelain)\"\ngit -C \"$TREE\" diff --check a87d08c4f59cb4f7988e4e68b407072f25876b4e..HEAD\necho ===FINAL_TEST_TREE_CLEAN===",
+      "current_rss_mb": 3.72,
+      "elapsed_seconds": 0.305,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 300,
+      "memory_limited": false,
+      "output": "===FINAL_TEST_TREE_CLEAN===\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 3.72,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T14:18:14.130432+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.068,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.08,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-map-intro-polish-worktree-clean-20261101-v1",
+  "idle_timeout": 80,
+  "memory_limit_mb": 300,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.305,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T14:18:12.327544+00:00",
+  "status": "done",
+  "task_digest": "8aaabcff0691840778bb855acc4063a6b2582472782e24ba601834c9f3cac504",
+  "task_timeout": 200,
+  "verification": [],
+  "work_branch": "refine/map-loading-artwork-motion-20261101"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "photomap-final-mac-relay-pi-export-cleanup-20261101-v1",
+  "dedupe_key": "photomap-final-mac-relay-pi-export-cleanup-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 380,
+  "idle_timeout": 210,
+  "task_timeout": 580,
+  "memory_limit_mb": 450,
+  "commands": [
+    "python3 - <<'PY'\nimport os,sqlite3,json,hashlib,shutil,subprocess,shlex,tomllib\nfrom pathlib import Path\nstage=Path.home()/'.cache/photomap-rsync-relay-20261101-v1'\nexpected_sha='24814f4084ef6989e4e7966d77d9f7cf88f033cd619d8c37eb66516adf3f3ede'\nexpected={'private':(1098,4084122798),'public':(1098,154437872)}\nassert stage.is_dir() and not stage.is_symlink()\nassert stage.name=='photomap-rsync-relay-20261101-v1'\nassert stage.parent==Path.home()/'.cache'\nassert (stage/'data/app.db').is_file()\nassert hashlib.sha256((stage/'data/app.db').read_bytes()).hexdigest()==expected_sha\nwith sqlite3.connect('file:'+str(stage/'data/app.db')+'?mode=ro',uri=True) as c:\n assert c.execute('pragma integrity_check').fetchone()[0]=='ok'\nfor kind,(num,total) in expected.items():\n d=stage/'storage'/kind\n assert d.is_dir() and not d.is_symlink()\n files=[]\n for path in d.rglob('*'):\n  assert not path.is_symlink(),'unexpected symlink in relay'\n  if path.is_file():files.append(path)\n assert (len(files),sum(p.stat().st_size for p in files))==(num,total)\nprint('MAC_RELAY_VALIDATED 2196_MEDIA_DB_SHA256_PASS',flush=True)\nhosts=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']\nh=hosts['pi-zero']\npi_script=r'''python3 - <<'PYCLEANPI'\nimport json,hashlib,shutil,sqlite3\nfrom pathlib import Path\nbase=Path('/home/michal/src/PhotoMaps')\np=base/'.dev/rsync-export-20261101-v1'\nassert base.is_dir() and not base.is_symlink()\nassert p.is_dir() and not p.is_symlink()\nassert sorted(q.name for q in p.iterdir())==['app.db'],'unexpected contents in Pi export'\nb=p/'app.db'\nassert b.is_file() and not b.is_symlink()\nassert hashlib.sha256(b.read_bytes()).hexdigest()=='24814f4084ef6989e4e7966d77d9f7cf88f033cd619d8c37eb66516adf3f3ede'\nwith sqlite3.connect('file:'+str(b)+'?mode=ro',uri=True) as c:\n assert c.execute('pragma integrity_check').fetchone()[0]=='ok'\nshutil.rmtree(p)\nprint('PI_SNAPSHOT_EXPORT_REMOVED')\nPYCLEANPI\nprintf 'PROD_HEALTH='; curl -sS --max-time 7 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8000/health || true\nprintf 'PI_PROD_SERVICE='; systemctl is-active photomap.service || true\nprintf 'PI_TUNNEL_SERVICE='; systemctl is-active cloudflared.service || true\n'''\nargv=['ssh','-i',str(Path(h['identity_file']).expanduser()),'-p',str(h['port']),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=8','-o','ConnectionAttempts=1',str(h['user'])+'@'+str(h['host']),'bash -c '+shlex.quote(pi_script)]\ntry:\n p=subprocess.run(argv,capture_output=True,text=True,timeout=55)\n print('PI_CLEANUP='+json.dumps({'rc':p.returncode,'out':p.stdout[-800:],'err':p.stderr[-400:]},ensure_ascii=False),flush=True)\nexcept subprocess.TimeoutExpired:\n print('PI_CLEANUP_DEFERRED_SSH_TIMEOUT',flush=True)\n# Mac staging removal is independently authorized; imported Samsung DB/media already PASS\nshutil.rmtree(stage)\nassert not stage.exists()\nprint('MAC_4GB_RELAY_REMOVED_PASS',flush=True)\nPY"
+  ]
+}

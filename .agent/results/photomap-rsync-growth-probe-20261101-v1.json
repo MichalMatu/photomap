@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "15583b98d2b8048aeca821c5",
+  "command_timeout": 120,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 288,
+      "command": "set -eu\nD=\"$HOME/.cache/photomap-rsync-relay-20261101-v1\"\ndate -u\nif test -d \"$D\"; then du -sk \"$D\"; find \"$D/storage\" -type f | wc -l; ls -lh \"$D/data/app.db\" 2>/dev/null || true; else echo 'STAGING_ABSENT'; fi\nps -axo pid,etime,comm | grep -E 'rsync|ssh' | head -n 20 || true\n",
+      "current_rss_mb": 1.92,
+      "elapsed_seconds": 0.382,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 350,
+      "memory_limited": false,
+      "output": "Sun Nov  1 19:32:45 UTC 2026\n3440492\t/Users/michal/.cache/photomap-rsync-relay-20261101-v1\n     852\n-rw-------@ 1 michal  staff    19M Nov  1 20:05 /Users/michal/.cache/photomap-rsync-relay-20261101-v1/data/app.db\n 2411 04:36:51 /usr/bin/ssh-agent\n97513    27:21 rsync\n97514    27:21 ssh\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 1.92,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T19:32:46.086798+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.079,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.099,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-rsync-growth-probe-20261101-v1",
+  "idle_timeout": 100,
+  "memory_limit_mb": 350,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.382,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T19:32:43.593989+00:00",
+  "status": "done",
+  "task_digest": "20b3fc413217a66e638367e6c4506b7d583f47b7a9540bebc8f6681937f9626a",
+  "task_timeout": 300,
+  "verification": [],
+  "work_branch": "main"
+}

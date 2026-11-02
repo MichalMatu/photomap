@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-rsync-growth-probe-20261101-v1",
+  "task_digest": "20b3fc413217a66e638367e6c4506b7d583f47b7a9540bebc8f6681937f9626a",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T19:32:46.086798+00:00",
+  "attempt_id": "15583b98d2b8048aeca821c5",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 29935,
+  "updated_at": "2026-11-01T19:32:46.420926+00:00",
+  "pid": 29935
+}

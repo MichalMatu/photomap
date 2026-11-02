@@ -1,0 +1,18 @@
+{
+  "id": "photomap-pr65-prod-preflight-20261101-v1",
+  "dedupe_key": "photomap-pr65-prod-preflight-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 230,
+  "idle_timeout": 130,
+  "task_timeout": 380,
+  "memory_limit_mb": 750,
+  "commands": [
+    "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nKEY=/Users/michal/.ssh/id_ed25519\nPI=michal@192.168.0.23\nMAIN=373d45dbaa7fa18ca7d37f32c75b1808f17bbcd0\nTARGET=b590626897118361ad4afd263c8494641a027e0e\ntest -f \"$KEY\"\ngit -C \"$ROOT\" fetch origin main work/map-loader-hardening-artwork-20261101\ntest \"$(git -C \"$ROOT\" rev-parse origin/main)\" = \"$MAIN\"\ntest \"$(git -C \"$ROOT\" rev-parse origin/work/map-loader-hardening-artwork-20261101)\" = \"$TARGET\"\ngit -C \"$ROOT\" merge-base --is-ancestor \"$MAIN\" \"$TARGET\"\necho ===MAIN_AND_RELEASE_CANDIDATE_VERIFIED===\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 \"$PI\" '\nset -eu\ncd /home/michal/src/PhotoMaps\nprintf \"PI_HEAD=\"; git rev-parse HEAD\nprintf \"PI_BRANCH=\"; git branch --show-current\ntest \"$(git branch --show-current)\" = main\ntest -z \"$(git status --porcelain)\"\nsystemctl is-active --quiet photomap.service\nsystemctl is-active --quiet cloudflared.service\nprintf \"BACKEND_PID=\"; systemctl show photomap.service -p MainPID --value\nprintf \"TUNNEL_PID=\"; systemctl show cloudflared.service -p MainPID --value\nprintf \"PI_INDEX_SHA=\"; sha256sum frontend/dist/index.html | awk \"{print \\$1}\"\nprintf \"PI_PUBLIC_MAP_ASSET=\"; grep -o \"/assets/public-map-[^\\\"]*\\.js\" frontend/dist/index.html | head -1 || true\necho ===RAM_AND_STORAGE===\nfree -k\ndf -k .\necho ===DB_CANDIDATES===\nfind backend/data -maxdepth 2 -type f \\( -name \"*.db\" -o -name \"*.sqlite\" -o -name \"*.sqlite3\" \\) -print 2>/dev/null | head -10 || true\nfor P in / /health /api/places/map; do\n  CODE=$(curl -sS -o /dev/null -w \"%{http_code}\" --max-time 18 \"http://127.0.0.1:8000$P\")\n  echo \"PI_HTTP $P $CODE\"\n  test \"$CODE\" = 200\ndone\necho ===PI_PREFLIGHT_HEALTHY_NO_CHANGES===\n'\nfor P in / /health; do CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 18 \"https://photomap.pl$P\"); echo \"PUBLIC_HTTP $P $CODE\"; test \"$CODE\" = 200; done\necho ===PR65_PREFLIGHT_PASS==="
+  ]
+}

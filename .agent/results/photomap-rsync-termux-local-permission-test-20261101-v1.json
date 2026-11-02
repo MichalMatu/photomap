@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "f7a379467b78e66080013940",
+  "command_timeout": 120,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1278,
+      "command": "python3 - <<'PY'\nimport tomllib,subprocess,shlex,json\nfrom pathlib import Path\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nscript=r'''set -u\nD=\"$HOME/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data\"\nprintf 'IDS='; id\nprintf 'RSYNC_LOCAL_DRYRUN='; rsync -ani /dev/null \"$D/\" 2>&1; echo \"CODE=$?\"\nprintf 'RSYNC_HOME_DRYRUN='; rsync -ani /dev/null \"$HOME/\" 2>&1; echo \"CODE=$?\"\nprintf 'RSYNC_PWD_DRYRUN='; cd \"$D\" && rsync -ani /dev/null ./ 2>&1; echo \"CODE=$?\"\nprintf 'BIN='; command -v rsync\nprintf 'FILE_SELINUX='; ls -Zd \"$D\" \"$HOME\" 2>/dev/null || true\n'''\nargv=['ssh','-i',str(Path(h['identity_file']).expanduser()),'-p',str(h['port']),'-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=8',str(h['user'])+'@'+str(h['host']),'bash -c '+shlex.quote(script)]\np=subprocess.run(argv,capture_output=True,text=True,timeout=70)\nprint(json.dumps({'code':p.returncode,'out':p.stdout[-8000:],'err':p.stderr[-500:]},ensure_ascii=False))\nPY",
+      "current_rss_mb": 6.14,
+      "elapsed_seconds": 1.287,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 390,
+      "memory_limited": false,
+      "output": "{\"code\": 0, \"out\": \"IDS=uid=10520(u0_a520) gid=10520(u0_a520) groups=10520(u0_a520),3003(inet),9997(everybody),20520(u0_a520_cache),50520(all_a520) context=u:r:untrusted_app_27:s0:c8,c258,c512,c768\\nRSYNC_LOCAL_DRYRUN=rsync: [Receiver] change_dir#1 \\\"/data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data/\\\" failed: Permission denied (13)\\nrsync error: errors selecting input/output files, dirs (code 3) at main.c(768) [Receiver=3.5.0]\\nCODE=3\\nRSYNC_HOME_DRYRUN=rsync: [Receiver] change_dir#1 \\\"/data/data/com.termux/files/home/\\\" failed: Permission denied (13)\\nrsync error: errors selecting input/output files, dirs (code 3) at main.c(768) [Receiver=3.5.0]\\nCODE=3\\nRSYNC_PWD_DRYRUN=rsync: [Receiver] change_dir#1 \\\"/data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data/./\\\" failed: Permission denied (13)\\nrsync error: errors selecting input/output files, dirs (code 3) at main.c(768) [Receiver=3.5.0]\\nCODE=3\\nBIN=/data/data/com.termux/files/usr/bin/rsync\\nFILE_SELINUX=u:object_r:app_data_file:s0:c8,c258,c512,c768 /data/data/com.termux/files/home\\nu:object_r:app_data_file:s0:c8,c258,c512,c768 /data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data\\n\", \"err\": \"\"}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 6.14,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T19:49:04.490471+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.097,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.133,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-rsync-termux-local-permission-test-20261101-v1",
+  "idle_timeout": 100,
+  "memory_limit_mb": 390,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 1.287,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T19:49:00.974168+00:00",
+  "status": "done",
+  "task_digest": "01f6f48d837fd5db1aaa168c287a74cd08b3e209cd2bc082f260394366af025b",
+  "task_timeout": 320,
+  "verification": [],
+  "work_branch": "main"
+}

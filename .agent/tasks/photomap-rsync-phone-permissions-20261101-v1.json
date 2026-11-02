@@ -1,0 +1,18 @@
+{
+  "id": "photomap-rsync-phone-permissions-20261101-v1",
+  "dedupe_key": "photomap-rsync-phone-permissions-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 160,
+  "idle_timeout": 120,
+  "task_timeout": 360,
+  "memory_limit_mb": 360,
+  "commands": [
+    "python3 - <<'PY'\nimport tomllib,subprocess,shlex,json\nfrom pathlib import Path\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nscript=r'''set -u\nprintf 'ID='; id\nprintf 'HOME=%s\\n' \"$HOME\"\nD=\"$HOME/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1\"\nfor P in \"$HOME\" \"$HOME/Projects\" \"$HOME/Projects/PhotoMap\" \"$HOME/Projects/PhotoMap/.dev\" \"$HOME/Projects/PhotoMap/.dev/termux\" \"$D\" \"$D/data\" \"$D/storage\"; do\n  if test -e \"$P\"; then ls -ld \"$P\"; else echo \"ABSENT=$P\"; fi\ndone\npython3 - <<'PY2'\nimport os\nfrom pathlib import Path\np=Path.home()/'Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data'\ntry:\n print('PYTHON_IS_DIR',p.is_dir(),'ACCESS_X',os.access(p,os.X_OK),'ACCESS_W',os.access(p,os.W_OK),'UID',os.getuid())\nexcept Exception as e:print('PYTHON_ERROR',repr(e))\nPY2\n'''\nargv=['ssh','-i',str(Path(h['identity_file']).expanduser()),'-p',str(h['port']),'-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=8',str(h['user'])+'@'+str(h['host']),'bash -c '+shlex.quote(script)]\np=subprocess.run(argv,capture_output=True,text=True,timeout=70)\nprint(json.dumps({'status':p.returncode,'stdout':p.stdout[-5500:],'stderr':p.stderr[-650:]},ensure_ascii=False))\nPY"
+  ]
+}

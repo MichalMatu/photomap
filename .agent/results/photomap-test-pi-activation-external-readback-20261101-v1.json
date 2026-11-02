@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "cac6118e0f95bb52de3b368f",
+  "command_timeout": 200,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 173,
+      "command": "python3 - <<'PY'\nimport subprocess,shlex,json,tomllib\nfrom pathlib import Path\nhosts=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']\nh=hosts['termux-phone']\nkey=Path(h['identity_file']).expanduser()\nknown=Path.home()/'.cache/photomap-rsync-relay-20261101-v1/adb_usb_known_hosts'\nrows=subprocess.run(['adb','devices','-l'],capture_output=True,text=True,timeout=20).stdout.splitlines()[1:]\nusb=[row.split()[0] for row in rows if len(row.split())>1 and row.split()[1]=='device' and ':' not in row.split()[0]]\nprint('USB_COUNT='+str(len(usb)),flush=True)\nassert len(usb)==1 and known.is_file()\nforward=subprocess.run(['adb','-s',usb[0],'forward','tcp:18123','tcp:8022'],capture_output=True,text=True,timeout=20)\nassert forward.returncode==0,forward.stderr\ntry:\n remote=r'''set -u\nDEV=\"$HOME/Projects/PhotoMap/.dev/termux\"\nprintf 'ACTIVE_MARKER='; test -f \"$DEV/pi-import-active-20261101-v1.json\" && echo yes || echo no\nprintf 'BACKUP_EXISTS='; test -d \"$DEV/rollback-prepi-20261101-v1\" && echo yes || echo no\nprintf 'DEV_DB_BYTES='; stat -c %s \"$DEV/data/app.db\" 2>/dev/null || true\nprintf 'STAGED_DB_BYTES='; stat -c %s \"$DEV/import-pi-20261101-v1/data/app.db\" 2>/dev/null || true\nprintf 'DEV_PRIVATE_COUNT='; find \"$DEV/storage/private\" -type f 2>/dev/null|wc -l\nprintf 'DEV_PUBLIC_COUNT='; find \"$DEV/storage/public\" -type f 2>/dev/null|wc -l\nprintf 'STAGED_PRIVATE_COUNT='; find \"$DEV/import-pi-20261101-v1/storage/private\" -type f 2>/dev/null|wc -l\nprintf 'SERVICE='; sv status \"$PREFIX/var/service/photomap-dev\" || true\nfor endpoint in /health /api/places/map /; do printf 'PHOTO_%s=' \"$endpoint\"; curl -sS -m 8 -o /dev/null -w '%{http_code}\\n' \"http://127.0.0.1:8010$endpoint\" || true; done\nprintf 'ILESTOI='; curl -sS -m 8 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8001/api/health/ready || true\n'''\n a=['ssh','-i',str(key),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile='+str(known),'-o','ConnectTimeout=9','-p','18123',str(h['user'])+'@127.0.0.1','bash -c '+shlex.quote(remote)]\n p=subprocess.run(a,capture_output=True,text=True,timeout=110)\n print(json.dumps({'status':p.returncode,'out':p.stdout[-5000:],'err':p.stderr[-700:]},ensure_ascii=False),flush=True)\nfinally:\n subprocess.run(['adb','-s',usb[0],'forward','--remove','tcp:18123'],capture_output=True,timeout=25)\nPY",
+      "current_rss_mb": 15.64,
+      "elapsed_seconds": 4.057,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 350,
+      "memory_limited": false,
+      "output": "USB_COUNT=1\n{\"status\": 255, \"out\": \"\", \"err\": \"No ED25519 host key is known for [127.0.0.1]:18123 and you have requested strict checking.\\nHost key verification failed.\\n\"}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 15.64,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T20:12:48.040924+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.071,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.105,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-test-pi-activation-external-readback-20261101-v1",
+  "idle_timeout": 150,
+  "memory_limit_mb": 350,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 4.057,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T20:12:42.161388+00:00",
+  "status": "done",
+  "task_digest": "c810332cdc92da6ce07b27ee434e7d89a7f0a043e702bf1bbd68499063056f61",
+  "task_timeout": 380,
+  "verification": [],
+  "work_branch": "main"
+}

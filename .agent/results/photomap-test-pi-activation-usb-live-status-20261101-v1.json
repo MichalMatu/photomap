@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "79a1e3e047e1b52f553e9b56",
+  "command_timeout": 190,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 321,
+      "command": "python3 - <<'PY'\nimport subprocess,tomllib,shlex,json\nfrom pathlib import Path\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nkey=Path(h['identity_file']).expanduser()\nknown=Path.home()/'.cache/photomap-rsync-relay-20261101-v1/adb_usb_known_hosts'\nrows=subprocess.run(['adb','devices','-l'],capture_output=True,text=True,timeout=20).stdout.splitlines()[1:]\nusb=[row.split()[0] for row in rows if len(row.split())>=2 and row.split()[1]=='device' and ':' not in row.split()[0]]\nassert len(usb)==1\nf=subprocess.run(['adb','-s',usb[0],'forward','tcp:18122','tcp:8022'],capture_output=True,text=True,timeout=20)\nassert f.returncode==0,f.stderr\ntry:\n remote=r'''set -u\nD=\"$HOME/Projects/PhotoMap/.dev/termux\"\nprintf 'ACTIVE_MARKER='; test -f \"$D/pi-import-active-20261101-v1.json\" && echo yes || echo no\nprintf 'BACKUP='; test -d \"$D/rollback-prepi-20261101-v1/data\" && echo yes || echo no\nprintf 'DB_SIZE='; stat -c %s \"$D/data/app.db\" 2>/dev/null || true\nprintf 'STAGE_DB='; test -f \"$D/import-pi-20261101-v1/data/app.db\" && echo yes || echo no\nprintf 'CURRENT_PRIVATE='; find \"$D/storage/private\" -type f 2>/dev/null|wc -l\nprintf 'CURRENT_PUBLIC='; find \"$D/storage/public\" -type f 2>/dev/null|wc -l\nprintf 'SERVICE='; sv status \"$PREFIX/var/service/photomap-dev\" || true\nfor path in /health /api/places/map /; do printf 'PHOTO_%s=' \"$path\"; curl -sS -m 7 -o /dev/null -w '%{http_code}\\n' \"http://127.0.0.1:8010$path\" || true; done\nprintf 'ILESTOI='; curl -sS -m 7 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8001/api/health/ready || true\n'''\n a=['ssh','-i',str(key),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile='+str(known),'-o','ConnectTimeout=9','-p','18122',str(h['user'])+'@127.0.0.1','bash -c '+shlex.quote(remote)]\n res=subprocess.run(a,capture_output=True,text=True,timeout=95)\n print(json.dumps({'exit':res.returncode,'out':res.stdout[-6500:],'err':res.stderr[-750:]},ensure_ascii=False))\nfinally:\n subprocess.run(['adb','-s',usb[0],'forward','--remove','tcp:18122'],capture_output=True,timeout=20)\nPY",
+      "current_rss_mb": 11.77,
+      "elapsed_seconds": 4.046,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 350,
+      "memory_limited": false,
+      "output": "{\"exit\": 0, \"out\": \"ACTIVE_MARKER=no\\nBACKUP=no\\nDB_SIZE=200704\\nSTAGE_DB=yes\\nCURRENT_PRIVATE=0\\nCURRENT_PUBLIC=0\\nSERVICE=run: /data/data/com.termux/files/usr/var/service/photomap-dev: (pid 11771) 6324s; run: log: (pid 11769) 6324s\\nPHOTO_/health=200\\nPHOTO_/api/places/map=200\\nPHOTO_/=200\\nILESTOI=200\\n\", \"err\": \"\"}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 11.77,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T20:14:10.244090+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.23,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 1.412,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-test-pi-activation-usb-live-status-20261101-v1",
+  "idle_timeout": 145,
+  "memory_limit_mb": 350,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 4.046,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T20:14:02.944903+00:00",
+  "status": "done",
+  "task_digest": "e464b19d212fb82498612000718627846e93a875aa3719107643369b7cf54ffc",
+  "task_timeout": 370,
+  "verification": [],
+  "work_branch": "main"
+}

@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "7f58b9166770cbeed442b026",
+  "command_timeout": 190,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 3056,
+      "command": "python3 - <<'PY'\nimport subprocess,tomllib,shlex,json\nfrom pathlib import Path\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nkey=Path(h['identity_file']).expanduser()\nknown=Path.home()/'.cache/photomap-rsync-relay-20261101-v1/adb_usb_known_hosts'\nrows=subprocess.run(['adb','devices','-l'],capture_output=True,text=True,timeout=25).stdout.splitlines()[1:]\nusb=[r.split()[0] for r in rows if len(r.split())>=2 and r.split()[1]=='device' and ':' not in r.split()[0]]\nassert len(usb)==1\nf=subprocess.run(['adb','-s',usb[0],'forward','tcp:18122','tcp:8022'],capture_output=True,text=True,timeout=20)\nassert f.returncode==0\ntry:\n remote=r'''set -u\nD=\"$HOME/Projects/PhotoMap/.dev/termux\"\nSVC=\"$PREFIX/var/service/photomap-dev\"\nprintf 'SERVICE_LINK='; readlink \"$SVC\"\nprintf 'SERVICE_STATUS='; sv status \"$SVC\" || true\nprintf 'PROCESS_MATCH_BEGIN\\n'\nps -A -o pid,ppid,stat,comm,args 2>/dev/null | grep -E 'photomap-dev|/mnt/server.py|proot-distro|proot|8010' | grep -v 'grep -E' | head -n 32 || true\nprintf 'PROCESS_MATCH_END\\n'\nprintf 'LISTEN_8010_BEGIN\\n'; ss -tlpn 2>/dev/null | grep ':8010' || true; printf 'LISTEN_8010_END\\n'\nprintf 'DB_BYTES='; stat -c %s \"$D/data/app.db\"\nprintf 'BACKUP_EXISTS='; test -d \"$D/rollback-prepi-20261101-v1\" && echo yes || echo no\nprintf 'STAGE_DB='; test -f \"$D/import-pi-20261101-v1/data/app.db\" && echo yes || echo no\nprintf 'PHOTO_HTTP='; curl -sS -m 7 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8010/health\nprintf 'ILESTOI_HTTP='; curl -sS -m 7 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8001/api/health/ready\n'''\n args=['ssh','-i',str(key),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile='+str(known),'-o','ConnectTimeout=9','-p','18122',str(h['user'])+'@127.0.0.1','bash -c '+shlex.quote(remote)]\n p=subprocess.run(args,capture_output=True,text=True,timeout=75)\n print(json.dumps({'rc':p.returncode,'out':p.stdout[-6000:],'err':p.stderr[-700:]},ensure_ascii=False))\nfinally:\n subprocess.run(['adb','-s',usb[0],'forward','--remove','tcp:18122'],capture_output=True,timeout=20)\nPY",
+      "current_rss_mb": 20.92,
+      "elapsed_seconds": 2.799,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 380,
+      "memory_limited": false,
+      "output": "{\"rc\": 0, \"out\": \"SERVICE_LINK=/data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/process/runit/photomap-dev\\nSERVICE_STATUS=run: /data/data/com.termux/files/usr/var/service/photomap-dev: (pid 11771) 6780s, got TERM; run: log: (pid 11769) 6780s\\nPROCESS_MATCH_BEGIN\\n11768 20401 S    runsv           runsv photomap-dev\\n11771 11768 S    /data/data/com. /data/data/com.termux/files/usr/bin/proot --kill-on-exit --link2symlink --sysvipc --kernel-release=\\\\Linux\\\\localhost\\\\6.17.0-PRoot-Distro\\\\#1 SMP PREEMPT_DYNAMIC Fri, 10 Oct 2025 00:00:00 +0000\\\\aarch64\\\\localdomain\\\\-1\\\\ -L --change-id=0:0 --rootfs=. --cwd=/root --bind=/dev --bind=/proc --bind=/sys --bind=/dev/urandom:/dev/random --bind=/data/data/com.termux/files/usr/var/lib/proot-distro/containers/photomap-dev/sysdata/sys_empty:/sys/fs/selinux --bind=/data/data/com.termux/files/usr/var/lib/proot-distro/containers/photomap-dev/sysdata/loadavg:/proc/loadavg --bind=/data/data/com.termux/files/usr/var/lib/proot-distro/containers/photomap-dev/sysdata/stat:/proc/stat --bind=/data/data/com.termux/files/usr/var/lib/proot-distro/containers/photomap-dev/sysdata/uptime:/proc/uptime --bind=/data/data/com.termux/files/usr/var/lib/proot-distro/containers/photomap-dev/sysdata/version:/proc/version --bind=/data/data/com.termux/files/usr/var/lib/proot-distro/containers/photomap-dev/sysdata/vmstat:/proc/vmstat --bind=/data/data/com.termux/files/usr/var/lib/proot-distro/containers/photomap-dev/sysdata/sysctl_entry_cap_last_cap:/proc/sys/kernel/cap_last_cap --bind=/data/data/com.termux/files/usr/var/lib/proot-distro/containers/photomap-dev/sysdata/sysctl_inotify_max_user_watches:/proc/sys/fs/inotify/max_user_watches --bind=/data/data/com.termux/files/usr/var/lib/proot-distro/containers/photomap-dev/sysdata/sysctl_kernel_overflowuid:/proc/sys/kernel/overflowuid --bind=/data/data/com.termux/files/usr/var/lib/proot-distro/containers/photomap-dev/sysdata/sysctl_kernel_overflowgid:/proc/sys/kernel/overflowgid --bind=/data/data/com.termux/files/usr/var/lib/proot-distro/containers/photomap-dev/shm:/dev/shm --bind=/data/data/com.termux/files/home/Projects/PhotoMap:/mnt /bin/bash -c /bin/sh -c '       set -eu       test -x /opt/photomap-venv/bin/python || { echo \\\"Isolated Debian backend is not ready.\\\" >&2; exit 3; }       export PHOTOMAP_ENV=development       export PHOTOMAP_DATA_DIR=/mnt/.dev/termux/data       export DATABASE_URL=sqlite:////mnt/.dev/termux/data/app.db       export PHOTOMAP_STORAGE_DIR=/mnt/.dev/termux/storage       export PHOTOMAP_SERVER_HOST=127.0.0.1       export PHOTOMAP_SERVER_PORT=8010       export FRONTEND_ORIGINS=http://127.0.0.1:8010,http://localhost:8010       ADMIN_TOKEN=\\\"$(cat /mnt/.dev/termux/admin-token)\\\"       export ADMIN_TOKEN       cd /mnt       exec /opt/photomap-venv/bin/python /mnt/server.py     '\\n11778 11771 Sl   /opt/photomap-v /opt/photomap-venv/bin/python /mnt/server.py\\nPROCESS_MATCH_END\\nLISTEN_8010_BEGIN\\nLISTEN_8010_END\\nDB_BYTES=200704\\nBACKUP_EXISTS=yes\\nSTAGE_DB=yes\\nPHOTO_HTTP=200\\nILESTOI_HTTP=200\\n\", \"err\": \"\"}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 20.92,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T20:21:43.484718+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.069,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.076,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-termux-runit-proot-process-audit-20261101-v1",
+  "idle_timeout": 140,
+  "memory_limit_mb": 380,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 2.799,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T20:21:38.736903+00:00",
+  "status": "done",
+  "task_digest": "fd6537c065e2324a9ff797cdeaeb64cac1c3d7d39cf0e76a3eb25fed9f6ea5ad",
+  "task_timeout": 380,
+  "verification": [],
+  "work_branch": "main"
+}

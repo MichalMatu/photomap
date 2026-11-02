@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "5f10c1db7a7c3764a6275e6b",
+  "command_timeout": 120,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 242,
+      "command": "set -eu\nD=\"$HOME/.cache/photomap-rsync-relay-20261101-v1\"\nif test ! -d \"$D\"; then echo STAGING_ABSENT; exit 0; fi\ndate -u '+FIRST_TIME=%Y-%m-%dT%H:%M:%SZ'\nA=$(du -sk \"$D\" | awk '{print $1}')\nF=$(find \"$D/storage\" -type f | wc -l | tr -d ' ')\necho FIRST_KIB=$A FIRST_FILES=$F\nsleep 22\ndate -u '+SECOND_TIME=%Y-%m-%dT%H:%M:%SZ'\nB=$(du -sk \"$D\" | awk '{print $1}')\nG=$(find \"$D/storage\" -type f | wc -l | tr -d ' ')\necho SECOND_KIB=$B SECOND_FILES=$G\necho GROWTH_KIB=$((B-A)) GROWTH_FILES=$((G-F))\nps -axo pid,etime,comm | grep -E 'rsync|ssh' | head -n 12 || true\n",
+      "current_rss_mb": 1.42,
+      "elapsed_seconds": 22.446,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 350,
+      "memory_limited": false,
+      "output": "FIRST_TIME=2026-11-01T19:33:23Z\nFIRST_KIB=3526080 FIRST_FILES=875\nSECOND_TIME=2026-11-01T19:33:45Z\nSECOND_KIB=3576056 SECOND_FILES=898\nGROWTH_KIB=49976 GROWTH_FILES=23\n 2411 04:37:51 /usr/bin/ssh-agent\n97513    28:21 rsync\n97514    28:21 ssh\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 1.94,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T19:33:46.213824+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.111,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.437,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-rsync-growth-probe-20261101-v2",
+  "idle_timeout": 100,
+  "memory_limit_mb": 350,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 22.446,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T19:33:21.784138+00:00",
+  "status": "done",
+  "task_digest": "ed7d91f0472f99bd4152a240eef9469c52051e20ac5f6dfd1b067db49a30bb12",
+  "task_timeout": 300,
+  "verification": [],
+  "work_branch": "main"
+}

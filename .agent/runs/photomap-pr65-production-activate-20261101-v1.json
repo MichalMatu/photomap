@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-pr65-production-activate-20261101-v1",
+  "task_digest": "09a14daf31313049bc0e6daeb0ee4c78550850ccedb28cfb9c4737733d9d3ace",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T15:31:17.340990+00:00",
+  "attempt_id": "72b65f5e830e1ea587b1f9dc",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 45921,
+  "updated_at": "2026-11-01T15:31:17.593680+00:00",
+  "pid": 45921
+}

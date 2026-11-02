@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-pr65-prod-preflight-20261101-v1",
+  "task_digest": "305af188c2fdd86ad9c26d32d6386d1688d5415e43c91c254ee514a7504d241d",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T15:25:48.333012+00:00",
+  "attempt_id": "d3c481451b82afff86aab7f9",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 40413,
+  "updated_at": "2026-11-01T15:25:48.760256+00:00",
+  "pid": 40413
+}

@@ -1,0 +1,18 @@
+{
+  "id": "photomap-map-intro-polish-prod-prepare-20261101-v1",
+  "dedupe_key": "photomap-map-intro-polish-prod-prepare-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 1600,
+  "idle_timeout": 700,
+  "task_timeout": 2300,
+  "memory_limit_mb": 2900,
+  "commands": [
+    "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/prod-map-intro-polish-20261101\nSSH_KEY=/Users/michal/.ssh/id_ed25519\nPI=michal@192.168.0.23\nTARGET=373d45dbaa7fa18ca7d37f32c75b1808f17bbcd0\ncd \"$ROOT\"\ngit fetch origin main\ntest \"$(git rev-parse FETCH_HEAD)\" = \"$TARGET\"\ntest ! -e \"$TREE\"\ngit worktree add --detach \"$TREE\" \"$TARGET\"\ncd \"$TREE\"\ntest -z \"$(git status --porcelain)\"\ncd frontend\nnpm ci --prefer-offline --no-audit --no-fund\nVITE_API_BASE_URL= npm run build\ntest -s dist/index.html\nprintf 'RELEASE_INDEX_SHA256='\nshasum -a 256 dist/index.html\nprintf 'RELEASE_JS='\ngrep -o '/assets/[^\"]*\\.js' dist/index.html | head -3\ndu -sh dist\ncd \"$TREE\"\ntest \"$(git rev-parse HEAD)\" = \"$TARGET\"\ntest -z \"$(git status --porcelain)\"\necho ===BUILT_RELEASE_PASS===\nssh -i \"$SSH_KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=10 \"$PI\" '\nset -eu\ncd /home/michal/src/PhotoMaps\ntest \"$(git branch --show-current)\" = main\ntest \"$(git rev-parse HEAD)\" = a87d08c4f59cb4f7988e4e68b407072f25876b4e\ntest -z \"$(git status --porcelain)\"\nsystemctl is-active --quiet photomap.service\nsystemctl is-active --quiet cloudflared.service\nBEFORE_PID=$(systemctl show photomap.service -p MainPID --value)\ntest \"$BEFORE_PID\" -gt 0\ncurl -fsS --max-time 12 http://127.0.0.1:8000/health >/dev/null\nawk \"/^MemAvailable:/ {print \\\"MEM_AVAILABLE_KB=\\\" \\$2; if (\\$2 < 80000) exit 2}\" /proc/meminfo\nawk \"/^SwapFree:/ {print \\\"SWAP_FREE_KB=\\\" \\$2; if (\\$2 < 95000) exit 2}\" /proc/meminfo\ndf -Pk . | awk \"NR==2 {print \\\"DISK_FREE_KB=\\\" \\$4; if (\\$4 < 80000) exit 2}\"\nBACKUP=.dev/deploy/2026-11-01-polished-map-intro-373d45d\ntest ! -e \"$BACKUP\"\nmkdir -p \"$BACKUP\"\ncp -a frontend/dist \"$BACKUP/dist-before\"\npython3 - \"$BACKUP\" << \"PY\"\nimport sqlite3,sys\nfrom pathlib import Path\nsrc=Path(\"backend/data/app.db\")\nif not src.is_file(): raise SystemExit(\"PRODUCTION_DB_NOT_FOUND\")\nconn=sqlite3.connect(f\"file:{src}?mode=ro\",uri=True)\nif conn.execute(\"PRAGMA quick_check\").fetchone()[0]!=\"ok\": raise SystemExit(\"DB_BAD\")\ndst=sqlite3.connect(Path(sys.argv[1])/\"app-before.db\")\nconn.backup(dst,pages=64,sleep=0.15)\nif dst.execute(\"PRAGMA quick_check\").fetchone()[0]!=\"ok\": raise SystemExit(\"BACKUP_BAD\")\ndst.close()\nconn.close()\nprint(\"BACKUP_DB_BYTES=\"+str((Path(sys.argv[1])/\"app-before.db\").stat().st_size))\nPY\ntest -s \"$BACKUP/app-before.db\"\ntest -s \"$BACKUP/dist-before/index.html\"\necho a87d08c4f59cb4f7988e4e68b407072f25876b4e > \"$BACKUP/source-before.sha\"\necho \"$BEFORE_PID\" > \"$BACKUP/backend-pid-before\"\ngit fetch origin main\ntest \"$(git rev-parse origin/main)\" = 373d45dbaa7fa18ca7d37f32c75b1808f17bbcd0\ngit merge --ff-only origin/main\ntest \"$(git rev-parse HEAD)\" = 373d45dbaa7fa18ca7d37f32c75b1808f17bbcd0\ntest -z \"$(git status --porcelain)\"\ntest \"$(systemctl show photomap.service -p MainPID --value)\" = \"$BEFORE_PID\"\necho \"PI_SOURCE=$(git rev-parse HEAD)\"\necho \"PI_PID=$BEFORE_PID\"\necho \"BACKUP=$BACKUP\"\necho ===PI_BACKUP_AND_SOURCE_FAST_FORWARD_PASS===\n'"
+  ]
+}

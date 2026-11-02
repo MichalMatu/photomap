@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "dc7b9523f3063feeb8fb3500",
+  "command_timeout": 160,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1224,
+      "command": "python3 - <<'PY'\nimport tomllib,subprocess,shlex,json\nfrom pathlib import Path\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nscript=r'''set -u\nprintf 'ID='; id\nprintf 'HOME=%s\\n' \"$HOME\"\nD=\"$HOME/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1\"\nfor P in \"$HOME\" \"$HOME/Projects\" \"$HOME/Projects/PhotoMap\" \"$HOME/Projects/PhotoMap/.dev\" \"$HOME/Projects/PhotoMap/.dev/termux\" \"$D\" \"$D/data\" \"$D/storage\"; do\n  if test -e \"$P\"; then ls -ld \"$P\"; else echo \"ABSENT=$P\"; fi\ndone\npython3 - <<'PY2'\nimport os\nfrom pathlib import Path\np=Path.home()/'Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data'\ntry:\n print('PYTHON_IS_DIR',p.is_dir(),'ACCESS_X',os.access(p,os.X_OK),'ACCESS_W',os.access(p,os.W_OK),'UID',os.getuid())\nexcept Exception as e:print('PYTHON_ERROR',repr(e))\nPY2\n'''\nargv=['ssh','-i',str(Path(h['identity_file']).expanduser()),'-p',str(h['port']),'-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=8',str(h['user'])+'@'+str(h['host']),'bash -c '+shlex.quote(script)]\np=subprocess.run(argv,capture_output=True,text=True,timeout=70)\nprint(json.dumps({'status':p.returncode,'stdout':p.stdout[-5500:],'stderr':p.stderr[-650:]},ensure_ascii=False))\nPY",
+      "current_rss_mb": 1.94,
+      "elapsed_seconds": 1.612,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 360,
+      "memory_limited": false,
+      "output": "{\"status\": 0, \"stdout\": \"ID=uid=10520(u0_a520) gid=10520(u0_a520) groups=10520(u0_a520),3003(inet),9997(everybody),20520(u0_a520_cache),50520(all_a520) context=u:r:untrusted_app_27:s0:c8,c258,c512,c768\\nHOME=/data/data/com.termux/files/home\\ndrwx------. 23 u0_a520 u0_a520 3452 Nov  1 16:00 /data/data/com.termux/files/home\\ndrwx------. 3 u0_a520 u0_a520 3452 Nov  1 12:32 /data/data/com.termux/files/home/Projects\\ndrwx------. 13 u0_a520 u0_a520 3452 Nov  1 19:12 /data/data/com.termux/files/home/Projects/PhotoMap\\ndrwx------. 3 u0_a520 u0_a520 3452 Nov  1 13:05 /data/data/com.termux/files/home/Projects/PhotoMap/.dev\\ndrwx------. 9 u0_a520 u0_a520 3452 Nov  1 20:44 /data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux\\ndrwx------. 4 u0_a520 u0_a520 3452 Nov  1 20:44 /data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1\\ndrwx------. 2 u0_a520 u0_a520 3452 Nov  1 20:44 /data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/data\\ndrwx------. 4 u0_a520 u0_a520 3452 Nov  1 20:44 /data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1/storage\\nPYTHON_IS_DIR True ACCESS_X True ACCESS_W True UID 10520\\n\", \"stderr\": \"\"}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 1.94,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T19:47:19.251554+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.085,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.101,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-rsync-phone-permissions-20261101-v1",
+  "idle_timeout": 120,
+  "memory_limit_mb": 360,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 1.612,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T19:47:16.097484+00:00",
+  "status": "done",
+  "task_digest": "b8ab3115da7a423ec2dfeda710c806f81e07ae32bfc99313f61f8c79b9e54db6",
+  "task_timeout": 360,
+  "verification": [],
+  "work_branch": "main"
+}

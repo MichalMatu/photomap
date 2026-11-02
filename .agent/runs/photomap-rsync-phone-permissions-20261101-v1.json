@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-rsync-phone-permissions-20261101-v1",
+  "task_digest": "b8ab3115da7a423ec2dfeda710c806f81e07ae32bfc99313f61f8c79b9e54db6",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T19:47:19.251554+00:00",
+  "attempt_id": "dc7b9523f3063feeb8fb3500",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 46928,
+  "updated_at": "2026-11-01T19:47:19.498352+00:00",
+  "pid": 46928
+}

@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "b0837abccb6c95d70cb83ef7",
+  "command_timeout": 180,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 276,
+      "command": "python3 - <<'PY'\nimport os,json,tomllib,subprocess,shlex\nfrom pathlib import Path\nstage=Path.home()/'.cache/photomap-rsync-relay-20261101-v1'\nprint('MAC_RELAY_ABSENT='+str(not stage.exists() and not stage.is_symlink()),flush=True)\nassert not stage.exists() and not stage.is_symlink()\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['pi-zero']\nscript=r'''set -u\nROOT=/home/michal/src/PhotoMaps\nprintf 'PI_EXPORT_ABSENT='; if test ! -e \"$ROOT/.dev/rsync-export-20261101-v1\"; then echo yes; else echo no; fi\nprintf 'PI_PRODUCTION_DB_PRESENT='; test -s \"$ROOT/backend/data/app.db\" && echo yes || echo no\nprintf 'PI_PRIVATE_COUNT='; find \"$ROOT/backend/storage/private\" -type f 2>/dev/null | wc -l\nprintf 'PI_PUBLIC_COUNT='; find \"$ROOT/backend/storage/public\" -type f 2>/dev/null | wc -l\nprintf 'PI_PROD_HEALTH='; curl -sS --max-time 9 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8000/health || true\nprintf 'PI_PHOTOMAP_SYSTEMD='; systemctl is-active photomap.service || true\nprintf 'PI_CLOUDFLARED='; systemctl is-active cloudflared.service || true\nprintf 'PI_GIT_HEAD='; git -C \"$ROOT\" rev-parse --short HEAD || true\nprintf 'PI_GIT_DIRTY_COUNT='; git -C \"$ROOT\" status --porcelain=v1 | wc -l\n'''\nargv=['ssh','-i',str(Path(h['identity_file']).expanduser()),'-p',str(h['port']),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=10',str(h['user'])+'@'+str(h['host']),'bash -c '+shlex.quote(script)]\np=subprocess.run(argv,capture_output=True,text=True,timeout=70)\nprint('PI_FINAL='+json.dumps({'exit':p.returncode,'out':p.stdout[-2600:],'err':p.stderr[-800:]},ensure_ascii=False),flush=True)\nassert p.returncode==0 and 'PI_EXPORT_ABSENT=yes' in p.stdout and 'PI_PROD_HEALTH=200' in p.stdout and 'PI_PHOTOMAP_SYSTEMD=active' in p.stdout and 'PI_CLOUDFLARED=active' in p.stdout\nPY",
+      "current_rss_mb": 12.59,
+      "elapsed_seconds": 2.394,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 400,
+      "memory_limited": false,
+      "output": "MAC_RELAY_ABSENT=True\nPI_FINAL={\"exit\": 0, \"out\": \"PI_EXPORT_ABSENT=yes\\nPI_PRODUCTION_DB_PRESENT=yes\\nPI_PRIVATE_COUNT=1098\\nPI_PUBLIC_COUNT=1098\\nPI_PROD_HEALTH=200\\nPI_PHOTOMAP_SYSTEMD=active\\nPI_CLOUDFLARED=active\\nPI_GIT_HEAD=deaa562\\nPI_GIT_DIRTY_COUNT=0\\n\", \"err\": \"\"}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 12.59,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T20:47:48.900989+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.087,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.112,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-final-production-and-mac-clean-readback-20261101-v1",
+  "idle_timeout": 100,
+  "memory_limit_mb": 400,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 2.394,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T20:47:43.135892+00:00",
+  "status": "done",
+  "task_digest": "52dafd9a0e692afee01b7dad6eb29adcc268c74481d4de78cf1d013472125e14",
+  "task_timeout": 360,
+  "verification": [],
+  "work_branch": "main"
+}

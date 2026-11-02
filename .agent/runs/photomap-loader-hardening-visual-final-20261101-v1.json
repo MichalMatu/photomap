@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-loader-hardening-visual-final-20261101-v1",
+  "task_digest": "44746f14584f6b47b2605607ab3e131c90ce315723368216131af5af3345507c",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-01T15:17:01.808390+00:00",
+  "attempt_id": "12de1c54d9722867c07735f4",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 28818,
+  "updated_at": "2026-11-01T15:17:02.218908+00:00",
+  "pid": 28818
+}

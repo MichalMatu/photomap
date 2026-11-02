@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "0278c4e6a80ba16cd49b8b5c",
+  "command_timeout": 200,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 368,
+      "command": "python3 - <<'PY'\nimport subprocess,json,shutil,re\nif not shutil.which('adb'):\n print('ADB_NOT_INSTALLED')\n raise SystemExit(0)\np=subprocess.run(['adb','devices','-l'],capture_output=True,text=True,timeout=28)\nprint('ADB_EXIT',p.returncode)\nrows=[line.strip().split() for line in p.stdout.splitlines()[1:] if line.strip()]\nprint('ADB_DEVICE_COUNT',len(rows))\nfor i,row in enumerate(rows):\n if len(row)<2: continue\n serial,state=row[0],row[1]\n is_network=':' in serial\n print(json.dumps({'device':i,'connected':state=='device','transport':'network' if is_network else 'usb','state':state,'model':next((v.split(':',1)[1] for v in row[2:] if v.startswith('model:')),None)}))\n if state=='device':\n  q=subprocess.run(['adb','-s',serial,'shell','sh','-c','echo ADB_SHELL_READY; ls -ld /sdcard/Download; if test -w /sdcard/Download; then echo DOWNLOAD_WRITABLE=yes; else echo DOWNLOAD_WRITABLE=no; fi'],capture_output=True,text=True,timeout=35)\n  print(json.dumps({'device':i,'probe_rc':q.returncode,'out':q.stdout[-1500:],'err':q.stderr[-400:]},ensure_ascii=False))\nPY",
+      "current_rss_mb": 2.28,
+      "elapsed_seconds": 0.683,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 400,
+      "memory_limited": false,
+      "output": "ADB_EXIT 0\nADB_DEVICE_COUNT 2\n{\"device\": 0, \"connected\": true, \"transport\": \"usb\", \"state\": \"device\", \"model\": \"SM_S906B\"}\n{\"device\": 0, \"probe_rc\": 0, \"out\": \"\\ndrwxrws--- 2 u0_a293 media_rw 4096 2026-11-01 01:03 /sdcard/Download\\nDOWNLOAD_WRITABLE=yes\\n\", \"err\": \"\"}\n{\"device\": 1, \"connected\": false, \"transport\": \"network\", \"state\": \"offline\", \"model\": \"SM_S906B\"}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 2.28,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T19:57:47.009853+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.069,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.089,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-adb-usb-transfer-preflight-20261101-v1",
+  "idle_timeout": 150,
+  "memory_limit_mb": 400,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.683,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T19:57:44.585809+00:00",
+  "status": "done",
+  "task_digest": "1942def16a37059a3e4562e1fbdbfb284190f10d5e5b6de0ec35d83d28038378",
+  "task_timeout": 420,
+  "verification": [],
+  "work_branch": "main"
+}

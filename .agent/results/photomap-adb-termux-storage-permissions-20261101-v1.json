@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "3e99dcb8e32027c541b847d1",
+  "command_timeout": 140,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 2910,
+      "command": "python3 - <<'PY'\nimport subprocess,shutil,json\nrows=subprocess.run(['adb','devices','-l'],capture_output=True,text=True,timeout=25).stdout.splitlines()[1:]\nusb=[r.split()[0] for r in rows if len(r.split())>=2 and r.split()[1]=='device' and ':' not in r.split()[0]]\nassert len(usb)==1,len(usb)\nserial=usb[0]\nfor label,cmd in [('RUN_AS',['shell','run-as','com.termux','id']),('DOWNLOAD',['shell','sh','-c','stat -c \"%A %u %g\" /sdcard/Download; command -v sha256sum || true']),('STORAGE_APP',['shell','sh','-c','pm list packages com.termux; dumpsys package com.termux | grep -m 3 -E \"MANAGE_EXTERNAL_STORAGE|READ_MEDIA_IMAGES|READ_EXTERNAL_STORAGE\" || true'])]:\n p=subprocess.run(['adb','-s',serial,*cmd],capture_output=True,text=True,timeout=45)\n print(json.dumps({'label':label,'exit':p.returncode,'stdout':p.stdout[-2500:],'stderr':p.stderr[-500:]},ensure_ascii=False))\nPY",
+      "current_rss_mb": 2.23,
+      "elapsed_seconds": 1.108,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 400,
+      "memory_limited": false,
+      "output": "{\"label\": \"RUN_AS\", \"exit\": 1, \"stdout\": \"\", \"stderr\": \"run-as: package not debuggable: com.termux\\n\"}\n{\"label\": \"DOWNLOAD\", \"exit\": 0, \"stdout\": \"/system/bin/sha256sum\\n\", \"stderr\": \"stat: Needs 1 argument (see \\\"stat --help\\\")\\n\"}\n{\"label\": \"STORAGE_APP\", \"exit\": 0, \"stdout\": \"...]\\n    [--ed <EXTRA_KEY> <EXTRA_DOUBLE_VALUE> ...]\\n    [--eu <EXTRA_KEY> <EXTRA_URI_VALUE> ...]\\n    [--ecn <EXTRA_KEY> <EXTRA_COMPONENT_NAME_VALUE>]\\n    [--eia <EXTRA_KEY> <EXTRA_INT_VALUE>[,<EXTRA_INT_VALUE...]]\\n        (multiple extras passed as Integer[])\\n    [--eial <EXTRA_KEY> <EXTRA_INT_VALUE>[,<EXTRA_INT_VALUE...]]\\n        (multiple extras passed as List<Integer>)\\n    [--ela <EXTRA_KEY> <EXTRA_LONG_VALUE>[,<EXTRA_LONG_VALUE...]]\\n        (multiple extras passed as Long[])\\n    [--elal <EXTRA_KEY> <EXTRA_LONG_VALUE>[,<EXTRA_LONG_VALUE...]]\\n        (multiple extras passed as List<Long>)\\n    [--efa <EXTRA_KEY> <EXTRA_FLOAT_VALUE>[,<EXTRA_FLOAT_VALUE...]]\\n        (multiple extras passed as Float[])\\n    [--efal <EXTRA_KEY> <EXTRA_FLOAT_VALUE>[,<EXTRA_FLOAT_VALUE...]]\\n        (multiple extras passed as List<Float>)\\n    [--eda <EXTRA_KEY> <EXTRA_DOUBLE_VALUE>[,<EXTRA_DOUBLE_VALUE...]]\\n        (multiple extras passed as Double[])\\n    [--edal <EXTRA_KEY> <EXTRA_DOUBLE_VALUE>[,<EXTRA_DOUBLE_VALUE...]]\\n        (multiple extras passed as List<Double>)\\n    [--esa <EXTRA_KEY> <EXTRA_STRING_VALUE>[,<EXTRA_STRING_VALUE...]]\\n        (multiple extras passed as String[]; to embed a comma into a string,\\n         escape it using \\\"\\\\,\\\")\\n    [--esal <EXTRA_KEY> <EXTRA_STRING_VALUE>[,<EXTRA_STRING_VALUE...]]\\n        (multiple extras passed as List<String>; to embed a comma into a string,\\n         escape it using \\\"\\\\,\\\")\\n    [-f <FLAG>]\\n    [--grant-read-uri-permission] [--grant-write-uri-permission]\\n    [--grant-persistable-uri-permission] [--grant-prefix-uri-permission]\\n    [--debug-log-resolution] [--exclude-stopped-packages]\\n    [--include-stopped-packages]\\n    [--activity-brought-to-front] [--activity-clear-top]\\n    [--activity-clear-when-task-reset] [--activity-exclude-from-recents]\\n    [--activity-launched-from-history] [--activity-multiple-task]\\n    [--activity-no-animation] [--activity-no-history]\\n    [--activity-no-user-action] [--activity-previous-is-top]\\n    [--activity-reorder-to-front] [--activity-reset-task-if-needed]\\n    [--activity-single-top] [--activity-clear-task]\\n    [--activity-task-on-home] [--activity-match-external]\\n    [--receiver-registered-only] [--receiver-replace-pending]\\n    [--receiver-foreground] [--receiver-no-abort]\\n    [--receiver-include-background]\\n    [--selector]\\n    [<URI> | <PACKAGE> | <COMPONENT>]\\n      android.permission.MANAGE_EXTERNAL_STORAGE\\n      android.permission.READ_EXTERNAL_STORAGE\\n      android.permission.READ_MEDIA_IMAGES\\n\", \"stderr\": \"Failed to write while dumping service package: Broken pipe\\n\"}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 2.23,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T19:58:59.634695+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.071,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.099,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-adb-termux-storage-permissions-20261101-v1",
+  "idle_timeout": 100,
+  "memory_limit_mb": 400,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 1.108,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T19:58:56.969367+00:00",
+  "status": "done",
+  "task_digest": "acf71d627dc41d0a63f9689bb42fe10f446de944b5c63bd3289e35c862d53768",
+  "task_timeout": 280,
+  "verification": [],
+  "work_branch": "main"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "photomap-four-leftover-branches-cleanup-20261101-v1",
+  "dedupe_key": "photomap-four-leftover-branches-cleanup-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 900,
+  "idle_timeout": 420,
+  "task_timeout": 1200,
+  "memory_limit_mb": 650,
+  "commands": [
+    "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nMAIN=c0be5094789730d8bf013fec3baff262e8b1f006\ngit -C \"$ROOT\" fetch origin main\ntest \"$(git -C \"$ROOT\" rev-parse origin/main)\" = \"$MAIN\"\ntest \"$(git -C \"$ROOT\" show \"$MAIN:docs/termux-dev.md\" | git hash-object --stdin)\" = ee4dda9cf07eb37c11f3d18c6726cabb31b0e072\ntest \"$(git -C \"$ROOT\" show \"$MAIN:scripts/termux-dev.sh\" | git hash-object --stdin)\" = d5727f5672865ab2092b56d30aaae8d8ae799866\necho ===TERMUX_CONTENT_VERIFIED_IN_MAIN===\nfor PR in 45 46 66; do\n echo \"HISTORICAL_PR_RETAINED=$PR\"\ndone\nwhile read -r BRANCH SHA; do\n  case \"$BRANCH\" in main|agent-control) echo \"REF_PROTECTED\"; exit 8;; esac\n  ACTUAL=$(git -C \"$ROOT\" ls-remote --heads origin \"refs/heads/$BRANCH\" | cut -f1)\n  test \"$ACTUAL\" = \"$SHA\"\n  echo \"SAFE_REF=$BRANCH\"\ndone <<'REFS'\ndev/distributed-verify-v1 3b62769b81de5d14b3b5da94d529f8a7425cd7d3\nwork/editorial-quality-flow-20261027 76e62577c5f7665e5b0f8b4cd0a7cce874663bf5\nwork/photo-visual-quality-audit-20261027 7a2a09160f9122b2dcd57d83d482d44a2d9e7ffe\nwork/termux-dev-runtime b84a1e7eea183f8a6e59226b398729d16edb3b9b\nchore/termux-dev-helper-consolidation-20261101 c8e73e3000496921310a25180e792061280b0bcd\nREFS\necho ===ALL_SHA_GUARDS_PASS===\nwhile read -r BRANCH SHA; do\n  ACTUAL=$(git -C \"$ROOT\" ls-remote --heads origin \"refs/heads/$BRANCH\" | cut -f1)\n  test \"$ACTUAL\" = \"$SHA\"\n  git -C \"$ROOT\" push origin --delete \"$BRANCH\"\n  echo \"DELETED=$BRANCH\"\ndone <<'REFS'\ndev/distributed-verify-v1 3b62769b81de5d14b3b5da94d529f8a7425cd7d3\nwork/editorial-quality-flow-20261027 76e62577c5f7665e5b0f8b4cd0a7cce874663bf5\nwork/photo-visual-quality-audit-20261027 7a2a09160f9122b2dcd57d83d482d44a2d9e7ffe\nwork/termux-dev-runtime b84a1e7eea183f8a6e59226b398729d16edb3b9b\nchore/termux-dev-helper-consolidation-20261101 c8e73e3000496921310a25180e792061280b0bcd\nREFS\ntest \"$(git -C \"$ROOT\" ls-remote --heads origin | wc -l | tr -d ' ')\" = 2\ngit -C \"$ROOT\" ls-remote --exit-code --heads origin refs/heads/main refs/heads/agent-control\necho ===PHOTO_MAP_CLEAN_ONLY_MAIN_AND_AGENT_CONTROL_PASS==="
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-termux-helper-consolidation-qa-20261101-v1",
+  "task_digest": "0048d77573a96b21e577ce1f3f67564877f54a29352d964c2b6260b393755ebb",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T15:46:39.084636+00:00",
+  "attempt_id": "8b2114ba5f9192b8be1cf979",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 65444,
+  "updated_at": "2026-11-01T15:46:39.377711+00:00",
+  "pid": 65444
+}

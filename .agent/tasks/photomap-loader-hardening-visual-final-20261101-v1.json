@@ -1,0 +1,19 @@
+{
+  "id": "photomap-loader-hardening-visual-final-20261101-v1",
+  "dedupe_key": "photomap-loader-hardening-visual-final-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "work/map-loader-hardening-artwork-20261101",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 1700,
+  "idle_timeout": 750,
+  "task_timeout": 3400,
+  "memory_limit_mb": 3000,
+  "commands": [
+    "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/loader-hardening-visual-final-20261101-v1\ngit -C \"$ROOT\" fetch origin work/map-loader-hardening-artwork-20261101\ntest \"$(git -C \"$ROOT\" rev-parse FETCH_HEAD)\" = 99833748dd7d7aad261da0a0e2a5c788b7950c24\ntest ! -e \"$TREE\"\ngit -C \"$ROOT\" worktree add --detach \"$TREE\" 99833748dd7d7aad261da0a0e2a5c788b7950c24\ncd \"$TREE/frontend\"\nnpm ci --prefer-offline --no-audit --no-fund\n./node_modules/.bin/prettier --check src/components/map/MapLoadingScreen.tsx src/styles/map-loading.css src/design/tokens.css e2e/visual/map-loading-polish.spec.ts e2e/visual/map-loading-screen.spec.ts e2e/visual/map-loading-failures.spec.ts\necho ===PRETTIER_PASS===",
+    "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/loader-hardening-visual-final-20261101-v1\ncd \"$TREE/frontend\"\nnpm run lint\nVITE_API_BASE_URL= npm run build\nnpm test\ncd \"$TREE\"\nPYTHON=\"$ROOT/backend/.venv/bin/python\" E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ./scripts/quality/e2e.sh e2e/visual/map-loading-screen.spec.ts e2e/visual/map-loading-polish.spec.ts e2e/visual/map-loading-failures.spec.ts e2e/visual/map-pin-coverage.spec.ts e2e/visual/map-attribution.spec.ts e2e/visual/pinned-media-drawer.spec.ts --workers=1\ngit diff --check 373d45dbaa7fa18ca7d37f32c75b1808f17bbcd0..HEAD\ntest -z \"$(git status --porcelain)\"\necho ===ARTWORK_AND_FAILURE_SCENARIOS_FINAL_PASS===\ngit rev-parse HEAD"
+  ]
+}

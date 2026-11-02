@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-usb-adb-termux-media-transfer-20261101-v1",
+  "task_digest": "99649f3237560ef567d998479e083753681ff284061263598522e8fc201d71ad",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T20:04:10.505623+00:00",
+  "attempt_id": "7678b919d5e08cbe5acad599",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 67584,
+  "updated_at": "2026-11-01T20:04:10.761226+00:00",
+  "pid": 67584
+}

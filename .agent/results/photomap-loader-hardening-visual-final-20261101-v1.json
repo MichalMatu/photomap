@@ -1,0 +1,61 @@
+{
+  "allow_write": false,
+  "attempt_id": "12de1c54d9722867c07735f4",
+  "command_timeout": 1700,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 900,
+      "command": "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/loader-hardening-visual-final-20261101-v1\ngit -C \"$ROOT\" fetch origin work/map-loader-hardening-artwork-20261101\ntest \"$(git -C \"$ROOT\" rev-parse FETCH_HEAD)\" = 99833748dd7d7aad261da0a0e2a5c788b7950c24\ntest ! -e \"$TREE\"\ngit -C \"$ROOT\" worktree add --detach \"$TREE\" 99833748dd7d7aad261da0a0e2a5c788b7950c24\ncd \"$TREE/frontend\"\nnpm ci --prefer-offline --no-audit --no-fund\n./node_modules/.bin/prettier --check src/components/map/MapLoadingScreen.tsx src/styles/map-loading.css src/design/tokens.css e2e/visual/map-loading-polish.spec.ts e2e/visual/map-loading-screen.spec.ts e2e/visual/map-loading-failures.spec.ts\necho ===PRETTIER_PASS===",
+      "current_rss_mb": 1.72,
+      "elapsed_seconds": 9.119,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 3000,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            work/map-loader-hardening-artwork-20261101 -> FETCH_HEAD\nPreparing worktree (detached HEAD 9983374)\nHEAD is now at 9983374 test(map): verify loader artwork fits portrait, desktop and landscape\n\nadded 220 packages in 7s\nnpm warn allow-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn allow-scripts   esbuild@0.25.12 (postinstall: node install.js)\nnpm warn allow-scripts   fsevents@2.3.3 (install: (install scripts present))\nnpm warn allow-scripts   fsevents@2.3.2 (install: (install scripts present))\nnpm warn allow-scripts\nnpm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.\nChecking formatting...\n[warn] src/components/map/MapLoadingScreen.tsx\n[warn] Code style issues found in the above file. Run Prettier with --write to fix.\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 148.36,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-01T15:17:01.808390+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.066,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.092,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-loader-hardening-visual-final-20261101-v1",
+  "idle_timeout": 750,
+  "memory_limit_mb": 3000,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 9.119,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-01T15:16:50.325657+00:00",
+  "status": "failed",
+  "task_digest": "44746f14584f6b47b2605607ab3e131c90ce315723368216131af5af3345507c",
+  "task_timeout": 3400,
+  "verification": [],
+  "work_branch": "work/map-loader-hardening-artwork-20261101"
+}

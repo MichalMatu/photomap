@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-four-leftover-branches-cleanup-20261101-v1",
+  "task_digest": "9f7b65c8e598d8ef35d1b0a00713636a7f16680c0d5142401133376e0bb63aee",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T15:48:09.603650+00:00",
+  "attempt_id": "b362bd6d305a639cfd8a5a8b",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 67338,
+  "updated_at": "2026-11-01T15:48:09.838077+00:00",
+  "pid": 67338
+}

@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "9723743a5870bff3b51aec5d",
+  "command_timeout": 240,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1943,
+      "command": "python3 - <<'PY'\nimport os,shlex,json,subprocess,tomllib\nfrom pathlib import Path\nhosts=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']\nroot=Path.home()/'.cache/photomap-rsync-relay-20261101-v1'\nprint(\"MAC_STAGE=\"+json.dumps({'exists':root.is_dir(),'symlink':root.is_symlink(),'db_exists':(root/'data/app.db').exists(),'known_hosts':(root/'adb_usb_known_hosts').exists()}),flush=True)\nif root.is_dir():\n p=subprocess.run(['du','-sh',str(root)],capture_output=True,text=True,timeout=35)\n print(\"MAC_STAGE_SIZE=\"+p.stdout.strip(),flush=True)\ndef sshargs(h):\n return ['ssh','-i',str(Path(h['identity_file']).expanduser()),'-p',str(h['port']),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=9']\ndef exec_host(h,script,timeout=75):\n p=subprocess.run(sshargs(h)+[str(h['user'])+'@'+str(h['host']),'bash -c '+shlex.quote(script)],capture_output=True,text=True,timeout=timeout)\n return {'rc':p.returncode,'out':p.stdout[-6500:],'err':p.stderr[-650:]}\npi=r'''set -u\nD=/home/michal/src/PhotoMaps/.dev/rsync-export-20261101-v1\necho EXPORT_EXISTS=$(test -d \"$D\" && echo yes || echo no)\ntest -d \"$D\" && { du -sh \"$D\"; find \"$D\" -maxdepth 2 -type f -printf '%P %s bytes\\n'; sha256sum \"$D/app.db\"; } || true\necho PROD_HEALTH=$(curl -sS -m 8 -o /dev/null -w '%{http_code}' http://127.0.0.1:8000/health)\necho PROD_SERVICE=$(systemctl is-active photomap.service)\necho PROD_CF=$(systemctl is-active cloudflared.service)\n'''\nprint(\"PI=\"+json.dumps(exec_host(hosts['pi-zero'],pi),ensure_ascii=False),flush=True)\nrows=subprocess.run(['adb','devices','-l'],capture_output=True,text=True,timeout=20).stdout.splitlines()[1:]\nusb=[row.split()[0] for row in rows if len(row.split())>1 and row.split()[1]=='device' and ':' not in row.split()[0]]\nprint(\"USB_COUNT=\"+str(len(usb)),flush=True)\nassert len(usb)==1 and root.is_dir() and (root/'adb_usb_known_hosts').is_file()\nserial=usb[0]\nf=subprocess.run(['adb','-s',serial,'forward','tcp:18122','tcp:8022'],capture_output=True,text=True,timeout=25)\nassert f.returncode==0,f.stderr\ntry:\n phone=r'''set -u\nD=\"$HOME/Projects/PhotoMap/.dev/termux\"\nfor p in \"$D/data/app.db\" \"$D/import-pi-20261101-v1\" \"$D/rollback-prepi-20261101-v1\" \"$D/pi-import-active-20261101-v1.json\" \"$D/process/runit/photomap-dev\" \"$PREFIX/var/service/photomap-dev\"; do\n if test -e \"$p\" || test -L \"$p\"; then ls -ld \"$p\"; else echo \"ABSENT=$p\"; fi\ndone\necho PHOTOMAP_DB_SHA=$(sha256sum \"$D/data/app.db\" | cut -d' ' -f1)\nfor kind in private public; do echo \"ACTIVE_$kind=$(find \"$D/storage/$kind\" -type f 2>/dev/null | wc -l)\"; done\necho PHOTO_HEALTH=$(curl -sS -m 6 -o /dev/null -w '%{http_code}' http://127.0.0.1:8010/health)\necho ILESTOI_HEALTH=$(curl -sS -m 6 -o /dev/null -w '%{http_code}' http://127.0.0.1:8001/api/health/ready)\necho SERVICE=$(sv status \"$PREFIX/var/service/photomap-dev\" 2>&1)\nprintf 'PHOTO_PROCS_BEGIN\\n'\nps -A -o pid,ppid,comm,args | grep -E '[p]hotomap-dev|[/]mnt/server.py' | cut -c1-150 | head -n 8 || true\necho PHOTO_PROCS_END\n'''\n a=['ssh','-i',str(Path(hosts['termux-phone']['identity_file']).expanduser()),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile='+str(root/'adb_usb_known_hosts'),'-o','ConnectTimeout=9','-p','18122',str(hosts['termux-phone']['user'])+'@127.0.0.1','bash -c '+shlex.quote(phone)]\n p=subprocess.run(a,capture_output=True,text=True,timeout=115)\n print(\"PHONE=\"+json.dumps({'rc':p.returncode,'out':p.stdout[-7000:],'err':p.stderr[-800:]},ensure_ascii=False),flush=True)\nfinally:\n subprocess.run(['adb','-s',serial,'forward','--remove','tcp:18122'],capture_output=True,timeout=20)\nPY",
+      "current_rss_mb": 17.52,
+      "elapsed_seconds": 12.454,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 400,
+      "memory_limited": false,
+      "output": "MAC_STAGE={\"exists\": true, \"symlink\": false, \"db_exists\": true, \"known_hosts\": true}\nMAC_STAGE_SIZE=4.0G\t/Users/michal/.cache/photomap-rsync-relay-20261101-v1\nPI={\"rc\": 255, \"out\": \"\", \"err\": \"ssh: connect to host 192.168.0.23 port 22: Operation timed out\\n\"}\nUSB_COUNT=1\nPHONE={\"rc\": 0, \"out\": \"-rw-------. 1 u0_a520 u0_a520 19574784 Nov  1 20:05 /data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/data/app.db\\ndrwx------. 2 u0_a520 u0_a520 3452 Nov  1 21:25 /data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1\\ndrwx------. 4 u0_a520 u0_a520 3452 Nov  1 21:25 /data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/rollback-prepi-20261101-v1\\n-rw-------. 1 u0_a520 u0_a520 603 Nov  1 21:25 /data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/pi-import-active-20261101-v1.json\\ndrwx------. 4 u0_a520 u0_a520 3452 Nov  1 19:28 /data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/process/runit/photomap-dev\\nlrwxrwxrwx. 1 u0_a520 u0_a520 89 Nov  1 19:28 /data/data/com.termux/files/usr/var/service/photomap-dev -> /data/data/com.termux/files/home/Projects/PhotoMap/.dev/termux/process/runit/photomap-dev\\nPHOTOMAP_DB_SHA=24814f4084ef6989e4e7966d77d9f7cf88f033cd619d8c37eb66516adf3f3ede\\nACTIVE_private=1098\\nACTIVE_public=1098\\nPHOTO_HEALTH=200\\nILESTOI_HEALTH=200\\nSERVICE=run: /data/data/com.termux/files/usr/var/service/photomap-dev: (pid 26964) 656s; run: log: (pid 11769) 7635s\\nPHOTO_PROCS_BEGIN\\n11484 11483 bash            bash -c set -u D=\\\"$HOME/Projects/PhotoMap/.dev/termux\\\" for p in \\\"$D/data/app.db\\\" \\\"$D/import-pi-20261101-v1\\\" \\\"$D/rollback-p\\n11768 20401 runsv           runsv photomap-dev\\n26964 11768 /data/data/com. /data/data/com.termux/files/usr/bin/proot --kill-on-exit --link2symlink --sysvipc --kernel-release=\\\\Linux\\\\localhost\\\\6.17.0\\n26976 26964 /opt/photomap-v /opt/photomap-venv/bin/python /mnt/server.py\\nPHOTO_PROCS_END\\n\", \"err\": \"\"}\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 20.22,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T20:35:56.786470+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.078,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.165,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-final-cleanup-inventory-20261101-v1",
+  "idle_timeout": 180,
+  "memory_limit_mb": 400,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 12.454,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T20:35:42.219562+00:00",
+  "status": "done",
+  "task_digest": "a04fc7b6a0aca3ee18fa5d07d7c4758d2a85cfa15f73b7631493684dcaa43341",
+  "task_timeout": 450,
+  "verification": [],
+  "work_branch": "main"
+}

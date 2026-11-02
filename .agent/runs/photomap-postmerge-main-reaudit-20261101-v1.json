@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-postmerge-main-reaudit-20261101-v1",
+  "task_digest": "39b5c240da1f4d0f3cd65f95a7179e2d0df757317008aa295eac925ee2dd007b",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-01T15:01:36.061005+00:00",
+  "attempt_id": "5ea5570fa4dec1b43f9ff72d",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 8240,
+  "updated_at": "2026-11-01T15:01:36.320805+00:00",
+  "pid": 8240
+}

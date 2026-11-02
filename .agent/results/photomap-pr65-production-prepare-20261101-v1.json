@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "c728ad0257c7998419331a6d",
+  "command_timeout": 1500,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 3349,
+      "command": "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/prod-loader-artwork-pr65-20261101\nSSH_KEY=/Users/michal/.ssh/id_ed25519\nPI=michal@192.168.0.23\nTARGET=deaa562cdeaffff0b14beafa2a2bd1a128bf38fe\ncd \"$ROOT\"\ngit fetch origin main\ntest \"$(git rev-parse origin/main)\" = \"$TARGET\"\ntest ! -e \"$TREE\"\ngit worktree add --detach \"$TREE\" \"$TARGET\"\ncd \"$TREE\"\ntest -z \"$(git status --porcelain)\"\ncd frontend\nnpm ci --prefer-offline --no-audit --no-fund\nVITE_API_BASE_URL= npm run build\ntest -s dist/index.html\ntest -n \"$(grep -o '/assets/public-map-[^\"]*\\.js' dist/index.html | head -1)\"\nprintf 'RELEASE_INDEX_SHA256='\nshasum -a 256 dist/index.html\nprintf 'RELEASE_MAP_JS='\ngrep -o '/assets/public-map-[^\"]*\\.js' dist/index.html | head -1\nprintf 'RELEASE_CSS='\ngrep -o '/assets/index-[^\"]*\\.css' dist/index.html | head -1\ndu -sh dist\ncd \"$TREE\"\ntest \"$(git rev-parse HEAD)\" = \"$TARGET\"\ntest -z \"$(git status --porcelain)\"\necho ===MAC_RELEASE_BUILD_PASS===\nssh -i \"$SSH_KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=10 \"$PI\" '\nset -eu\ncd /home/michal/src/PhotoMaps\ntest \"$(git branch --show-current)\" = main\ntest \"$(git rev-parse HEAD)\" = 373d45dbaa7fa18ca7d37f32c75b1808f17bbcd0\ntest -z \"$(git status --porcelain)\"\nsystemctl is-active --quiet photomap.service\nsystemctl is-active --quiet cloudflared.service\nBEFORE_PID=$(systemctl show photomap.service -p MainPID --value)\nTUNNEL_PID=$(systemctl show cloudflared.service -p MainPID --value)\ntest \"$BEFORE_PID\" -gt 0\ntest \"$TUNNEL_PID\" -gt 0\ncurl -fsS --max-time 12 http://127.0.0.1:8000/health >/dev/null\nawk \"/^MemAvailable:/ {print \\\"MEM_AVAILABLE_KB=\\\" \\$2; if (\\$2 < 60000) exit 2}\" /proc/meminfo\nawk \"/^SwapFree:/ {print \\\"SWAP_FREE_KB=\\\" \\$2; if (\\$2 < 95000) exit 2}\" /proc/meminfo\ndf -Pk . | awk \"NR==2 {print \\\"DISK_FREE_KB=\\\" \\$4; if (\\$4 < 80000) exit 2}\"\nBACKUP=.dev/deploy/2026-11-01-loader-artwork-pr65-deaa562\ntest ! -e \"$BACKUP\"\nmkdir -p \"$BACKUP\"\ncp -a frontend/dist \"$BACKUP/dist-before\"\npython3 - \"$BACKUP\" <<\"PY\"\nimport sqlite3,sys\nfrom pathlib import Path\nsrc=Path(\"backend/data/app.db\")\nif not src.is_file(): raise SystemExit(\"PRODUCTION_DB_NOT_FOUND\")\nconn=sqlite3.connect(f\"file:{src}?mode=ro\",uri=True,timeout=30)\nif conn.execute(\"PRAGMA quick_check\").fetchone()[0]!=\"ok\": raise SystemExit(\"DB_BAD\")\ndst=sqlite3.connect(Path(sys.argv[1])/\"app-before.db\",timeout=30)\nconn.backup(dst,pages=64,sleep=0.15)\nif dst.execute(\"PRAGMA integrity_check\").fetchone()[0]!=\"ok\": raise SystemExit(\"BACKUP_BAD\")\ndst.close()\nconn.close()\nprint(\"BACKUP_DB_BYTES=\"+str((Path(sys.argv[1])/\"app-before.db\").stat().st_size))\nPY\ntest -s \"$BACKUP/app-before.db\"\ntest -s \"$BACKUP/dist-before/index.html\"\necho 373d45dbaa7fa18ca7d37f32c75b1808f17bbcd0 > \"$BACKUP/source-before.sha\"\necho \"$BEFORE_PID\" > \"$BACKUP/backend-pid-before\"\necho \"$TUNNEL_PID\" > \"$BACKUP/tunnel-pid-before\"\nprintf \"PREVIOUS_INDEX_SHA=\"; sha256sum \"$BACKUP/dist-before/index.html\" | awk \"{print \\$1}\"\ngit fetch origin main\ntest \"$(git rev-parse origin/main)\" = deaa562cdeaffff0b14beafa2a2bd1a128bf38fe\ngit merge --ff-only origin/main\ntest \"$(git rev-parse HEAD)\" = deaa562cdeaffff0b14beafa2a2bd1a128bf38fe\ntest -z \"$(git status --porcelain)\"\ntest \"$(systemctl show photomap.service -p MainPID --value)\" = \"$BEFORE_PID\"\ntest \"$(systemctl show cloudflared.service -p MainPID --value)\" = \"$TUNNEL_PID\"\ncurl -fsS --max-time 12 http://127.0.0.1:8000/health >/dev/null\nprintf \"PI_SOURCE=\"; git rev-parse HEAD\necho \"BACKUP=$BACKUP\"\necho \"BACKEND_PID=$BEFORE_PID\"\necho \"TUNNEL_PID=$TUNNEL_PID\"\necho ===PI_BACKUP_AND_SOURCE_FAST_FORWARD_PASS===\n'",
+      "current_rss_mb": 2.33,
+      "elapsed_seconds": 115.651,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 2900,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\nPreparing worktree (detached HEAD deaa562)\nHEAD is now at deaa562 test(map): harden loader fallback and refine illustrated loading scene (#65)\n\nadded 220 packages in 27s\nnpm warn allow-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn allow-scripts   esbuild@0.25.12 (postinstall: node install.js)\nnpm warn allow-scripts   fsevents@2.3.3 (install: (install scripts present))\nnpm warn allow-scripts   fsevents@2.3.2 (install: (install scripts present))\nnpm warn allow-scripts\nnpm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.\n\n> build\n> npm run typecheck && vite build\n\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\nvite v6.4.3 building for production...\ntransforming...\n✓ 2236 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                            3.00 kB │ gzip:  0.98 kB\ndist/assets/map-vendor-CIGW-MKW.css       15.61 kB │ gzip:  6.46 kB\ndist/assets/admin-C9VWJiZt.css            52.93 kB │ gzip:  7.86 kB\ndist/assets/index-WJR2wAcC.css            98.52 kB │ gzip: 16.91 kB\ndist/assets/PlaceDetailPage-BNxvURto.js    3.45 kB │ gzip:  1.50 kB\ndist/assets/index-DeJtY8BC.js              3.50 kB │ gzip:  1.57 kB\ndist/assets/GuidesPage-BdCaU-Nb.js         8.53 kB │ gzip:  3.22 kB\ndist/assets/query-vendor-BLe33XlG.js      37.91 kB │ gzip: 11.44 kB\ndist/assets/react-vendor-GxMAwJfR.js     142.96 kB │ gzip: 45.76 kB\ndist/assets/map-vendor-DB9AUs6p.js       154.72 kB │ gzip: 45.15 kB\ndist/assets/admin-B3pWZd6m.js            187.30 kB │ gzip: 52.10 kB\ndist/assets/public-map-Bh9Dah7-.js       209.03 kB │ gzip: 63.88 kB\n✓ built in 23.78s\nRELEASE_INDEX_SHA256=81a61c28810e1acd90a69056b87775d261bbd120cc6587fb6f8c3fee6cc1b4fa  dist/index.html\nRELEASE_MAP_JS=/assets/public-map-Bh9Dah7-.js\nRELEASE_CSS=/assets/index-WJR2wAcC.css\n924K\tdist\n===MAC_RELEASE_BUILD_PASS===\nMEM_AVAILABLE_KB=107280\nSWAP_FREE_KB=219660\nDISK_FREE_KB=44105528\nBACKUP_DB_BYTES=19574784\nPREVIOUS_INDEX_SHA=a55bffefe3405e101b72874f60411b9c6483bc0d086dc39323afc258d5aa7520\nFrom https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\n   373d45d..deaa562  main       -> origin/main\nUpdating 373d45d..deaa562\nFast-forward\n README.md                                          |  1 +\n ...026-11-01-map-loading-resilience-and-artwork.md | 35 +++++++++++\n frontend/e2e/visual/map-loading-failures.spec.ts   | 49 ++++++++++++++++\n frontend/e2e/visual/map-loading-polish.spec.ts     |  6 ++\n frontend/e2e/visual/map-loading-screen.spec.ts     |  5 ++\n frontend/src/components/map/MapLoadingScreen.tsx   | 68 ++++++++++++++++++++++\n frontend/src/design/tokens.css                     | 20 ++++---\n frontend/src/styles/map-loading.css                | 42 +++++++++++++\n 8 files changed, 218 insertions(+), 8 deletions(-)\n create mode 100644 docs/checkpoints/2026-11-01-map-loading-resilience-and-artwork.md\n create mode 100644 frontend/e2e/visual/map-loading-failures.spec.ts\nPI_SOURCE=deaa562cdeaffff0b14beafa2a2bd1a128bf38fe\nBACKUP=.dev/deploy/2026-11-01-loader-artwork-pr65-deaa562\nBACKEND_PID=2765142\nTUNNEL_PID=222848\n===PI_BACKUP_AND_SOURCE_FAST_FORWARD_PASS===\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 286.84,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T15:29:21.391091+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.549,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.574,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-pr65-production-prepare-20261101-v1",
+  "idle_timeout": 620,
+  "memory_limit_mb": 2900,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 115.651,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T15:27:21.917971+00:00",
+  "status": "done",
+  "task_digest": "9ce05b08e8678a9d9d20ff43a9f38768289a3ce174672537a813447687b8a4ba",
+  "task_timeout": 2300,
+  "verification": [],
+  "work_branch": "main"
+}

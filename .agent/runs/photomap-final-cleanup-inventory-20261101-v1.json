@@ -1,0 +1,11 @@
+{
+  "event": "result_republished",
+  "status": "done",
+  "failure_reason": null,
+  "attempt_id": "9723743a5870bff3b51aec5d",
+  "task_digest": "a04fc7b6a0aca3ee18fa5d07d7c4758d2a85cfa15f73b7631493684dcaa43341",
+  "updated_at": "2026-11-01T20:38:13.988543+00:00",
+  "task_id": "photomap-final-cleanup-inventory-20261101-v1",
+  "daemon_version": "4.20.16",
+  "pid": 8513
+}

@@ -1,0 +1,18 @@
+{
+  "id": "photomap-termux-tar-over-ssh-smoke-20261101-v1",
+  "dedupe_key": "photomap-termux-tar-over-ssh-smoke-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 220,
+  "idle_timeout": 150,
+  "task_timeout": 420,
+  "memory_limit_mb": 450,
+  "commands": [
+    "python3 - <<'PY'\nimport tomllib,subprocess,shlex,json,hashlib,os\nfrom pathlib import Path\nh=tomllib.loads((Path.home()/'.config/host-ops/config.toml').read_text())['hosts']['termux-phone']\nsource=Path.home()/'.cache/photomap-rsync-relay-20261101-v1'\nassert (source/'data/app.db').is_file()\nsha=hashlib.sha256((source/'data/app.db').read_bytes()).hexdigest()\nssh=['ssh','-i',str(Path(h['identity_file']).expanduser()),'-p',str(h['port']),'-o','BatchMode=yes','-o','IdentitiesOnly=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=9','-o','ConnectionAttempts=1',str(h['user'])+'@'+str(h['host'])]\nremote=r'''set -eu\nD=\"$HOME/Projects/PhotoMap/.dev/termux/import-pi-20261101-v1\"\ntest -d \"$HOME/Projects/PhotoMap/.dev/termux\"\ntest ! -L \"$D\"\numask 077\nmkdir -p \"$D/data\" \"$D/storage/private\" \"$D/storage/public\"\nprintf 'REMOTE_TAR='; command -v tar\ncd \"$D\"\ntar -xf - \nprintf 'PHONE_DB_SHA='; sha256sum \"$D/data/app.db\"|cut -d' ' -f1\nprintf 'PHONE_HEALTH='; curl -sS -m 7 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8010/health\nprintf 'ILESTOI_HEALTH='; curl -sS -m 7 -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8001/api/health/ready\n'''\ntar=subprocess.Popen(['tar','-C',str(source),'-cf','-','data/app.db'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)\ntry:\n result=subprocess.run(ssh+['bash -c '+shlex.quote(remote)],stdin=tar.stdout,capture_output=True,text=True,timeout=150)\nfinally:\n tar.stdout.close()\nterr=tar.stderr.read().decode(errors='replace')\ntcode=tar.wait(timeout=20)\nprint(json.dumps({'mac_tar':tcode,'remote_exit':result.returncode,'remote':result.stdout[-4000:],'remote_err':result.stderr[-1400:],'mac_tar_err':terr[-300:],'expected_sha':sha},ensure_ascii=False),flush=True)\nassert result.returncode==0 and tcode==0 and ('PHONE_DB_SHA='+sha) in result.stdout\nprint('TAR_SSH_PHONE_SMOKE_PASS')\nPY"
+  ]
+}

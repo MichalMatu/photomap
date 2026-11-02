@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-final-production-and-mac-clean-readback-20261101-v1",
+  "task_digest": "52dafd9a0e692afee01b7dad6eb29adcc268c74481d4de78cf1d013472125e14",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T20:47:48.900989+00:00",
+  "attempt_id": "b0837abccb6c95d70cb83ef7",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 19037,
+  "updated_at": "2026-11-01T20:47:49.218600+00:00",
+  "pid": 19037
+}

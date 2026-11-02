@@ -1,0 +1,61 @@
+{
+  "allow_write": false,
+  "attempt_id": "5ea5570fa4dec1b43f9ff72d",
+  "command_timeout": 1300,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 234,
+      "command": "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/postmerge-main-reaudit-20261101-v1\nDEPS=/Users/michal/agent-workspace/repos/photomap/worktrees/prod-map-intro-polish-20261101/frontend/node_modules\nEXPECTED=373d45dbaa7fa18ca7d37f32c75b1808f17bbcd0\ngit -C \"$ROOT\" fetch origin main\ntest \"$(git -C \"$ROOT\" rev-parse origin/main)\" = \"$EXPECTED\"\ntest ! -e \"$TREE\"\ngit -C \"$ROOT\" worktree add --detach \"$TREE\" \"$EXPECTED\"\ntest -x \"$DEPS/.bin/vitest\"\nln -s \"$DEPS\" \"$TREE/frontend/node_modules\"\ntest -z \"$(git -C \"$TREE\" status --porcelain)\"\necho ===EXACT_POSTMERGE_MAIN_ISOLATED_CLEAN=== \ngit -C \"$TREE\" rev-parse HEAD\n",
+      "current_rss_mb": 2.06,
+      "elapsed_seconds": 1.176,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 3000,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\nPreparing worktree (detached HEAD 373d45d)\nHEAD is now at 373d45d style(map): polished cinematic loading illustration and one-shot motion (#64)\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 2.06,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 3,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-01T15:01:36.061005+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.071,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.082,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-postmerge-main-reaudit-20261101-v1",
+  "idle_timeout": 700,
+  "memory_limit_mb": 3000,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 1.176,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 3
+    }
+  ],
+  "started_at": "2026-11-01T15:01:32.801891+00:00",
+  "status": "failed",
+  "task_digest": "39b5c240da1f4d0f3cd65f95a7179e2d0df757317008aa295eac925ee2dd007b",
+  "task_timeout": 3000,
+  "verification": [],
+  "work_branch": "main"
+}

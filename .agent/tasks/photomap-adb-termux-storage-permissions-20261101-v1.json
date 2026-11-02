@@ -1,0 +1,18 @@
+{
+  "id": "photomap-adb-termux-storage-permissions-20261101-v1",
+  "dedupe_key": "photomap-adb-termux-storage-permissions-20261101-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 140,
+  "idle_timeout": 100,
+  "task_timeout": 280,
+  "memory_limit_mb": 400,
+  "commands": [
+    "python3 - <<'PY'\nimport subprocess,shutil,json\nrows=subprocess.run(['adb','devices','-l'],capture_output=True,text=True,timeout=25).stdout.splitlines()[1:]\nusb=[r.split()[0] for r in rows if len(r.split())>=2 and r.split()[1]=='device' and ':' not in r.split()[0]]\nassert len(usb)==1,len(usb)\nserial=usb[0]\nfor label,cmd in [('RUN_AS',['shell','run-as','com.termux','id']),('DOWNLOAD',['shell','sh','-c','stat -c \"%A %u %g\" /sdcard/Download; command -v sha256sum || true']),('STORAGE_APP',['shell','sh','-c','pm list packages com.termux; dumpsys package com.termux | grep -m 3 -E \"MANAGE_EXTERNAL_STORAGE|READ_MEDIA_IMAGES|READ_EXTERNAL_STORAGE\" || true'])]:\n p=subprocess.run(['adb','-s',serial,*cmd],capture_output=True,text=True,timeout=45)\n print(json.dumps({'label':label,'exit':p.returncode,'stdout':p.stdout[-2500:],'stderr':p.stderr[-500:]},ensure_ascii=False))\nPY"
+  ]
+}

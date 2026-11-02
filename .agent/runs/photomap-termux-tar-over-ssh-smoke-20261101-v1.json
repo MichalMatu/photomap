@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-termux-tar-over-ssh-smoke-20261101-v1",
+  "task_digest": "a3eb7dc590c2136c98614ac56e36b94c59e25dbefb114ea95708a43b34433311",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T19:54:25.807958+00:00",
+  "attempt_id": "2d05285a3f755e1358674f3c",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 56049,
+  "updated_at": "2026-11-01T19:54:26.091448+00:00",
+  "pid": 56049
+}

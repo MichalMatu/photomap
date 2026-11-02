@@ -1,0 +1,20 @@
+{
+  "id": "photomap-postmerge-main-reaudit-20261101-v2",
+  "dedupe_key": "photomap-postmerge-main-reaudit-20261101-v2",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 1300,
+  "idle_timeout": 700,
+  "task_timeout": 3000,
+  "memory_limit_mb": 3000,
+  "commands": [
+    "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/postmerge-main-reaudit-20261101-v2\nEXPECTED=373d45dbaa7fa18ca7d37f32c75b1808f17bbcd0\ngit -C \"$ROOT\" fetch origin main\ntest \"$(git -C \"$ROOT\" rev-parse origin/main)\" = \"$EXPECTED\"\ntest ! -e \"$TREE\"\ngit -C \"$ROOT\" worktree add --detach \"$TREE\" \"$EXPECTED\"\ncd \"$TREE/frontend\"\nnpm ci --prefer-offline --no-audit --no-fund\ntest -x ./node_modules/.bin/vitest\ntest -z \"$(git -C \"$TREE\" status --porcelain)\"\necho ===EXACT_POSTMERGE_MAIN_ISOLATED_CLEAN===\ngit -C \"$TREE\" rev-parse HEAD",
+    "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/postmerge-main-reaudit-20261101-v2\ncd \"$TREE/frontend\"\n./node_modules/.bin/prettier --check src/components/map/MapLoadingScreen.tsx src/styles/map-loading.css src/design/tokens.css e2e/visual/map-loading-polish.spec.ts e2e/visual/map-loading-screen.spec.ts e2e/visual/map-pin-coverage.spec.ts\nnpm run lint\nVITE_API_BASE_URL= npm run build\nnpm test\ncd \"$TREE\"\nPYTHON=\"$ROOT/backend/.venv/bin/python\" E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ./scripts/quality/e2e.sh e2e/visual/map-loading-screen.spec.ts e2e/visual/map-loading-polish.spec.ts e2e/visual/map-pin-coverage.spec.ts e2e/visual/map-attribution.spec.ts e2e/visual/pinned-media-drawer.spec.ts --workers=1\ngit diff --check a87d08c4f59cb4f7988e4e68b407072f25876b4e..HEAD\ntest -z \"$(git status --porcelain)\"\necho ===POSTMERGE_MAP_CODE_TESTS_PASS===\ngit rev-parse HEAD",
+    "set -eu\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/postmerge-main-reaudit-20261101-v2\necho ===READ_ONLY_PUBLIC_RUNTIME_CHECK===\nfor path in / /health /api/places/map; do\n  printf 'PUBLIC_HTTP %s ' \"$path\"\n  curl -sS -L -o /dev/null -w '%{http_code} %{time_total}\\n' --connect-timeout 8 --max-time 25 \"https://photomap.pl$path\"\ndone\nprintf 'LOCAL_BUILD_INDEX_SHA256='\nshasum -a 256 \"$TREE/frontend/dist/index.html\" | awk '{print $1}'\nprintf 'PUBLIC_INDEX_SHA256='\ncurl -fsSL --connect-timeout 8 --max-time 25 https://photomap.pl/ | shasum -a 256 | awk '{print $1}'\nprintf 'LOCAL_PUBLIC_MAP_ASSET='\ngrep -o '/assets/public-map-[^\"]*\\.js' \"$TREE/frontend/dist/index.html\" | head -1 || true\nprintf 'PUBLIC_MAP_ASSET_FROM_HTML='\ncurl -fsSL --connect-timeout 8 --max-time 25 https://photomap.pl/ | grep -o '/assets/public-map-[^\"]*\\.js' | head -1 || true\necho ===POSTMERGE_REAUDIT_RUNTIME_READ_ONLY_COMPLETE==="
+  ]
+}

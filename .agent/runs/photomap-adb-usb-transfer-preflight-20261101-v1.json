@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-adb-usb-transfer-preflight-20261101-v1",
+  "task_digest": "1942def16a37059a3e4562e1fbdbfb284190f10d5e5b6de0ec35d83d28038378",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-01T19:57:47.009853+00:00",
+  "attempt_id": "0278c4e6a80ba16cd49b8b5c",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 61266,
+  "updated_at": "2026-11-01T19:57:47.241293+00:00",
+  "pid": 61266
+}

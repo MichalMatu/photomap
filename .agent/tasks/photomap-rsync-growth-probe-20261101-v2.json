@@ -1,0 +1,18 @@
+{
+  "id": "photomap-rsync-growth-probe-20261101-v2",
+  "dedupe_key": "photomap-rsync-growth-probe-20261101-v2",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 120,
+  "idle_timeout": 100,
+  "task_timeout": 300,
+  "memory_limit_mb": 350,
+  "commands": [
+    "set -eu\nD=\"$HOME/.cache/photomap-rsync-relay-20261101-v1\"\nif test ! -d \"$D\"; then echo STAGING_ABSENT; exit 0; fi\ndate -u '+FIRST_TIME=%Y-%m-%dT%H:%M:%SZ'\nA=$(du -sk \"$D\" | awk '{print $1}')\nF=$(find \"$D/storage\" -type f | wc -l | tr -d ' ')\necho FIRST_KIB=$A FIRST_FILES=$F\nsleep 22\ndate -u '+SECOND_TIME=%Y-%m-%dT%H:%M:%SZ'\nB=$(du -sk \"$D\" | awk '{print $1}')\nG=$(find \"$D/storage\" -type f | wc -l | tr -d ' ')\necho SECOND_KIB=$B SECOND_FILES=$G\necho GROWTH_KIB=$((B-A)) GROWTH_FILES=$((G-F))\nps -axo pid,etime,comm | grep -E 'rsync|ssh' | head -n 12 || true\n"
+  ]
+}

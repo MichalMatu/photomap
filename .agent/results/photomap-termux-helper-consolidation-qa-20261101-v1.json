@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "8b2114ba5f9192b8be1cf979",
+  "command_timeout": 500,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 506,
+      "command": "set -eu\nROOT=/Users/michal/agent-workspace/repos/photomap/work\nTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/termux-helper-consolidation-qa-20261101-v1\nREF=chore/termux-dev-helper-consolidation-20261101\nSHA=c8e73e3000496921310a25180e792061280b0bcd\ngit -C \"$ROOT\" fetch origin \"$REF\"\ntest \"$(git -C \"$ROOT\" rev-parse FETCH_HEAD)\" = \"$SHA\"\ntest ! -e \"$TREE\"\ngit -C \"$ROOT\" worktree add --detach \"$TREE\" \"$SHA\"\ncd \"$TREE\"\ntest -z \"$(git status --porcelain)\"\ntest \"$(git hash-object scripts/termux-dev.sh)\" = d5727f5672865ab2092b56d30aaae8d8ae799866\ntest \"$(git hash-object docs/termux-dev.md)\" = ee4dda9cf07eb37c11f3d18c6726cabb31b0e072\ntest \"$(git diff --name-only deaa562cdeaffff0b14beafa2a2bd1a128bf38fe..HEAD | sort)\" = \"$(printf '%s\\n' docs/termux-dev.md scripts/termux-dev.sh)\"\nbash -n scripts/termux-dev.sh\nif command -v shellcheck >/dev/null 2>&1; then shellcheck scripts/termux-dev.sh; else echo \"SHELLCHECK_NOT_INSTALLED\"; fi\nBEFORE=$(shasum -a 256 backend/requirements.txt | awk '{print $1}')\nset +e\nenv PREFIX=/usr HOME=\"$HOME\" bash scripts/termux-dev.sh status > \"$TREE/.dev-denied.out\" 2>&1\nRESULT=$?\nset -e\ntest \"$RESULT\" = 2\ngrep -q 'Only the Termux app-private runtime is supported' \"$TREE/.dev-denied.out\"\nrm \"$TREE/.dev-denied.out\"\nenv PREFIX=/data/data/com.termux/files/usr HOME=/data/data/com.termux/files/home bash scripts/termux-dev.sh requirements\ntest -s .dev/termux/requirements-native.txt\ngrep -Fxq 'uvicorn==0.34.0' .dev/termux/requirements-native.txt\n! grep -q 'uvicorn\\[standard\\]' .dev/termux/requirements-native.txt\ntest \"$(shasum -a 256 backend/requirements.txt | awk '{print $1}')\" = \"$BEFORE\"\ntest -z \"$(git status --porcelain)\"\ngit diff --check deaa562cdeaffff0b14beafa2a2bd1a128bf38fe..HEAD\necho ===TERMUX_ISOLATED_HELPER_QA_PASS===\ngit rev-parse HEAD\n",
+      "current_rss_mb": 4.47,
+      "elapsed_seconds": 1.584,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 850,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            chore/termux-dev-helper-consolidation-20261101 -> FETCH_HEAD\nPreparing worktree (detached HEAD c8e73e3)\nHEAD is now at c8e73e3 chore(termux): preserve isolated PhotoMap setup and acceptance notes\nGenerated isolated requirements: /Users/michal/agent-workspace/repos/photomap/worktrees/termux-helper-consolidation-qa-20261101-v1/.dev/termux/requirements-native.txt\n===TERMUX_ISOLATED_HELPER_QA_PASS===\nc8e73e3000496921310a25180e792061280b0bcd\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 4.47,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-01T15:46:39.084636+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.086,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.108,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-termux-helper-consolidation-qa-20261101-v1",
+  "idle_timeout": 210,
+  "memory_limit_mb": 850,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 1.584,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-01T15:46:35.450850+00:00",
+  "status": "done",
+  "task_digest": "0048d77573a96b21e577ce1f3f67564877f54a29352d964c2b6260b393755ebb",
+  "task_timeout": 750,
+  "verification": [],
+  "work_branch": "chore/termux-dev-helper-consolidation-20261101"
+}
