@@ -16,6 +16,8 @@ Software-only buildy i testy moga byc wykonywane w sandboxie ChatGPT z zaleznosc
 
 ## Dokumenty
 
+- [Trzystopniowa szuflada zdjęć — testy Mac Chrome (03.11.2026)](docs/checkpoints/2026-11-03-mac-three-stage-drawer-release.md)
+
 - [Szuflada zdjęć i rekomendacje miejsc: sprint, testy i screenshoty (02.11.2026)](docs/checkpoints/2026-11-02-discovery-media-drawer-sprint.md)
 - [Szuflada zdjęć: podgląd na Samsungu Termux i test gestów (02.11.2026)](docs/checkpoints/2026-11-02-samsung-termux-discovery-preview.md)
 - [PhotoMap na Samsungu: transfer danych Pi, test PASS i końcowe sprzątanie (01.11.2026)](docs/checkpoints/2026-11-01-samsung-termux-photo-data-test-closeout.md)

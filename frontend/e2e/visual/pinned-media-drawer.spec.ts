@@ -36,7 +36,10 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   await expect(drawer).toBeVisible();
   await expect(drawer.getByRole("button", { name: `Pokaż na mapie: ${places[0].title}` })).toBeVisible();
   await expect(attribution).toHaveClass(/map-attribution--with-drawer/);
-  await page.screenshot({ path: testInfo.outputPath("mobile-discovery-with-floating-photo.png"), animations: "disabled" });
+  await page.screenshot({
+    path: testInfo.outputPath("mobile-discovery-with-floating-photo.png"),
+    animations: "disabled",
+  });
   await expect(card.locator(".pinned-media-card-caption-toggle")).toHaveCount(0);
   await expect(card.locator(".pinned-media-card-dock")).toHaveCount(0);
   await expect(card.locator(".pinned-media-card-map-link")).toHaveCount(1);
@@ -53,9 +56,30 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   await expect(attribution).toHaveClass(/map-attribution--with-drawer/);
   await expect(page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` })).toBeVisible();
   await expect(drawer.locator(".pinned-media-drawer-item--pinned")).toHaveCount(1);
+  await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(0);
+  await expect(drawer).toHaveAttribute("data-stage", "collection");
+  await drawer.getByRole("button", { name: "Pokaż więcej zdjęć z mapy" }).click();
+  await expect(drawer).toHaveAttribute("data-stage", "discovery");
   await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(2);
   await expect(drawer.locator(".pinned-media-drawer-item").first()).toHaveClass(/pinned-media-drawer-item--pinned/);
-  await page.screenshot({ path: testInfo.outputPath("mobile-discovery-expanded-with-pinned-first.png"), animations: "disabled" });
+  // Holding arms the central remove button; outside click disarms without deleting.
+  const pinnedItem = drawer.locator(".pinned-media-drawer-item--pinned").first();
+  // Wait until the expanding drawer settles before starting a real mouse hold.
+  await pinnedItem.hover();
+  await page.mouse.down();
+  await page.waitForTimeout(620);
+  await expect(drawer.getByRole("button", { name: `Usuń z kolekcji: ${places[0].title}` })).toBeVisible();
+  await page.mouse.up();
+  await expect(page.getByRole("dialog", { name: places[0].title })).toHaveCount(0);
+  await drawer.locator(".pinned-media-drawer-section-label").first().click();
+  await expect(drawer.locator(".pinned-media-drawer-remove")).toHaveCount(0);
+  await pinnedItem.click();
+  await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
+  await page.getByRole("button", { name: "Zamknij modal" }).click();
+  await page.screenshot({
+    path: testInfo.outputPath("mobile-discovery-expanded-with-pinned-first.png"),
+    animations: "disabled",
+  });
   await expect(page.locator(".place-map")).toHaveClass(/place-map--drawer-open/);
   await expect(attribution).toHaveClass(/map-attribution--drawer-open/);
   const expandedCredit = await attribution.boundingBox();
@@ -83,9 +107,17 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   expect(expandedStyle.imageWidth).toBe(expandedStyle.tileWidth);
   expect(expandedStyle.imageHeight).toBeGreaterThanOrEqual(90);
   // Collapsed drawer shows thumbnails only, with no header text or arrow.
-  await drawer.getByRole("button", { name: "Zwiń szufladę zdjęć" }).click();
+  await drawer.getByRole("button", { name: "Zwiń do kolekcji zdjęć" }).click();
+  await expect(drawer).toHaveAttribute("data-stage", "collection");
+  await drawer
+    .getByRole("button", { name: "Pokaż więcej zdjęć z mapy" })
+    .dispatchEvent("pointerdown", { pointerId: 10, clientY: 250 });
+  await drawer
+    .getByRole("button", { name: "Pokaż więcej zdjęć z mapy" })
+    .dispatchEvent("pointerup", { pointerId: 10, clientY: 310 });
+  await expect(drawer).toHaveAttribute("data-stage", "collapsed");
   await expect(drawer).not.toHaveClass(/is-open/);
-  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(3);
+  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(1);
   const collapsedThumb = drawer.locator(".pinned-media-drawer-handle-thumbs img").first();
   const thumbBox = await collapsedThumb.boundingBox();
   const handleBox = await drawer.locator(".pinned-media-drawer-handle").boundingBox();
@@ -109,7 +141,7 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   await expect(drawer).toHaveClass(/is-open/);
   await page.locator(".place-map").click({ position: { x: 25, y: 320 }, force: true });
   await expect(drawer).not.toHaveClass(/is-open/);
-  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(3);
+  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(1);
   await page.reload();
   await expect(drawer).toHaveClass(/is-open/);
   await page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` }).click();
@@ -133,4 +165,47 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   await page.getByTestId("pinned-media-card").click({ position: { x: 60, y: 55 } });
   await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
   await expect(page.getByTestId("pinned-media-card")).toHaveCount(1);
+});
+
+test("long hold removes only the pinned collection entry after central button click", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await mockSharedApi(page);
+  await page.goto("/");
+  await clickMapMarker(page, places[0].title);
+  await clickMapMarker(page, rynekSide.caption ?? places[0].title);
+  await page.getByRole("dialog", { name: places[0].title }).getByRole("button", { name: "Przypnij zdjęcie" }).click();
+
+  const card = page.getByTestId("pinned-media-card");
+  await expect(card).toHaveCount(1);
+  const frame = await card.boundingBox();
+  if (!frame) throw new Error("Pinned floating card not measurable");
+  await page.mouse.move(frame.x + frame.width / 2, frame.y + 28);
+  await page.mouse.down();
+  await page.mouse.move(190, 825, { steps: 12 });
+  await page.mouse.up();
+
+  const drawer = page.getByTestId("pinned-media-drawer");
+  const pinned = drawer.locator(".pinned-media-drawer-item--pinned");
+  await expect(card).toHaveCount(0);
+  await expect(pinned).toHaveCount(1);
+  await pinned.hover();
+  await page.mouse.down();
+  await page.waitForTimeout(620);
+
+  const remove = drawer.getByRole("button", { name: `Usuń z kolekcji: ${places[0].title}` });
+  await expect(remove).toBeVisible();
+  const imageBox = await pinned.locator("img").boundingBox();
+  const removeBox = await remove.boundingBox();
+  if (!imageBox || !removeBox) throw new Error("Cannot measure centered remove control");
+  expect(Math.abs(removeBox.x + removeBox.width / 2 - (imageBox.x + imageBox.width / 2))).toBeLessThan(4);
+  expect(Math.abs(removeBox.y + removeBox.height / 2 - (imageBox.y + imageBox.height / 2))).toBeLessThan(4);
+
+  await page.mouse.up();
+  await remove.click();
+  await expect(pinned).toHaveCount(0);
+  await expect(drawer.locator(".pinned-media-drawer-remove")).toHaveCount(0);
+  await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(2);
+  await page.reload();
+  await expect(drawer.locator(".pinned-media-drawer-item--pinned")).toHaveCount(0);
+  await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(2);
 });
