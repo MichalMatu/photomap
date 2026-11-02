@@ -412,10 +412,10 @@
     height: min(300px, 38dvh);
   }
   .pinned-media-drawer-item {
-    flex-basis: 152px;
+    flex-basis: clamp(152px, 44vw, 180px);
   }
   .pinned-media-drawer-item img {
-    height: 126px;
+    height: min(210px, 25dvh);
   }
 }
 .pinned-media-drawer-item span {
