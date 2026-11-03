@@ -163,7 +163,16 @@ export function PinnedMediaDrawer({
             onRemove(card.id);
           }}
         >
-          <span aria-hidden="true">×</span>
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+          >
+            <path d="M5 5 19 19M19 5 5 19" />
+          </svg>
         </button>
       ) : null}
     </div>

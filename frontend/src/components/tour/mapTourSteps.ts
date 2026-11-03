@@ -1,6 +1,19 @@
 export type MapTourEvent = "gallery-opened" | "photo-opened" | "pin-created" | "memory-opened" | "layer-toggled";
 
-export type MapTourStep = "welcome" | "place" | "gallery" | "photo" | "sound" | "narration" | "pin" | "pinned" | "memory" | "memory-form" | "layers" | "routes" | "done";
+export type MapTourStep =
+  | "welcome"
+  | "place"
+  | "gallery"
+  | "photo"
+  | "sound"
+  | "narration"
+  | "pin"
+  | "pinned"
+  | "memory"
+  | "memory-form"
+  | "layers"
+  | "routes"
+  | "done";
 
 export const MAP_TOUR_STEPS: MapTourStep[] = [
   "welcome",

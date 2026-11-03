@@ -447,10 +447,9 @@
   border: 1px solid var(--border-media-control);
   border-radius: var(--radius-full);
   box-shadow: var(--elevation-floating);
-  color: var(--content-media-control);
+  color: #ef4444;
   cursor: pointer;
   display: flex;
-  font-size: 32px;
   height: 48px;
   justify-content: center;
   left: 50%;
@@ -462,6 +461,12 @@
   transform: translate(-50%, -50%);
   width: 48px;
   z-index: 2;
+}
+.pinned-media-drawer-remove svg {
+  display: block;
+  flex: none;
+  height: 28px;
+  width: 28px;
 }
 .pinned-media-drawer--discovery .pinned-media-drawer-remove {
   top: calc(min(120px, 15dvh) / 2);

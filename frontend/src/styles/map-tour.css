@@ -9,11 +9,12 @@
   position: absolute;
   box-sizing: border-box;
   pointer-events: none;
-  border: 1.5px solid rgba(55, 155, 255, .72);
+  border: 1.5px solid rgba(55, 155, 255, 0.72);
   border-radius: var(--radius-media);
   background: transparent;
-  box-shadow: 0 0 0 2px rgba(55, 155, 255, .10),
-              0 0 11px 2px rgba(55, 155, 255, .22);
+  box-shadow:
+    0 0 0 2px rgba(55, 155, 255, 0.1),
+    0 0 11px 2px rgba(55, 155, 255, 0.22);
 }
 
 /* The tutorial owns the highlight. Native map hover/focus zoom or title glow
@@ -38,7 +39,7 @@ body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
   backdrop-filter: blur(22px);
   border: 1px solid var(--color-border);
   border-radius: 20px;
-  box-shadow: 0 20px 65px rgba(0, 0, 0, .3);
+  box-shadow: 0 20px 65px rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
   color: var(--color-text);
   max-height: calc(100dvh - 24px);
@@ -63,10 +64,10 @@ body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
   color: var(--color-accent);
   display: inline-flex;
   align-items: center;
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: 800;
   gap: 6px;
-  letter-spacing: .055em;
+  letter-spacing: 0.055em;
   text-transform: uppercase;
 }
 
@@ -99,21 +100,23 @@ body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
   border-radius: 8px;
 }
 
-.map-tour-progress span.is-done { background: var(--color-accent); }
+.map-tour-progress span.is-done {
+  background: var(--color-accent);
+}
 
 .map-tour-card h2 {
   color: var(--color-text-strong);
   font-size: 1.3rem;
   line-height: 1.23;
   font-weight: 760;
-  letter-spacing: -.02em;
+  letter-spacing: -0.02em;
   margin: 0 0 10px;
 }
 
 .map-tour-card p {
   color: var(--color-muted-strong);
   line-height: 1.55;
-  font-size: .92rem;
+  font-size: 0.92rem;
   margin: 0;
 }
 
@@ -124,16 +127,18 @@ body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
   background: var(--color-accent-soft);
   color: var(--color-accent);
   font-weight: 600;
-  font-size: .78rem;
+  font-size: 0.78rem;
   padding: 8px 10px;
 }
 
-.map-tour-actions { margin-top: 22px; }
+.map-tour-actions {
+  margin-top: 22px;
+}
 
 .map-tour-skip {
   min-height: 40px;
   padding: 0 6px;
-  font-size: .85rem;
+  font-size: 0.85rem;
 }
 
 .map-tour-secondary,
@@ -148,13 +153,15 @@ body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
   cursor: pointer;
 }
 
-.map-tour-secondary { border-color: var(--color-border); }
+.map-tour-secondary {
+  border-color: var(--color-border);
+}
 
 .map-tour-next {
   background: var(--color-accent);
   border: 1px solid var(--color-accent);
   color: var(--content-on-accent);
-  font-size: .88rem;
+  font-size: 0.88rem;
   font-weight: 700;
 }
 
@@ -163,7 +170,7 @@ body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
   border-color: var(--color-border);
   color: var(--color-muted-strong);
   cursor: not-allowed;
-  opacity: .65;
+  opacity: 0.65;
 }
 
 .map-tour button:focus-visible {
@@ -172,9 +179,14 @@ body:has(.map-tour) .photo-gallery-add-marker:focus-visible span {
 }
 
 @media (max-width: 480px) {
-  .map-tour-card { width: min(320px, calc(100vw - 24px)); padding: 16px; }
+  .map-tour-card {
+    width: min(320px, calc(100vw - 24px));
+    padding: 16px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .map-tour-card { transition: none; }
+  .map-tour-card {
+    transition: none;
+  }
 }

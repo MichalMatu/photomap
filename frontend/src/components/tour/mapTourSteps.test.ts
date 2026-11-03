@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { MAP_TOUR_STEPS, nextStepOnEvent, nextTourStep, nextTourStepForPhoto, previousTourStep, previousTourStepForPhoto, skipUnavailableTourStep, tourActionSelector } from "./mapTourSteps";
+import {
+  MAP_TOUR_STEPS,
+  nextStepOnEvent,
+  nextTourStep,
+  nextTourStepForPhoto,
+  previousTourStep,
+  previousTourStepForPhoto,
+  skipUnavailableTourStep,
+  tourActionSelector,
+} from "./mapTourSteps";
 
 describe("public map tour flow", () => {
   it("starts with a welcome and ends without escaping the steps", () => {

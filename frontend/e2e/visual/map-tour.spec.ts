@@ -52,11 +52,13 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await page.mouse.move(initial!.x + 98, initial!.y + 80, { steps: 8 });
   await page.mouse.up();
   // The blue ring must follow the drag, not lag behind on a 400ms timer.
-  await expect.poll(async () => {
-    const bounds = await card.boundingBox();
-    const glow = await ring.boundingBox();
-    return bounds && glow ? Math.abs(bounds.x - glow.x - 2) + Math.abs(bounds.y - glow.y - 2) : 999;
-  }).toBeLessThan(8);
+  await expect
+    .poll(async () => {
+      const bounds = await card.boundingBox();
+      const glow = await ring.boundingBox();
+      return bounds && glow ? Math.abs(bounds.x - glow.x - 2) + Math.abs(bounds.y - glow.y - 2) : 999;
+    })
+    .toBeLessThan(8);
 
   await tour.getByRole("button", { name: "Dalej" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "memory");
@@ -67,14 +69,18 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(page.locator(".memory-sheet-content")).toBeVisible();
   await expect(page.getByRole("button", { name: "generuj token" })).toBeVisible();
   // The token UI must have breathing room inside the soft blue guide outline.
-  await expect.poll(async () => {
-    const fieldBounds = await page.locator(".memory-sheet-content > .ui-setting-field").boundingBox();
-    const glowBounds = await tour.locator(".map-tour-spotlight").boundingBox();
-    if (!fieldBounds || !glowBounds) return false;
-    return fieldBounds.x - glowBounds.x >= 10 &&
-      fieldBounds.y - glowBounds.y >= 10 &&
-      glowBounds.x + glowBounds.width - fieldBounds.x - fieldBounds.width >= 10;
-  }).toBe(true);
+  await expect
+    .poll(async () => {
+      const fieldBounds = await page.locator(".memory-sheet-content > .ui-setting-field").boundingBox();
+      const glowBounds = await tour.locator(".map-tour-spotlight").boundingBox();
+      if (!fieldBounds || !glowBounds) return false;
+      return (
+        fieldBounds.x - glowBounds.x >= 10 &&
+        fieldBounds.y - glowBounds.y >= 10 &&
+        glowBounds.x + glowBounds.width - fieldBounds.x - fieldBounds.width >= 10
+      );
+    })
+    .toBe(true);
 
   await tour.getByRole("button", { name: "Dalej" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "layers");
@@ -93,7 +99,9 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(tour).toHaveAttribute("data-tour-step", "done");
   await tour.getByRole("button", { name: "Zaczynam!" }).click();
   await expect(tour).toHaveCount(0);
-  await expect.poll(() => page.evaluate(() => window.localStorage.getItem("photomap-public-map-tour-v3-complete"))).toBe("1");
+  await expect
+    .poll(() => page.evaluate(() => window.localStorage.getItem("photomap-public-map-tour-v3-complete")))
+    .toBe("1");
 
   await page.getByRole("button", { name: "Pokaż pasek nawigacji" }).click();
   await page.getByRole("button", { name: "Otwórz menu" }).click();
@@ -118,7 +126,12 @@ test("photo with recording retains the audio tutorial stage", async ({ page }) =
     duration_seconds: 5,
   };
   await page.route(`${API_URL}/api/places/${places[0].id}/photos`, (route) =>
-    route.fulfill({ json: [{ ...rynekCover, audio: recording }, { ...rynekSide, audio: recording }] }),
+    route.fulfill({
+      json: [
+        { ...rynekCover, audio: recording },
+        { ...rynekSide, audio: recording },
+      ],
+    }),
   );
 
   await page.goto("/", { waitUntil: "domcontentloaded" });

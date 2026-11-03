@@ -197,6 +197,11 @@ test("long hold removes only the pinned collection entry after central button cl
   const imageBox = await pinned.locator("img").boundingBox();
   const removeBox = await remove.boundingBox();
   if (!imageBox || !removeBox) throw new Error("Cannot measure centered remove control");
+  const glyph = await remove.locator("svg").boundingBox();
+  if (!glyph) throw new Error("Missing centered red removal cross");
+  expect(Math.abs(glyph.x + glyph.width / 2 - (removeBox.x + removeBox.width / 2))).toBeLessThan(1);
+  expect(Math.abs(glyph.y + glyph.height / 2 - (removeBox.y + removeBox.height / 2))).toBeLessThan(1);
+  await expect(remove).toHaveCSS("color", "rgb(239, 68, 68)");
   expect(Math.abs(removeBox.x + removeBox.width / 2 - (imageBox.x + imageBox.width / 2))).toBeLessThan(4);
   expect(Math.abs(removeBox.y + removeBox.height / 2 - (imageBox.y + imageBox.height / 2))).toBeLessThan(4);
 
