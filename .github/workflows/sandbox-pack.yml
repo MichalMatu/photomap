@@ -1,10 +1,6 @@
 name: Sandbox Pack
 
 on:
-  push:
-    branches:
-      - main
-      - "work/**"
   workflow_dispatch:
     inputs:
       include_offline_dependencies:
@@ -70,7 +66,7 @@ jobs:
             .sandbox-pack/meta/git-sha.txt
             .sandbox-pack/meta/dependency-key.txt
             .sandbox-pack/meta/dependency-inputs.sha256
-          retention-days: 30
+          retention-days: 3
           compression-level: 0
 
       - name: Decide whether offline pack is needed
@@ -167,7 +163,7 @@ jobs:
             .sandbox-pack/chunks/parts.sha256
             .sandbox-pack/meta/dependency-key.txt
             .sandbox-pack/meta/dependency-inputs.sha256
-          retention-days: 14
+          retention-days: 3
           compression-level: 0
 
       - name: Upload offline part 00
@@ -177,7 +173,7 @@ jobs:
           name: photomap-offline-part-00
           path: .sandbox-pack/chunks/part-00
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 3
           compression-level: 0
 
       - name: Upload offline part 01
@@ -187,7 +183,7 @@ jobs:
           name: photomap-offline-part-01
           path: .sandbox-pack/chunks/part-01
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 3
           compression-level: 0
 
       - name: Upload offline part 02
@@ -197,7 +193,7 @@ jobs:
           name: photomap-offline-part-02
           path: .sandbox-pack/chunks/part-02
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 3
           compression-level: 0
 
       - name: Upload offline part 03
@@ -207,7 +203,7 @@ jobs:
           name: photomap-offline-part-03
           path: .sandbox-pack/chunks/part-03
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 3
           compression-level: 0
 
       - name: Upload offline part 04
@@ -217,7 +213,7 @@ jobs:
           name: photomap-offline-part-04
           path: .sandbox-pack/chunks/part-04
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 3
           compression-level: 0
 
       - name: Upload offline part 05
@@ -227,5 +223,5 @@ jobs:
           name: photomap-offline-part-05
           path: .sandbox-pack/chunks/part-05
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 3
           compression-level: 0
