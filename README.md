@@ -1,53 +1,19 @@
 # PhotoMap
 
-PhotoMap to wizualna mapa miejsc z klimatem. Wroclaw jest pierwszym miastem startowym, na ktorym redukujemy produkt do najmocniejszego rdzenia: mapa miniaturek, miejsca, covery, pamiatki, proste kolekcje, moderacja i content pipeline.
+PhotoMap to wizualna mapa miejsc, zdjęć i kolekcji. Wrocław jest pierwszym miastem i zestawem danych do strojenia produktu. Centralnym bytem jest `place`; zdjęcia, pamiątki i trasy są przypisane do miejsc.
 
-Glownym bytem systemu jest `place`. Zdjecia, pamiatki, kolekcje i zgloszenia sa przypiete do miejsca albo kolekcji miejsc. Nowe moduly nie wchodza do aktualnego zakresu, jesli nie wzmacniaja publicznej mapy.
+**Produkcja:** https://photomap.pl — Raspberry Pi Zero 2W, zarządzana usługa `photomap.service` i niezależny tunel Cloudflare.
 
-## Local Agent integration
+**Aktualny, kanoniczny stan projektu:** [GOLDEN_STATUS.md](docs/GOLDEN_STATUS.md). Tam są dokładny release SHA, testy, backup, rollback, cleanup i informacje do wznowienia projektu. Historyczne checkpointy zachowuje historia Git, nie nawigacja README.
 
-PhotoMap jest zarejestrowany jako `photomap` w wielorepozytoryjnym workflow [`local-agent`](https://github.com/MichalMatu/local-agent). Nowy chat powinien zaczac od przeczytania aktualnego `AGENTS.md`; zadania lokalne dla tego repo trafiaja wylacznie przez branch `agent-control` PhotoMap. Szczegolowy bootstrap i kontrakt kolejki sa zapisane w `AGENTS.md`.
+## Utrzymanie i rozwój
 
-Dokumentacja celowo nie przypina tej integracji do numeru wersji `local-agent` — aktualny kontrakt wykonawczy jest utrzymywany w repozytorium agenta.
+- [AGENTS.md](AGENTS.md) — zasady projektu i integracja GitHub Connector + Mac Local Agent; kolejka `agent-control`.
+- [docs/deploy-pi-zero2w.md](docs/deploy-pi-zero2w.md) — atomowy deploy i rollback.
+- [docs/ops.md](docs/ops.md) — diagnostyka, dane, kopie bezpieczeństwa.
+- [docs/dev.md](docs/dev.md) — uruchamianie i testowanie.
+- [docs/code-structure.md](docs/code-structure.md) — organizacja kodu.
+- [docs/product-direction.md](docs/product-direction.md) — kierunek produktu.
+- [docs/content-pipeline.md](docs/content-pipeline.md) i [docs/editorial-media-workflow.md](docs/editorial-media-workflow.md) — import i zdjęcia.
 
-## Sandbox i ChatGPT Library
-
-Software-only buildy i testy moga byc wykonywane w sandboxie ChatGPT z zaleznosciami odtwarzanymi offline z ChatGPT Library. GitHub Actions generuje snapshot zrodel po dokladnym SHA oraz paczke Python/npm/Playwright. Szczegolowy flow, nazwy artefaktow i bootstrap sa w [docs/SANDBOX_EXECUTION_FLOW.md](docs/SANDBOX_EXECUTION_FLOW.md).
-
-## Dokumenty
-
-- [Trzystopniowa szuflada zdjęć — testy Mac Chrome (03.11.2026)](docs/checkpoints/2026-11-03-mac-three-stage-drawer-release.md)
-
-- [Szuflada zdjęć i rekomendacje miejsc: sprint, testy i screenshoty (02.11.2026)](docs/checkpoints/2026-11-02-discovery-media-drawer-sprint.md)
-- [Szuflada zdjęć: podgląd na Samsungu Termux i test gestów (02.11.2026)](docs/checkpoints/2026-11-02-samsung-termux-discovery-preview.md)
-- [PhotoMap na Samsungu: transfer danych Pi, test PASS i końcowe sprzątanie (01.11.2026)](docs/checkpoints/2026-11-01-samsung-termux-photo-data-test-closeout.md)
-- [Kierunek produktu](docs/product-direction.md)
-- [Interaktywny samouczek mapy i lokalny podgląd Mac](docs/interactive-map-tour.md)
-- [Sandbox / ChatGPT Library](docs/SANDBOX_EXECUTION_FLOW.md)
-- [Content pipeline](docs/content-pipeline.md)
-- [Workflow mediow redakcyjnych](docs/editorial-media-workflow.md)
-- [Checkpoint końcowy: reaudyt mapy, szuflady i pinezek (01.11.2026)](docs/checkpoints/2026-11-01-public-map-ui-pins-closeout.md)
-- [Animacja ładowania: scenariusze awarii i dopracowanie ilustracji (01.11.2026)](docs/checkpoints/2026-11-01-map-loading-resilience-and-artwork.md)
-- [Checkpoint: płynny zoom MacBooka i wdrożenie Pi Zero (31.10.2026)](docs/checkpoints/2026-10-31-macbook-trackpad-zoom-deploy.md)
-- [Checkpoint wcześniejszego sprintu — korekta 27 podpisów](docs/checkpoints/2026-10-29-caption-curation.md)
-- [Operacje, diagnostyka i storage](docs/ops.md)
-- [Opisy TTS zdjec](docs/create_tts.md)
-- [Prompt miniatur miejsc](docs/image_generation/place-thumbnails.md)
-- [Assety redakcyjne](assets/README.md)
-- [Uruchamianie i testy](docs/dev.md)
-- [Deploy na Raspberry Pi Zero 2W](docs/deploy-pi-zero2w.md)
-- [Skrypty i Make](scripts/README.md)
-- [Struktura kodu](docs/code-structure.md)
-
-## Dev
-
-```bash
-make help
-make scripts
-make start
-make restart
-make stop
-make status
-make logs
-make check
-```
+Lokalnie: `make help`, `make status`, `make check`. Bez uruchamiania GitHub Actions.
