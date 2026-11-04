@@ -1,11 +1,29 @@
 import type { Category, PlaceMapItem } from "../../api/types";
 
+const SUPPORTED_MAP_CATEGORY_ICONS = new Set([
+  "binoculars",
+  "cloud-rain",
+  "coffee",
+  "coins",
+  "heart",
+  "landmark",
+  "moon",
+  "palette",
+  "sandwich",
+  "sparkles",
+  "utensils",
+]);
+
 export type MapCategoryFilterItem = {
   count: number;
   icon: string;
   id: string;
   label: string;
 };
+
+export function isSupportedMapCategoryIcon(icon: string | null): icon is string {
+  return Boolean(icon && SUPPORTED_MAP_CATEGORY_ICONS.has(icon));
+}
 
 function categoryFromPlace(place: PlaceMapItem, categoryId: string): Category | null {
   return place.categories.find((category) => category.id === categoryId) ?? null;
@@ -19,7 +37,7 @@ export function getMapCategoryFilterItems(places: PlaceMapItem[]): MapCategoryFi
     const countedCategoryIds = new Set<string>();
     for (const categoryId of place.category_ids) {
       const category = categoryFromPlace(place, categoryId);
-      if (!category || category.status !== "active") {
+      if (!category || category.status !== "active" || !isSupportedMapCategoryIcon(category.icon)) {
         continue;
       }
       if (!categoriesById.has(category.id)) {

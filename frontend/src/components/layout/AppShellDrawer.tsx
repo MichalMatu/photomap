@@ -1,12 +1,30 @@
 import { APP_NAME } from "../../config/app";
-import { CircleHelp } from "lucide-react";
+import { CircleHelp, Images, MapPin } from "lucide-react";
 import { DrawerAdminAction } from "./AppShellAdminAction";
-import type { AppSection, AppShellAdminAction, AppShellPrimaryItem } from "./appShellTypes";
+import { DrawerMapAudioControl } from "./AppShellMapAudioControl";
+import { DrawerMapCategoryControls } from "./AppShellMapCategoryControls";
+import { DrawerMapLayerControls } from "./AppShellMapLayerControls";
+import { DrawerPinnedMediaControl } from "./AppShellPinnedMediaControl";
+import type {
+  AppSection,
+  AppShellAdminAction,
+  AppShellMapAudioControl,
+  AppShellMapCategoryControls,
+  AppShellMapLayerControls,
+  AppShellMapMarkerModeControl,
+  AppShellMapPinnedMediaControl,
+  AppShellPrimaryItem,
+} from "./appShellTypes";
 
 type Props = {
   activeSection: AppSection;
   adminAction?: AppShellAdminAction;
   isOpen: boolean;
+  mapAudioControl?: AppShellMapAudioControl;
+  mapCategoryControls?: AppShellMapCategoryControls;
+  mapLayerControls?: AppShellMapLayerControls;
+  mapMarkerModeControl?: AppShellMapMarkerModeControl;
+  mapPinnedMediaControl?: AppShellMapPinnedMediaControl;
   primaryItems: AppShellPrimaryItem[];
   onAdminAction: () => void;
   onStartTour?: () => void;
@@ -17,12 +35,18 @@ export function AppShellDrawer({
   activeSection,
   adminAction,
   isOpen,
-  primaryItems,
+  mapAudioControl,
+  mapCategoryControls,
+  mapLayerControls,
+  mapMarkerModeControl,
+  mapPinnedMediaControl,
   onAdminAction,
   onStartTour,
   onClose,
+  primaryItems,
 }: Props) {
   const isMapSection = activeSection === "map";
+
   return (
     <aside className={isOpen ? "side-drawer is-open" : "side-drawer"} id="app-side-drawer" aria-hidden={!isOpen}>
       <div className="drawer-header">
@@ -36,21 +60,59 @@ export function AppShellDrawer({
           </a>
         )}
       </div>
-      <nav className="drawer-section" aria-label="Nawigacja PhotoMap">
+
+      <nav className="drawer-section">
         {primaryItems.map(({ href, label, section, Icon }) =>
           section === activeSection ? (
             <button className="drawer-item is-active" type="button" key={section} onClick={onClose}>
-              <Icon aria-hidden="true" size={24} />
+              <Icon aria-hidden="true" size={26} />
               <span>{label}</span>
             </button>
           ) : (
             <a className="drawer-item" href={href} key={section}>
-              <Icon aria-hidden="true" size={24} />
+              <Icon aria-hidden="true" size={26} />
               <span>{label}</span>
             </a>
           ),
         )}
       </nav>
+
+      {isMapSection && mapLayerControls ? (
+        <DrawerMapLayerControls controls={mapLayerControls} onClose={onClose} />
+      ) : null}
+      {isMapSection && mapMarkerModeControl ? (
+        <nav className="drawer-section drawer-section--layers" aria-label="Widok mapy">
+          <button
+            className={mapMarkerModeControl.mode === "photos" ? "drawer-item is-active" : "drawer-item"}
+            type="button"
+            aria-pressed={mapMarkerModeControl.mode === "photos"}
+            onClick={() => {
+              mapMarkerModeControl.onChange("photos");
+              onClose();
+            }}
+          >
+            <Images aria-hidden="true" size={24} />
+            <span>Miniatury</span>
+          </button>
+          <button
+            className={mapMarkerModeControl.mode === "pins" ? "drawer-item is-active" : "drawer-item"}
+            type="button"
+            aria-pressed={mapMarkerModeControl.mode === "pins"}
+            onClick={() => {
+              mapMarkerModeControl.onChange("pins");
+              onClose();
+            }}
+          >
+            <MapPin aria-hidden="true" size={24} />
+            <span>Pinezki</span>
+          </button>
+        </nav>
+      ) : null}
+      {isMapSection && mapPinnedMediaControl ? (
+        <DrawerPinnedMediaControl control={mapPinnedMediaControl} onClose={onClose} />
+      ) : null}
+      {isMapSection && mapAudioControl ? <DrawerMapAudioControl control={mapAudioControl} onClose={onClose} /> : null}
+      {isMapSection && mapCategoryControls ? <DrawerMapCategoryControls controls={mapCategoryControls} /> : null}
       {adminAction ? <DrawerAdminAction action={adminAction} onClick={onAdminAction} /> : null}
       {isMapSection && onStartTour ? (
         <nav className="drawer-section" aria-label="Pomoc">

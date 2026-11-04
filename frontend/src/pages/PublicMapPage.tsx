@@ -19,7 +19,7 @@ import {
   isMapLayerControlActive,
   MAP_LAYER_CONTROLS,
   type MapLayerControlId,
-  selectMapLayerPreset,
+  toggleMapLayer,
 } from "../components/map/mapLayers";
 import { MAP_DISPLAY_CONFIG } from "../components/map/mapDisplayConfig";
 import { getPlacePreviewVisual } from "../components/map/placePreview";
@@ -175,8 +175,7 @@ export function PublicMapPage() {
       <AppShell
         activeSection="map"
         onStartTour={startTour}
-        tourShowDrawer={tourStep === "routes"}
-        tourShowFilters={tourStep === "layers"}
+        tourShowDrawer={tourStep === "layers" || tourStep === "routes"}
         mapAudioControl={{
           active: isAudioAutoplayEnabled,
           label: "Audio",
@@ -188,12 +187,9 @@ export function PublicMapPage() {
             active: selectedCategoryIds.includes(category.id),
           })),
           onClear: () => setSelectedCategoryIds([]),
-          onToggle: (categoryId) => {
-            setSelectedCategoryIds((currentCategoryIds) => toggleMapCategoryFilter(currentCategoryIds, categoryId));
-            handleTourEvent("layer-toggled");
-          },
+          onToggle: (categoryId) =>
+            setSelectedCategoryIds((currentCategoryIds) => toggleMapCategoryFilter(currentCategoryIds, categoryId)),
           selectedCount: selectedCategoryIds.length,
-          resultCount: markerPlaces.length,
         }}
         mapLayerControls={{
           items: MAP_LAYER_CONTROLS.map((layer) => ({
@@ -202,7 +198,7 @@ export function PublicMapPage() {
             count: layerCounts[layer.id],
           })),
           onToggle: (layerId) => {
-            setMapLayerState(selectMapLayerPreset(layerId as MapLayerControlId));
+            setMapLayerState((currentState) => toggleMapLayer(currentState, layerId as MapLayerControlId));
             handleTourEvent("layer-toggled");
           },
         }}
@@ -242,7 +238,7 @@ export function PublicMapPage() {
               ) : null}
             </div>
           ) : null}
-          {tourStep === null && hasSeenTour ? <ModeratorRecruitmentPrompt /> : null}
+          <ModeratorRecruitmentPrompt />
           {!isMapLoading && !isMapError ? (
             <div className="map-frame">
               <PlaceMap

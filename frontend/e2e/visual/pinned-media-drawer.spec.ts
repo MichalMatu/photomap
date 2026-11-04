@@ -9,18 +9,20 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   await mockSharedApi(page);
   await page.goto("/");
 
-  const openMapView = async () => {
-    await page.getByRole("button", { name: "Ustawienia widoku mapy" }).click();
+  const openMapMenu = async () => {
+    await page.getByRole("button", { name: "Pokaż pasek nawigacji" }).click();
+    await page.getByRole("button", { name: "Otwórz menu" }).click();
   };
-  await openMapView();
-  await page.getByRole("button", { name: "Pinezki" }).click();
+  await openMapMenu();
+  await page.getByRole("navigation", { name: "Widok mapy" }).getByRole("button", { name: "Pinezki" }).click();
   await expect(page.locator(".place-map-pin-marker").first()).toBeVisible();
   await expect(page.locator(".map-marker-mode-toggle")).toHaveCount(0);
   await page.reload();
-  await openMapView();
-  await expect(page.getByRole("button", { name: "Pinezki" })).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Miniatury" }).click();
-  await page.locator("#map-tools-panel").getByRole("button", { name: "Zamknij panel" }).click();
+  await openMapMenu();
+  await expect(
+    page.getByRole("navigation", { name: "Widok mapy" }).getByRole("button", { name: "Pinezki" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("navigation", { name: "Widok mapy" }).getByRole("button", { name: "Miniatury" }).click();
 
   await clickMapMarker(page, places[0].title);
   await clickMapMarker(page, rynekSide.caption ?? places[0].title);
@@ -30,9 +32,8 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   await expect(card).toHaveCount(1);
   const attribution = page.getByTestId("map-attribution");
   const drawer = page.getByTestId("pinned-media-drawer");
-  // The map stays full-height until the user explicitly opens discovery.
-  await expect(drawer).toHaveAttribute("data-stage", "collapsed");
-  await drawer.getByRole("button", { name: "Rozwiń szufladę zdjęć" }).click();
+  // The discovery drawer stays visible even before photos are docked.
+  await expect(drawer).toBeVisible();
   await expect(drawer.getByRole("button", { name: `Pokaż na mapie: ${places[0].title}` })).toBeVisible();
   await expect(attribution).toHaveClass(/map-attribution--with-drawer/);
   await page.screenshot({
@@ -57,7 +58,7 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   await expect(drawer.locator(".pinned-media-drawer-item--pinned")).toHaveCount(1);
   await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(0);
   await expect(drawer).toHaveAttribute("data-stage", "collection");
-  await drawer.getByRole("button", { name: "Więcej zdjęć" }).click();
+  await drawer.getByRole("button", { name: "Pokaż więcej zdjęć z mapy" }).click();
   await expect(drawer).toHaveAttribute("data-stage", "discovery");
   await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(2);
   await expect(drawer.locator(".pinned-media-drawer-item").first()).toHaveClass(/pinned-media-drawer-item--pinned/);
@@ -106,13 +107,13 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   expect(expandedStyle.imageWidth).toBe(expandedStyle.tileWidth);
   expect(expandedStyle.imageHeight).toBeGreaterThanOrEqual(90);
   // Collapsed drawer shows thumbnails only, with no header text or arrow.
-  await drawer.getByRole("button", { name: "Mniej zdjęć" }).click();
+  await drawer.getByRole("button", { name: "Zwiń do kolekcji zdjęć" }).click();
   await expect(drawer).toHaveAttribute("data-stage", "collection");
   await drawer
-    .getByRole("button", { name: "Zwiń szufladę zdjęć" })
+    .getByRole("button", { name: "Pokaż więcej zdjęć z mapy" })
     .dispatchEvent("pointerdown", { pointerId: 10, clientY: 250 });
   await drawer
-    .getByRole("button", { name: "Zwiń szufladę zdjęć" })
+    .getByRole("button", { name: "Pokaż więcej zdjęć z mapy" })
     .dispatchEvent("pointerup", { pointerId: 10, clientY: 310 });
   await expect(drawer).toHaveAttribute("data-stage", "collapsed");
   await expect(drawer).not.toHaveClass(/is-open/);
@@ -134,7 +135,6 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
     })
     .toBeGreaterThanOrEqual(4);
   await page.screenshot({ path: testInfo.outputPath("mobile-discovery-collapsed.png"), animations: "disabled" });
-  await expect(drawer.locator(".pinned-media-drawer-grab-line")).toHaveCount(1);
   await expect(drawer.locator(".pinned-media-drawer-handle svg")).toHaveCount(0);
   await expect(drawer.locator(".pinned-media-drawer-handle")).not.toContainText("Przypięte");
   await drawer.getByRole("button", { name: "Rozwiń szufladę zdjęć" }).click();
@@ -143,8 +143,7 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   await expect(drawer).not.toHaveClass(/is-open/);
   await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(1);
   await page.reload();
-  await expect(drawer).toHaveAttribute("data-stage", "collapsed");
-  await drawer.getByRole("button", { name: "Rozwiń szufladę zdjęć" }).click();
+  await expect(drawer).toHaveClass(/is-open/);
   await page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` }).click();
   await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
   await expect(page.getByTestId("pinned-media-card")).toHaveCount(0);

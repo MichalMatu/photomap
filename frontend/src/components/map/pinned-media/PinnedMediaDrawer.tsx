@@ -38,8 +38,7 @@ export function PinnedMediaDrawer({
   onStartUndock,
   onCancelUndock,
 }: Props) {
-  const gesture = useRef<{ pointerId: number; y: number; swiped: boolean } | null>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const gesture = useRef<{ y: number; swiped: boolean } | null>(null);
   const hold = useRef<Hold | null>(null);
   const armedRef = useRef<string | null>(null);
   const suppressClick = useRef(false);
@@ -55,9 +54,6 @@ export function PinnedMediaDrawer({
     }
   }, []);
   useEffect(() => () => cancelHold(), [cancelHold]);
-  useEffect(() => {
-    if (contentRef.current) contentRef.current.inert = stage === "collapsed";
-  }, [stage]);
   useEffect(() => {
     if (armedId === null) return;
     const clearOnOutsidePointer = (event: PointerEvent) => {
@@ -80,7 +76,12 @@ export function PinnedMediaDrawer({
       : []),
   ].slice(0, 3);
   const showDiscovery = stage === "discovery" || cards.length === 0;
-  const stageLabel = stage === "collapsed" ? "Rozwiń szufladę zdjęć" : "Zwiń szufladę zdjęć";
+  const stageLabel =
+    stage === "collapsed"
+      ? "Rozwiń szufladę zdjęć"
+      : stage === "collection"
+        ? "Pokaż więcej zdjęć z mapy"
+        : "Zwiń do kolekcji zdjęć";
 
   const startHold = (card: ResolvedPinnedMediaCard, event: ReactPointerEvent<HTMLButtonElement>) => {
     if (event.button !== 0) return;
@@ -198,20 +199,14 @@ export function PinnedMediaDrawer({
         aria-expanded={stage !== "collapsed"}
         aria-label={stageLabel}
         onPointerDown={(event) => {
-          gesture.current = { pointerId: event.pointerId, y: event.clientY, swiped: false };
-          if (event.nativeEvent.isTrusted && event.currentTarget.setPointerCapture) {
-            event.currentTarget.setPointerCapture(event.pointerId);
-          }
+          gesture.current = { y: event.clientY, swiped: false };
         }}
         onPointerUp={(event) => {
           const current = gesture.current;
-          if (current && current.pointerId === event.pointerId && Math.abs(current.y - event.clientY) > 24) {
+          if (current && Math.abs(current.y - event.clientY) > 24) {
             current.swiped = true;
             onStageChange(shiftDrawerStage(stage, event.clientY < current.y ? "up" : "down"));
           }
-        }}
-        onPointerCancel={() => {
-          gesture.current = null;
         }}
         onClick={() => {
           if (gesture.current?.swiped) {
@@ -219,32 +214,22 @@ export function PinnedMediaDrawer({
             return;
           }
           gesture.current = null;
-          onStageChange(stage === "collapsed" ? "collection" : "collapsed");
+          onStageChange(stage === "discovery" ? "collection" : shiftDrawerStage(stage, "up"));
         }}
       >
-        <span className="pinned-media-drawer-grab-line" aria-hidden="true" />
-        {stage === "collapsed" && collapsedThumbs.length > 0 ? (
+        {stage !== "collapsed" ? (
+          <span className="pinned-media-drawer-grab-line" aria-hidden="true" />
+        ) : collapsedThumbs.length > 0 ? (
           <span className="pinned-media-drawer-handle-thumbs" aria-hidden="true">
             {collapsedThumbs.map(({ id, thumb }) => (
               <img key={id} src={mediaUrl(thumb)} alt="" draggable={false} />
             ))}
           </span>
-        ) : stage === "collapsed" ? (
+        ) : (
           <span className="pinned-media-drawer-drag-label">Odkrywaj miejsca</span>
-        ) : null}
+        )}
       </button>
-      <div ref={contentRef} className="pinned-media-drawer-content" aria-hidden={stage === "collapsed"}>
-        {stage !== "collapsed" ? (
-          <div className="pinned-media-drawer-toolbar">
-            <button
-              className="pinned-media-drawer-stage-button"
-              type="button"
-              onClick={() => onStageChange(stage === "discovery" ? "collection" : "discovery")}
-            >
-              {stage === "discovery" ? "Mniej zdjęć" : "Więcej zdjęć"}
-            </button>
-          </div>
-        ) : null}
+      <div className="pinned-media-drawer-content">
         {cards.length > 0 ? (
           <section className="pinned-media-drawer-section" aria-label="Przypięta kolekcja">
             <span className="pinned-media-drawer-section-label">Twoja kolekcja</span>

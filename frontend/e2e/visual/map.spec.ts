@@ -586,7 +586,7 @@ test("multi-city map shows regional places without a public city filter", async 
   });
   await page.goto("/");
 
-  await page.getByRole("button", { name: "Otwórz menu" }).click();
+  await page.getByRole("button", { name: "Pokaż pasek nawigacji" }).click();
   await expect(page.getByRole("button", { name: /Zmień filtr miasta mapy/ })).toHaveCount(0);
   await expect(page.getByRole("dialog", { name: "Wybierz miasto" })).toHaveCount(0);
   await expect.poll(async () => placeMarkerCount(page, wroclawMarkerSelector)).toBeGreaterThan(0);

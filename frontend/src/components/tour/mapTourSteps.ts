@@ -31,7 +31,7 @@ export const MAP_TOUR_STEPS: MapTourStep[] = [
   "done",
 ];
 
-const MAP_TOUR_STORAGE_KEY = "photomap-public-map-tour-v3-complete";
+export const MAP_TOUR_STORAGE_KEY = "photomap-public-map-tour-v3-complete";
 
 // These selectors only check whether an action exists. The guide never singles
 // out a marker or intercepts clicks: visitors choose any visible item.
@@ -40,7 +40,7 @@ const ACTION_SELECTORS: Partial<Record<MapTourStep, string>> = {
   gallery: ".photo-gallery-marker > span",
   pin: '.system-modal--media button[aria-label^="Przypnij"]',
   memory: ".photo-gallery-add-marker > span",
-  layers: "#map-tools-panel .map-tools-group .map-tools-option",
+  layers: "#app-side-drawer.is-open .drawer-section--layers button",
 };
 
 export function tourActionSelector(step: MapTourStep): string | null {

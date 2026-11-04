@@ -32,7 +32,7 @@ Zasady produktu:
 - zoom zmienia gestosc i rozmiar elementow,
 - klikniecie miniatury w galerii miejsca otwiera bezposrednio jeden lekki widok medium; nie dodajemy posredniego podgladu tego samego zdjecia,
 - widok medium eksponuje obraz, nazwe miejsca, opcjonalne audio oraz jeden kompaktowy blok tekstu: podpis zdjecia z opisem miejsca albo dane pamiatki,
-- audio w widoku medium moze dzialac jako delikatny ambient autoplay tylko po wlaczeniu kontrolki w osobnym panelu `Widok` mapy,
+- audio w widoku medium moze dzialac jako delikatny ambient autoplay tylko po wlaczeniu kontrolki `Audio` w menu mapy,
 - akcje pomocnicze, takie jak edycja pamiatki i zgloszenie problemu, pozostaja male i drugoplanowe,
 - zewnetrzne materialy maja byc pozniej osobnymi, strukturalnymi linkami przypietymi do miejsca, a nie tekstem w podpisie zdjecia,
 - warstwy pomagaja ogladac dane: polecane, galerie, pamiatki i proste kolekcje,
@@ -41,12 +41,12 @@ Zasady produktu:
 
 Kontrakt filtrow mapy:
 
-- `Filtry` sa osobnym panelem, niezaleznym od nawigacji i sposobu prezentacji.
-- `Wszystkie` zawsze wybiera pelny widok; nigdy nie ukrywa wszystkich miejsc.
-- Presety `Polecane`, `Miejsca` oraz `Z pamiatkami` pojawiaja sie tylko, gdy maja odrebna wartosc przy aktualnych danych, i po wybraniu pokazuja jednoznaczny stan.
-- Kategorie pochodza z API i sa widoczne z nazwa, nawet gdy maja nieznana ikone.
-- Panel pokazuje liczbe miejsc na mapie i udostepnia jeden reset aktywnych filtrow.
-- `Widok` zawiera miniatury/pinezki, szuflade i audio; nie zmienia filtrow.
+- `Polecane`, `Miejsca` i `Pamiatki` dzialaja jak niezalezne przelaczniki,
+- jedna albo dwie aktywne warstwy sa pokazywane dokladnie jako te wybrane kontrolki,
+- komplet trzech aktywnych warstw zwija sie wizualnie do jednej kontrolki `Wszystkie`,
+- `Wszystkie` wlaczone z dowolnego stanu pokazuje pelny widok mapy,
+- `Wszystkie` klikniete, gdy jest juz aktywne, czysci warstwy i zostawia sama mape bazowa,
+- nie pokazujemy osobnego toastu/licznika liczby miejsc po filtrze; liczby naleza do kontrolek warstw i kategorii.
 
 ## Pierwsze Miasto
 
@@ -158,14 +158,14 @@ To lista rzeczy odlozonych. Nie wybieramy ich jako kolejnych prac bez osobnej de
 
 Nowa praca wchodzi tylko wtedy, gdy poprawia czytelnosc mapy, pokazanie miejsca albo utrzymanie danych.
 
-- Widok miniatury/pinezki jest wybierany w osobnym panelu Widok; miniatury pozostają domyślne.
+- Widok miniatury/pinezki jest wybierany w menu bocznym; miniatury pozostają domyślne.
 - Przypięte karty pokazują wyłącznie dwie symetryczne górne akcje. Opis chowa się automatycznie przy zmniejszaniu; do szuflady przenosi się przez przeciągnięcie.
 
-- Menu służy wyłącznie nawigacji (Mapa, Trasy, Samouczek) i otwiera się jednym kliknięciem lub gestem od lewej krawędzi. Filtry (treści i kategorie z API) i Widok (miniatury/pinezki, szuflada, audio) to osobne panele. Wszystkie zawsze oznacza pełny widok. Kategorie bez ikony z allowlisty nadal pozostają dostępne.
+- Mały pasek to tylko Trasy, Warstwy i Przypięte. Audio oraz kategorie pozostają w pełnym menu, a Warstwy otwierają pełne ustawienia. Menu przyjmuje poziome gesty w obie strony, bez kolizji z panowaniem mapy.
 - Akcje przypiętych miniatur zanikają po 2,5 s i powracają po dotknięciu; obsługa klawiaturą i preferencji ograniczonych animacji pozostaje dostępna.
 
 - Atrybucja OpenStreetMap to stale dostępny, mały odsyłacz tekstowy w lewym dolnym rogu, nad zwiniętą lub rozwiniętą szufladą. Nie wyświetla ikony informacji ani nakładki Leafleta. Wymagane oznaczenie źródła pozostaje czytelne.
 
 - Przypięte zdjęcia: pojedyncze dotknięcie pływającej miniatury na mapie lub miniatury w szufladzie otwiera bezpośrednio ten sam `PhotoDetailModal` co wachlarz miejsca (wraz z nawigacją i danymi zdjęcia). Dotknięcie w szufladzie nie odpina zdjęcia; do przeniesienia z szuflady na mapę służy wyłącznie przeciągnięcie poza obszar szuflady, a do szuflady przeciągnięcie karty na jej obszar. Ruch/resize nie może otworzyć modalu. Zdjęcia przypięte spoza lekkiego podglądu mapy mają zachowany snapshot do podglądu podczas ładowania pełnej galerii.
 
-- Szuflada mediów domyślnie jest zwinięta, nie zabierając miejsca mapie. Uchwyt jednym kliknięciem otwiera albo zamyka szufladę, osobny przycisk Więcej/Mniej zdjęć przełącza odkrywanie, a gest w górę/dół przesuwa o jeden poziom. Kiedy kolekcja jest pusta, pasek pokazuje podglądy zdjęć z mapy. Dotknięcie mapy poza rozwiniętą szufladą minimalizuje ją, zachowując zdjęcia i ich podgląd; sam dotyk miniatury nie przenosi jej.
+- Szuflada przypiętych mediów: pusta jest ukryta, po odłożeniu zdjęć pokazuje wyłącznie pasek miniaturek bez napisu, licznika i strzałki, a przy przeciąganiu rozwija magnetyczny cel odkładania. Dotknięcie mapy poza rozwiniętą szufladą minimalizuje ją, zachowując zdjęcia i ich podgląd; sam dotyk miniatury nie przenosi jej.

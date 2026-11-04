@@ -47,12 +47,12 @@ export type AppShellMapCategoryControls = {
   onClear: () => void;
   onToggle: (categoryId: string) => void;
   selectedCount: number;
-  resultCount: number;
 };
 
 export type AppShellPrimaryItem = {
   href: string;
   Icon: LucideIcon;
   label: string;
+  railLabel?: string;
   section: AppSection;
 };

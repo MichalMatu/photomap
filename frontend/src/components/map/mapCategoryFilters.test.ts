@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import type { Category, PlaceMapItem } from "../../api/types";
-import { filterMapPlacesByCategories, getMapCategoryFilterItems, toggleMapCategoryFilter } from "./mapCategoryFilters";
+import {
+  filterMapPlacesByCategories,
+  getMapCategoryFilterItems,
+  isSupportedMapCategoryIcon,
+  toggleMapCategoryFilter,
+} from "./mapCategoryFilters";
 
 function category(overrides: Partial<Category> & Pick<Category, "id">): Category {
   return {
@@ -47,7 +52,7 @@ function place({ id, ...overrides }: Partial<PlaceMapItem> & Pick<PlaceMapItem, 
 }
 
 describe("map category filters", () => {
-  it("includes every active API category, even without a supported icon", () => {
+  it("builds compact controls only from active categories with supported icons", () => {
     const coffee = category({ id: "coffee", icon: "coffee", label: "Kawa", sort_order: 2 });
     const viewpoint = category({ id: "viewpoint", icon: "binoculars", label: "Widoki", sort_order: 1 });
     const archived = category({ id: "archived", icon: "heart", label: "Archiwum", status: "archived" });
@@ -68,8 +73,6 @@ describe("map category filters", () => {
         }),
       ]),
     ).toEqual([
-      { count: 1, icon: "", id: "text-only", label: "Bez ikony" },
-      { count: 1, icon: "custom-symbol", id: "custom", label: "Custom" },
       { count: 1, icon: "binoculars", id: "viewpoint", label: "Widoki" },
       { count: 2, icon: "coffee", id: "coffee", label: "Kawa" },
     ]);
@@ -96,5 +99,11 @@ describe("map category filters", () => {
     expect(toggleMapCategoryFilter([], "coffee")).toEqual(["coffee"]);
     expect(toggleMapCategoryFilter(["coffee"], "viewpoint")).toEqual(["coffee", "viewpoint"]);
     expect(toggleMapCategoryFilter(["coffee", "viewpoint"], "coffee")).toEqual(["viewpoint"]);
+  });
+
+  it("keeps supported icon names separate from category ids", () => {
+    expect(isSupportedMapCategoryIcon("coffee")).toBe(true);
+    expect(isSupportedMapCategoryIcon("custom-category-id")).toBe(false);
+    expect(isSupportedMapCategoryIcon(null)).toBe(false);
   });
 });

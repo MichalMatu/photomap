@@ -85,28 +85,13 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await tour.getByRole("button", { name: "Dalej" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "layers");
   await expect(page.locator(".memory-sheet-content")).toHaveCount(0);
-  await expect(page.locator("#map-tools-panel")).toBeVisible();
-  await expect(page.locator("#app-side-drawer")).not.toHaveClass(/is-open/);
+  await expect(page.locator("#app-side-drawer")).toHaveClass(/is-open/);
 
   await expect(tour.getByRole("button", { name: "Dalej" })).toBeDisabled();
-  const categoryButton = page.locator("#map-tools-panel .map-tools-options--categories .map-tools-option").first();
-  await expect(categoryButton).toBeVisible();
-  await expect
-    .poll(async () => {
-      const target = await categoryButton.boundingBox();
-      const callout = await tour.locator(".map-tour-card").boundingBox();
-      if (!target || !callout) return false;
-      const horizontalOverlap =
-        Math.min(target.x + target.width, callout.x + callout.width) - Math.max(target.x, callout.x);
-      const verticalOverlap =
-        Math.min(target.y + target.height, callout.y + callout.height) - Math.max(target.y, callout.y);
-      return horizontalOverlap <= 0 || verticalOverlap <= 0;
-    })
-    .toBe(true);
-  await categoryButton.click();
+  await page.locator("#app-side-drawer .drawer-section--layers button").first().click();
   await expect(tour).toHaveAttribute("data-tour-step", "routes");
-  // Tour moves between independent filters and app navigation without mixing them.
-  await expect(page.locator("#map-tools-panel")).toHaveCount(0);
+  // Clicking a layer ordinarily closes the drawer. The walkthrough must keep it open
+  // so the user can see the next target without being stranded.
   await expect(page.locator("#app-side-drawer")).toHaveClass(/is-open/);
   await expect(tour.locator(".map-tour-shade")).toHaveCount(0);
 
@@ -118,6 +103,7 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
     .poll(() => page.evaluate(() => window.localStorage.getItem("photomap-public-map-tour-v3-complete")))
     .toBe("1");
 
+  await page.getByRole("button", { name: "Pokaż pasek nawigacji" }).click();
   await page.getByRole("button", { name: "Otwórz menu" }).click();
   await page.getByRole("button", { name: "Samouczek" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "welcome");
