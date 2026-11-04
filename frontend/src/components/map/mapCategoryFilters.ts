@@ -37,7 +37,7 @@ export function getMapCategoryFilterItems(places: PlaceMapItem[]): MapCategoryFi
     const countedCategoryIds = new Set<string>();
     for (const categoryId of place.category_ids) {
       const category = categoryFromPlace(place, categoryId);
-      if (!category || category.status !== "active" || !isSupportedMapCategoryIcon(category.icon)) {
+      if (!category || category.status !== "active") {
         continue;
       }
       if (!categoriesById.has(category.id)) {
