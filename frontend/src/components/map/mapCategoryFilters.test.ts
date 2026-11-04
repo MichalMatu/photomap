@@ -1,11 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { Category, PlaceMapItem } from "../../api/types";
-import {
-  filterMapPlacesByCategories,
-  getMapCategoryFilterItems,
-  toggleMapCategoryFilter,
-} from "./mapCategoryFilters";
+import { filterMapPlacesByCategories, getMapCategoryFilterItems, toggleMapCategoryFilter } from "./mapCategoryFilters";
 
 function category(overrides: Partial<Category> & Pick<Category, "id">): Category {
   return {
@@ -101,5 +97,4 @@ describe("map category filters", () => {
     expect(toggleMapCategoryFilter(["coffee"], "viewpoint")).toEqual(["coffee", "viewpoint"]);
     expect(toggleMapCategoryFilter(["coffee", "viewpoint"], "coffee")).toEqual(["viewpoint"]);
   });
-
 });
