@@ -39,6 +39,7 @@ export function PinnedMediaDrawer({
   onCancelUndock,
 }: Props) {
   const gesture = useRef<{ pointerId: number; y: number; swiped: boolean } | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const hold = useRef<Hold | null>(null);
   const armedRef = useRef<string | null>(null);
   const suppressClick = useRef(false);
@@ -54,6 +55,9 @@ export function PinnedMediaDrawer({
     }
   }, []);
   useEffect(() => () => cancelHold(), [cancelHold]);
+  useEffect(() => {
+    if (contentRef.current) contentRef.current.inert = stage === "collapsed";
+  }, [stage]);
   useEffect(() => {
     if (armedId === null) return;
     const clearOnOutsidePointer = (event: PointerEvent) => {
@@ -218,19 +222,18 @@ export function PinnedMediaDrawer({
           onStageChange(stage === "collapsed" ? "collection" : "collapsed");
         }}
       >
-        {stage !== "collapsed" ? (
-          <span className="pinned-media-drawer-grab-line" aria-hidden="true" />
-        ) : collapsedThumbs.length > 0 ? (
+        <span className="pinned-media-drawer-grab-line" aria-hidden="true" />
+        {stage === "collapsed" && collapsedThumbs.length > 0 ? (
           <span className="pinned-media-drawer-handle-thumbs" aria-hidden="true">
             {collapsedThumbs.map(({ id, thumb }) => (
               <img key={id} src={mediaUrl(thumb)} alt="" draggable={false} />
             ))}
           </span>
-        ) : (
+        ) : stage === "collapsed" ? (
           <span className="pinned-media-drawer-drag-label">Odkrywaj miejsca</span>
-        )}
+        ) : null}
       </button>
-      <div className="pinned-media-drawer-content" aria-hidden={stage === "collapsed"}>
+      <div ref={contentRef} className="pinned-media-drawer-content" aria-hidden={stage === "collapsed"}>
         {stage !== "collapsed" ? (
           <div className="pinned-media-drawer-toolbar">
             <button
