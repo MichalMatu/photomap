@@ -25,6 +25,9 @@ test("mobile menu opens in one gesture and closes without intercepting map pan",
   await expect(page.locator(".side-drawer")).toHaveClass(/is-open/);
   await expect(page.getByRole("navigation", { name: "Nawigacja PhotoMap" })).toBeVisible();
   await expect(page.locator("#app-side-drawer .drawer-section--layers")).toHaveCount(0);
+  await expect
+    .poll(() => page.evaluate(() => Boolean(document.elementFromPoint(175, 370)?.closest(".side-drawer"))))
+    .toBe(true);
   await swipe(175, 48);
   await expect(page.locator(".side-drawer")).not.toHaveClass(/is-open/);
   await page.getByRole("button", { name: "Otwórz menu" }).click();
