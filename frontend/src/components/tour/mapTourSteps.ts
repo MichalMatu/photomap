@@ -40,7 +40,7 @@ const ACTION_SELECTORS: Partial<Record<MapTourStep, string>> = {
   gallery: ".photo-gallery-marker > span",
   pin: '.system-modal--media button[aria-label^="Przypnij"]',
   memory: ".photo-gallery-add-marker > span",
-  layers: "#app-side-drawer.is-open .drawer-section--layers button",
+  layers: "#map-tools-panel .map-tools-group .map-tools-option",
 };
 
 export function tourActionSelector(step: MapTourStep): string | null {
