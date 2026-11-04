@@ -162,7 +162,12 @@ export function AppShell({
       ) : null}
 
       {isOverlayOpen ? (
-        <button className="drawer-scrim" type="button" aria-label="Zamknij panel" onClick={closeOverlays} />
+        <button
+          className={mapPanel ? "drawer-scrim drawer-scrim--map-tools" : "drawer-scrim"}
+          type="button"
+          aria-label="Zamknij panel"
+          onClick={closeOverlays}
+        />
       ) : null}
 
       <AppShellDrawer
