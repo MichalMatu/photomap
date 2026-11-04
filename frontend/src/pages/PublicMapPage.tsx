@@ -193,7 +193,7 @@ export function PublicMapPage() {
             handleTourEvent("layer-toggled");
           },
           selectedCount: selectedCategoryIds.length,
-          resultCount: visiblePlaces.length,
+          resultCount: markerPlaces.length,
         }}
         mapLayerControls={{
           items: MAP_LAYER_CONTROLS.map((layer) => ({
