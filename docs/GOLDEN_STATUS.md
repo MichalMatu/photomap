@@ -1,4 +1,18 @@
-# PhotoMap — GOLDEN STATUS / checkpoint końcowy (03.11.2026)
+# PhotoMap — GOLDEN STATUS / aktualny release 04.11.2026
+
+## Aktywny release: spójny UX mapy
+
+- **Produkcyjny kod i źródło builda:** `09be8c4ef70a30791de2698c1c39779e4ab544eb` na `main`; Raspberry Pi `zero2` fast-forward do tego SHA. Nowsze commity dokumentacyjne na `main` nie zmieniają wersji uruchomionego frontendu.
+- **Publiczna domena:** https://photomap.pl. Atomowa aktywacja statycznego `frontend/dist/index.html` zakończona `PASS`. Hash indeksu na Mac i Pi: `ccc80c6f664853030e4674dfc783ec1607a9923e823b10f35b221a7348e48a1d`.
+- **Aktywne assety:** `index-C6t6Kjzg.js`, `public-map-DWDElC8J.js`, `index-BMjVQ3ud.css`. Nowy HTML oraz assety zweryfikowane na porcie lokalnym Pi i w publicznej domenie; `/`, `/health`, `/api/places/map`, JS — HTTP 200.
+- **Procesy nienaruszone:** `photomap.service` PID `3797751`, `cloudflared.service` PID `222848`. Bez restartu backendu, tunelu, migracji i zmian danych.
+- **Backup i rollback:** `/home/michal/src/PhotoMaps/.dev/deploy/unified-ux-20261104-09be8c4/` zawiera `dist-before/`, `index-before.html`, spójny `app-before.db` (`PRAGMA quick_check=ok`), poprzedni HEAD oraz PID-y. Poprzedni indeks: `5177a82937d38c8d2ba5b8a41156b30354f523b5c293a203d0b6ef62a5af78b5`. Przy rollbacku UI przywrócić kopię indeksu atomowo; nie usuwać nowych ani starych zahashowanych assetów.
+- **Zmiany UX:** pojedyncze menu nawigacyjne (Mapa/Trasy/Samouczek), osobne panele `Filtry` i `Widok`, czytelne kategorie z API, niedestrukcyjny reset filtrów, mapa widoczna podczas filtrowania oraz przewidywalna dolna szuflada startująca zwinięta. Mobile i desktop korzystają z tych samych stanów.
+- **Odbiór:** Vitest `369/369 PASS`; TypeScript, lint, knip, Prettier i build `PASS`; Chrome E2E dedykowany temu sprintowi `14/14 PASS` (w tym pięć viewportów). Live Chrome na publicznej domenie: **390×844 i 1440×900 PASS**, bez poziomego overflow, page errors ani błędów zasobów.
+- **Znany wcześniejszy dług:** rozszerzony pakiet 24 testów `19 PASS / 5 FAIL`, identyczne pięć niezgodności występuje na czystym poprzednim `main` `30bff5c` (dwa historyczne snapshoty, hit-area przesuniętego markera, double-click połączenia przypiętego medium z mapą, tekst ukrytej kopii pionowej karty). Nie uznawać ich za naprawione. Gate CSS tokenów zawiera historyczne niezgodności zarówno na bazie, jak i po sprincie, bez przyrostu.
+- **Checkpoint implementacyjny:** [2026-11-04-unified-map-ux.md](checkpoints/2026-11-04-unified-map-ux.md). Local Agent: `photomap-unified-ux-atomic-activate-20261104-v2` (pełne wdrożenie PASS) i `photomap-unified-ux-live-chrome-smoke-20261104-v1` (produkcja PASS).
+
+## Poprzedni checkpoint — 03.11.2026 (historyczny)
 
 ## Stan produkcyjny
 
