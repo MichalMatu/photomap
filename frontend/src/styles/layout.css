@@ -281,7 +281,6 @@ h2 {
   touch-action: pan-y;
 }
 
-
 /* Map controls are separate from navigation and remain identical across devices. */
 .map-tools {
   left: calc(var(--shell-rail-width) + var(--space-2));
