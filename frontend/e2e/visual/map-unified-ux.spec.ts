@@ -24,12 +24,13 @@ for (const viewport of [
     await expect
       .poll(() => map.evaluate((el) => Math.round(el.getBoundingClientRect().height)))
       .toBeLessThan(viewport.height - 100);
-    const mapBox = await map.boundingBox();
-    const drawerBox = await drawer.boundingBox();
-    expect(mapBox).not.toBeNull();
-    expect(drawerBox).not.toBeNull();
-    // A fully opened drawer must use the available space, not cover a full-height map.
-    expect(Math.abs(mapBox!.y + mapBox!.height - drawerBox!.y)).toBeLessThan(8);
+    // Wait for the drawer transition before comparing the final layout geometry.
+    await expect.poll(async () => {
+      const mapBox = await map.boundingBox();
+      const drawerBox = await drawer.boundingBox();
+      if (!mapBox || !drawerBox) return 999;
+      return Math.abs(mapBox.y + mapBox.height - drawerBox.y);
+    }).toBeLessThan(8);
 
     await drawer.getByRole("button", { name: "Więcej zdjęć" }).click();
     await expect(drawer).toHaveAttribute("data-stage", "discovery");
