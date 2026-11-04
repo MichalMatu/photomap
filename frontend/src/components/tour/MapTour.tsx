@@ -81,8 +81,8 @@ const TOUR_CONTENT: Record<MapTourStep, TourContent> = {
   layers: {
     title: "Mapa na Twoich zasadach",
     description:
-      "W menu ustawisz warstwy Polecane, Miejsca i Pamiątki. Jest tam także Audio, które włącza automatyczne odtwarzanie dostępnych dźwięków podczas przeglądania fotografii.",
-    selector: "#app-side-drawer .drawer-section--layers",
+      "Przycisk Filtry pozwala wybrać polecane miejsca i kategorie. Wygląd mapy, miniatury, pinezki oraz audio są dostępne osobno pod przyciskiem Widok.",
+    selector: "#map-tools-panel .map-tools-group",
     hint: "Wybierz jedną z warstw",
   },
   routes: {
