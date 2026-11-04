@@ -82,7 +82,7 @@ const TOUR_CONTENT: Record<MapTourStep, TourContent> = {
     title: "Mapa na Twoich zasadach",
     description:
       "Przycisk Filtry pozwala wybrać polecane miejsca i kategorie. Wygląd mapy, miniatury, pinezki oraz audio są dostępne osobno pod przyciskiem Widok.",
-    selector: "#map-tools-panel .map-tools-group",
+    selector: "#map-tools-panel .map-tools-options .map-tools-option",
     hint: "Wybierz jedną z warstw",
   },
   routes: {
@@ -200,7 +200,13 @@ export function MapTour({ step, onBack, onNext, onSkipStep, onClose }: Props) {
     let intervalId = 0;
 
     const measure = () => {
-      const target = visibleTarget(content.selector);
+      // Highlight a real filter button instead of the entire panel: the tutorial
+      // card must never cover the control the visitor needs to press.
+      const target =
+        step === "layers"
+          ? (visibleTarget("#map-tools-panel .map-tools-options--categories .map-tools-option") ??
+            visibleTarget("#map-tools-panel .map-tools-options .map-tools-option"))
+          : visibleTarget(content.selector);
       if (activeTarget !== target) {
         activeTarget?.removeAttribute("data-map-tour-target");
         activeTarget = target;
