@@ -12,6 +12,8 @@ test("desktop discovery drawer renders map recommendations and opens the existin
 
   const drawer = page.getByTestId("pinned-media-drawer");
   await expect(drawer).toBeVisible();
+  await expect(drawer).toHaveAttribute("data-stage", "collapsed");
+  await drawer.getByRole("button", { name: "Rozwiń szufladę zdjęć" }).click();
   await expect(drawer).toHaveClass(/is-open/);
   await expect(drawer.locator(".pinned-media-drawer-item--pinned")).toHaveCount(0);
   await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(2);
