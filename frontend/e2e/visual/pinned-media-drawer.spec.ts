@@ -134,6 +134,7 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
     })
     .toBeGreaterThanOrEqual(4);
   await page.screenshot({ path: testInfo.outputPath("mobile-discovery-collapsed.png"), animations: "disabled" });
+  await expect(drawer.locator(".pinned-media-drawer-grab-line")).toHaveCount(1);
   await expect(drawer.locator(".pinned-media-drawer-handle svg")).toHaveCount(0);
   await expect(drawer.locator(".pinned-media-drawer-handle")).not.toContainText("Przypięte");
   await drawer.getByRole("button", { name: "Rozwiń szufladę zdjęć" }).click();
