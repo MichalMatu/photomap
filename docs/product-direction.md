@@ -158,14 +158,14 @@ To lista rzeczy odlozonych. Nie wybieramy ich jako kolejnych prac bez osobnej de
 
 Nowa praca wchodzi tylko wtedy, gdy poprawia czytelnosc mapy, pokazanie miejsca albo utrzymanie danych.
 
-- Widok miniatury/pinezki jest wybierany w menu bocznym; miniatury pozostają domyślne.
+- Widok miniatury/pinezki jest wybierany w osobnym panelu Widok; miniatury pozostają domyślne.
 - Przypięte karty pokazują wyłącznie dwie symetryczne górne akcje. Opis chowa się automatycznie przy zmniejszaniu; do szuflady przenosi się przez przeciągnięcie.
 
-- Mały pasek to tylko Trasy, Warstwy i Przypięte. Audio oraz kategorie pozostają w pełnym menu, a Warstwy otwierają pełne ustawienia. Menu przyjmuje poziome gesty w obie strony, bez kolizji z panowaniem mapy.
+- Menu służy wyłącznie nawigacji (Mapa, Trasy, Samouczek) i otwiera się jednym kliknięciem lub gestem od lewej krawędzi. Filtry (treści i kategorie z API) i Widok (miniatury/pinezki, szuflada, audio) to osobne panele. Wszystkie zawsze oznacza pełny widok. Kategorie bez ikony z allowlisty nadal pozostają dostępne.
 - Akcje przypiętych miniatur zanikają po 2,5 s i powracają po dotknięciu; obsługa klawiaturą i preferencji ograniczonych animacji pozostaje dostępna.
 
 - Atrybucja OpenStreetMap to stale dostępny, mały odsyłacz tekstowy w lewym dolnym rogu, nad zwiniętą lub rozwiniętą szufladą. Nie wyświetla ikony informacji ani nakładki Leafleta. Wymagane oznaczenie źródła pozostaje czytelne.
 
 - Przypięte zdjęcia: pojedyncze dotknięcie pływającej miniatury na mapie lub miniatury w szufladzie otwiera bezpośrednio ten sam `PhotoDetailModal` co wachlarz miejsca (wraz z nawigacją i danymi zdjęcia). Dotknięcie w szufladzie nie odpina zdjęcia; do przeniesienia z szuflady na mapę służy wyłącznie przeciągnięcie poza obszar szuflady, a do szuflady przeciągnięcie karty na jej obszar. Ruch/resize nie może otworzyć modalu. Zdjęcia przypięte spoza lekkiego podglądu mapy mają zachowany snapshot do podglądu podczas ładowania pełnej galerii.
 
-- Szuflada przypiętych mediów: pusta jest ukryta, po odłożeniu zdjęć pokazuje wyłącznie pasek miniaturek bez napisu, licznika i strzałki, a przy przeciąganiu rozwija magnetyczny cel odkładania. Dotknięcie mapy poza rozwiniętą szufladą minimalizuje ją, zachowując zdjęcia i ich podgląd; sam dotyk miniatury nie przenosi jej.
+- Szuflada mediów domyślnie jest zwinięta, nie zabierając miejsca mapie. Uchwyt jednym kliknięciem otwiera albo zamyka szufladę, osobny przycisk Więcej/Mniej zdjęć przełącza odkrywanie, a gest w górę/dół przesuwa o jeden poziom. Kiedy kolekcja jest pusta, pasek pokazuje podglądy zdjęć z mapy. Dotknięcie mapy poza rozwiniętą szufladą minimalizuje ją, zachowując zdjęcia i ich podgląd; sam dotyk miniatury nie przenosi jej.
