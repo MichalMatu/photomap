@@ -160,7 +160,7 @@ export function PlaceMap({
   const mapStartKey = `${mapFallback.fallback_center.lat}:${mapFallback.fallback_center.lon}:${mapFallback.fallback_zoom}`;
   const { cards, notice, onBringToFront, onDock, onUndock, onLayoutChange, onMediaSizeChange, onRemove, pinMedia } =
     usePinnedMediaBoard(pinnedMediaPlaces);
-  const [pinnedDrawerStage, setPinnedDrawerStage] = useState<PinnedMediaDrawerStage>("collection");
+  const [pinnedDrawerStage, setPinnedDrawerStage] = useState<PinnedMediaDrawerStage>("collapsed");
   const [recommendedItems, setRecommendedItems] = useState<MapDiscoveryItem[]>([]);
   const [recommendedPlaceRequest, setRecommendedPlaceRequest] = useState<{ placeId: string; serial: number } | null>(
     null,
