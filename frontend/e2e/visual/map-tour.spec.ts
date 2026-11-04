@@ -89,7 +89,7 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await expect(page.locator("#app-side-drawer")).not.toHaveClass(/is-open/);
 
   await expect(tour.getByRole("button", { name: "Dalej" })).toBeDisabled();
-  await page.locator("#map-tools-panel .map-tools-option").filter({ hasText: "Polecane" }).click();
+  await page.locator("#map-tools-panel .map-tools-options--categories .map-tools-option").first().click();
   await expect(tour).toHaveAttribute("data-tour-step", "routes");
   // Tour moves between independent filters and app navigation without mixing them.
   await expect(page.locator("#map-tools-panel")).toHaveCount(0);
