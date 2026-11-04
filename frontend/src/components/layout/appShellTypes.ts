@@ -54,6 +54,5 @@ export type AppShellPrimaryItem = {
   href: string;
   Icon: LucideIcon;
   label: string;
-  railLabel?: string;
   section: AppSection;
 };
