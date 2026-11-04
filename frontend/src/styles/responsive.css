@@ -8,28 +8,6 @@
     top: var(--space-3);
   }
 
-  .side-rail {
-    gap: var(--space-5);
-    padding: calc(var(--space-14) + var(--space-5)) var(--space-2) var(--space-5);
-    width: var(--shell-rail-width);
-  }
-
-  .rail-item {
-    font-size: 0.68rem;
-    min-height: 62px;
-  }
-
-  .rail-item span {
-    font-size: 0.55rem;
-    max-width: none;
-  }
-
-  .map-frame,
-  .place-map {
-    min-height: 100vh;
-    min-height: 100dvh;
-  }
-
   .field-row {
     grid-template-columns: 1fr;
   }
