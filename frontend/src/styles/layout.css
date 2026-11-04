@@ -86,6 +86,11 @@
   background: var(--surface-backdrop-drawer);
 }
 
+.drawer-scrim--map-tools,
+.drawer-scrim--map-tools:hover {
+  background: transparent;
+}
+
 .side-drawer {
   background: var(--color-surface-strong);
   backdrop-filter: var(--blur-glass);
