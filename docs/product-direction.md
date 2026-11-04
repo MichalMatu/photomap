@@ -32,7 +32,7 @@ Zasady produktu:
 - zoom zmienia gestosc i rozmiar elementow,
 - klikniecie miniatury w galerii miejsca otwiera bezposrednio jeden lekki widok medium; nie dodajemy posredniego podgladu tego samego zdjecia,
 - widok medium eksponuje obraz, nazwe miejsca, opcjonalne audio oraz jeden kompaktowy blok tekstu: podpis zdjecia z opisem miejsca albo dane pamiatki,
-- audio w widoku medium moze dzialac jako delikatny ambient autoplay tylko po wlaczeniu kontrolki `Audio` w menu mapy,
+- audio w widoku medium moze dzialac jako delikatny ambient autoplay tylko po wlaczeniu kontrolki w osobnym panelu `Widok` mapy,
 - akcje pomocnicze, takie jak edycja pamiatki i zgloszenie problemu, pozostaja male i drugoplanowe,
 - zewnetrzne materialy maja byc pozniej osobnymi, strukturalnymi linkami przypietymi do miejsca, a nie tekstem w podpisie zdjecia,
 - warstwy pomagaja ogladac dane: polecane, galerie, pamiatki i proste kolekcje,
@@ -41,12 +41,12 @@ Zasady produktu:
 
 Kontrakt filtrow mapy:
 
-- `Polecane`, `Miejsca` i `Pamiatki` dzialaja jak niezalezne przelaczniki,
-- jedna albo dwie aktywne warstwy sa pokazywane dokladnie jako te wybrane kontrolki,
-- komplet trzech aktywnych warstw zwija sie wizualnie do jednej kontrolki `Wszystkie`,
-- `Wszystkie` wlaczone z dowolnego stanu pokazuje pelny widok mapy,
-- `Wszystkie` klikniete, gdy jest juz aktywne, czysci warstwy i zostawia sama mape bazowa,
-- nie pokazujemy osobnego toastu/licznika liczby miejsc po filtrze; liczby naleza do kontrolek warstw i kategorii.
+- `Filtry` sa osobnym panelem, niezaleznym od nawigacji i sposobu prezentacji.
+- `Wszystkie` zawsze wybiera pelny widok; nigdy nie ukrywa wszystkich miejsc.
+- Presety `Polecane`, `Miejsca` oraz `Z pamiatkami` pojawiaja sie tylko, gdy maja odrebna wartosc przy aktualnych danych, i po wybraniu pokazuja jednoznaczny stan.
+- Kategorie pochodza z API i sa widoczne z nazwa, nawet gdy maja nieznana ikone.
+- Panel pokazuje liczbe miejsc na mapie i udostepnia jeden reset aktywnych filtrow.
+- `Widok` zawiera miniatury/pinezki, szuflade i audio; nie zmienia filtrow.
 
 ## Pierwsze Miasto
 
