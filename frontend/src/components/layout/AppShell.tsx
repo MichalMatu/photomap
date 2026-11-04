@@ -2,8 +2,8 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 
 import { lockDocumentScroll, unlockDocumentScroll } from "../ui/documentScrollLock";
 import { AppShellDrawer } from "./AppShellDrawer";
+import { AppShellMapTools, type MapToolsPanel } from "./AppShellMapTools";
 import { AppShellMenuButton } from "./AppShellMenuButton";
-import { AppShellRail } from "./AppShellRail";
 import { primaryItems } from "./appShellItems";
 import {
   getNextAppShellNavigationState,
@@ -27,6 +27,7 @@ type Props = {
   children: ReactNode;
   onStartTour?: () => void;
   tourShowDrawer?: boolean;
+  tourShowFilters?: boolean;
   mapAudioControl?: AppShellMapAudioControl;
   mapLayerControls?: AppShellMapLayerControls;
   mapMarkerModeControl?: AppShellMapMarkerModeControl;
@@ -34,18 +35,13 @@ type Props = {
   mapCategoryControls?: AppShellMapCategoryControls;
 };
 
-function menuButtonLabel(navigationState: AppShellNavigationState) {
-  if (navigationState === "collapsed") return "Pokaż pasek nawigacji";
-  if (navigationState === "rail") return "Otwórz menu";
-  return "Zamknij menu";
-}
-
 export function AppShell({
   activeSection,
   adminAction,
   children,
   onStartTour,
   tourShowDrawer = false,
+  tourShowFilters = false,
   mapAudioControl,
   mapCategoryControls,
   mapLayerControls,
@@ -53,58 +49,63 @@ export function AppShell({
   mapPinnedMediaControl,
 }: Props) {
   const [navigationState, setNavigationState] = useState<AppShellNavigationState>("collapsed");
-  const wasTourDrawerOpen = useRef(false);
+  const [mapPanel, setMapPanel] = useState<MapToolsPanel | null>(null);
+  const wasTourOverlayOpen = useRef(false);
+  const isMenuOpen = navigationState === "drawer";
+  const isOverlayOpen = isMenuOpen || mapPanel !== null;
 
   useEffect(() => {
     if (tourShowDrawer) {
+      setMapPanel(null);
       setNavigationState("drawer");
-    } else if (wasTourDrawerOpen.current) {
+    } else if (tourShowFilters) {
       setNavigationState("collapsed");
+      setMapPanel("filters");
+    } else if (wasTourOverlayOpen.current) {
+      setNavigationState("collapsed");
+      setMapPanel(null);
     }
-    wasTourDrawerOpen.current = tourShowDrawer;
-  }, [tourShowDrawer]);
-  const isRailOpen = navigationState === "rail";
-  const isMenuOpen = navigationState === "drawer";
-  const isNavigationOpen = navigationState !== "collapsed";
-  const railItems = primaryItems.filter((item) => item.section !== activeSection);
-  const closeNavigation = () => setNavigationState("collapsed");
-  const showDrawer = () => setNavigationState("drawer");
-  const handleMenuCycle = () => setNavigationState((currentState) => getNextAppShellNavigationState(currentState));
+    wasTourOverlayOpen.current = tourShowDrawer || tourShowFilters;
+  }, [tourShowDrawer, tourShowFilters]);
+
+  const closeOverlays = () => {
+    setNavigationState("collapsed");
+    setMapPanel(null);
+  };
+  const toggleNavigation = () => {
+    setMapPanel(null);
+    setNavigationState((current) => getNextAppShellNavigationState(current));
+  };
+  const toggleMapPanel = (next: MapToolsPanel) => {
+    setNavigationState("collapsed");
+    setMapPanel((current) => (current === next ? null : next));
+  };
   const handleAdminAction = () => {
-    closeNavigation();
+    closeOverlays();
     adminAction?.onClick();
   };
 
   useEffect(() => {
-    if (!isNavigationOpen) {
-      return;
-    }
-
+    if (!isOverlayOpen) return;
     lockDocumentScroll();
-
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closeNavigation();
-      }
+      if (event.key === "Escape") closeOverlays();
     };
-
     document.addEventListener("keydown", handleKeyDown);
-
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       unlockDocumentScroll();
     };
-  }, [isNavigationOpen]);
+  }, [isOverlayOpen]);
 
   useEffect(() => {
-    if (tourShowDrawer) return;
+    if (tourShowDrawer || tourShowFilters) return;
     let start: { id: number; x: number; y: number; surface: AppShellSwipeSurface } | null = null;
     const down = (event: PointerEvent) => {
       if (event.pointerType !== "touch" || !event.isPrimary) return;
       const target = event.target instanceof Element ? event.target : null;
       let surface: AppShellSwipeSurface = "outside";
       if (target?.closest(".side-drawer")) surface = "drawer";
-      else if (target?.closest(".side-rail")) surface = "rail";
       else if (event.clientX >= 24 && event.clientX <= 76) surface = "edge";
       start = { id: event.pointerId, x: event.clientX, y: event.clientY, surface };
     };
@@ -120,7 +121,10 @@ export function AppShell({
         event.clientY,
         gesture.surface,
       );
-      if (next !== navigationState) setNavigationState(next);
+      if (next !== navigationState) {
+        setMapPanel(null);
+        setNavigationState(next);
+      }
     };
     const cancel = () => {
       start = null;
@@ -133,55 +137,52 @@ export function AppShell({
       document.removeEventListener("pointerup", up, true);
       document.removeEventListener("pointercancel", cancel, true);
     };
-  }, [navigationState, tourShowDrawer]);
+  }, [navigationState, tourShowDrawer, tourShowFilters]);
 
   return (
     <div className={`app-shell app-shell--${activeSection} app-shell--${navigationState}`}>
-      <AppShellMenuButton
-        label={menuButtonLabel(navigationState)}
-        navigationState={navigationState}
-        onClick={handleMenuCycle}
-      />
+      <AppShellMenuButton navigationState={navigationState} onClick={toggleNavigation} />
 
-      <AppShellRail
-        activeSection={activeSection}
-        adminAction={adminAction}
-        isOpen={isRailOpen}
-        mapLayerControls={mapLayerControls}
-        mapPinnedMediaControl={mapPinnedMediaControl}
-        railItems={railItems}
-        onAdminAction={handleAdminAction}
-        onOpenDrawer={showDrawer}
-      />
+      {activeSection === "map" &&
+      mapLayerControls &&
+      mapCategoryControls &&
+      mapMarkerModeControl &&
+      mapPinnedMediaControl &&
+      mapAudioControl &&
+      !isMenuOpen ? (
+        <AppShellMapTools
+          panel={mapPanel}
+          onPanelChange={toggleMapPanel}
+          mapAudioControl={mapAudioControl}
+          mapCategoryControls={mapCategoryControls}
+          mapLayerControls={mapLayerControls}
+          mapMarkerModeControl={mapMarkerModeControl}
+          mapPinnedMediaControl={mapPinnedMediaControl}
+        />
+      ) : null}
 
-      {isNavigationOpen ? (
-        <button className="drawer-scrim" type="button" aria-label="Zamknij menu" onClick={closeNavigation} />
+      {isOverlayOpen ? (
+        <button className="drawer-scrim" type="button" aria-label="Zamknij panel" onClick={closeOverlays} />
       ) : null}
 
       <AppShellDrawer
         activeSection={activeSection}
         adminAction={adminAction}
         isOpen={isMenuOpen}
-        mapAudioControl={mapAudioControl}
-        mapCategoryControls={mapCategoryControls}
-        mapLayerControls={mapLayerControls}
-        mapMarkerModeControl={mapMarkerModeControl}
-        mapPinnedMediaControl={mapPinnedMediaControl}
         primaryItems={primaryItems}
         onStartTour={
           onStartTour
             ? () => {
-                closeNavigation();
+                closeOverlays();
                 onStartTour();
               }
             : undefined
         }
         onAdminAction={handleAdminAction}
         onClose={() => {
-          if (!tourShowDrawer) closeNavigation();
+          if (!tourShowDrawer) closeOverlays();
         }}
       />
-
       <div className="app-content">{children}</div>
     </div>
   );
