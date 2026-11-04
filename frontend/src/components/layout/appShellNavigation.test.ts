@@ -22,4 +22,4 @@ describe("app shell navigation", () => {
     expect(swipe("collapsed", 46, 300, 170, 500, "edge")).toBe("collapsed");
     expect(swipe("drawer", 300, 300, 30, 301, "outside")).toBe("drawer");
   });
-}
+);
