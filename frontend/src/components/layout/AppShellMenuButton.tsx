@@ -1,21 +1,20 @@
 import { Menu, X } from "lucide-react";
-
 import type { AppShellNavigationState } from "./appShellNavigation";
 
 type Props = {
-  label: string;
   navigationState: AppShellNavigationState;
   onClick: () => void;
 };
 
-export function AppShellMenuButton({ label, navigationState, onClick }: Props) {
+export function AppShellMenuButton({ navigationState, onClick }: Props) {
   const isMenuOpen = navigationState === "drawer";
+  const label = isMenuOpen ? "Zamknij menu" : "Otwórz menu";
   return (
     <button
-      className={navigationState === "collapsed" ? "shell-menu-button" : "shell-menu-button is-active"}
+      className={isMenuOpen ? "shell-menu-button is-active" : "shell-menu-button"}
       type="button"
-      aria-controls={isMenuOpen ? "app-side-drawer" : "app-side-rail"}
-      aria-expanded={navigationState !== "collapsed"}
+      aria-controls="app-side-drawer"
+      aria-expanded={isMenuOpen}
       aria-label={label}
       title={label}
       onClick={onClick}
