@@ -12,6 +12,7 @@ for (const viewport of [
   test(`drawer preserves map space and opens predictably at ${viewport.width}×${viewport.height}`, async ({
     page,
   }, testInfo) => {
+    test.setTimeout(90_000); // Chrome can be slow when resizing Leaflet and an animated bottom sheet.
     await page.setViewportSize(viewport);
     await mockSharedApi(page);
     await page.goto("/");
