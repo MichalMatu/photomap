@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { mockSharedApi } from "../support/visualApi";
+import { places } from "../fixtures/visualData";
 
 for (const viewport of [
   { width: 1440, height: 900 },
@@ -47,7 +48,7 @@ for (const viewport of [
 
 test("filters, display options and navigation have independent actions", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await mockSharedApi(page);
+  await mockSharedApi(page, [{ ...places[0], weight: 5 }, places[1]]);
   await page.goto("/");
   await page.getByRole("button", { name: "Otwórz menu" }).click();
   await expect(page.getByRole("navigation", { name: "Nawigacja PhotoMap" })).toBeVisible();
