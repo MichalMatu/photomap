@@ -47,6 +47,7 @@ export type AppShellMapCategoryControls = {
   onClear: () => void;
   onToggle: (categoryId: string) => void;
   selectedCount: number;
+  resultCount: number;
 };
 
 export type AppShellPrimaryItem = {
