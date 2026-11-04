@@ -19,7 +19,7 @@ import {
   isMapLayerControlActive,
   MAP_LAYER_CONTROLS,
   type MapLayerControlId,
-  toggleMapLayer,
+  selectMapLayerPreset,
 } from "../components/map/mapLayers";
 import { MAP_DISPLAY_CONFIG } from "../components/map/mapDisplayConfig";
 import { getPlacePreviewVisual } from "../components/map/placePreview";
@@ -175,7 +175,8 @@ export function PublicMapPage() {
       <AppShell
         activeSection="map"
         onStartTour={startTour}
-        tourShowDrawer={tourStep === "layers" || tourStep === "routes"}
+        tourShowDrawer={tourStep === "routes"}
+        tourShowFilters={tourStep === "layers"}
         mapAudioControl={{
           active: isAudioAutoplayEnabled,
           label: "Audio",
@@ -190,6 +191,7 @@ export function PublicMapPage() {
           onToggle: (categoryId) =>
             setSelectedCategoryIds((currentCategoryIds) => toggleMapCategoryFilter(currentCategoryIds, categoryId)),
           selectedCount: selectedCategoryIds.length,
+          resultCount: visiblePlaces.length,
         }}
         mapLayerControls={{
           items: MAP_LAYER_CONTROLS.map((layer) => ({
@@ -198,7 +200,7 @@ export function PublicMapPage() {
             count: layerCounts[layer.id],
           })),
           onToggle: (layerId) => {
-            setMapLayerState((currentState) => toggleMapLayer(currentState, layerId as MapLayerControlId));
+            setMapLayerState(selectMapLayerPreset(layerId as MapLayerControlId));
             handleTourEvent("layer-toggled");
           },
         }}
@@ -238,7 +240,7 @@ export function PublicMapPage() {
               ) : null}
             </div>
           ) : null}
-          <ModeratorRecruitmentPrompt />
+          {tourStep === null && hasSeenTour ? <ModeratorRecruitmentPrompt /> : null}
           {!isMapLoading && !isMapError ? (
             <div className="map-frame">
               <PlaceMap
