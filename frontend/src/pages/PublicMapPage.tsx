@@ -188,8 +188,10 @@ export function PublicMapPage() {
             active: selectedCategoryIds.includes(category.id),
           })),
           onClear: () => setSelectedCategoryIds([]),
-          onToggle: (categoryId) =>
-            setSelectedCategoryIds((currentCategoryIds) => toggleMapCategoryFilter(currentCategoryIds, categoryId)),
+          onToggle: (categoryId) => {
+            setSelectedCategoryIds((currentCategoryIds) => toggleMapCategoryFilter(currentCategoryIds, categoryId));
+            handleTourEvent("layer-toggled");
+          },
           selectedCount: selectedCategoryIds.length,
           resultCount: visiblePlaces.length,
         }}
