@@ -6,23 +6,20 @@ import {
 } from "./appShellNavigation";
 
 describe("app shell navigation", () => {
-  it("cycles collapsed rail drawer collapsed", () => {
-    const cycle: AppShellNavigationState[] = ["collapsed"];
-    cycle.push(getNextAppShellNavigationState(cycle[cycle.length - 1]));
-    cycle.push(getNextAppShellNavigationState(cycle[cycle.length - 1]));
-    cycle.push(getNextAppShellNavigationState(cycle[cycle.length - 1]));
-    expect(cycle).toEqual(["collapsed", "rail", "drawer", "collapsed"]);
+  it("opens and closes the menu in a single click", () => {
+    const states: AppShellNavigationState[] = ["collapsed"];
+    states.push(getNextAppShellNavigationState(states[0]));
+    states.push(getNextAppShellNavigationState(states[1]));
+    expect(states).toEqual(["collapsed", "drawer", "collapsed"]);
   });
-  it("swipes both ways without intercepting a map pan, Android back edge or vertical scrolling", () => {
+
+  it("preserves map gestures while allowing deliberate edge open and menu close", () => {
     const swipe = getSwipeAppShellNavigationState;
-    expect(swipe("collapsed", 46, 300, 170, 303, "edge")).toBe("rail");
-    expect(swipe("rail", 45, 300, 170, 303, "rail")).toBe("drawer");
-    expect(swipe("drawer", 170, 300, 50, 303, "drawer")).toBe("rail");
-    expect(swipe("rail", 90, 300, 6, 303, "rail")).toBe("collapsed");
-    expect(swipe("rail", 60, 300, 7, 303, "rail")).toBe("collapsed");
+    expect(swipe("collapsed", 46, 300, 170, 303, "edge")).toBe("drawer");
+    expect(swipe("drawer", 170, 300, 50, 303, "drawer")).toBe("collapsed");
     expect(swipe("collapsed", 180, 300, 330, 301, "outside")).toBe("collapsed");
     expect(swipe("collapsed", 6, 300, 170, 301, "edge")).toBe("collapsed");
     expect(swipe("collapsed", 46, 300, 170, 500, "edge")).toBe("collapsed");
     expect(swipe("drawer", 300, 300, 30, 301, "outside")).toBe("drawer");
   });
-});
+}
