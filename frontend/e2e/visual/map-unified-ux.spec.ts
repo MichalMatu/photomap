@@ -59,6 +59,7 @@ test("filters, display options and navigation have independent actions", async (
   await page.getByRole("button", { name: "Filtry mapy" }).click();
   const filters = page.locator("#map-tools-panel");
   await expect(filters).toBeVisible();
+  await expect(page.locator(".drawer-scrim--map-tools")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
   await expect(filters).toContainText("Kategorie miejsc");
   const firstCategory = filters.locator(".map-tools-options--categories button").first();
   await expect(firstCategory).toBeVisible();
