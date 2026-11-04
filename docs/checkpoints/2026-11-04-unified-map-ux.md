@@ -16,7 +16,11 @@
 - W Mac Local Agencie: format, TypeScript, ESLint, knip, build produkcyjny oraz **369/369** testów Vitest — PASS.
 - E2E Chrome: osobny zestaw `map-unified-ux.spec.ts` sprawdza zamkniętą/otwartą szufladę na pięciu viewportach (1440×900, 768×1024, 390×844, 360×740, 844×390) oraz rozdział filtrów i ustawień.
 - Testy regresji obejmują `app-shell-swipe`, `discovery-drawer`, `pinned-media-drawer`, `map-tour`.
-- Finalny wspólny przebieg 14 scenariuszy Chrome: **w trakcie weryfikacji**. Nie uznawać odbioru ani wdrożenia przed odczytaniem końcowego wyniku z `agent-control`.
+- Finalny wspólny przebieg 14 scenariuszy Chrome: **14/14 PASS** na gałęzi `feat/unified-map-ux-20261104`, po ostatniej korekcie transparentnego tła panelu filtrów (`photomap-unified-ux-final-polish-gates-20261104-v2`).
+- Pełne sprawdzenie na ostatnim kodzie: Vitest **369/369 PASS**, Prettier, knip, TypeScript, lint i Vite build **PASS**.
+- Rozszerzona regresja 24 scenariuszy mapy, tras, ustawień i zapisanych mediów: **19 PASS, 5 FAIL**; **identyczne pięć niezgodności odtworzono na czystym `main` `30bff5c`**. To istniejący dług bazowy: dwa niezgodne snapshoty obrazu, test punktu trafienia przesuniętego markera, test podwójnego kliknięcia przypiętej karty oraz test tekstu celowo ukrytej kopii karty pionowej. Sprint nie dodał nowych błędów w tej grupie; nie kasować asercji ani nie nadpisywać automatycznie referencyjnych screenshotów bez odrębnego audytu.
+- Kontrola tokenów CSS: pełny gate nie przechodzi zarówno na bazowym `main`, jak i gałęzi UX; lista niezgodności jest identyczna (historyczny dług, bez nowych naruszeń).
+- Raspberry Pi read-only preflight `photomap-unified-ux-pi-preflight-20261104-v1`: gałąź `main`, katalog czysty, usługa i tunel aktywne, `/health` OK, `/api/places/map` 200, wolne miejsce 42 GB. Preflight **nie jest wdrożeniem**.
 
 ## Zasady wydania
 
