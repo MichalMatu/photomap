@@ -85,13 +85,14 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
   await tour.getByRole("button", { name: "Dalej" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "layers");
   await expect(page.locator(".memory-sheet-content")).toHaveCount(0);
-  await expect(page.locator("#app-side-drawer")).toHaveClass(/is-open/);
+  await expect(page.locator("#map-tools-panel")).toBeVisible();
+  await expect(page.locator("#app-side-drawer")).not.toHaveClass(/is-open/);
 
   await expect(tour.getByRole("button", { name: "Dalej" })).toBeDisabled();
-  await page.locator("#app-side-drawer .drawer-section--layers button").first().click();
+  await page.locator("#map-tools-panel .map-tools-option").filter({ hasText: "Polecane" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "routes");
-  // Clicking a layer ordinarily closes the drawer. The walkthrough must keep it open
-  // so the user can see the next target without being stranded.
+  // Tour moves between independent filters and app navigation without mixing them.
+  await expect(page.locator("#map-tools-panel")).toHaveCount(0);
   await expect(page.locator("#app-side-drawer")).toHaveClass(/is-open/);
   await expect(tour.locator(".map-tour-shade")).toHaveCount(0);
 
@@ -103,7 +104,6 @@ test("interactive PhotoMap tutorial follows real place, gallery and layer action
     .poll(() => page.evaluate(() => window.localStorage.getItem("photomap-public-map-tour-v3-complete")))
     .toBe("1");
 
-  await page.getByRole("button", { name: "Pokaż pasek nawigacji" }).click();
   await page.getByRole("button", { name: "Otwórz menu" }).click();
   await page.getByRole("button", { name: "Samouczek" }).click();
   await expect(tour).toHaveAttribute("data-tour-step", "welcome");
