@@ -17,6 +17,11 @@ export const DEFAULT_MAP_LAYER_STATE: MapLayerState = {
   places: true,
 };
 
+export function selectMapLayerPreset(id: MapLayerControlId): MapLayerState {
+  if (id === "all") return { ...DEFAULT_MAP_LAYER_STATE };
+  return { featured: id === "featured", places: id === "places", memories: id === "memories" };
+}
+
 export const EMPTY_MAP_LAYER_STATE: MapLayerState = {
   featured: false,
   memories: false,
