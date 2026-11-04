@@ -31,7 +31,7 @@ export const MAP_TOUR_STEPS: MapTourStep[] = [
   "done",
 ];
 
-export const MAP_TOUR_STORAGE_KEY = "photomap-public-map-tour-v3-complete";
+const MAP_TOUR_STORAGE_KEY = "photomap-public-map-tour-v3-complete";
 
 // These selectors only check whether an action exists. The guide never singles
 // out a marker or intercepts clicks: visitors choose any visible item.
