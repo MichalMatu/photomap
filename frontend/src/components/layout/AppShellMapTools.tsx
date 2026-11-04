@@ -71,7 +71,11 @@ export function AppShellMapTools({
       </div>
 
       {panel ? (
-        <aside className="map-tools-panel" id="map-tools-panel" aria-label={panel === "filters" ? "Filtry mapy" : "Ustawienia widoku mapy"}>
+        <aside
+          className="map-tools-panel"
+          id="map-tools-panel"
+          aria-label={panel === "filters" ? "Filtry mapy" : "Ustawienia widoku mapy"}
+        >
           <div className="map-tools-heading">
             <strong>{panel === "filters" ? "Filtry" : "Widok mapy"}</strong>
             <button type="button" className="map-tools-close" aria-label="Zamknij panel" onClick={close}>
@@ -139,7 +143,9 @@ export function AppShellMapTools({
                 <div className="map-tools-options">
                   <button
                     type="button"
-                    className={mapMarkerModeControl.mode === "photos" ? "map-tools-option is-active" : "map-tools-option"}
+                    className={
+                      mapMarkerModeControl.mode === "photos" ? "map-tools-option is-active" : "map-tools-option"
+                    }
                     aria-pressed={mapMarkerModeControl.mode === "photos"}
                     onClick={() => mapMarkerModeControl.onChange("photos")}
                   >
@@ -167,7 +173,10 @@ export function AppShellMapTools({
                 >
                   <Images size={18} aria-hidden="true" />
                   <span>Pokaż szufladę zdjęć</span>
-                  <span className={mapPinnedMediaControl.active ? "map-tools-switch is-active" : "map-tools-switch"} aria-hidden="true" />
+                  <span
+                    className={mapPinnedMediaControl.active ? "map-tools-switch is-active" : "map-tools-switch"}
+                    aria-hidden="true"
+                  />
                 </button>
                 <button
                   type="button"
@@ -175,9 +184,16 @@ export function AppShellMapTools({
                   aria-pressed={mapAudioControl.active}
                   onClick={mapAudioControl.onToggle}
                 >
-                  {mapAudioControl.active ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
+                  {mapAudioControl.active ? (
+                    <Volume2 size={18} aria-hidden="true" />
+                  ) : (
+                    <VolumeX size={18} aria-hidden="true" />
+                  )}
                   <span>Automatyczne audio</span>
-                  <span className={mapAudioControl.active ? "map-tools-switch is-active" : "map-tools-switch"} aria-hidden="true" />
+                  <span
+                    className={mapAudioControl.active ? "map-tools-switch is-active" : "map-tools-switch"}
+                    aria-hidden="true"
+                  />
                 </button>
               </section>
             </div>
