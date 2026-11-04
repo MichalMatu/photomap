@@ -360,6 +360,28 @@
 .pinned-media-drawer.is-open .pinned-media-drawer-content {
   height: calc(100% - 30px);
 }
+.pinned-media-drawer-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-2);
+}
+
+.pinned-media-drawer-stage-button {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-control);
+  color: var(--content-primary);
+  font-size: var(--text-caption);
+  font-weight: 650;
+  min-height: 36px;
+  padding: var(--space-2) var(--space-3);
+}
+
+.pinned-media-drawer-stage-button:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
 .pinned-media-drawer-section {
   display: grid;
   gap: var(--space-2);
