@@ -28,6 +28,19 @@ make quality
 
 E2E używa izolowanej bazy i storage w `.dev/e2e`. Hooki projektu są w `.pre-commit-config.yaml`.
 
+## Izolowana baza testowa i migracje Alembic
+
+Przy testach od czystego środowiska ustaw `PHOTOMAP_DATA_DIR` na odrębny katalog i utwórz go **przed** migracją:
+
+```bash
+export PHOTOMAP_DATA_DIR=/tmp/photomap-audit-db
+mkdir -p "$PHOTOMAP_DATA_DIR"
+cd backend
+python -m alembic -c alembic.ini upgrade head
+```
+
+CLI Alembic domyślnie używa tej samej konfiguracji bazy co aplikacja. Jawne `DATABASE_URL` ma pierwszeństwo przed `PHOTOMAP_DATA_DIR`; programowe wywołania Alembic mogą przekazać własne `sqlalchemy.url`. Nie używaj produkcyjnej bazy ani storage do testów audytowych.
+
 ## Git
 
 `main` jest stabilnym kanałem gotowym do wdrożenia. Zwykłą pracę prowadź na krótkim branchu.
