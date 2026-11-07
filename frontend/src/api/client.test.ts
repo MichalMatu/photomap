@@ -49,6 +49,27 @@ describe("mediaUrl", () => {
     expect(mediaUrl("https://example.com/photo.jpg")).toBe("https://example.com/photo.jpg");
   });
 
+  it("uses a distinct media revision for edits within the same millisecond", () => {
+    const now = vi.spyOn(Date, "now").mockReturnValue(1700000000000);
+    const localStorage = {
+      getItem: vi.fn(() => null),
+      removeItem: vi.fn(),
+      setItem: vi.fn(),
+    };
+    vi.stubGlobal("window", { localStorage });
+
+    try {
+      const firstRevision = bumpMediaCacheRevision();
+      const nextRevision = bumpMediaCacheRevision();
+
+      expect(nextRevision).not.toBe(firstRevision);
+      expect(localStorage.setItem).toHaveBeenNthCalledWith(1, "photomap_media_cache_revision", firstRevision);
+      expect(localStorage.setItem).toHaveBeenNthCalledWith(2, "photomap_media_cache_revision", nextRevision);
+    } finally {
+      now.mockRestore();
+    }
+  });
+
   it("stores a new media revision after mutable media edits", () => {
     const localStorage = {
       getItem: vi.fn(() => null),
