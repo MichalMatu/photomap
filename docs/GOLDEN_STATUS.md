@@ -1,5 +1,21 @@
 # PhotoMap — GOLDEN STATUS / checkpoint końcowy (03.11.2026)
 
+## Doprecyzowanie po rollbacku i audyt 07.11.2026
+
+Niniejszy checkpoint z 03.11 pozostaje historycznym zapisem zaakceptowanego wydania UI.
+**04.11.2026 nastąpił późniejszy, kontrolowany rollback UX** do drzewa źródeł sprzed sprintu:
+`main@356289656d66963fb7451b70eac2e1bcff015819`. Mac Local Agent potwierdził
+wtedy na Pi kod źródłowy, przywrócony `public-map-D41-GBxF.js`, działające
+`photomap.service` i `cloudflared.service` oraz HTTP 200 dla health/mapy.
+Weryfikacja z 04.11 nie oznacza automatycznie potwierdzenia bieżącego live runtime.
+
+Prace audytowo-naprawcze z 07.11 są odseparowane na
+`audit/photomap-repair-20261107`; **nie są częścią produkcyjnego `main`**.
+Bieżące dowody, ograniczenia, dalsze gate'y oraz przekazanie prac:
+[checkpoint audytu](checkpoints/2026-11-07-general-audit-repair.md) i
+[HANDOFF_NEXT_CHAT](HANDOFF_NEXT_CHAT.md).
+Nie przywracać wycofanego UX bez osobnej decyzji i dowodów regresji.
+
 ## Stan produkcyjny
 
 - **Działa:** https://photomap.pl, `/`, `/health`, `/api/places/map`, nowy JS mapy i CSS: HTTP 200 z publicznej domeny i na Pi.
