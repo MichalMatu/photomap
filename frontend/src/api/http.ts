@@ -3,6 +3,7 @@ import { getAdminSessionToken } from "./auth";
 const DEFAULT_API_BASE_URL = import.meta.env.PROD ? "" : "http://127.0.0.1:8000";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? DEFAULT_API_BASE_URL;
 const MEDIA_CACHE_REVISION_STORAGE_KEY = "photomap_media_cache_revision";
+let lastMediaCacheRevisionMillis = 0;
 
 export class ApiError extends Error {
   status: number;
@@ -160,7 +161,8 @@ function getMediaCacheRevision(): string {
 }
 
 export function bumpMediaCacheRevision(): string {
-  const revision = Date.now().toString(36);
+  lastMediaCacheRevisionMillis = Math.max(Date.now(), lastMediaCacheRevisionMillis + 1);
+  const revision = lastMediaCacheRevisionMillis.toString(36);
   if (typeof window === "undefined" || !window.localStorage) {
     return revision;
   }
