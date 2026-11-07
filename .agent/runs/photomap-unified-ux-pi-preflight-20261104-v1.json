@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-pi-preflight-20261104-v1",
+  "task_digest": "603098052ef09f26f57d2891c3812c29b47726984f169b7904c9964f9368c4a2",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T04:54:18.314347+00:00",
+  "attempt_id": "1ad38f95ad757caf278c5280",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 77393,
+  "updated_at": "2026-11-04T04:54:18.615484+00:00",
+  "pid": 77393
+}

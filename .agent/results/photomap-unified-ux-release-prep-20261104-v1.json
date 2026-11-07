@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "039f9d953edda58a3ef93356",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 0,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nEXPECTED=\"09be8c4ef70a30791de2698c1c39779e4ab544eb\"\ntest \"$(git -C \"$ROOT\" branch --show-current)\" = \"main\"\ntest -z \"$(git -C \"$ROOT\" status --porcelain)\"\ngit -C \"$ROOT\" fetch origin main\ntest \"$(git -C \"$ROOT\" rev-parse origin/main)\" = \"$EXPECTED\"\ngit -C \"$ROOT\" merge --ff-only origin/main\ngit -C \"$WT\" fetch origin main\ngit -C \"$WT\" checkout --detach origin/main\ntest -z \"$(git -C \"$WT\" status --porcelain)\"\ntest \"$(git -C \"$WT\" rev-parse HEAD)\" = \"$EXPECTED\"\ncd \"$WT/frontend\"\nVITE_API_BASE_URL= npm run build\ntest -s dist/index.html\necho \"MAC_MAIN_SHA=$(git -C \"$ROOT\" rev-parse HEAD)\"\necho \"BUILD_SHA=$(git -C \"$WT\" rev-parse HEAD)\"\necho \"INDEX_SHA256=$(shasum -a 256 dist/index.html | awk '{print $1}')\"\nfind dist/assets -maxdepth 1 -name 'public-map-*.js' -print\necho FRONTEND_BUILD_READY\n",
+      "elapsed_seconds": 0.39,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": null,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-04T05:03:24.896251+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.077,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.104,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-unified-ux-release-prep-20261104-v1",
+  "idle_timeout": 500,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.39,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-04T05:03:22.697019+00:00",
+  "status": "failed",
+  "task_digest": "96631fe1383628b17c5649b2b1655d11790e9095967c22ac0838b54c5b7b19da",
+  "task_timeout": 1500,
+  "verification": [],
+  "work_branch": "main"
+}

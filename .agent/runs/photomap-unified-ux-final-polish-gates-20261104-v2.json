@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-final-polish-gates-20261104-v2",
+  "task_digest": "0ec982e27eea4884fa4ab77a1a81e1289220fbc75f93da9079f6d9cdac2735a5",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T05:01:36.592823+00:00",
+  "attempt_id": "1784e25239f47f93f7306125",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 88174,
+  "updated_at": "2026-11-04T05:01:36.866245+00:00",
+  "pid": 88174
+}

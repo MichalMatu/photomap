@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-revert-unified-ux-production-20261104-v1",
+  "task_digest": "83e81a84629eb96605230554d74ac4ffd1f62330436459d645163011b757fa88",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T05:21:28.400578+00:00",
+  "attempt_id": "ed92323e543db32e45bf7f06",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 29732,
+  "updated_at": "2026-11-04T05:21:28.764287+00:00",
+  "pid": 29732
+}

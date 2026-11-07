@@ -1,0 +1,19 @@
+{
+  "id": "photomap-revert-unified-ux-cleanup-20261104-v1",
+  "dedupe_key": "photomap-revert-unified-ux-cleanup-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 450,
+  "idle_timeout": 250,
+  "task_timeout": 650,
+  "memory_limit_mb": 1536,
+  "commands": [
+    "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\ncd \"$ROOT\"\ntest \"$(git branch --show-current)\" = main\ntest \"$(git rev-parse HEAD)\" = 356289656d66963fb7451b70eac2e1bcff015819\ntest -z \"$(git status --porcelain)\"\nnode <<'NODE'\nconst {chromium}=require('./frontend/node_modules/@playwright/test');\n(async()=>{\n const browser=await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});\n const page=await browser.newPage({viewport:{width:390,height:844}});\n let errors=[];page.on('pageerror',e=>errors.push(e.message));\n const response=await page.goto('https://photomap.pl/',{waitUntil:'domcontentloaded',timeout:35000});\n await page.locator('.pinned-media-drawer').waitFor({timeout:25000});\n const state=await page.evaluate(()=>({\n   stage:document.querySelector('.pinned-media-drawer')?.getAttribute('data-stage'),\n   legacyMenu:!!document.querySelector('.shell-menu-button'),\n   legacyRailPresent:!!document.querySelector('.side-rail'),\n   newMapToolsPresent:!!document.querySelector('.map-tools')\n }));\n console.log(\"LIVE_OLD_UI_STATE=\"+JSON.stringify({http:response.status(),...state,errors}));\n await browser.close();\n if(response.status()!==200 || state.stage!=='collection' || state.newMapToolsPresent || errors.length)process.exit(2);\n})().catch(e=>{console.error(e);process.exit(1)});\nNODE\necho LIVE_OLD_UX_BROWSER_PASS\n",
+    "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\ncd \"$ROOT\"\ntest \"$(git rev-parse HEAD)\" = 356289656d66963fb7451b70eac2e1bcff015819\ntest -z \"$(git status --porcelain)\"\ngit push origin --delete feat/unified-map-ux-20261104\necho UX_BRANCH_REMOVED\nif git worktree list --porcelain | grep -Fqx \"worktree $WT\"; then\n if test -z \"$(git -C \"$WT\" status --porcelain)\"; then\n   git worktree remove \"$WT\" || echo \"UX_WORKTREE_RETENTION_NONBLOCKING\"\n else\n   echo \"UX_WORKTREE_DIRTY_RETAINED_FOR_SAFETY\"\n fi\nfi\necho \"MAIN_TREE=$(git rev-parse HEAD^{tree})\"\necho \"BASE_TREE=$(git rev-parse 30bff5c930e9cff13b52f9bff67dc3e21ea06798^{tree})\"\ngit diff --quiet 30bff5c930e9cff13b52f9bff67dc3e21ea06798 HEAD\necho ROLLBACK_CLEANUP_DONE\n"
+  ]
+}

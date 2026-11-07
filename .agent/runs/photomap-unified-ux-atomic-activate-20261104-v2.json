@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-atomic-activate-20261104-v2",
+  "task_digest": "c715a5a3ff4be2f8476232adf5f76420fca3e0be6c0ad31e12d6a19b48ddc67c",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T05:10:54.628560+00:00",
+  "attempt_id": "51a5e0e2c0f10d54c82acc3b",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 10324,
+  "updated_at": "2026-11-04T05:10:54.980888+00:00",
+  "pid": 10324
+}

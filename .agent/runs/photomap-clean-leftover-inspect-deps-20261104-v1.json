@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-clean-leftover-inspect-deps-20261104-v1",
+  "task_digest": "82eba1c20e2b17cda87260ebcbad2fc71e61c99590496a78131f177e5f98a77f",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T05:31:04.726717+00:00",
+  "attempt_id": "1411e3d4ae029ffc6832589a",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 46071,
+  "updated_at": "2026-11-04T05:31:05.102735+00:00",
+  "pid": 46071
+}

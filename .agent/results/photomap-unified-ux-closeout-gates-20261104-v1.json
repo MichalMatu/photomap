@@ -1,0 +1,88 @@
+{
+  "allow_write": true,
+  "attempt_id": "922b77125edef897d018cfb6",
+  "command_timeout": 1700,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 2875,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\necho \"MAC_MAIN_HEAD=$(git -C \"$ROOT\" rev-parse HEAD)\"\necho \"MAIN_CHECKOUT_DIRTY_COUNT=$(git -C \"$ROOT\" status --porcelain | wc -l | tr -d ' ')\"\ngit -C \"$WT\" fetch origin main feat/unified-map-ux-20261104\ngit -C \"$WT\" checkout --detach origin/feat/unified-map-ux-20261104\ngit -C \"$WT\" merge-base --is-ancestor origin/main HEAD\ntest -z \"$(git -C \"$WT\" status --porcelain)\"\necho \"FEATURE_HEAD=$(git -C \"$WT\" rev-parse HEAD)\"\necho \"REMOTE_MAIN_HEAD=$(git -C \"$WT\" rev-parse origin/main)\"\ngit -C \"$WT\" diff --stat origin/main..HEAD\ncd \"$WT/frontend\"\nnpm run format:check\nnpm run knip\nnpm run lint\necho \"UX_PREFLIGHT_PASS\"\n",
+      "current_rss_mb": 340.64,
+      "elapsed_seconds": 27.679,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "MAC_MAIN_HEAD=30bff5c930e9cff13b52f9bff67dc3e21ea06798\nMAIN_CHECKOUT_DIRTY_COUNT=0\nFrom https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\n * branch            feat/unified-map-ux-20261104 -> FETCH_HEAD\nHEAD is now at d5f9ff9 test(map): budget slow tablet animation without masking actual drawer assertions [skip ci]\nFEATURE_HEAD=d5f9ff9ca808664e230fc2630656cc31f2b49727\nREMOTE_MAIN_HEAD=30bff5c930e9cff13b52f9bff67dc3e21ea06798\n docs/checkpoints/2026-11-04-unified-map-ux.md      |  26 ++\n docs/product-direction.md                          |  20 +-\n frontend/e2e/visual/app-shell-swipe.spec.ts        |  32 +-\n frontend/e2e/visual/discovery-drawer.spec.ts       |   9 +-\n frontend/e2e/visual/map-tour.spec.ts               |  24 +-\n frontend/e2e/visual/map-unified-ux.spec.ts         |  88 ++++\n frontend/e2e/visual/map.spec.ts                    |   2 +-\n frontend/e2e/visual/pinned-media-drawer.spec.ts    |  35 +-\n frontend/src/components/layout/AppShell.tsx        | 121 +++---\n .../src/components/layout/AppShellAdminAction.tsx  |   8 -\n frontend/src/components/layout/AppShellDrawer.tsx  |  74 +---\n .../components/layout/AppShellMapAudioControl.tsx  |  51 ---\n .../layout/AppShellMapCategoryControls.tsx         | 101 -----\n .../components/layout/AppShellMapLayerControls.tsx |  43 --\n .../src/components/layout/AppShellMapTools.tsx     | 205 ++++++++++\n .../src/components/layout/AppShellMenuButton.tsx   |  11 +-\n .../layout/AppShellPinnedMediaControl.tsx          |  47 ---\n frontend/src/components/layout/AppShellRail.tsx    |  56 ---\n frontend/src/components/layout/appShellItems.ts    |  53 +--\n .../components/layout/appShellNavigation.test.ts   |  21 +-\n .../src/components/layout/appShellNavigation.ts    |  29 +-\n frontend/src/components/layout/appShellTypes.ts    |   2 +-\n frontend/src/components/map/PlaceMap.tsx           |   2 +-\n .../src/components/map/mapCategoryFilters.test.ts  |  17 +-\n frontend/src/components/map/mapCategoryFilters.ts  |  20 +-\n frontend/src/components/map/mapLayers.ts           |   5 +\n .../map/pinned-media/PinnedMediaDrawer.tsx         |  47 ++-\n frontend/src/components/tour/MapTour.tsx           |  12 +-\n frontend/src/components/tour/mapTourSteps.ts       |   4 +-\n frontend/src/pages/PublicMapPage.tsx               |  16 +-\n frontend/src/styles/layout.css                     | 447 +++++++++------------\n frontend/src/styles/pinned-media.css               |  23 ++\n frontend/src/styles/responsive.css                 |  22 -\n 33 files changed, 765 insertions(+), 908 deletions(-)\n\n> format:check\n> prettier --check .\n\nChecking formatting...\nAll matched files use Prettier code style!\n\n> knip\n> knip\n\n\n> lint\n> npm run typecheck && eslint . --max-warnings=0\n\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\nUX_PREFLIGHT_PASS\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 368.75,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    },
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 2712,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nexport PYTHON=\"$ROOT/backend/.venv/bin/python\"\nexport E2E_CHROME_EXECUTABLE=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\ncd \"$WT/frontend\"\nnpm run test:e2e -- e2e/visual/map-unified-ux.spec.ts e2e/visual/app-shell-swipe.spec.ts e2e/visual/discovery-drawer.spec.ts e2e/visual/pinned-media-drawer.spec.ts e2e/visual/map-tour.spec.ts --workers=1 --reporter=list\necho \"UX_14_SCENARIOS_PASS\"\n",
+      "current_rss_mb": 113.47,
+      "elapsed_seconds": 196.849,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "\n> test:e2e\n> ../scripts/quality/e2e.sh e2e/visual/map-unified-ux.spec.ts e2e/visual/app-shell-swipe.spec.ts e2e/visual/discovery-drawer.spec.ts e2e/visual/pinned-media-drawer.spec.ts e2e/visual/map-tour.spec.ts --workers=1 --reporter=list\n\nBackend: http://127.0.0.1:18080, PID 73866\nFrontend: http://127.0.0.1:15174, PID 73912\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:73955) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 14 tests using 1 worker\n\n(node:73988) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓   1 [chromium] › e2e/visual/app-shell-swipe.spec.ts:4:5 › mobile menu opens in one gesture and closes without intercepting map pan (4.3s)\n  ✓   2 [chromium] › e2e/visual/discovery-drawer.spec.ts:6:5 › desktop discovery drawer renders map recommendations and opens the existing place gallery (6.8s)\n  ✓   3 [chromium] › e2e/visual/map-tour.spec.ts:5:5 › interactive PhotoMap tutorial follows real place, gallery and layer actions (12.2s)\n  ✓   4 [chromium] › e2e/visual/map-tour.spec.ts:128:5 › photo with recording retains the audio tutorial stage (17.7s)\n  ✓   5 [chromium] › e2e/visual/map-tour.spec.ts:168:5 › subtle blue outline guides a natural click without dimming the map (20.6s)\n  ✓   6 [chromium] › e2e/visual/map-tour.spec.ts:189:5 › tour works with empty map on narrow mobile viewport (24.9s)\n  ✓   7 [chromium] › e2e/visual/map-unified-ux.spec.ts:12:7 › drawer preserves map space and opens predictably at 1440×900 (9.3s)\n  ✓   8 [chromium] › e2e/visual/map-unified-ux.spec.ts:12:7 › drawer preserves map space and opens predictably at 768×1024 (13.0s)\n  ✓   9 [chromium] › e2e/visual/map-unified-ux.spec.ts:12:7 › drawer preserves map space and opens predictably at 390×844 (8.9s)\n  ✓  10 [chromium] › e2e/visual/map-unified-ux.spec.ts:12:7 › drawer preserves map space and opens predictably at 360×740 (4.9s)\n  ✓  11 [chromium] › e2e/visual/map-unified-ux.spec.ts:12:7 › drawer preserves map space and opens predictably at 844×390 (8.8s)\n  ✓  12 [chromium] › e2e/visual/map-unified-ux.spec.ts:50:5 › filters, display options and navigation have independent actions (3.3s)\n  ✓  13 [chromium] › e2e/visual/pinned-media-drawer.spec.ts:7:5 › mobile pin mode and bottom drawer survive reload (20.1s)\n  ✓  14 [chromium] › e2e/visual/pinned-media-drawer.spec.ts:171:5 › long hold removes only the pinned collection entry after central button click (21.4s)\n\n  14 passed (3.1m)\nUX_14_SCENARIOS_PASS\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 345.98,
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-04T04:53:21.108773+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.225,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 1.087,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-unified-ux-closeout-gates-20261104-v1",
+  "idle_timeout": 700,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 27.679,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2
+    },
+    {
+      "elapsed_seconds": 196.849,
+      "outcome": "passed",
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-04T04:49:33.423447+00:00",
+  "status": "done",
+  "task_digest": "6f9bd75fd0eef13addf194ffea21ab6f71337c8a4f9167cad7c0e105e06919f4",
+  "task_timeout": 2500,
+  "verification": [],
+  "work_branch": "main"
+}

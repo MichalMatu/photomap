@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "0ef2fd04b5f5d766f1e1caf7",
+  "command_timeout": 200,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 428,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\necho \"MAC_ROOT_HEAD=$(git -C \"$ROOT\" rev-parse HEAD)\"\necho \"MAC_ROOT_STATUS=$(git -C \"$ROOT\" status --porcelain | wc -l | tr -d ' ')\"\nKEY=\"$HOME/.ssh/id_ed25519\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 '\n  set -eu\n  cd /home/michal/src/PhotoMaps\n  echo \"PI_HEAD=$(git rev-parse HEAD)\"\n  echo \"PI_BRANCH=$(git branch --show-current)\"\n  echo \"PI_DIRTY=$(git status --porcelain | wc -l | tr -d \" \")\"\n  echo \"PI_DIST_INDEX_SHA256=$(shasum -a 256 frontend/dist/index.html | awk \"{print \\$1}\")\"\n  grep -o \"assets/public-map-[^\\\" ]*js\" frontend/dist/index.html | head -1 || :\n  echo \"SERVICE=$(systemctl is-active photomap.service)\"\n  echo \"TUNNEL=$(systemctl is-active cloudflared.service)\"\n  systemctl show photomap.service --property MainPID --property NRestarts\n  curl -fsS --max-time 6 http://127.0.0.1:8000/health\n  echo\n  curl -fsS --max-time 8 -o /dev/null -w \"MAP_API_HTTP=%{http_code}\\n\" http://127.0.0.1:8000/api/places/map\n'\ncurl -fsS --max-time 10 -o /dev/null -w \"PUBLIC_HTML_HTTP=%{http_code}\\n\" https://photomap.pl/\ncurl -fsS --max-time 10 -o /dev/null -w \"PUBLIC_HEALTH_HTTP=%{http_code}\\n\" https://photomap.pl/health\necho \"READ_ONLY_RELEASE_STATUS_DONE\"\n",
+      "current_rss_mb": 4.95,
+      "elapsed_seconds": 3.233,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 512,
+      "memory_limited": false,
+      "output": "MAC_ROOT_HEAD=09be8c4ef70a30791de2698c1c39779e4ab544eb\nMAC_ROOT_STATUS=0\nPI_HEAD=09be8c4ef70a30791de2698c1c39779e4ab544eb\nPI_BRANCH=main\nPI_DIRTY=0\nPI_DIST_INDEX_SHA256=ccc80c6f664853030e4674dfc783ec1607a9923e823b10f35b221a7348e48a1d\nassets/public-map-DWDElC8J.js\nSERVICE=active\nTUNNEL=active\nMainPID=3797751\nNRestarts=0\n{\"status\":\"ok\"}\nMAP_API_HTTP=200\nPUBLIC_HTML_HTTP=200\nPUBLIC_HEALTH_HTTP=200\nREAD_ONLY_RELEASE_STATUS_DONE\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 4.95,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-04T05:11:58.291582+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.088,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.377,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-ux-current-release-status-20261104-v1",
+  "idle_timeout": 180,
+  "memory_limit_mb": 512,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 3.233,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-04T05:11:53.033922+00:00",
+  "status": "done",
+  "task_digest": "1754a252637726bd7b2a7d73792a44da16d2342769878b0ccf265968f7ce3498",
+  "task_timeout": 390,
+  "verification": [],
+  "work_branch": "main"
+}

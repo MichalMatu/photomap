@@ -1,0 +1,18 @@
+{
+  "id": "photomap-unified-ux-visual-review-20261104-v1",
+  "dedupe_key": "photomap-unified-ux-visual-review-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 700,
+  "idle_timeout": 350,
+  "task_timeout": 1100,
+  "memory_limit_mb": 4096,
+  "commands": [
+    "set -eu\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nexport PYTHON=\"$ROOT/backend/.venv/bin/python\"\nexport E2E_CHROME_EXECUTABLE=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\ncd \"$WT/frontend\"\nTMP_SPEC=\"e2e/visual/zz-unified-ux-screenshot-review.spec.ts\"\ntrap 'rm -f \"$TMP_SPEC\"' EXIT\ncat > \"$TMP_SPEC\" <<'EOF'\nimport { expect, test } from \"@playwright/test\";\nimport { mockSharedApi } from \"../support/visualApi\";\ntest(\"inspect unified map panels on desktop and mobile\", async ({ page }, testInfo) => {\n  test.setTimeout(120_000);\n  for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {\n    await page.setViewportSize(viewport);\n    await mockSharedApi(page);\n    await page.goto(\"/\");\n    const tour = page.locator(\".map-tour\");\n    if (await tour.isVisible()) {\n      await tour.getByRole(\"button\", { name: \"Pomiń\", exact: true }).click();\n    }\n    await expect(page.locator(\".place-photo-marker\").first()).toBeVisible();\n    await page.getByRole(\"button\", { name: \"Filtry mapy\" }).click();\n    await expect(page.locator(\"#map-tools-panel\")).toBeVisible();\n    await page.screenshot({ path: testInfo.outputPath(`ux-${viewport.width}-filters.png`), animations: \"disabled\" });\n    await page.getByRole(\"button\", { name: \"Ustawienia widoku mapy\" }).click();\n    await page.screenshot({ path: testInfo.outputPath(`ux-${viewport.width}-view.png`), animations: \"disabled\" });\n  }\n});\nEOF\nnpm run test:e2e -- \"$TMP_SPEC\" --workers=1 --reporter=line\nfor n in ux-390-filters ux-390-view ux-1440-filters; do\n  IMG=$(find test-results -name \"$n.png\" -type f -print -quit)\n  if [ -z \"$IMG\" ]; then echo \"MISSING_$n\"; exit 1; fi\n  JPG=\"/tmp/photomap-$n-review.jpg\"\n  sips -s format jpeg -s formatOptions 26 -Z 420 \"$IMG\" --out \"$JPG\" >/dev/null\n  printf 'UX_VISUAL_%s ' \"$n\"\n  base64 -i \"$JPG\" | tr -d '\\n'\n  printf '\\n'\ndone\n"
+  ]
+}

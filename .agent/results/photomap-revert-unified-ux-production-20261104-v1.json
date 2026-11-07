@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "ed92323e543db32e45bf7f06",
+  "command_timeout": 650,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 3414,
+      "command": "set -eu\nKEY=\"$HOME/.ssh/id_ed25519\"\nTARGET=\"356289656d66963fb7451b70eac2e1bcff015819\"\nPRE_SPRINT=\"30bff5c930e9cff13b52f9bff67dc3e21ea06798\"\nOLD_HASH=\"5177a82937d38c8d2ba5b8a41156b30354f523b5c293a203d0b6ef62a5af78b5\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 \"TARGET='$TARGET' PRE_SPRINT='$PRE_SPRINT' OLD_HASH='$OLD_HASH' bash -s\" <<'PI_SCRIPT'\nset -euo pipefail\ncd /home/michal/src/PhotoMaps\nBACKUP=\".dev/deploy/unified-ux-20261104-09be8c4\"\nUNDO=\".dev/deploy/unified-ux-rollback-20261104-3562896\"\ntest \"$(git rev-parse HEAD)\" = \"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\ntest -z \"$(git status --porcelain)\"\ntest \"$(sha256sum \"$BACKUP/index-before.html\" | awk '{print $1}')\" = \"$OLD_HASH\"\ntest \"$(sha256sum frontend/dist/index.html | awk '{print $1}')\" = \"ccc80c6f664853030e4674dfc783ec1607a9923e823b10f35b221a7348e48a1d\"\ntest -d \"$BACKUP/dist-before\"\ntest -f \"$BACKUP/app-before.db\"\ntest \"$(systemctl is-active photomap.service)\" = active\ntest \"$(systemctl is-active cloudflared.service)\" = active\nOLD_PID=$(systemctl show -p MainPID --value photomap.service)\nOLD_TUNNEL_PID=$(systemctl show -p MainPID --value cloudflared.service)\ntest \"$OLD_PID\" -gt 0\ntest \"$OLD_TUNNEL_PID\" -gt 0\ntest ! -e \"$UNDO\"\nmkdir -p \"$UNDO\"\ncp -a frontend/dist \"$UNDO/dist-ux-before-rollback\"\nprintf '%s\\n' \"$OLD_PID\" > \"$UNDO/backend-pid-before.txt\"\nprintf '%s\\n' \"$OLD_TUNNEL_PID\" > \"$UNDO/tunnel-pid-before.txt\"\ngit rev-parse HEAD > \"$UNDO/head-before.sha\"\ngit fetch origin main\ntest \"$(git rev-parse origin/main)\" = \"$TARGET\"\ntest \"$(git rev-parse \"$TARGET^{tree}\")\" = \"$(git rev-parse \"$PRE_SPRINT^{tree}\")\"\ngit merge --ff-only origin/main\ntest \"$(git rev-parse HEAD)\" = \"$TARGET\"\ntest -z \"$(git status --porcelain)\"\necho \"PI_SOURCE_ROLLBACK_APPLIED=$TARGET\"\nrsync -a --exclude=index.html \"$BACKUP/dist-before/\" frontend/dist/\ncp \"$BACKUP/index-before.html\" frontend/dist/index.html.rollback-next\ntest \"$(sha256sum frontend/dist/index.html.rollback-next | awk '{print $1}')\" = \"$OLD_HASH\"\nOLD_ASSET=$(grep -oE 'assets/public-map-[^\" ]+\\.js' frontend/dist/index.html.rollback-next | head -1)\ntest -n \"$OLD_ASSET\"\ntest -f \"frontend/dist/$OLD_ASSET\"\necho \"ROLLBACK_ASSET_READY=$OLD_ASSET\"\nmv -f frontend/dist/index.html.rollback-next frontend/dist/index.html\ntest \"$(sha256sum frontend/dist/index.html | awk '{print $1}')\" = \"$OLD_HASH\"\ntest \"$(systemctl show -p MainPID --value photomap.service)\" = \"$OLD_PID\"\ntest \"$(systemctl show -p MainPID --value cloudflared.service)\" = \"$OLD_TUNNEL_PID\"\ntest \"$(systemctl is-active photomap.service)\" = active\ntest \"$(systemctl is-active cloudflared.service)\" = active\ncurl -fsS --max-time 12 -o \"$UNDO/local-index.html\" http://127.0.0.1:8000/\ngrep -F \"$OLD_ASSET\" \"$UNDO/local-index.html\" >/dev/null\ncurl -fsS --max-time 12 http://127.0.0.1:8000/health > \"$UNDO/local-health.json\"\ncurl -fsS --max-time 12 -o /dev/null -w \"LOCAL_MAP_HTTP=%{http_code}\\n\" http://127.0.0.1:8000/api/places/map\ncurl -fsS --max-time 12 -o /dev/null -w \"LOCAL_OLD_BUNDLE_HTTP=%{http_code}\\n\" \"http://127.0.0.1:8000/$OLD_ASSET\"\necho \"PI_ACTIVE_INDEX_SHA=$(sha256sum frontend/dist/index.html | awk '{print $1}')\"\necho \"PI_MAIN_SHA=$(git rev-parse HEAD)\"\necho \"PI_BACKEND_PID=$OLD_PID\"\necho \"PI_TUNNEL_PID=$OLD_TUNNEL_PID\"\necho \"PI_PRODUCTION_ROLLBACK_PASS\"\nPI_SCRIPT\ncurl -fsS --max-time 15 -o /tmp/photomap-rollback-public-20261104.html https://photomap.pl/\ngrep -F \"assets/public-map-D41-GBxF.js\" /tmp/photomap-rollback-public-20261104.html >/dev/null\ncurl -fsS --max-time 15 -o /dev/null -w \"PUBLIC_HEALTH_HTTP=%{http_code}\\n\" https://photomap.pl/health\ncurl -fsS --max-time 15 -o /dev/null -w \"PUBLIC_MAP_HTTP=%{http_code}\\n\" https://photomap.pl/api/places/map\ncurl -fsS --max-time 15 -o /dev/null -w \"PUBLIC_OLD_MAP_BUNDLE_HTTP=%{http_code}\\n\" https://photomap.pl/assets/public-map-D41-GBxF.js\necho \"PUBLIC_PREVIOUS_UX_RESTORED\"\n",
+      "current_rss_mb": 5.3,
+      "elapsed_seconds": 16.505,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 1400,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\n   4c2694d..3562896  main       -> origin/main\nUpdating 4c2694d..3562896\nFast-forward\n docs/GOLDEN_STATUS.md                              |  16 +-\n docs/checkpoints/2026-11-04-unified-map-ux.md      |  30 --\n docs/product-direction.md                          |  20 +-\n frontend/e2e/visual/app-shell-swipe.spec.ts        |  32 +-\n frontend/e2e/visual/discovery-drawer.spec.ts       |   9 +-\n frontend/e2e/visual/map-tour.spec.ts               |  24 +-\n frontend/e2e/visual/map-unified-ux.spec.ts         |  89 ----\n frontend/e2e/visual/map.spec.ts                    |   2 +-\n frontend/e2e/visual/pinned-media-drawer.spec.ts    |  35 +-\n frontend/src/components/layout/AppShell.tsx        | 126 +++---\n .../src/components/layout/AppShellAdminAction.tsx  |   8 +\n frontend/src/components/layout/AppShellDrawer.tsx  |  74 +++-\n .../components/layout/AppShellMapAudioControl.tsx  |  51 +++\n .../layout/AppShellMapCategoryControls.tsx         | 101 +++++\n .../components/layout/AppShellMapLayerControls.tsx |  43 ++\n .../src/components/layout/AppShellMapTools.tsx     | 205 ----------\n .../src/components/layout/AppShellMenuButton.tsx   |  11 +-\n .../layout/AppShellPinnedMediaControl.tsx          |  47 +++\n frontend/src/components/layout/AppShellRail.tsx    |  56 +++\n frontend/src/components/layout/appShellItems.ts    |  53 ++-\n .../components/layout/appShellNavigation.test.ts   |  21 +-\n .../src/components/layout/appShellNavigation.ts    |  29 +-\n frontend/src/components/layout/appShellTypes.ts    |   2 +-\n frontend/src/components/map/PlaceMap.tsx           |   2 +-\n .../src/components/map/mapCategoryFilters.test.ts  |  17 +-\n frontend/src/components/map/mapCategoryFilters.ts  |  20 +-\n frontend/src/components/map/mapLayers.ts           |   5 -\n .../map/pinned-media/PinnedMediaDrawer.tsx         |  47 +--\n frontend/src/components/tour/MapTour.tsx           |  12 +-\n frontend/src/components/tour/mapTourSteps.ts       |   4 +-\n frontend/src/pages/PublicMapPage.tsx               |  16 +-\n frontend/src/styles/layout.css                     | 452 ++++++++++++---------\n frontend/src/styles/pinned-media.css               |  23 --\n frontend/src/styles/responsive.css                 |  22 +\n 34 files changed, 909 insertions(+), 795 deletions(-)\n delete mode 100644 docs/checkpoints/2026-11-04-unified-map-ux.md\n delete mode 100644 frontend/e2e/visual/map-unified-ux.spec.ts\n create mode 100644 frontend/src/components/layout/AppShellMapAudioControl.tsx\n create mode 100644 frontend/src/components/layout/AppShellMapCategoryControls.tsx\n create mode 100644 frontend/src/components/layout/AppShellMapLayerControls.tsx\n delete mode 100644 frontend/src/components/layout/AppShellMapTools.tsx\n create mode 100644 frontend/src/components/layout/AppShellPinnedMediaControl.tsx\n create mode 100644 frontend/src/components/layout/AppShellRail.tsx\nPI_SOURCE_ROLLBACK_APPLIED=356289656d66963fb7451b70eac2e1bcff015819\nROLLBACK_ASSET_READY=assets/public-map-D41-GBxF.js\nLOCAL_MAP_HTTP=200\nLOCAL_OLD_BUNDLE_HTTP=200\nPI_ACTIVE_INDEX_SHA=5177a82937d38c8d2ba5b8a41156b30354f523b5c293a203d0b6ef62a5af78b5\nPI_MAIN_SHA=356289656d66963fb7451b70eac2e1bcff015819\nPI_BACKEND_PID=3797751\nPI_TUNNEL_PID=222848\nPI_PRODUCTION_ROLLBACK_PASS\nPUBLIC_HEALTH_HTTP=200\nPUBLIC_MAP_HTTP=200\nPUBLIC_OLD_MAP_BUNDLE_HTTP=200\nPUBLIC_PREVIOUS_UX_RESTORED\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 5.3,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-04T05:21:28.400578+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.136,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.207,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-revert-unified-ux-production-20261104-v1",
+  "idle_timeout": 400,
+  "memory_limit_mb": 1400,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 16.505,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-04T05:21:09.028761+00:00",
+  "status": "done",
+  "task_digest": "83e81a84629eb96605230554d74ac4ffd1f62330436459d645163011b757fa88",
+  "task_timeout": 1100,
+  "verification": [],
+  "work_branch": "main"
+}

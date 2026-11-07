@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-release-prep-20261104-v2",
+  "task_digest": "27251de7301ebf22ef1d3a365cfe1d27861e9241586ef9dd04819ad09edb8849",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T05:05:42.668916+00:00",
+  "attempt_id": "483707d058f8c1a64624eeb2",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 97391,
+  "updated_at": "2026-11-04T05:05:42.955751+00:00",
+  "pid": 97391
+}

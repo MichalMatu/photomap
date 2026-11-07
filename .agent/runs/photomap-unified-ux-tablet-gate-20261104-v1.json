@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-tablet-gate-20261104-v1",
+  "task_digest": "3f5c4a4a87445055019f6427b6f4efebcb2d8e8746c7b4befcdc8523512665a7",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-04T03:24:51.031624+00:00",
+  "attempt_id": "222bd5df4e82417a71273d2a",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 64449,
+  "updated_at": "2026-11-04T03:24:52.677695+00:00",
+  "pid": 64449
+}

@@ -1,0 +1,18 @@
+{
+  "id": "photomap-unified-ux-activation-diagnostic-20261104-v1",
+  "dedupe_key": "photomap-unified-ux-activation-diagnostic-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 220,
+  "idle_timeout": 180,
+  "task_timeout": 390,
+  "memory_limit_mb": 1024,
+  "commands": [
+    "set -eu\nKEY=\"$HOME/.ssh/id_ed25519\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'bash -s' <<'PI_SCRIPT'\nset -eu\ncd /home/michal/src/PhotoMaps\nBACKUP=\".dev/deploy/unified-ux-20261104-09be8c4\"\necho \"PI_HEAD=$(git rev-parse HEAD)\"\necho \"PI_DIRTY=$(git status --porcelain | wc -l | tr -d \" \")\"\necho \"BACKUP_INDEX=$(sha256sum \"$BACKUP/index-before.html\" | awk '{print $1}')\"\necho \"CURRENT_INDEX=$(sha256sum frontend/dist/index.html | awk '{print $1}')\"\necho \"STAGED_INDEX_EXISTS=$(test -e frontend/dist/index.html.next && echo yes || echo no)\"\necho \"NEW_MAP_BUNDLE_EXISTS=$(test -s frontend/dist/assets/public-map-DWDElC8J.js && echo yes || echo no)\"\necho \"BACKEND_PID=$(systemctl show photomap.service --property MainPID --value)\"\necho \"TUNNEL_PID=$(systemctl show cloudflared.service --property MainPID --value)\"\necho \"SERVICE_STATUS=$(systemctl is-active photomap.service)\"\necho \"TUNNEL_STATUS=$(systemctl is-active cloudflared.service)\"\ncurl -sS --max-time 10 -o /tmp/photomap-ux-current-html.html -w 'LOCAL_HTML_STATUS=%{http_code}\\n' http://127.0.0.1:8000/\nsha256sum /tmp/photomap-ux-current-html.html\ncurl -sS --max-time 10 -o /dev/null -w 'LOCAL_NEW_BUNDLE_STATUS=%{http_code}\\n' http://127.0.0.1:8000/assets/public-map-DWDElC8J.js\ncurl -sS --max-time 10 -o /dev/null -w 'LOCAL_HEALTH_STATUS=%{http_code}\\n' http://127.0.0.1:8000/health\ncurl -sS --max-time 10 -o /dev/null -w 'LOCAL_MAP_API_STATUS=%{http_code}\\n' http://127.0.0.1:8000/api/places/map\necho \"CURRENT_INDEX_ASSETS\"; grep -oE '/assets/[^\"]+\\.(js|css)' frontend/dist/index.html | head -n 8\necho \"HTTP_INDEX_ASSETS\"; grep -oE '/assets/[^\"]+\\.(js|css)' /tmp/photomap-ux-current-html.html | head -n 8\nPI_SCRIPT\ncurl -sS --connect-timeout 8 --max-time 15 -o /tmp/photomap-ux-current-public.html -w 'PUBLIC_STATUS=%{http_code}\\n' https://photomap.pl/\nshasum -a 256 /tmp/photomap-ux-current-public.html\n"
+  ]
+}

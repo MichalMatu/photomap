@@ -1,0 +1,88 @@
+{
+  "allow_write": true,
+  "attempt_id": "5c9d5968d5c1093458fc78a4",
+  "command_timeout": 1100,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 723,
+      "command": "set -eu\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\ngit -C \"$WT\" fetch origin feat/unified-map-ux-20261104\ngit -C \"$WT\" checkout --detach FETCH_HEAD\ncd \"$WT/frontend\"\n./node_modules/.bin/prettier --write src/components/tour/MapTour.tsx e2e/visual/map-tour.spec.ts\nnpm run typecheck\nnpm run format:check\n",
+      "current_rss_mb": 285.45,
+      "elapsed_seconds": 17.462,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            feat/unified-map-ux-20261104 -> FETCH_HEAD\n   5312f03..9aa3e1c  feat/unified-map-ux-20261104 -> origin/feat/unified-map-ux-20261104\nPrevious HEAD position was 5312f03 fix(map): restore real category tour action and stabilize gesture tests [skip ci]\nHEAD is now at 9aa3e1c fix(map): keep onboarding callout away from interactive filter option [skip ci]\nsrc/components/tour/MapTour.tsx 92ms (unchanged)\ne2e/visual/map-tour.spec.ts 37ms (unchanged)\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\n\n> format:check\n> prettier --check .\n\nChecking formatting...\nAll matched files use Prettier code style!\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 425.06,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    },
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 851,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nexport PYTHON=\"$ROOT/backend/.venv/bin/python\"\nexport E2E_CHROME_EXECUTABLE=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\ncd \"$WT/frontend\"\nnpm run test:e2e -- e2e/visual/map-tour.spec.ts --grep 'interactive PhotoMap tutorial' --workers=1 --reporter=list\n",
+      "current_rss_mb": 189.73,
+      "elapsed_seconds": 16.588,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "\n> test:e2e\n> ../scripts/quality/e2e.sh e2e/visual/map-tour.spec.ts --grep interactive PhotoMap tutorial --workers=1 --reporter=list\n\nBackend: http://127.0.0.1:18080, PID 55817\nFrontend: http://127.0.0.1:15174, PID 55870\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:55895) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 1 test using 1 worker\n\n(node:55927) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  1 [chromium] › e2e/visual/map-tour.spec.ts:5:5 › interactive PhotoMap tutorial follows real place, gallery and layer actions (7.6s)\n\n  1 passed (10.6s)\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 595.02,
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-04T03:14:02.786755+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.351,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.17,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-unified-ux-tour-qa-20261104-v3",
+  "idle_timeout": 500,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 17.462,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2
+    },
+    {
+      "elapsed_seconds": 16.588,
+      "outcome": "passed",
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-04T03:13:26.751751+00:00",
+  "status": "done",
+  "task_digest": "bcdb879b989f05cc24cc1b8c7be86af988ffa29a7e447005146ac0f4500986a3",
+  "task_timeout": 1500,
+  "verification": [],
+  "work_branch": "main"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "photomap-unified-ux-visual-samples-20261104-v1",
+  "dedupe_key": "photomap-unified-ux-visual-samples-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 180,
+  "idle_timeout": 180,
+  "task_timeout": 450,
+  "memory_limit_mb": 1024,
+  "commands": [
+    "set -eu\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nOUT=\"$WT/frontend/test-results\"\nfor size in 390 1440; do\n IMG=$(find \"$OUT\" -type f -name \"unified-ux-$size.png\" -print -quit)\n if [ -z \"$IMG\" ]; then echo \"NO_SCREENSHOT_$size\"; continue; fi\n TMP=\"/tmp/photomap-ux-visual-$size.jpg\"\n sips -s format jpeg -s formatOptions 34 -Z 390 \"$IMG\" --out \"$TMP\" >/dev/null\n printf 'UX_SAMPLE_%s ' \"$size\"\n base64 -i \"$TMP\" | tr -d '\\n'\n printf '\\n'\ndone\n"
+  ]
+}

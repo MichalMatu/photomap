@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-baseline-comparison-20261104-v1",
+  "task_digest": "f0c9690c2267b202b349d59e15adf871f8c93a2b8a1a72c1d8166b2422591cae",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-04T04:58:39.791809+00:00",
+  "attempt_id": "f983939d758b3fb19f77336d",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 84449,
+  "updated_at": "2026-11-04T04:58:40.196372+00:00",
+  "pid": 84449
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-activation-diagnostic-20261104-v1",
+  "task_digest": "e6c6c53a5673982735c0d64ae948464811e5e34c0a731938ca07b31ca74c6e51",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T05:09:28.649047+00:00",
+  "attempt_id": "0b5247797bbb72d87732d18d",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 7497,
+  "updated_at": "2026-11-04T05:09:28.959225+00:00",
+  "pid": 7497
+}

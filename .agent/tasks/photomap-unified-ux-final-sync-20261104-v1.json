@@ -1,0 +1,19 @@
+{
+  "id": "photomap-unified-ux-final-sync-20261104-v1",
+  "dedupe_key": "photomap-unified-ux-final-sync-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 450,
+  "idle_timeout": 270,
+  "task_timeout": 800,
+  "memory_limit_mb": 1024,
+  "commands": [
+    "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\ntest \"$(git -C \"$ROOT\" branch --show-current)\" = \"agent-work\"\ntest -z \"$(git -C \"$ROOT\" status --porcelain)\"\ngit -C \"$ROOT\" fetch origin main\ntest \"$(git -C \"$ROOT\" rev-parse origin/main)\" = \"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\ngit -C \"$ROOT\" merge --ff-only origin/main\ntest \"$(git -C \"$ROOT\" rev-parse HEAD)\" = \"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\necho \"MAC_AGENT_WORK_SYNCED=$(git -C \"$ROOT\" rev-parse HEAD)\"\n",
+    "set -eu\nKEY=\"$HOME/.ssh/id_ed25519\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'bash -s' <<'PI_SCRIPT'\nset -eu\ncd /home/michal/src/PhotoMaps\ntest \"$(git branch --show-current)\" = main\ntest -z \"$(git status --porcelain)\"\ntest \"$(git rev-parse HEAD)\" = \"09be8c4ef70a30791de2698c1c39779e4ab544eb\"\ngit fetch origin main\ntest \"$(git rev-parse origin/main)\" = \"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\ntest \"$(git diff --name-only HEAD origin/main)\" = \"docs/GOLDEN_STATUS.md\"\ngit merge --ff-only origin/main\ntest \"$(git rev-parse HEAD)\" = \"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\ntest -z \"$(git status --porcelain)\"\ntest \"$(sha256sum frontend/dist/index.html | awk '{print $1}')\" = \"ccc80c6f664853030e4674dfc783ec1607a9923e823b10f35b221a7348e48a1d\"\ntest \"$(systemctl show photomap.service --property MainPID --value)\" = 3797751\ntest \"$(systemctl show cloudflared.service --property MainPID --value)\" = 222848\ncurl -fsS --max-time 12 http://127.0.0.1:8000/health -o /dev/null\ncurl -fsS --max-time 12 http://127.0.0.1:8000/ -o /tmp/photomap-unified-ux-postsync.html\ngrep -q '/assets/public-map-DWDElC8J.js' /tmp/photomap-unified-ux-postsync.html\necho \"PI_MAIN_SYNCED=$(git rev-parse HEAD)\"\necho \"PI_DEPLOY_INDEX_SHA256=$(sha256sum frontend/dist/index.html | awk '{print $1}')\"\necho DOC_ONLY_SYNC_PUBLIC_RUNTIME_INTACT\nPI_SCRIPT\n"
+  ]
+}

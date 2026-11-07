@@ -1,0 +1,18 @@
+{
+  "id": "photomap-unified-ux-extended-regression-20261104-v1",
+  "dedupe_key": "photomap-unified-ux-extended-regression-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 2400,
+  "idle_timeout": 900,
+  "task_timeout": 2900,
+  "memory_limit_mb": 4096,
+  "commands": [
+    "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nexport PYTHON=\"$ROOT/backend/.venv/bin/python\"\nexport E2E_CHROME_EXECUTABLE=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\ncd \"$WT/frontend\"\ntest \"$(git -C \"$WT\" rev-parse HEAD)\" = \"d5f9ff9ca808664e230fc2630656cc31f2b49727\"\nnpm run test:e2e -- e2e/visual/map.spec.ts e2e/visual/map-settings.spec.ts e2e/visual/guides.spec.ts e2e/visual/map-pin-coverage.spec.ts e2e/visual/pinned-media-persistence.spec.ts --workers=1 --reporter=list\necho \"UX_EXTENDED_E2E_PASS\"\n"
+  ]
+}

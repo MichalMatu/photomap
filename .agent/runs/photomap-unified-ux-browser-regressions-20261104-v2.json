@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-browser-regressions-20261104-v2",
+  "task_digest": "9c32b68b147f16a1e5b95a5107b24b5214d661eb816226b63825ee768c668c15",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-04T03:11:17.765337+00:00",
+  "attempt_id": "908236b3fb561715ed1e4b78",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 46062,
+  "updated_at": "2026-11-04T03:11:18.680658+00:00",
+  "pid": 46062
+}

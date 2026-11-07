@@ -1,0 +1,18 @@
+{
+  "id": "photomap-unified-ux-pi-preflight-20261104-v1",
+  "dedupe_key": "photomap-unified-ux-pi-preflight-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 180,
+  "idle_timeout": 150,
+  "task_timeout": 360,
+  "memory_limit_mb": 512,
+  "commands": [
+    "set -eu\nKEY=\"$HOME/.ssh/id_ed25519\"\ntest -f \"$KEY\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 '\n  set -eu\n  cd /home/michal/src/PhotoMaps\n  echo \"PI_HEAD=$(git rev-parse HEAD)\"\n  echo \"PI_BRANCH=$(git branch --show-current)\"\n  echo \"PI_DIRTY_COUNT=$(git status --porcelain | wc -l | tr -d \" \")\"\n  echo \"SERVICE=$(systemctl is-active photomap.service)\"\n  echo \"TUNNEL=$(systemctl is-active cloudflared.service)\"\n  systemctl show photomap.service --property MainPID --property NRestarts\n  curl --fail --silent --show-error --max-time 8 http://127.0.0.1:8000/health\n  echo\n  curl --fail --silent --show-error --max-time 8 -o /dev/null -w \"MAP_API_STATUS=%{http_code}\\n\" http://127.0.0.1:8000/api/places/map\n  df -h .\n  free -h\n'\necho PI_READONLY_PREFLIGHT_DONE\n"
+  ]
+}

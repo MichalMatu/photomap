@@ -1,0 +1,19 @@
+{
+  "id": "photomap-unified-ux-browser-regressions-20261104-v2",
+  "dedupe_key": "photomap-unified-ux-browser-regressions-20261104-v2",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 1200,
+  "idle_timeout": 600,
+  "task_timeout": 2000,
+  "memory_limit_mb": 4096,
+  "commands": [
+    "set -eu\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\ngit -C \"$WT\" fetch origin feat/unified-map-ux-20261104\ngit -C \"$WT\" checkout --detach FETCH_HEAD\ncd \"$WT/frontend\"\n./node_modules/.bin/prettier --write src/pages/PublicMapPage.tsx e2e/visual/app-shell-swipe.spec.ts e2e/visual/discovery-drawer.spec.ts e2e/visual/map-tour.spec.ts e2e/visual/map-unified-ux.spec.ts\nnpm run typecheck\nnpm run lint\nnpm run format:check\necho UX_REGRESSION_STATIC_PASS\n",
+    "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nexport PYTHON=\"$ROOT/backend/.venv/bin/python\"\nexport E2E_CHROME_EXECUTABLE=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\ncd \"$WT/frontend\"\nnpm run test:e2e -- e2e/visual/app-shell-swipe.spec.ts e2e/visual/discovery-drawer.spec.ts e2e/visual/map-tour.spec.ts e2e/visual/map-unified-ux.spec.ts --grep 'mobile menu opens|desktop discovery drawer|interactive PhotoMap tutorial|filters, display options' --workers=1 --reporter=list\n"
+  ]
+}

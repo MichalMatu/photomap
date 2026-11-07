@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "1ad38f95ad757caf278c5280",
+  "command_timeout": 180,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 496,
+      "command": "set -eu\nKEY=\"$HOME/.ssh/id_ed25519\"\ntest -f \"$KEY\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 '\n  set -eu\n  cd /home/michal/src/PhotoMaps\n  echo \"PI_HEAD=$(git rev-parse HEAD)\"\n  echo \"PI_BRANCH=$(git branch --show-current)\"\n  echo \"PI_DIRTY_COUNT=$(git status --porcelain | wc -l | tr -d \" \")\"\n  echo \"SERVICE=$(systemctl is-active photomap.service)\"\n  echo \"TUNNEL=$(systemctl is-active cloudflared.service)\"\n  systemctl show photomap.service --property MainPID --property NRestarts\n  curl --fail --silent --show-error --max-time 8 http://127.0.0.1:8000/health\n  echo\n  curl --fail --silent --show-error --max-time 8 -o /dev/null -w \"MAP_API_STATUS=%{http_code}\\n\" http://127.0.0.1:8000/api/places/map\n  df -h .\n  free -h\n'\necho PI_READONLY_PREFLIGHT_DONE\n",
+      "current_rss_mb": 4.98,
+      "elapsed_seconds": 7.811,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 512,
+      "memory_limited": false,
+      "output": "PI_HEAD=f54bcd0734844ace7b1aa81c132d7ab1dc00d12e\nPI_BRANCH=main\nPI_DIRTY_COUNT=0\nSERVICE=active\nTUNNEL=active\nMainPID=3797751\nNRestarts=0\n{\"status\":\"ok\"}\nMAP_API_STATUS=200\nFilesystem      Size  Used Avail Use% Mounted on\n/dev/mmcblk0p2   58G   14G   42G  25% /\n               total        used        free      shared  buff/cache   available\nMem:           416Mi       281Mi       115Mi        12Ki        74Mi       134Mi\nSwap:          415Mi       223Mi       192Mi\nPI_READONLY_PREFLIGHT_DONE\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 6.62,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-04T04:54:18.314347+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.085,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.144,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-unified-ux-pi-preflight-20261104-v1",
+  "idle_timeout": 150,
+  "memory_limit_mb": 512,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 7.811,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-04T04:54:08.769195+00:00",
+  "status": "done",
+  "task_digest": "603098052ef09f26f57d2891c3812c29b47726984f169b7904c9964f9368c4a2",
+  "task_timeout": 360,
+  "verification": [],
+  "work_branch": "main"
+}

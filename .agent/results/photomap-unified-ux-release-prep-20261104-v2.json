@@ -1,0 +1,88 @@
+{
+  "allow_write": true,
+  "attempt_id": "483707d058f8c1a64624eeb2",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1660,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nEXPECTED=\"09be8c4ef70a30791de2698c1c39779e4ab544eb\"\ntest \"$(git -C \"$ROOT\" branch --show-current)\" = \"agent-work\"\ntest -z \"$(git -C \"$ROOT\" status --porcelain)\"\ngit -C \"$WT\" fetch origin main\ntest \"$(git -C \"$WT\" rev-parse origin/main)\" = \"$EXPECTED\"\ngit -C \"$WT\" checkout --detach origin/main\ntest -z \"$(git -C \"$WT\" status --porcelain)\"\ntest \"$(git -C \"$WT\" rev-parse HEAD)\" = \"$EXPECTED\"\ncd \"$WT/frontend\"\nVITE_API_BASE_URL= npm run build\ntest -s dist/index.html\necho \"MAC_AGENT_WORK_SHA=$(git -C \"$ROOT\" rev-parse HEAD)\"\necho \"BUILD_SHA=$(git -C \"$WT\" rev-parse HEAD)\"\necho \"INDEX_SHA256=$(shasum -a 256 dist/index.html | awk '{print $1}')\"\nfind dist/assets -maxdepth 1 -name 'public-map-*.js' -print\necho FRONTEND_BUILD_READY\n",
+      "current_rss_mb": 513.44,
+      "elapsed_seconds": 17.101,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\nPrevious HEAD position was 0225d07 polish(map): keep map visible while adjusting filters and display [skip ci]\nHEAD is now at 09be8c4 docs(map): close UX acceptance and record inherited baseline failures [skip ci]\n\n> build\n> npm run typecheck && vite build\n\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\nvite v6.4.3 building for production...\ntransforming...\n✓ 2235 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                            3.00 kB │ gzip:  0.98 kB\ndist/assets/map-vendor-CIGW-MKW.css       15.61 kB │ gzip:  6.46 kB\ndist/assets/admin-C9VWJiZt.css            52.93 kB │ gzip:  7.86 kB\ndist/assets/index-BMjVQ3ud.css           100.61 kB │ gzip: 17.20 kB\ndist/assets/PlaceDetailPage-dKtgiiSr.js    3.45 kB │ gzip:  1.50 kB\ndist/assets/index-C6t6Kjzg.js              3.50 kB │ gzip:  1.57 kB\ndist/assets/GuidesPage-DWc5901r.js         8.53 kB │ gzip:  3.22 kB\ndist/assets/query-vendor-BLe33XlG.js      37.91 kB │ gzip: 11.44 kB\ndist/assets/react-vendor-GxMAwJfR.js     142.96 kB │ gzip: 45.76 kB\ndist/assets/map-vendor-DB9AUs6p.js       154.72 kB │ gzip: 45.15 kB\ndist/assets/admin-CmnarSqW.js            187.30 kB │ gzip: 52.10 kB\ndist/assets/public-map-DWDElC8J.js       208.48 kB │ gzip: 64.01 kB\n✓ built in 2.21s\nMAC_AGENT_WORK_SHA=09be8c4ef70a30791de2698c1c39779e4ab544eb\nBUILD_SHA=09be8c4ef70a30791de2698c1c39779e4ab544eb\nINDEX_SHA256=ccc80c6f664853030e4674dfc783ec1607a9923e823b10f35b221a7348e48a1d\ndist/assets/public-map-DWDElC8J.js\nFRONTEND_BUILD_READY\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 513.44,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    },
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 342,
+      "command": "set -eu\nKEY=\"$HOME/.ssh/id_ed25519\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'bash -s' <<'PI_SCRIPT'\nset -eu\ncd /home/michal/src/PhotoMaps\ntest \"$(git branch --show-current)\" = \"main\"\ntest -z \"$(git status --porcelain)\"\ntest \"$(systemctl is-active photomap.service)\" = active\ntest \"$(systemctl is-active cloudflared.service)\" = active\ncurl -fsS --max-time 8 http://127.0.0.1:8000/health >/dev/null\ntest -f backend/data/app.db\ntest -s frontend/dist/index.html\nBACKUP=\".dev/deploy/unified-ux-20261104-09be8c4\"\ntest ! -e \"$BACKUP\"\nmkdir -p \"$BACKUP\"\ncp -a frontend/dist \"$BACKUP/dist-before\"\ncp frontend/dist/index.html \"$BACKUP/index-before.html\"\ngit rev-parse HEAD > \"$BACKUP/head-before.sha\"\nsystemctl show photomap.service --property MainPID --value > \"$BACKUP/backend-pid-before\"\nsystemctl show cloudflared.service --property MainPID --value > \"$BACKUP/tunnel-pid-before\"\npython3 - \"$BACKUP/app-before.db\" <<'PY'\nimport sqlite3\nimport sys\nsource = sqlite3.connect(\"file:backend/data/app.db?mode=ro\", uri=True)\ndest = sqlite3.connect(sys.argv[1])\nsource.backup(dest)\nsource.close()\nresult = dest.execute(\"PRAGMA quick_check\").fetchone()[0]\ndest.close()\nif result != \"ok\":\n    raise SystemExit(\"SQLite backup quick_check failed: \" + result)\nprint(\"SQLITE_BACKUP_QUICK_CHECK=\" + result)\nPY\ntest -s \"$BACKUP/dist-before/index.html\"\ntest -s \"$BACKUP/app-before.db\"\necho \"RELEASE_BACKUP=$BACKUP\"\necho \"PREVIOUS_PI_SHA=$(cat \"$BACKUP/head-before.sha\")\"\necho \"PREVIOUS_BACKEND_PID=$(cat \"$BACKUP/backend-pid-before\")\"\necho \"PREVIOUS_TUNNEL_PID=$(cat \"$BACKUP/tunnel-pid-before\")\"\nsha256sum \"$BACKUP/index-before.html\"\necho RELEASE_BACKUP_READY\nPI_SCRIPT\n",
+      "current_rss_mb": 3.44,
+      "elapsed_seconds": 7.996,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "SQLITE_BACKUP_QUICK_CHECK=ok\nRELEASE_BACKUP=.dev/deploy/unified-ux-20261104-09be8c4\nPREVIOUS_PI_SHA=f54bcd0734844ace7b1aa81c132d7ab1dc00d12e\nPREVIOUS_BACKEND_PID=3797751\nPREVIOUS_TUNNEL_PID=222848\n5177a82937d38c8d2ba5b8a41156b30354f523b5c293a203d0b6ef62a5af78b5  .dev/deploy/unified-ux-20261104-09be8c4/index-before.html\nRELEASE_BACKUP_READY\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 6.62,
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-04T05:05:42.668916+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.071,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.109,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-unified-ux-release-prep-20261104-v2",
+  "idle_timeout": 500,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 17.101,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2
+    },
+    {
+      "elapsed_seconds": 7.996,
+      "outcome": "passed",
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-04T05:05:15.643206+00:00",
+  "status": "done",
+  "task_digest": "27251de7301ebf22ef1d3a365cfe1d27861e9241586ef9dd04819ad09edb8849",
+  "task_timeout": 1500,
+  "verification": [],
+  "work_branch": "main"
+}

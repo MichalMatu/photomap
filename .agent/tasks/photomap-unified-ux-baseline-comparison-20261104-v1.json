@@ -1,0 +1,18 @@
+{
+  "id": "photomap-unified-ux-baseline-comparison-20261104-v1",
+  "dedupe_key": "photomap-unified-ux-baseline-comparison-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 1100,
+  "idle_timeout": 500,
+  "task_timeout": 1600,
+  "memory_limit_mb": 4096,
+  "commands": [
+    "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-baseline-20261104\"\ngit -C \"$ROOT\" fetch origin main\nif [ ! -f \"$WT/.git\" ] && [ ! -d \"$WT/.git\" ]; then\n  git -C \"$ROOT\" worktree add --detach \"$WT\" origin/main\nfi\ntest -z \"$(git -C \"$WT\" status --porcelain)\"\nif [ ! -e \"$WT/frontend/node_modules\" ]; then\n  ln -s \"$ROOT/frontend/node_modules\" \"$WT/frontend/node_modules\"\nfi\nexport PYTHON=\"$ROOT/backend/.venv/bin/python\"\nexport E2E_CHROME_EXECUTABLE=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\ncd \"$WT/frontend\"\necho \"BASELINE_SHA=$(git rev-parse HEAD)\"\nnpm run test:e2e -- e2e/visual/map.spec.ts --grep 'visual: empty desktop map|visual: map markers, gallery and photo detail|place marker hit area|pinned media card exposes|pinned media portrait cards' --workers=1 --reporter=list\n"
+  ]
+}

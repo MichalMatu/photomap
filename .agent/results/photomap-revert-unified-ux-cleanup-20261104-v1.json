@@ -1,0 +1,60 @@
+{
+  "allow_write": true,
+  "attempt_id": "d7bc78d561154452b067adbd",
+  "command_timeout": 450,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 0,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\ncd \"$ROOT\"\ntest \"$(git branch --show-current)\" = main\ntest \"$(git rev-parse HEAD)\" = 356289656d66963fb7451b70eac2e1bcff015819\ntest -z \"$(git status --porcelain)\"\nnode <<'NODE'\nconst {chromium}=require('./frontend/node_modules/@playwright/test');\n(async()=>{\n const browser=await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});\n const page=await browser.newPage({viewport:{width:390,height:844}});\n let errors=[];page.on('pageerror',e=>errors.push(e.message));\n const response=await page.goto('https://photomap.pl/',{waitUntil:'domcontentloaded',timeout:35000});\n await page.locator('.pinned-media-drawer').waitFor({timeout:25000});\n const state=await page.evaluate(()=>({\n   stage:document.querySelector('.pinned-media-drawer')?.getAttribute('data-stage'),\n   legacyMenu:!!document.querySelector('.shell-menu-button'),\n   legacyRailPresent:!!document.querySelector('.side-rail'),\n   newMapToolsPresent:!!document.querySelector('.map-tools')\n }));\n console.log(\"LIVE_OLD_UI_STATE=\"+JSON.stringify({http:response.status(),...state,errors}));\n await browser.close();\n if(response.status()!==200 || state.stage!=='collection' || state.newMapToolsPresent || errors.length)process.exit(2);\n})().catch(e=>{console.error(e);process.exit(1)});\nNODE\necho LIVE_OLD_UX_BROWSER_PASS\n",
+      "elapsed_seconds": 0.391,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 1536,
+      "memory_limited": false,
+      "output": "",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": null,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-04T05:22:44.394679+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.101,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.113,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-revert-unified-ux-cleanup-20261104-v1",
+  "idle_timeout": 250,
+  "memory_limit_mb": 1536,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.391,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-04T05:22:42.347920+00:00",
+  "status": "failed",
+  "task_digest": "17838b416523fd5a9efe34355518e73473ed144211990a2628494a439de9b758",
+  "task_timeout": 650,
+  "verification": [],
+  "work_branch": "main"
+}

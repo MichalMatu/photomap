@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-tablet-verify-20261104-v2",
+  "task_digest": "ed270bb49c8924f9df6944b3f5f4eb5a7812cd3f1336a9aa31812d5e02665fd0",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T03:26:34.734042+00:00",
+  "attempt_id": "f28d66e7fcb1d8d963dcc30f",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 66445,
+  "updated_at": "2026-11-04T03:26:35.652626+00:00",
+  "pid": 66445
+}

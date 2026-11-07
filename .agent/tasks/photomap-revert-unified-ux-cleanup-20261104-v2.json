@@ -1,0 +1,18 @@
+{
+  "id": "photomap-revert-unified-ux-cleanup-20261104-v2",
+  "dedupe_key": "photomap-revert-unified-ux-cleanup-20261104-v2",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 650,
+  "idle_timeout": 350,
+  "task_timeout": 1050,
+  "memory_limit_mb": 1024,
+  "commands": [
+    "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\ncd \"$ROOT\"\ntest \"$(git rev-parse HEAD)\" = 356289656d66963fb7451b70eac2e1bcff015819\ntest \"$(git rev-parse HEAD^{tree})\" = \"$(git rev-parse 30bff5c930e9cff13b52f9bff67dc3e21ea06798^{tree})\"\ntest -z \"$(git status --porcelain)\"\necho \"ROOT_CURRENT_BRANCH=$(git branch --show-current)\"\ngit push origin --delete feat/unified-map-ux-20261104\necho \"REMOTE_UX_BRANCH_REMOVED\"\nfor WT in \"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\" \"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-baseline-20261104\"; do\n  if git worktree list --porcelain | grep -Fqx \"worktree $WT\"; then\n    test -z \"$(git -C \"$WT\" status --porcelain)\"\n    test \"$(git -C \"$WT\" branch --show-current)\" = \"\"\n    git worktree remove --force \"$WT\"\n    echo \"REMOVED_WORKTREE=$WT\"\n  fi\ndone\ntest -z \"$(git status --porcelain)\"\necho \"SOURCE_CLEANUP_PASS\"\n"
+  ]
+}

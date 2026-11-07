@@ -1,0 +1,61 @@
+{
+  "allow_write": true,
+  "attempt_id": "222bd5df4e82417a71273d2a",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 5043,
+      "command": "set -eu\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\ngit -C \"$WT\" fetch origin feat/unified-map-ux-20261104\ngit -C \"$WT\" checkout --detach FETCH_HEAD\ncd \"$WT/frontend\"\nnpm run format:check\npython3 \"$WT/scripts/quality/css_token_gate.py\"\necho UX_CSS_GATE_PASS\n",
+      "current_rss_mb": 17.53,
+      "elapsed_seconds": 51.667,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            feat/unified-map-ux-20261104 -> FETCH_HEAD\n   b532b00..d5f9ff9  feat/unified-map-ux-20261104 -> origin/feat/unified-map-ux-20261104\nPrevious HEAD position was b532b00 polish(map): clarify drawer handle and lock hidden drawer contents [skip ci]\nHEAD is now at d5f9ff9 test(map): budget slow tablet animation without masking actual drawer assertions [skip ci]\n\n> format:check\n> prettier --check .\n\nChecking formatting...\nAll matched files use Prettier code style!\nCSS token gate failed.\nNew untokenized CSS was introduced:\n- frontend/src/styles/map.css: raw-font-size grew from 1 to 2\n- frontend/src/styles/map.css: raw-spacing grew from 3 to 4\n- frontend/src/styles/map-loading.css: new raw-font-size findings (3)\n- frontend/src/styles/map-loading.css: new raw-motion findings (9)\n- frontend/src/styles/map-tour.css: new raw-color findings (4)\n- frontend/src/styles/map-tour.css: new raw-font-size findings (6)\n- frontend/src/styles/map-tour.css: new raw-radius findings (4)\n- frontend/src/styles/map-tour.css: new raw-shadow findings (1)\n- frontend/src/styles/map-tour.css: new raw-spacing findings (13)\n- frontend/src/styles/map.css: new raw-color findings (4)\n- frontend/src/styles/map.css: new raw-radius findings (1)\n- frontend/src/styles/pinned-media.css: new raw-color findings (1)\n- frontend/src/styles/pinned-media.css: new raw-motion findings (1)\n\nExamples:\n- frontend/src/styles/map-loading.css:20 [raw-motion] animation: map-intro-landscape-arrive 900ms ease-out both;\n- frontend/src/styles/map-loading.css:29 [raw-motion] animation: map-intro-cloud-reveal 1050ms ease-out both;\n- frontend/src/styles/map-loading.css:33 [raw-motion] animation: map-intro-ink-reveal 780ms ease-out 200ms both;\n- frontend/src/styles/map-loading.css:37 [raw-motion] animation: map-intro-compass-reveal 540ms ease-out 490ms both;\n- frontend/src/styles/map-loading.css:81 [raw-font-size] font-size: clamp(2.1rem, 6vw, 3.6rem);\n- frontend/src/styles/map-loading.css:93 [raw-font-size] font-size: clamp(var(--text-body-small), 2vw, var(--text-title));\n- frontend/src/styles/map-loading.css:110 [raw-motion] animation: map-intro-unfold 760ms cubic-bezier(0.19, 1, 0.3, 1) both;\n- frontend/src/styles/map-loading.css:116 [raw-motion] animation: map-intro-draw 1120ms cubic-bezier(0.45, 0, 0.18, 1) 100ms both;\n- frontend/src/styles/map-loading.css:126 [raw-motion] animation: map-intro-place 530ms cubic-bezier(0.2, 1.25, 0.35, 1) 290ms both;\n- frontend/src/styles/map-loading.css:140 [raw-motion] animation: map-intro-photo 620ms cubic-bezier(0.16, 1, 0.3, 1) 520ms both;\n- frontend/src/styles/map-loading.css:156 [raw-font-size] font-size: clamp(var(--text-body), 2.6vw, var(--text-title));\n- frontend/src/styles/map-loading.css:163 [raw-motion] animation: map-intro-ellipsis 1.4s steps(4, end) infinite;\n- frontend/src/styles/map-tour.css:12 [raw-color] border: 1.5px solid rgba(55, 155, 255, 0.72);\n- frontend/src/styles/map-tour.css:16 [raw-color] 0 0 0 2px rgba(55, 155, 255, 0.1),\n- frontend/src/styles/map-tour.css:17 [raw-color] 0 0 11px 2px rgba(55, 155, 255, 0.22);\n- frontend/src/styles/map-tour.css:41 [raw-radius] border-radius: 20px;\n- frontend/src/styles/map-tour.css:42 [raw-color] box-shadow: 0 20px 65px rgba(0, 0, 0, 0.3);\n- frontend/src/styles/map-tour.css:42 [raw-shadow] box-shadow: 0 20px 65px rgba(0, 0, 0, 0.3);\n- frontend/src/styles/map-tour.css:47 [raw-spacing] padding: 20px;\n- frontend/src/styles/map-tour.css:60 [raw-spacing] gap: 8px;\n- frontend/src/styles/map-tour.css:67 [raw-font-size] font-size: 0.75rem;\n- frontend/src/styles/map-tour.css:69 [raw-spacing] gap: 6px;\n- frontend/src/styles/map-tour.css:92 [raw-spacing] gap: 5px;\n- frontend/src/styles/map-tour.css:93 [raw-spacing] margin: 14px 0 20px;\n- frontend/src/styles/map-tour.css:100 [raw-radius] border-radius: 8px;\n- frontend/src/styles/map-tour.css:109 [raw-font-size] font-size: 1.3rem;\n- frontend/src/styles/map-tour.css:113 [raw-spacing] margin: 0 0 10px;\n- frontend/src/styles/map-tour.css:119 [raw-font-size] font-size: 0.92rem;\n- frontend/src/styles/map-tour.css:125 [raw-spacing] margin-top: 12px;\n- frontend/src/styles/map-tour.css:126 [raw-radius] border-radius: 10px;\n- frontend/src/styles/map-tour.css:130 [raw-font-size] font-size: 0.78rem;\n- frontend/src/styles/map-tour.css:131 [raw-spacing] padding: 8px 10px;\n- frontend/src/styles/map-tour.css:135 [raw-spacing] margin-top: 22px;\n- frontend/src/styles/map-tour.css:140 [raw-spacing] padding: 0 6px;\n- frontend/src/styles/map-tour.css:141 [raw-font-size] font-size: 0.85rem;\n- frontend/src/styles/map-tour.css:147 [raw-radius] border-radius: 10px;\n- frontend/src/styles/map-tour.css:149 [raw-spacing] gap: 8px;\n- frontend/src/styles/map-tour.css:152 [raw-spacing] padding: 0 12px;\n- frontend/src/styles/map-tour.css:164 [raw-font-size] font-size: 0.88rem;\n- frontend/src/styles/map-tour.css:184 [raw-spacing] padding: 16px;\n- ...\n\nMove shared values into frontend/src/design/tokens.css or replace local values with existing tokens.\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 221.83,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-04T03:24:51.031624+00:00",
+  "git_diff": {
+    "elapsed_seconds": 2.527,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 1.886,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-unified-ux-tablet-gate-20261104-v1",
+  "idle_timeout": 400,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 51.667,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-04T03:23:50.096423+00:00",
+  "status": "failed",
+  "task_digest": "3f5c4a4a87445055019f6427b6f4efebcb2d8e8746c7b4befcdc8523512665a7",
+  "task_timeout": 1500,
+  "verification": [],
+  "work_branch": "main"
+}

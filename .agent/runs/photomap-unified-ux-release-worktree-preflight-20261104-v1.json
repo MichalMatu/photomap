@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-release-worktree-preflight-20261104-v1",
+  "task_digest": "e05b11208e6a4ca28ecaf36283c5e957c17bf250bd27c3250753ff3283a6ca1c",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T05:04:37.074377+00:00",
+  "attempt_id": "21c04c2d2043be25bfda970a",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 95940,
+  "updated_at": "2026-11-04T05:04:37.386713+00:00",
+  "pid": 95940
+}

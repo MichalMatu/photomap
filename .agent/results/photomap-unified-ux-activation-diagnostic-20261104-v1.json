@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "0b5247797bbb72d87732d18d",
+  "command_timeout": 220,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1133,
+      "command": "set -eu\nKEY=\"$HOME/.ssh/id_ed25519\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'bash -s' <<'PI_SCRIPT'\nset -eu\ncd /home/michal/src/PhotoMaps\nBACKUP=\".dev/deploy/unified-ux-20261104-09be8c4\"\necho \"PI_HEAD=$(git rev-parse HEAD)\"\necho \"PI_DIRTY=$(git status --porcelain | wc -l | tr -d \" \")\"\necho \"BACKUP_INDEX=$(sha256sum \"$BACKUP/index-before.html\" | awk '{print $1}')\"\necho \"CURRENT_INDEX=$(sha256sum frontend/dist/index.html | awk '{print $1}')\"\necho \"STAGED_INDEX_EXISTS=$(test -e frontend/dist/index.html.next && echo yes || echo no)\"\necho \"NEW_MAP_BUNDLE_EXISTS=$(test -s frontend/dist/assets/public-map-DWDElC8J.js && echo yes || echo no)\"\necho \"BACKEND_PID=$(systemctl show photomap.service --property MainPID --value)\"\necho \"TUNNEL_PID=$(systemctl show cloudflared.service --property MainPID --value)\"\necho \"SERVICE_STATUS=$(systemctl is-active photomap.service)\"\necho \"TUNNEL_STATUS=$(systemctl is-active cloudflared.service)\"\ncurl -sS --max-time 10 -o /tmp/photomap-ux-current-html.html -w 'LOCAL_HTML_STATUS=%{http_code}\\n' http://127.0.0.1:8000/\nsha256sum /tmp/photomap-ux-current-html.html\ncurl -sS --max-time 10 -o /dev/null -w 'LOCAL_NEW_BUNDLE_STATUS=%{http_code}\\n' http://127.0.0.1:8000/assets/public-map-DWDElC8J.js\ncurl -sS --max-time 10 -o /dev/null -w 'LOCAL_HEALTH_STATUS=%{http_code}\\n' http://127.0.0.1:8000/health\ncurl -sS --max-time 10 -o /dev/null -w 'LOCAL_MAP_API_STATUS=%{http_code}\\n' http://127.0.0.1:8000/api/places/map\necho \"CURRENT_INDEX_ASSETS\"; grep -oE '/assets/[^\"]+\\.(js|css)' frontend/dist/index.html | head -n 8\necho \"HTTP_INDEX_ASSETS\"; grep -oE '/assets/[^\"]+\\.(js|css)' /tmp/photomap-ux-current-html.html | head -n 8\nPI_SCRIPT\ncurl -sS --connect-timeout 8 --max-time 15 -o /tmp/photomap-ux-current-public.html -w 'PUBLIC_STATUS=%{http_code}\\n' https://photomap.pl/\nshasum -a 256 /tmp/photomap-ux-current-public.html\n",
+      "current_rss_mb": 6.64,
+      "elapsed_seconds": 4.598,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 1024,
+      "memory_limited": false,
+      "output": "PI_HEAD=09be8c4ef70a30791de2698c1c39779e4ab544eb\nPI_DIRTY=0\nBACKUP_INDEX=5177a82937d38c8d2ba5b8a41156b30354f523b5c293a203d0b6ef62a5af78b5\nCURRENT_INDEX=5177a82937d38c8d2ba5b8a41156b30354f523b5c293a203d0b6ef62a5af78b5\nSTAGED_INDEX_EXISTS=no\nNEW_MAP_BUNDLE_EXISTS=yes\nBACKEND_PID=3797751\nTUNNEL_PID=222848\nSERVICE_STATUS=active\nTUNNEL_STATUS=active\nLOCAL_HTML_STATUS=200\n9abca0365e6a4f835c7529491d1899d17c10fdd1f2b8d29ff7e2625ab8d38e90  /tmp/photomap-ux-current-html.html\nLOCAL_NEW_BUNDLE_STATUS=200\nLOCAL_HEALTH_STATUS=200\nLOCAL_MAP_API_STATUS=200\nCURRENT_INDEX_ASSETS\n/assets/index-C7KXLOOT.js\n/assets/react-vendor-GxMAwJfR.js\n/assets/query-vendor-BLe33XlG.js\n/assets/map-vendor-DB9AUs6p.js\n/assets/public-map-D41-GBxF.js\n/assets/map-vendor-CIGW-MKW.css\n/assets/index-jfCVnXmJ.css\nHTTP_INDEX_ASSETS\n/assets/index-C7KXLOOT.js\n/assets/react-vendor-GxMAwJfR.js\n/assets/query-vendor-BLe33XlG.js\n/assets/map-vendor-DB9AUs6p.js\n/assets/public-map-D41-GBxF.js\n/assets/map-vendor-CIGW-MKW.css\n/assets/index-jfCVnXmJ.css\nPUBLIC_STATUS=200\nfb4fcaf3de6aed9b2eda79092da9f281d7a82c0030f3faf1e3df0ebff50dc692  /tmp/photomap-ux-current-public.html\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 6.64,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-04T05:09:28.649047+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.093,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.095,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-unified-ux-activation-diagnostic-20261104-v1",
+  "idle_timeout": 180,
+  "memory_limit_mb": 1024,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 4.598,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-04T05:09:22.074189+00:00",
+  "status": "done",
+  "task_digest": "e6c6c53a5673982735c0d64ae948464811e5e34c0a731938ca07b31ca74c6e51",
+  "task_timeout": 390,
+  "verification": [],
+  "work_branch": "main"
+}

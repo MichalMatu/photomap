@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-closeout-gates-20261104-v1",
+  "task_digest": "6f9bd75fd0eef13addf194ffea21ab6f71337c8a4f9167cad7c0e105e06919f4",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T04:53:21.108773+00:00",
+  "attempt_id": "922b77125edef897d018cfb6",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 72745,
+  "updated_at": "2026-11-04T04:53:21.822943+00:00",
+  "pid": 72745
+}

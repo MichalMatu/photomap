@@ -1,0 +1,19 @@
+{
+  "id": "photomap-unified-ux-tablet-verify-20261104-v2",
+  "dedupe_key": "photomap-unified-ux-tablet-verify-20261104-v2",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 950,
+  "idle_timeout": 450,
+  "task_timeout": 1600,
+  "memory_limit_mb": 4096,
+  "commands": [
+    "set -eu\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\ncd \"$WT/frontend\"\nnpm run format:check\nset +e\npython3 \"$ROOT/scripts/quality/css_token_gate.py\" > /tmp/photomap-css-main-gate.log 2>&1\nbase=$?\npython3 \"$WT/scripts/quality/css_token_gate.py\" > /tmp/photomap-css-unified-gate.log 2>&1\nfeature=$?\nset -e\necho \"CSS_BASE_GATE=$base CSS_FEATURE_GATE=$feature\"\necho \"BASE_FINDINGS\"; grep '^-' /tmp/photomap-css-main-gate.log | head -n 16 || true\necho \"FEATURE_FINDINGS\"; grep '^-' /tmp/photomap-css-unified-gate.log | head -n 16 || true\necho UX_CSS_BASELINE_COMPARED\n",
+    "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nexport PYTHON=\"$ROOT/backend/.venv/bin/python\"\nexport E2E_CHROME_EXECUTABLE=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\ncd \"$WT/frontend\"\nnpm run test:e2e -- e2e/visual/map-unified-ux.spec.ts --grep '768×1024' --workers=1 --reporter=list\necho UX_TABLET_ACCEPTED\n"
+  ]
+}

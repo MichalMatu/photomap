@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-tour-qa-20261104-v3",
+  "task_digest": "bcdb879b989f05cc24cc1b8c7be86af988ffa29a7e447005146ac0f4500986a3",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T03:14:02.786755+00:00",
+  "attempt_id": "5c9d5968d5c1093458fc78a4",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 55039,
+  "updated_at": "2026-11-04T03:14:03.081317+00:00",
+  "pid": 55039
+}

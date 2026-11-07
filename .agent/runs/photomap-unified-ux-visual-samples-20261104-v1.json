@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-visual-samples-20261104-v1",
+  "task_digest": "52fc0bcae460683ae72ce53170ca6c4ebcee4e311ffca854e9a681a5c6975b58",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T03:05:24.065467+00:00",
+  "attempt_id": "97774cf7b0e6e27775221c49",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 43919,
+  "updated_at": "2026-11-04T03:05:24.306953+00:00",
+  "pid": 43919
+}

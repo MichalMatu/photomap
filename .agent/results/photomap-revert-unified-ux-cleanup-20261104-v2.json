@@ -1,0 +1,61 @@
+{
+  "allow_write": true,
+  "attempt_id": "3e3e0c22fb45608c559abfb7",
+  "command_timeout": 650,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 247,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\ncd \"$ROOT\"\ntest \"$(git rev-parse HEAD)\" = 356289656d66963fb7451b70eac2e1bcff015819\ntest \"$(git rev-parse HEAD^{tree})\" = \"$(git rev-parse 30bff5c930e9cff13b52f9bff67dc3e21ea06798^{tree})\"\ntest -z \"$(git status --porcelain)\"\necho \"ROOT_CURRENT_BRANCH=$(git branch --show-current)\"\ngit push origin --delete feat/unified-map-ux-20261104\necho \"REMOTE_UX_BRANCH_REMOVED\"\nfor WT in \"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\" \"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-baseline-20261104\"; do\n  if git worktree list --porcelain | grep -Fqx \"worktree $WT\"; then\n    test -z \"$(git -C \"$WT\" status --porcelain)\"\n    test \"$(git -C \"$WT\" branch --show-current)\" = \"\"\n    git worktree remove --force \"$WT\"\n    echo \"REMOVED_WORKTREE=$WT\"\n  fi\ndone\ntest -z \"$(git status --porcelain)\"\necho \"SOURCE_CLEANUP_PASS\"\n",
+      "current_rss_mb": 4.89,
+      "elapsed_seconds": 5.355,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 1024,
+      "memory_limited": false,
+      "output": "ROOT_CURRENT_BRANCH=agent-work\nTo https://github.com/MichalMatu/photomap.git\n - [deleted]         feat/unified-map-ux-20261104\nREMOTE_UX_BRANCH_REMOVED\nREMOVED_WORKTREE=/Users/michal/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 6.19,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-04T05:24:12.459534+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.078,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.128,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-revert-unified-ux-cleanup-20261104-v2",
+  "idle_timeout": 350,
+  "memory_limit_mb": 1024,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 5.355,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-04T05:24:05.104764+00:00",
+  "status": "failed",
+  "task_digest": "b10c4ed2c8485d7739e631c68bacef4dd721d488b1b4ed740204c356cc95642a",
+  "task_timeout": 1050,
+  "verification": [],
+  "work_branch": "main"
+}

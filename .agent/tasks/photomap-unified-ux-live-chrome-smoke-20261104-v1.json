@@ -1,0 +1,18 @@
+{
+  "id": "photomap-unified-ux-live-chrome-smoke-20261104-v1",
+  "dedupe_key": "photomap-unified-ux-live-chrome-smoke-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 500,
+  "idle_timeout": 300,
+  "task_timeout": 900,
+  "memory_limit_mb": 4096,
+  "commands": [
+    "set -eu\ncd \"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1/frontend\"\nnode --input-type=module <<'JS'\nimport { chromium, expect } from \"@playwright/test\";\nconst browser = await chromium.launch({\n  headless: true,\n  executablePath: \"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\",\n});\ntry {\n  for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {\n    const context = await browser.newContext({ viewport });\n    const page = await context.newPage();\n    const jsErrors = [];\n    const assetErrors = [];\n    page.on(\"pageerror\", (error) => jsErrors.push(error.message));\n    page.on(\"response\", (response) => {\n      if (response.url().startsWith(\"https://photomap.pl/\") && response.status() >= 400) {\n        assetErrors.push(`${response.status()} ${response.url()}`);\n      }\n    });\n    await page.goto(\"https://photomap.pl/?release-smoke=09be8c4\", { waitUntil: \"domcontentloaded\", timeout: 45000 });\n    await expect(page.locator(\".map-frame\")).toBeVisible({ timeout: 25000 });\n    await expect(page.getByTestId(\"pinned-media-drawer\")).toHaveAttribute(\"data-stage\", \"collapsed\", { timeout: 25000 });\n    const tour = page.locator(\".map-tour\");\n    if (await tour.isVisible()) {\n      await tour.getByRole(\"button\", { name: \"Pomiń\", exact: true }).click();\n    }\n    await page.getByRole(\"button\", { name: \"Filtry mapy\" }).click();\n    await expect(page.locator(\"#map-tools-panel\")).toBeVisible();\n    await expect(page.locator(\".drawer-scrim--map-tools\")).toHaveCSS(\"background-color\", \"rgba(0, 0, 0, 0)\");\n    await page.getByRole(\"button\", { name: \"Ustawienia widoku mapy\" }).click();\n    await expect(page.locator(\"#map-tools-panel\")).toContainText(\"Miejsca na mapie\");\n    await page.getByRole(\"button\", { name: \"Ustawienia widoku mapy\" }).click();\n    const drawer = page.getByTestId(\"pinned-media-drawer\");\n    await drawer.getByRole(\"button\", { name: \"Rozwiń szufladę zdjęć\" }).click();\n    await expect(drawer).toHaveAttribute(\"data-stage\", \"collection\");\n    await drawer.getByRole(\"button\", { name: \"Zwiń szufladę zdjęć\" }).click();\n    await expect(drawer).toHaveAttribute(\"data-stage\", \"collapsed\");\n    await page.getByRole(\"button\", { name: \"Otwórz menu\" }).click();\n    await expect(page.locator(\"#app-side-drawer\")).toHaveClass(/is-open/);\n    await page.getByRole(\"button\", { name: \"Zamknij menu\" }).click();\n    await expect(page.locator(\"#app-side-drawer\")).not.toHaveClass(/is-open/);\n    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);\n    if (overflow > 2) throw new Error(`Horizontal overflow: ${overflow}px`);\n    if (jsErrors.length || assetErrors.length) {\n      throw new Error(JSON.stringify({ viewport, jsErrors, assetErrors }));\n    }\n    console.log(JSON.stringify({ viewport, filters: \"ok\", view: \"ok\", drawer: \"ok\", menu: \"ok\", overflow, jsErrors: 0, assetErrors: 0 }));\n    await context.close();\n  }\n} finally {\n  await browser.close();\n}\nJS\necho LIVE_CHROME_UX_SMOKE_PASS\n"
+  ]
+}

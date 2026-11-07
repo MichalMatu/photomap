@@ -1,0 +1,18 @@
+{
+  "id": "photomap-baseline-worktree-cleanup-20261104-v2",
+  "dedupe_key": "photomap-baseline-worktree-cleanup-20261104-v2",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 180,
+  "idle_timeout": 120,
+  "task_timeout": 300,
+  "memory_limit_mb": 512,
+  "commands": [
+    "set -eu\ncd \"$HOME/agent-workspace/repos/photomap/work\"\nW=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-baseline-20261104\"\ntest \"$(git rev-parse --short HEAD)\" = 3562896\ntest -z \"$(git status --porcelain)\"\ntest \"$(git -C \"$W\" status --porcelain)\" = '?? frontend/node_modules'\ntest -L \"$W/frontend/node_modules\"\ntest \"$(readlink \"$W/frontend/node_modules\")\" = \"$PWD/frontend/node_modules\"\nunlink \"$W/frontend/node_modules\"\ngit worktree remove \"$W\"\ntest -d frontend/node_modules\ntest -z \"$(git status --porcelain)\"\ngit worktree list\n"
+  ]
+}

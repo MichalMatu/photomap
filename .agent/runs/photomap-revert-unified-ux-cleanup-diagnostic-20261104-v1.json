@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-revert-unified-ux-cleanup-diagnostic-20261104-v1",
+  "task_digest": "577cde7e060f3ad123de2c761db9f61ff666916a46293c3fc4e545f9c9998a67",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T05:23:23.140708+00:00",
+  "attempt_id": "55a459d0f3f2dba81124ca93",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 33014,
+  "updated_at": "2026-11-04T05:23:23.383605+00:00",
+  "pid": 33014
+}

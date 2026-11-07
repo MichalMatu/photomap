@@ -1,0 +1,88 @@
+{
+  "allow_write": true,
+  "attempt_id": "6811e04e34cddc5c9076315b",
+  "command_timeout": 450,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 173,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\ntest \"$(git -C \"$ROOT\" branch --show-current)\" = \"agent-work\"\ntest -z \"$(git -C \"$ROOT\" status --porcelain)\"\ngit -C \"$ROOT\" fetch origin main\ntest \"$(git -C \"$ROOT\" rev-parse origin/main)\" = \"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\ngit -C \"$ROOT\" merge --ff-only origin/main\ntest \"$(git -C \"$ROOT\" rev-parse HEAD)\" = \"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\necho \"MAC_AGENT_WORK_SYNCED=$(git -C \"$ROOT\" rev-parse HEAD)\"\n",
+      "current_rss_mb": 3.44,
+      "elapsed_seconds": 1.031,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 1024,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\nAlready up to date.\nMAC_AGENT_WORK_SYNCED=4c2694dc9623873782de326cbefdf7e8b94c4bdb\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 3.44,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    },
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 450,
+      "command": "set -eu\nKEY=\"$HOME/.ssh/id_ed25519\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'bash -s' <<'PI_SCRIPT'\nset -eu\ncd /home/michal/src/PhotoMaps\ntest \"$(git branch --show-current)\" = main\ntest -z \"$(git status --porcelain)\"\ntest \"$(git rev-parse HEAD)\" = \"09be8c4ef70a30791de2698c1c39779e4ab544eb\"\ngit fetch origin main\ntest \"$(git rev-parse origin/main)\" = \"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\ntest \"$(git diff --name-only HEAD origin/main)\" = \"docs/GOLDEN_STATUS.md\"\ngit merge --ff-only origin/main\ntest \"$(git rev-parse HEAD)\" = \"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\ntest -z \"$(git status --porcelain)\"\ntest \"$(sha256sum frontend/dist/index.html | awk '{print $1}')\" = \"ccc80c6f664853030e4674dfc783ec1607a9923e823b10f35b221a7348e48a1d\"\ntest \"$(systemctl show photomap.service --property MainPID --value)\" = 3797751\ntest \"$(systemctl show cloudflared.service --property MainPID --value)\" = 222848\ncurl -fsS --max-time 12 http://127.0.0.1:8000/health -o /dev/null\ncurl -fsS --max-time 12 http://127.0.0.1:8000/ -o /tmp/photomap-unified-ux-postsync.html\ngrep -q '/assets/public-map-DWDElC8J.js' /tmp/photomap-unified-ux-postsync.html\necho \"PI_MAIN_SYNCED=$(git rev-parse HEAD)\"\necho \"PI_DEPLOY_INDEX_SHA256=$(sha256sum frontend/dist/index.html | awk '{print $1}')\"\necho DOC_ONLY_SYNC_PUBLIC_RUNTIME_INTACT\nPI_SCRIPT\n",
+      "current_rss_mb": 3.59,
+      "elapsed_seconds": 4.841,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 1024,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\n   09be8c4..4c2694d  main       -> origin/main\nUpdating 09be8c4..4c2694d\nFast-forward\n docs/GOLDEN_STATUS.md | 16 +++++++++++++++-\n 1 file changed, 15 insertions(+), 1 deletion(-)\nPI_MAIN_SYNCED=4c2694dc9623873782de326cbefdf7e8b94c4bdb\nPI_DEPLOY_INDEX_SHA256=ccc80c6f664853030e4674dfc783ec1607a9923e823b10f35b221a7348e48a1d\nDOC_ONLY_SYNC_PUBLIC_RUNTIME_INTACT\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 4.44,
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-04T05:14:28.306358+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.08,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.087,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-unified-ux-final-sync-20261104-v1",
+  "idle_timeout": 270,
+  "memory_limit_mb": 1024,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 1.031,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2
+    },
+    {
+      "elapsed_seconds": 4.841,
+      "outcome": "passed",
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-04T05:14:20.482561+00:00",
+  "status": "done",
+  "task_digest": "92e3e4ad5aa1217412add9e62dcee72a28bb1460ffab689a2bb6ea28e26c3cb4",
+  "task_timeout": 800,
+  "verification": [],
+  "work_branch": "main"
+}

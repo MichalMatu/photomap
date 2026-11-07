@@ -1,0 +1,18 @@
+{
+  "id": "photomap-revert-unified-ux-source-20261104-v1",
+  "dedupe_key": "photomap-revert-unified-ux-source-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 1300,
+  "idle_timeout": 650,
+  "task_timeout": 1700,
+  "memory_limit_mb": 4096,
+  "commands": [
+    "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nEXPECTED=\"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\nBASE=\"30bff5c930e9cff13b52f9bff67dc3e21ea06798\"\ncd \"$ROOT\"\ntest -z \"$(git status --porcelain)\"\ngit fetch origin main\ntest \"$(git rev-parse origin/main)\" = \"$EXPECTED\"\ngit switch main\ntest \"$(git rev-parse HEAD)\" = \"$EXPECTED\"\necho \"RESTORING_EXACT_PRE_SPRINT_TREE $BASE\"\ngit restore --source=\"$BASE\" --staged --worktree -- .\ngit diff --cached --check\necho \"FILES_REVERTED=$(git diff --cached --name-only | wc -l | tr -d ' ')\"\ngit diff --cached --stat\ntest \"$(git diff --cached --name-only | wc -l | tr -d ' ')\" -ge 30\ncd frontend\nnpm run format:check\nnpm run test\nnpm run build\ncd ..\ngit commit -m \"revert(ux): restore PhotoMap pre-sprint version [skip ci]\"\ntest -z \"$(git status --porcelain)\"\ngit diff --quiet \"$BASE\" HEAD\ngit push origin main\necho \"ROLLBACK_MAIN_HEAD=$(git rev-parse HEAD)\"\necho \"RESTORED_TREE_SHA=$(git rev-parse HEAD^{tree})\"\necho \"PRE_SPRINT_TREE_SHA=$(git rev-parse \"$BASE\"^{tree})\"\necho \"SOURCE_ROLLBACK_PUSHED\"\n"
+  ]
+}

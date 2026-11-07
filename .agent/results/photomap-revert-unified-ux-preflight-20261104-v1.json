@@ -1,0 +1,60 @@
+{
+  "allow_write": false,
+  "attempt_id": "dfd7a266bc2ac06963ec1eab",
+  "command_timeout": 240,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 2260,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nKEY=\"$HOME/.ssh/id_ed25519\"\nEXPECTED=\"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\nBASE=\"30bff5c930e9cff13b52f9bff67dc3e21ea06798\"\ncd \"$ROOT\"\ngit fetch origin main\necho \"MAC_HEAD=$(git rev-parse HEAD)\"\necho \"REMOTE_MAIN=$(git rev-parse origin/main)\"\necho \"MAC_DIRTY=$(git status --porcelain | wc -l | tr -d \" \")\"\ntest \"$(git rev-parse origin/main)\" = \"$EXPECTED\"\ntest -z \"$(git status --porcelain)\"\ngit merge-base --is-ancestor \"$BASE\" origin/main\necho \"CHANGED_SINCE_PRE_SPRINT\"\ngit diff --name-status \"$BASE\"..origin/main\necho \"PI_BEFORE_REVERT\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'set -eu\ncd /home/michal/src/PhotoMaps\necho \"PI_HEAD=$(git rev-parse HEAD)\"\necho \"PI_DIRTY=$(git status --porcelain | wc -l | tr -d \" \")\"\ntest -z \"$(git status --porcelain)\"\necho \"SERVICE=$(systemctl is-active photomap.service)\"\necho \"TUNNEL=$(systemctl is-active cloudflared.service)\"\nsystemctl show photomap.service --property MainPID --property NRestarts\nBACKUP=\".dev/deploy/unified-ux-20261104-09be8c4\"\ntest -f \"$BACKUP/index-before.html\"\ntest -d \"$BACKUP/dist-before\"\ntest -f \"$BACKUP/app-before.db\"\ntest -f \"frontend/dist/index.html\"\necho \"BACKUP_INDEX_SHA=$(sha256sum \"$BACKUP/index-before.html\" | cut -d\" \" -f1)\"\necho \"ACTIVE_INDEX_SHA=$(sha256sum frontend/dist/index.html | cut -d\" \" -f1)\"\necho \"PREVIOUS_JS_ASSET=$(grep -o \"assets/public-map-[^\\\" ]*js\" \"$BACKUP/index-before.html\" | head -1)\"\ntest \"$(sha256sum \"$BACKUP/index-before.html\" | cut -d\" \" -f1)\" = \"5177a82937d38c8d2ba5b8a41156b30354f523b5c293a203d0b6ef62a5af78b5\"\ntest \"$(sha256sum frontend/dist/index.html | cut -d\" \" -f1)\" = \"ccc80c6f664853030e4674dfc783ec1607a9923e823b10f35b221a7348e48a1d\"\ncurl -fsS --max-time 8 http://127.0.0.1:8000/health\necho\necho \"PI_RESTORE_SOURCE_VERIFIED\"\n'\n",
+      "current_rss_mb": 4.69,
+      "elapsed_seconds": 3.008,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 768,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\nMAC_HEAD=4c2694dc9623873782de326cbefdf7e8b94c4bdb\nREMOTE_MAIN=4c2694dc9623873782de326cbefdf7e8b94c4bdb\nMAC_DIRTY=0\nCHANGED_SINCE_PRE_SPRINT\nM\tdocs/GOLDEN_STATUS.md\nA\tdocs/checkpoints/2026-11-04-unified-map-ux.md\nM\tdocs/product-direction.md\nM\tfrontend/e2e/visual/app-shell-swipe.spec.ts\nM\tfrontend/e2e/visual/discovery-drawer.spec.ts\nM\tfrontend/e2e/visual/map-tour.spec.ts\nA\tfrontend/e2e/visual/map-unified-ux.spec.ts\nM\tfrontend/e2e/visual/map.spec.ts\nM\tfrontend/e2e/visual/pinned-media-drawer.spec.ts\nM\tfrontend/src/components/layout/AppShell.tsx\nM\tfrontend/src/components/layout/AppShellAdminAction.tsx\nM\tfrontend/src/components/layout/AppShellDrawer.tsx\nD\tfrontend/src/components/layout/AppShellMapAudioControl.tsx\nD\tfrontend/src/components/layout/AppShellMapCategoryControls.tsx\nD\tfrontend/src/components/layout/AppShellMapLayerControls.tsx\nA\tfrontend/src/components/layout/AppShellMapTools.tsx\nM\tfrontend/src/components/layout/AppShellMenuButton.tsx\nD\tfrontend/src/components/layout/AppShellPinnedMediaControl.tsx\nD\tfrontend/src/components/layout/AppShellRail.tsx\nM\tfrontend/src/components/layout/appShellItems.ts\nM\tfrontend/src/components/layout/appShellNavigation.test.ts\nM\tfrontend/src/components/layout/appShellNavigation.ts\nM\tfrontend/src/components/layout/appShellTypes.ts\nM\tfrontend/src/components/map/PlaceMap.tsx\nM\tfrontend/src/components/map/mapCategoryFilters.test.ts\nM\tfrontend/src/components/map/mapCategoryFilters.ts\nM\tfrontend/src/components/map/mapLayers.ts\nM\tfrontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx\nM\tfrontend/src/components/tour/MapTour.tsx\nM\tfrontend/src/components/tour/mapTourSteps.ts\nM\tfrontend/src/pages/PublicMapPage.tsx\nM\tfrontend/src/styles/layout.css\nM\tfrontend/src/styles/pinned-media.css\nM\tfrontend/src/styles/responsive.css\nPI_BEFORE_REVERT\nPI_HEAD=4c2694dc9623873782de326cbefdf7e8b94c4bdb\nPI_DIRTY=0\nSERVICE=active\nTUNNEL=active\nMainPID=3797751\nNRestarts=0\nBACKUP_INDEX_SHA=5177a82937d38c8d2ba5b8a41156b30354f523b5c293a203d0b6ef62a5af78b5\nACTIVE_INDEX_SHA=ccc80c6f664853030e4674dfc783ec1607a9923e823b10f35b221a7348e48a1d\nPREVIOUS_JS_ASSET=assets/public-map-D41-GBxF.js\n{\"status\":\"ok\"}\nPI_RESTORE_SOURCE_VERIFIED\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 4.69,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-04T05:17:19.021792+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.071,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.102,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-revert-unified-ux-preflight-20261104-v1",
+  "idle_timeout": 180,
+  "memory_limit_mb": 768,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 3.008,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-04T05:17:14.242606+00:00",
+  "status": "done",
+  "task_digest": "43d977f32ad7bef5599a5b6a0e255b84d6bb760de0f613e160538ed65f550da3",
+  "task_timeout": 500,
+  "verification": [],
+  "work_branch": "main"
+}

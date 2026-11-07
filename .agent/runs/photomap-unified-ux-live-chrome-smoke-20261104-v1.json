@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-unified-ux-live-chrome-smoke-20261104-v1",
+  "task_digest": "45db7f92a7d2174a23428220a2d14a9fd9843f367274ca6fc2bd570097485b45",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T05:12:39.171425+00:00",
+  "attempt_id": "1b5abb46a3fa272c42fe899e",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 14401,
+  "updated_at": "2026-11-04T05:12:39.622531+00:00",
+  "pid": 14401
+}

@@ -1,0 +1,89 @@
+{
+  "allow_write": true,
+  "attempt_id": "908236b3fb561715ed1e4b78",
+  "command_timeout": 1200,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1036,
+      "command": "set -eu\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\ngit -C \"$WT\" fetch origin feat/unified-map-ux-20261104\ngit -C \"$WT\" checkout --detach FETCH_HEAD\ncd \"$WT/frontend\"\n./node_modules/.bin/prettier --write src/pages/PublicMapPage.tsx e2e/visual/app-shell-swipe.spec.ts e2e/visual/discovery-drawer.spec.ts e2e/visual/map-tour.spec.ts e2e/visual/map-unified-ux.spec.ts\nnpm run typecheck\nnpm run lint\nnpm run format:check\necho UX_REGRESSION_STATIC_PASS\n",
+      "current_rss_mb": 242.05,
+      "elapsed_seconds": 65.159,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            feat/unified-map-ux-20261104 -> FETCH_HEAD\n   900cae1..5312f03  feat/unified-map-ux-20261104 -> origin/feat/unified-map-ux-20261104\nPrevious HEAD position was 900cae1 style(map): normalize CSS file ending [skip ci]\nHEAD is now at 5312f03 fix(map): restore real category tour action and stabilize gesture tests [skip ci]\nsrc/pages/PublicMapPage.tsx 144ms (unchanged)\ne2e/visual/app-shell-swipe.spec.ts 14ms (unchanged)\ne2e/visual/discovery-drawer.spec.ts 12ms (unchanged)\ne2e/visual/map-tour.spec.ts 40ms (unchanged)\ne2e/visual/map-unified-ux.spec.ts 16ms (unchanged)\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\n\n> lint\n> npm run typecheck && eslint . --max-warnings=0\n\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\n\n> format:check\n> prettier --check .\n\nChecking formatting...\nAll matched files use Prettier code style!\nUX_REGRESSION_STATIC_PASS\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 435.94,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    },
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 4511,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nexport PYTHON=\"$ROOT/backend/.venv/bin/python\"\nexport E2E_CHROME_EXECUTABLE=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\ncd \"$WT/frontend\"\nnpm run test:e2e -- e2e/visual/app-shell-swipe.spec.ts e2e/visual/discovery-drawer.spec.ts e2e/visual/map-tour.spec.ts e2e/visual/map-unified-ux.spec.ts --grep 'mobile menu opens|desktop discovery drawer|interactive PhotoMap tutorial|filters, display options' --workers=1 --reporter=list\n",
+      "current_rss_mb": 202.69,
+      "elapsed_seconds": 182.368,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "\n> test:e2e\n> ../scripts/quality/e2e.sh e2e/visual/app-shell-swipe.spec.ts e2e/visual/discovery-drawer.spec.ts e2e/visual/map-tour.spec.ts e2e/visual/map-unified-ux.spec.ts --grep mobile menu opens|desktop discovery drawer|interactive PhotoMap tutorial|filters, display options --workers=1 --reporter=list\n\nBackend: http://127.0.0.1:18080, PID 47917\nFrontend: http://127.0.0.1:15174, PID 48010\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:48050) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 4 tests using 1 worker\n\n(node:48125) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  1 [chromium] › e2e/visual/app-shell-swipe.spec.ts:4:5 › mobile menu opens in one gesture and closes without intercepting map pan (15.5s)\n  ✓  2 [chromium] › e2e/visual/discovery-drawer.spec.ts:6:5 › desktop discovery drawer renders map recommendations and opens the existing place gallery (8.4s)\n  ✘  3 [chromium] › e2e/visual/map-tour.spec.ts:5:5 › interactive PhotoMap tutorial follows real place, gallery and layer actions (2.0m)\n(node:51840) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  4 [chromium] › e2e/visual/map-unified-ux.spec.ts:49:5 › filters, display options and navigation have independent actions (6.3s)\n\n\n  1) [chromium] › e2e/visual/map-tour.spec.ts:5:5 › interactive PhotoMap tutorial follows real place, gallery and layer actions \n\n    \u001b[31mTest timeout of 120000ms exceeded.\u001b[39m\n\n    Error: locator.click: Test timeout of 120000ms exceeded.\n    Call log:\n    \u001b[2m  - waiting for locator('#map-tools-panel .map-tools-options--categories .map-tools-option').first()\u001b[22m\n    \u001b[2m    - locator resolved to <button type=\"button\" aria-pressed=\"false\" class=\"map-tools-option\">…</button>\u001b[22m\n    \u001b[2m  - attempting click action\u001b[22m\n    \u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n    \u001b[2m      - element is visible, enabled and stable\u001b[22m\n    \u001b[2m      - scrolling into view if needed\u001b[22m\n    \u001b[2m      - done scrolling\u001b[22m\n    \u001b[2m      - <span class=\"map-tour-kicker\">…</span> from <div class=\"map-tour\" data-tour-step=\"layers\">…</div> subtree intercepts pointer events\u001b[22m\n    \u001b[2m    - retrying click action\u001b[22m\n    \u001b[2m    - waiting 20ms\u001b[22m\n    \u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n    \u001b[2m      - element is visible, enabled and stable\u001b[22m\n    \u001b[2m      - scrolling into view if needed\u001b[22m\n    \u001b[2m      - done scrolling\u001b[22m\n    \u001b[2m      - <span class=\"map-tour-kicker\">…</span> from <div class=\"map-tour\" data-tour-step=\"layers\">…</div> subtree intercepts pointer events\u001b[22m\n    \u001b[2m    - retrying click action\u001b[22m\n    \u001b[2m      - waiting 100ms\u001b[22m\n    \u001b[2m    206 × waiting for element to be visible, enabled and stable\u001b[22m\n    \u001b[2m        - element is visible, enabled and stable\u001b[22m\n    \u001b[2m        - scrolling into view if needed\u001b[22m\n    \u001b[2m        - done scrolling\u001b[22m\n    \u001b[2m        - <span class=\"map-tour-kicker\">…</span> from <div class=\"map-tour\" data-tour-step=\"layers\">…</div> subtree intercepts pointer events\u001b[22m\n    \u001b[2m      - retrying click action\u001b[22m\n    \u001b[2m        - waiting 500ms\u001b[22m\n\n\n      90 |\n      91 |   await expect(tour.getByRole(\"button\", { name: \"Dalej\" })).toBeDisabled();\n    > 92 |   await page.locator(\"#map-tools-panel .map-tools-options--categories .map-tools-option\").first().click();\n         |                                                                                                   ^\n      93 |   await expect(tour).toHaveAttribute(\"data-tour-step\", \"routes\");\n      94 |   // Tour moves between independent filters and app navigation without mixing them.\n      95 |   await expect(page.locator(\"#map-tools-panel\")).toHaveCount(0);\n        at /Users/michal/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1/frontend/e2e/visual/map-tour.spec.ts:92:99\n\n    Error Context: test-results/visual-map-tour-interactiv-62eef-e-gallery-and-layer-actions-chromium/error-context.md\n\n  1 failed\n    [chromium] › e2e/visual/map-tour.spec.ts:5:5 › interactive PhotoMap tutorial follows real place, gallery and layer actions \n  3 passed (2.9m)\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 338.5,
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-04T03:11:17.765337+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.13,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.147,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-unified-ux-browser-regressions-20261104-v2",
+  "idle_timeout": 600,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 65.159,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 2
+    },
+    {
+      "elapsed_seconds": 182.368,
+      "outcome": "failed",
+      "stage_index": 2,
+      "stage_name": "command-2",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-04T03:07:07.566883+00:00",
+  "status": "failed",
+  "task_digest": "9c32b68b147f16a1e5b95a5107b24b5214d661eb816226b63825ee768c668c15",
+  "task_timeout": 2000,
+  "verification": [],
+  "work_branch": "main"
+}

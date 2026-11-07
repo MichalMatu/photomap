@@ -1,0 +1,18 @@
+{
+  "id": "photomap-unified-ux-release-delta-20261104-v1",
+  "dedupe_key": "photomap-unified-ux-release-delta-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 200,
+  "idle_timeout": 180,
+  "task_timeout": 400,
+  "memory_limit_mb": 512,
+  "commands": [
+    "set -eu\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\nFROM=\"f54bcd0734844ace7b1aa81c132d7ab1dc00d12e\"\nTO=\"09be8c4ef70a30791de2698c1c39779e4ab544eb\"\ngit -C \"$WT\" merge-base --is-ancestor \"$FROM\" \"$TO\"\necho \"FROM_PI=$FROM\"\necho \"TO_MAIN=$TO\"\ngit -C \"$WT\" diff --name-status \"$FROM\" \"$TO\"\necho \"DELTA_AUDIT_COMPLETE\"\n"
+  ]
+}

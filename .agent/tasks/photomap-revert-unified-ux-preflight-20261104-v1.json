@@ -1,0 +1,18 @@
+{
+  "id": "photomap-revert-unified-ux-preflight-20261104-v1",
+  "dedupe_key": "photomap-revert-unified-ux-preflight-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 240,
+  "idle_timeout": 180,
+  "task_timeout": 500,
+  "memory_limit_mb": 768,
+  "commands": [
+    "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nKEY=\"$HOME/.ssh/id_ed25519\"\nEXPECTED=\"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\nBASE=\"30bff5c930e9cff13b52f9bff67dc3e21ea06798\"\ncd \"$ROOT\"\ngit fetch origin main\necho \"MAC_HEAD=$(git rev-parse HEAD)\"\necho \"REMOTE_MAIN=$(git rev-parse origin/main)\"\necho \"MAC_DIRTY=$(git status --porcelain | wc -l | tr -d \" \")\"\ntest \"$(git rev-parse origin/main)\" = \"$EXPECTED\"\ntest -z \"$(git status --porcelain)\"\ngit merge-base --is-ancestor \"$BASE\" origin/main\necho \"CHANGED_SINCE_PRE_SPRINT\"\ngit diff --name-status \"$BASE\"..origin/main\necho \"PI_BEFORE_REVERT\"\nssh -i \"$KEY\" -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'set -eu\ncd /home/michal/src/PhotoMaps\necho \"PI_HEAD=$(git rev-parse HEAD)\"\necho \"PI_DIRTY=$(git status --porcelain | wc -l | tr -d \" \")\"\ntest -z \"$(git status --porcelain)\"\necho \"SERVICE=$(systemctl is-active photomap.service)\"\necho \"TUNNEL=$(systemctl is-active cloudflared.service)\"\nsystemctl show photomap.service --property MainPID --property NRestarts\nBACKUP=\".dev/deploy/unified-ux-20261104-09be8c4\"\ntest -f \"$BACKUP/index-before.html\"\ntest -d \"$BACKUP/dist-before\"\ntest -f \"$BACKUP/app-before.db\"\ntest -f \"frontend/dist/index.html\"\necho \"BACKUP_INDEX_SHA=$(sha256sum \"$BACKUP/index-before.html\" | cut -d\" \" -f1)\"\necho \"ACTIVE_INDEX_SHA=$(sha256sum frontend/dist/index.html | cut -d\" \" -f1)\"\necho \"PREVIOUS_JS_ASSET=$(grep -o \"assets/public-map-[^\\\" ]*js\" \"$BACKUP/index-before.html\" | head -1)\"\ntest \"$(sha256sum \"$BACKUP/index-before.html\" | cut -d\" \" -f1)\" = \"5177a82937d38c8d2ba5b8a41156b30354f523b5c293a203d0b6ef62a5af78b5\"\ntest \"$(sha256sum frontend/dist/index.html | cut -d\" \" -f1)\" = \"ccc80c6f664853030e4674dfc783ec1607a9923e823b10f35b221a7348e48a1d\"\ncurl -fsS --max-time 8 http://127.0.0.1:8000/health\necho\necho \"PI_RESTORE_SOURCE_VERIFIED\"\n'\n"
+  ]
+}

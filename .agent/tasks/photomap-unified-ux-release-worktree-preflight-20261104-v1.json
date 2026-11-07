@@ -1,0 +1,18 @@
+{
+  "id": "photomap-unified-ux-release-worktree-preflight-20261104-v1",
+  "dedupe_key": "photomap-unified-ux-release-worktree-preflight-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 150,
+  "idle_timeout": 150,
+  "task_timeout": 330,
+  "memory_limit_mb": 512,
+  "commands": [
+    "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nWT=\"$HOME/agent-workspace/repos/photomap/worktrees/unified-ux-20261104-v1\"\necho \"ROOT_BRANCH=$(git -C \"$ROOT\" branch --show-current)\"\necho \"ROOT_SHA=$(git -C \"$ROOT\" rev-parse HEAD)\"\necho \"ROOT_DIRTY=$(git -C \"$ROOT\" status --porcelain | wc -l | tr -d ' ')\"\necho \"WT_BRANCH=$(git -C \"$WT\" branch --show-current)\"\necho \"WT_SHA=$(git -C \"$WT\" rev-parse HEAD)\"\necho \"WT_DIRTY=$(git -C \"$WT\" status --porcelain | wc -l | tr -d ' ')\"\ngit -C \"$ROOT\" worktree list\necho RELEASE_WORKTREE_PREFLIGHT_READONLY\n"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "allow_write": true,
+  "attempt_id": "9ce4643019fcb73782bc5146",
+  "command_timeout": 1300,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 241,
+      "command": "set -eu\nROOT=\"$HOME/agent-workspace/repos/photomap/work\"\nEXPECTED=\"4c2694dc9623873782de326cbefdf7e8b94c4bdb\"\nBASE=\"30bff5c930e9cff13b52f9bff67dc3e21ea06798\"\ncd \"$ROOT\"\ntest -z \"$(git status --porcelain)\"\ngit fetch origin main\ntest \"$(git rev-parse origin/main)\" = \"$EXPECTED\"\ngit switch main\ntest \"$(git rev-parse HEAD)\" = \"$EXPECTED\"\necho \"RESTORING_EXACT_PRE_SPRINT_TREE $BASE\"\ngit restore --source=\"$BASE\" --staged --worktree -- .\ngit diff --cached --check\necho \"FILES_REVERTED=$(git diff --cached --name-only | wc -l | tr -d ' ')\"\ngit diff --cached --stat\ntest \"$(git diff --cached --name-only | wc -l | tr -d ' ')\" -ge 30\ncd frontend\nnpm run format:check\nnpm run test\nnpm run build\ncd ..\ngit commit -m \"revert(ux): restore PhotoMap pre-sprint version [skip ci]\"\ntest -z \"$(git status --porcelain)\"\ngit diff --quiet \"$BASE\" HEAD\ngit push origin main\necho \"ROLLBACK_MAIN_HEAD=$(git rev-parse HEAD)\"\necho \"RESTORED_TREE_SHA=$(git rev-parse HEAD^{tree})\"\necho \"PRE_SPRINT_TREE_SHA=$(git rev-parse \"$BASE\"^{tree})\"\necho \"SOURCE_ROLLBACK_PUSHED\"\n",
+      "current_rss_mb": 3.52,
+      "elapsed_seconds": 1.178,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\nSwitched to branch 'main'\nYour branch is behind 'origin/main' by 63 commits, and can be fast-forwarded.\n  (use \"git pull\" to update your local branch)\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 3.52,
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-04T05:18:16.778623+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.083,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.137,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-revert-unified-ux-source-20261104-v1",
+  "idle_timeout": 650,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 1.178,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "command-1",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-04T05:18:13.641235+00:00",
+  "status": "failed",
+  "task_digest": "ea022e610ce97b8d818661444944e833a0db1844246f157d1b3ee8d853fef7a7",
+  "task_timeout": 1700,
+  "verification": [],
+  "work_branch": "main"
+}

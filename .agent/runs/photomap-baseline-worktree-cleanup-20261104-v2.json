@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-baseline-worktree-cleanup-20261104-v2",
+  "task_digest": "c5db621f2b1d196f13451dbb750b1fd6e866033e8f9d198776b0a14b2812f207",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T05:31:51.223650+00:00",
+  "attempt_id": "4b13dcb5c0e394b559f15f41",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 47711,
+  "updated_at": "2026-11-04T05:31:51.495803+00:00",
+  "pid": 47711
+}

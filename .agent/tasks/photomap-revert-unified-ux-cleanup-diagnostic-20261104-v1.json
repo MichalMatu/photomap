@@ -1,0 +1,18 @@
+{
+  "id": "photomap-revert-unified-ux-cleanup-diagnostic-20261104-v1",
+  "dedupe_key": "photomap-revert-unified-ux-cleanup-diagnostic-20261104-v1",
+  "dedupe_revision": 1,
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "output_policy": "summary",
+  "command_timeout": 120,
+  "idle_timeout": 100,
+  "task_timeout": 220,
+  "memory_limit_mb": 512,
+  "commands": [
+    "ROOT=\"$HOME/agent-workspace/repos/photomap/work\"\ncd \"$ROOT\"\necho \"BRANCH=$(git branch --show-current)\"\necho \"HEAD=$(git rev-parse HEAD)\"\necho \"DIRTY_COUNT=$(git status --porcelain | wc -l | tr -d ' ')\"\necho \"NODE_MODULES=$(test -e frontend/node_modules/@playwright/test && echo yes || echo no)\"\necho \"REMOTE_FEATURE=$(git ls-remote --heads origin feat/unified-map-ux-20261104)\"\necho \"WORKTREES\"\ngit worktree list --porcelain\necho \"DIAGNOSTIC_FINISHED\"\n"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-clean-leftover-audit-20261104-v1",
+  "task_digest": "088cef2ee02005b74b321391d11f249bf970b20b94353e0505e36a827c234ae0",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-04T05:30:30.540549+00:00",
+  "attempt_id": "04f90d732c8384f5b57a72a3",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 44955,
+  "updated_at": "2026-11-04T05:30:30.901561+00:00",
+  "pid": 44955
+}
