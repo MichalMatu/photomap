@@ -141,7 +141,7 @@
   height: 38px;
   justify-content: center;
   line-height: 1;
-  margin-top: 8px;
+  margin-top: var(--space-2);
   width: 38px;
 }
 
@@ -439,7 +439,7 @@
   backdrop-filter: blur(6px);
   color: var(--content-on-media);
   display: flex;
-  font-size: 0;
+  font-size: var(--map-marker-hidden-font-size);
   font-weight: 650;
   height: var(--gallery-height, 42px);
   justify-content: center;
@@ -695,7 +695,7 @@
 .memory-sheet-content .photo-upload {
   border-top: 0;
   margin-top: 0;
-  padding-top: 2px;
+  padding-top: var(--map-marker-caption-padding-block);
 }
 
 .report-sheet-content .report-form {
@@ -733,7 +733,7 @@
   display: grid;
   gap: var(--space-1);
   min-width: 0;
-  padding-right: 32px;
+  padding-right: var(--space-8);
 }
 
 .moderator-recruitment-copy strong {
@@ -795,7 +795,7 @@
 }
 .place-map-pin-shape {
   display: block;
-  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 28%));
+  filter: drop-shadow(0 2px 3px var(--map-marker-caption-shadow-color));
   height: 40px;
   width: 32px;
 }
@@ -838,17 +838,17 @@
 }
 
 .map-attribution a {
-  background: rgb(255 255 255 / 80%);
-  border-radius: 3px;
-  color: #26333c;
+  background: var(--map-marker-caption-background);
+  border-radius: var(--map-marker-caption-radius);
+  color: var(--map-marker-caption-content);
   display: inline-block;
-  font-size: 11px;
+  font-size: var(--map-marker-caption-font-size);
   line-height: 1.4;
-  padding: 2px 5px;
+  padding: var(--map-marker-caption-padding-block) var(--map-marker-caption-padding-inline);
   text-decoration: none;
 }
 
 .map-attribution a:focus-visible {
-  outline: 2px solid #26333c;
+  outline: 2px solid var(--map-marker-caption-content);
   outline-offset: 2px;
 }
