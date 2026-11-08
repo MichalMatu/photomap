@@ -25,16 +25,18 @@ import { getPlacePreviewVisual, type PlaceMapVisualItem } from "./placePreview";
 const PLACE_GALLERY_DISPLAY_CONFIG = MAP_DISPLAY_CONFIG.placeGallery.display;
 
 function markerIcon(
-  previewItem: PlaceMapVisualItem | null,
+  previewKind: PlaceMapVisualItem["kind"] | null,
+  previewThumbPath: string | null,
+  previewHasAudio: boolean,
   isSelected: boolean,
-  layout: PlaceMarkerLayout,
+  layout: Pick<PlaceMarkerLayout, "width" | "height">,
   enterIndex: number,
   isEntering: boolean,
   displayOffset: MarkerDisplayOffset | null | undefined,
   isAudioPlaying: boolean,
   mode: MapMarkerMode,
 ) {
-  if (mode === "pins" && (!isSelected || !previewItem)) {
+  if (mode === "pins" && (!isSelected || !previewKind)) {
     return L.divIcon({
       className: "place-map-pin-marker",
       html: '<svg class="place-map-pin-shape" viewBox="0 0 32 40" width="32" height="40" aria-hidden="true"><path d="M16 2C8.27 2 2 8.27 2 16c0 10.5 14 22 14 22s14-11.5 14-22C30 8.27 23.73 2 16 2Z"/><circle cx="16" cy="16" r="5"/></svg>',
@@ -42,24 +44,24 @@ function markerIcon(
       iconSize: [32, 40],
     });
   }
-  if (!previewItem) {
+  if (!previewKind || !previewThumbPath) {
     return null;
   }
 
   const markerEnterStyle = placeMarkerEnterStyle(enterIndex);
   const enterClassName = isEntering ? "is-entering" : null;
-  const imageUrl = escapeAttribute(mediaUrl(previewItem.thumb_path));
+  const imageUrl = escapeAttribute(mediaUrl(previewThumbPath));
   const markerOffsetStyle = placeMarkerOffsetStyle(displayOffset);
   return L.divIcon({
     className: [
       "place-photo-marker",
       enterClassName,
-      previewItem.kind === "memory" ? "is-memory" : "is-photo",
+      previewKind === "memory" ? "is-memory" : "is-photo",
       isSelected ? "is-selected" : null,
     ]
       .filter(Boolean)
       .join(" "),
-    html: `<span style="--place-marker-width: ${layout.width}px; --place-marker-height: ${layout.height}px; --place-marker-image: url('${imageUrl}'); ${markerOffsetStyle} ${markerEnterStyle}">${audioWaveformHtml(Boolean(previewItem.audio), isAudioPlaying)}</span>`,
+    html: `<span style="--place-marker-width: ${layout.width}px; --place-marker-height: ${layout.height}px; --place-marker-image: url('${imageUrl}'); ${markerOffsetStyle} ${markerEnterStyle}">${audioWaveformHtml(previewHasAudio, isAudioPlaying)}</span>`,
     iconAnchor: [Math.round(layout.width / 2), Math.round(layout.height / 2)],
     iconSize: [layout.width, layout.height],
   });
@@ -142,27 +144,42 @@ export function PlaceMarker({
   );
   const markerVisualOffset = isExpanded ? null : displayOffset;
   const isPreviewAudioPlaying = previewItem ? isMapAudioTarget(activeAudioTarget, place.id, previewItem) : false;
+  // Refreshing a gallery preview without changing its visual values must not
+  // replace the marker icon DOM halfway through a pointer gesture.
+  const previewKind = previewItem?.kind ?? null;
+  const previewThumbPath = previewItem?.thumb_path ?? null;
+  const previewHasAudio = Boolean(previewItem?.audio);
+  const markerWidth = placeLayout.width;
+  const markerHeight = placeLayout.height;
+  const offsetX = markerVisualOffset?.x ?? 0;
+  const offsetY = markerVisualOffset?.y ?? 0;
   const placeIcon = useMemo(
     () =>
       markerIcon(
-        previewItem,
+        previewKind,
+        previewThumbPath,
+        previewHasAudio,
         isExpanded,
-        placeLayout,
+        { width: markerWidth, height: markerHeight },
         enterIndex,
         isEntering,
-        markerVisualOffset,
+        { x: offsetX, y: offsetY },
         isPreviewAudioPlaying,
         markerMode,
       ),
     [
+      previewKind,
+      previewThumbPath,
+      previewHasAudio,
+      isExpanded,
+      markerWidth,
+      markerHeight,
       enterIndex,
       isEntering,
-      isExpanded,
+      offsetX,
+      offsetY,
       isPreviewAudioPlaying,
-      markerVisualOffset,
       markerMode,
-      placeLayout,
-      previewItem,
     ],
   );
   useEffect(() => {
