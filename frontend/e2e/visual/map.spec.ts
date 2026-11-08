@@ -987,7 +987,8 @@ test("pinned media portrait cards can shrink to the tile minimum", async ({ page
 
   const card = page.getByTestId("pinned-media-card");
   await expect(card).toHaveCount(1);
-  await expect(card).toContainText(portraitPlace.title);
+  // Compact cards intentionally hide copy but must retain an accessible name.
+  await expect(card).toHaveAttribute("aria-label", `Przypięte medium: ${portraitPlace.title}`);
 
   const metrics = await card.evaluate((element) => {
     const frame = element.getBoundingClientRect();
@@ -1001,10 +1002,10 @@ test("pinned media portrait cards can shrink to the tile minimum", async ({ page
     };
   });
 
-  expect(metrics.copyHeight).toBe(72);
+  expect(metrics.copyHeight).toBe(0);
   expect(Math.abs(metrics.imageHeight - metrics.imageWidth)).toBeLessThanOrEqual(2);
-  expect(metrics.imageWidth).toBeGreaterThanOrEqual(176);
-  expect(metrics.frameHeight).toBeLessThanOrEqual(254);
+  expect(metrics.imageWidth).toBeGreaterThanOrEqual(118);
+  expect(metrics.frameHeight).toBeLessThanOrEqual(140);
 });
 
 test("visual: mobile memory sheet", async ({ page }) => {
