@@ -17,7 +17,7 @@
 }
 
 .map-loading-landscape {
-  animation: map-intro-landscape-arrive 900ms ease-out both;
+  animation: var(--map-intro-animation-landscape);
   height: 100%;
   left: 0;
   position: absolute;
@@ -26,15 +26,15 @@
 }
 
 .map-loading-clouds {
-  animation: map-intro-cloud-reveal 1050ms ease-out both;
+  animation: var(--map-intro-animation-clouds);
 }
 
 .map-loading-birds {
-  animation: map-intro-ink-reveal 780ms ease-out 200ms both;
+  animation: var(--map-intro-animation-birds);
 }
 
 .map-loading-compass {
-  animation: map-intro-compass-reveal 540ms ease-out 490ms both;
+  animation: var(--map-intro-animation-compass);
 }
 
 .map-loading-screen::after {
@@ -52,7 +52,7 @@
 
 .map-loading-content {
   align-items: center;
-  animation: map-intro-content-arrive 580ms var(--motion-ease-emphasised) both;
+  animation: var(--map-intro-animation-content);
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
@@ -78,7 +78,7 @@
 }
 
 .map-loading-brand-name {
-  font-size: clamp(2.1rem, 6vw, 3.6rem);
+  font-size: var(--map-intro-brand-font-size);
   font-weight: 780;
   letter-spacing: -0.065em;
   line-height: 1.1;
@@ -90,7 +90,7 @@
 
 .map-loading-brand p {
   color: var(--map-intro-brand-blue);
-  font-size: clamp(var(--text-body-small), 2vw, var(--text-title));
+  font-size: var(--map-intro-tagline-font-size);
   font-weight: 550;
   line-height: 1.35;
   margin: var(--space-2) 0 0;
@@ -107,13 +107,13 @@
 }
 
 .map-loading-paper {
-  animation: map-intro-unfold 760ms cubic-bezier(0.19, 1, 0.3, 1) both;
+  animation: var(--map-intro-animation-unfold);
   transform-box: fill-box;
   transform-origin: 50% 75%;
 }
 
 .map-loading-route {
-  animation: map-intro-draw 1120ms cubic-bezier(0.45, 0, 0.18, 1) 100ms both;
+  animation: var(--map-intro-animation-draw);
   stroke-dasharray: 900;
   stroke-dashoffset: 900;
 }
@@ -123,7 +123,7 @@
 }
 
 .map-loading-pin {
-  animation: map-intro-place 530ms cubic-bezier(0.2, 1.25, 0.35, 1) 290ms both;
+  animation: var(--map-intro-animation-pin);
   transform-box: fill-box;
   transform-origin: center bottom;
 }
@@ -137,7 +137,7 @@
 }
 
 .map-loading-photo {
-  animation: map-intro-photo 620ms cubic-bezier(0.16, 1, 0.3, 1) 520ms both;
+  animation: var(--map-intro-animation-photo);
   filter: drop-shadow(0 5px 6px var(--map-intro-map-shadow));
   transform-box: fill-box;
   transform-origin: center;
@@ -153,14 +153,14 @@
 
 .map-loading-label {
   color: var(--map-intro-snow);
-  font-size: clamp(var(--text-body), 2.6vw, var(--text-title));
+  font-size: var(--map-intro-label-font-size);
   font-weight: 650;
   margin: 0;
   text-shadow: 0 2px 12px var(--map-intro-map-shadow);
 }
 
 .map-loading-ellipsis {
-  animation: map-intro-ellipsis 1.4s steps(4, end) infinite;
+  animation: var(--map-intro-animation-ellipsis);
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
