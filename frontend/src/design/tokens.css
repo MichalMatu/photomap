@@ -40,6 +40,52 @@
     --radius-sheet: var(--radius-xl);
     --radius-map-pin: 50% 50% 50% 0;
 
+    /* Map UI exceptions: keep rendered values unchanged while centralizing them. */
+    --map-marker-hidden-font-size: 0;
+    --map-marker-caption-shadow-color: rgb(0 0 0 / 28%);
+    --map-marker-caption-background: rgb(255 255 255 / 80%);
+    --map-marker-caption-content: #26333c;
+    --map-marker-caption-radius: 3px;
+    --map-marker-caption-font-size: 11px;
+    --map-marker-caption-padding-block: 2px;
+    --map-marker-caption-padding-inline: 5px;
+
+    /* Intro motion is a cohesive sequence; each token retains its exact timings. */
+    --map-intro-animation-landscape: map-intro-landscape-arrive 900ms ease-out both;
+    --map-intro-animation-clouds: map-intro-cloud-reveal 1050ms ease-out both;
+    --map-intro-animation-birds: map-intro-ink-reveal 780ms ease-out 200ms both;
+    --map-intro-animation-compass: map-intro-compass-reveal 540ms ease-out 490ms both;
+    --map-intro-animation-content: map-intro-content-arrive 580ms var(--motion-ease-emphasised) both;
+    --map-intro-animation-unfold: map-intro-unfold 760ms cubic-bezier(0.19, 1, 0.3, 1) both;
+    --map-intro-animation-draw: map-intro-draw 1120ms cubic-bezier(0.45, 0, 0.18, 1) 100ms both;
+    --map-intro-animation-pin: map-intro-place 530ms cubic-bezier(0.2, 1.25, 0.35, 1) 290ms both;
+    --map-intro-animation-photo: map-intro-photo 620ms cubic-bezier(0.16, 1, 0.3, 1) 520ms both;
+    --map-intro-animation-ellipsis: map-intro-ellipsis 1.4s steps(4, end) infinite;
+    --map-intro-brand-font-size: clamp(2.1rem, 6vw, 3.6rem);
+    --map-intro-tagline-font-size: clamp(var(--text-body-small), 2vw, var(--text-title));
+    --map-intro-label-font-size: clamp(var(--text-body), 2.6vw, var(--text-title));
+
+    /* Tutorial tokens preserve the established spotlight and compact card. */
+    --map-tour-spotlight-border: rgba(55, 155, 255, 0.72);
+    --map-tour-spotlight-shadow-inner: rgba(55, 155, 255, 0.1);
+    --map-tour-spotlight-shadow-outer: rgba(55, 155, 255, 0.22);
+    --map-tour-card-shadow: 0 20px 65px rgba(0, 0, 0, 0.3);
+    --map-tour-card-radius: 20px;
+    --map-tour-control-radius: 10px;
+    --map-tour-kicker-font-size: 0.75rem;
+    --map-tour-title-font-size: 1.3rem;
+    --map-tour-body-font-size: 0.92rem;
+    --map-tour-skip-font-size: 0.85rem;
+    --map-tour-next-font-size: 0.88rem;
+    --map-tour-gap-tight: 6px;
+    --map-tour-progress-gap: 5px;
+    --map-tour-progress-margin-top: 14px;
+    --map-tour-compact-space: 10px;
+    --map-tour-actions-margin-top: 22px;
+
+    --pinned-media-remove-color: #ef4444;
+    --pinned-media-fade-transition: opacity 240ms ease;
+
     --map-intro-sky-top: #b6d8e9;
     --map-intro-sky-bottom: #f4ecdd;
     --map-intro-horizon: #f1c69a;
