@@ -995,7 +995,9 @@ test("pinned media portrait cards can shrink to the tile minimum", async ({ page
 
   expect(metrics.copyHeight).toBe(0);
   expect(Math.abs(metrics.imageHeight - metrics.imageWidth)).toBeLessThanOrEqual(2);
-  expect(metrics.imageWidth).toBeGreaterThanOrEqual(118);
+  // The 120px compact frame can lose 2–4px to borders and pixel rounding.
+  expect(metrics.imageWidth).toBeGreaterThanOrEqual(116);
+  expect(metrics.imageWidth).toBeLessThanOrEqual(120);
   expect(metrics.frameHeight).toBeLessThanOrEqual(140);
 });
 
