@@ -25,6 +25,14 @@
 - E2E wizualne: poprzednia próba porównania baseline 04.11 wskazała pięć istniejących czerwonych przypadków (dwa snapshoty mapy, marker, link przypiętego medium, układ portretu). Nie zmieniać golden screenshotów bez analizy.
 - Produkcja: potwierdzenie rollbacku/HTTP 200 **z 04.11**, nie z nowego sprintu. Brak deployu w tym sprincie.
 
+## 08.11 — CSS token gate i świeży smoke produkcyjny
+
+- Pełny `scripts/check.sh` z `c111110` dotarł do CSS gate po przejściu migracji, pytest, coverage, kompilacji, architektury i walidacji schematu. Blokadą był drift tokenów w `map.css`, `map-loading.css`, `map-tour.css` i `pinned-media.css` odziedziczony po wcześniejszym UX.
+- Zgodnie z `frontend/AGENTS.md` naprawiono deklaracje CSS zamiast podnosić dozwolony baseline w `scripts/quality/css_token_gate.py`. Kolory, odstępy, rozmiary, zaokrąglenia i animacje przeniesiono do `frontend/src/design/tokens.css` i istniejących tokenów. Porównanie 53 zmienionych linii po rozwinięciu tokenów dało **0 różnic wartości**.
+- `.agent/results/photomap-audit-css-token-focus-20261108-v1.json`: **PASS** CSS token gate, Prettier, ESLint + TypeScript (w tym typy E2E), **16/16** testów `src/api/client.test.ts`, produkcyjny Vite build (2239 modułów).
+- `.agent/results/photomap-audit-production-readonly-20261107-v1.json`: **PASS** odczytowy smoke Pi — `main@3562896`, czysty worktree, aktywne `photomap.service` i `cloudflared.service`, HTTP 200 `/`, `/health`, `/api/places/map`, hash indexu `5177a829…a5af78b5`.
+- Pełny ponowny gate: `photomap-audit-full-regression-20261108-v1`; odczytać terminalny wynik przed uznaniem sprintu za zamknięty.
+
 ## Otwarte ryzyka / brak potwierdzenia
 
 - Pełny quality gate, testy E2E i dependency audit wymagają końcowego wyniku Mac Local Agent. Oddzielić błędy środowiska, odziedziczone flaky visual oraz regresje nowych zmian.
