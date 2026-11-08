@@ -55,6 +55,16 @@
 - Na gałęzi audytu skorygowano tylko **dwa testy E2E**, bez zmian UX: `frontend/e2e/visual/map-gallery-sizing.spec.ts` oraz `frontend/e2e/visual/map.spec.ts`.
 - `photomap-ux-e2e-align-verification-20261108-v1`: **2/2 E2E PASS**, Prettier PASS, TypeScript E2E PASS, `git diff --check` PASS; sprzątnięto wyłącznie tymczasowe instrumentacje po wcześniejszym tasku (tamten diagnostyczny task miał błąd cleanup, nie błąd produktu).
 
+## 08.11 — sprint zamykający: E2E po rollbacku
+
+- Bazowa wersja `main@3562896` i branch audytu zostały porównane. Na niezmienionym `main` odtworzono trzy niezaliczone screenshoty oraz sześć testów zachowania. Zmiany tego sprintu **nie są** ich źródłem.
+- Poprawiono testy odzwierciedlające świadomy rollback UX: mini-karta ukrywa tekst poniżej 188px, lecz pozostaje dostępna przez `aria-label`; galeria 42 zdjęć ma faktyczny cover 133px (nie minimum 180px), bez nachodzenia; kontrola tła galerii klika rzeczywiście tło, a dwuklik przypiętej karty otwiera podgląd zamiast przełączać link z mapą. Zmieniono **wyłącznie testy**, bez wymuszania starych funkcji UX.
+- Wyniki E2E: `photomap-ux-e2e-align-verification-20261108-v1` **2/2 PASS**; `photomap-ux-e2e-four-interactions-20261108-v1` **5/6 PASS**, czerwony tylko stary test fizycznego kliknięcia przesuniętego markera.
+- Test hit-area `e2e/visual/map.spec.ts` pozostaje **RED**. Zdiagnozowano, że w przeglądarce `pointerdown` trafia w `span` właściwego markera, a `pointerup` i `click` trafiają w kontener mapy; brak otwarcia galerii. Ślad: `photomap-final-marker-pointer-diagnostic-20261108-v3`. Test wyznacza sztuczny offset przez `element.style.translate`, ale próba naturalnego kliknięcia kafelka również nie przeszła (`photomap-final-real-offset-click-probe-20261108-v1`); dlatego nie wolno arbitralnie skasować tej asercji.
+- Próby obsługi natywnego `click`, zatrzymania `mousedown` / `pointerdown`, usunięcia prefetchu w hover oraz memoizacji ikony nie zaliczyły tego testu. **Wszystkie eksperymentalne zmiany `PlaceMarker.tsx` zostały wycofane** w `ec7b7c5`, a końcowy blob pliku jest identyczny z `main`. Nie zostawiono niesprawdzonej poprawki.
+- Ostateczna weryfikacja bieżących, zaakceptowanych zmian frontendowych: zadanie `photomap-final-verified-changes-quality-20261108-v1`; wynik zapisać dopiero po odebraniu terminalnego JSON.
+- Warunek integracji: nie nazywać pełnego `scripts/check.sh` PASS, dopóki testy wizualne i marker nie są rozstrzygnięte; nie aktualizować screenshotów bez oceny wizualnej. Nie ruszać `main` ani produkcji bez zielonych gate'ów i świadomej decyzji o publikacji.
+
 ## Otwarte ryzyka / brak potwierdzenia
 
 - **Quality gate E2E pozostaje OPEN**: 9 błędów z pełnego przebiegu odtworzono na `main`, a jednorazowy dziesiąty scenariusz przeszedł po izolowanym rechecku. Istniejący dług testowy wymaga osobnej decyzji, czy naprawiać zachowanie obecnego UX, czy aktualizować błędne testy po rollbacku. Nie aktualizować screenshotów automatycznie.
