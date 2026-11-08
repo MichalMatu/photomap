@@ -33,6 +33,10 @@
 - `.agent/results/photomap-audit-production-readonly-20261107-v1.json`: **PASS** odczytowy smoke Pi — `main@3562896`, czysty worktree, aktywne `photomap.service` i `cloudflared.service`, HTTP 200 `/`, `/health`, `/api/places/map`, hash indexu `5177a829…a5af78b5`.
 - Pełny ponowny gate: `photomap-audit-full-regression-20261108-v1`; odczytać terminalny wynik przed uznaniem sprintu za zamknięty.
 
+- Pełny `scripts/check.sh` z 08.11: **346/346 pytest PASS**, **90% coverage**, Alembic/Ruff/architektura/schemat/CSS gate PASS, perf smoke PASS na Mac. Skrypt zatrzymał się na ShellCheck `SC2016` w `scripts/termux-dev.sh` (zamierzone rozwinięcie zmiennej w gościu PRoot), nie na błędzie aplikacji.
+- `scripts/termux-dev.sh`: lokalne, uzasadnione oznaczenie `SC2016` przy cytowanym poleceniu `sh -c`, z opisem kontekstu. Kontrola `shellcheck scripts/*.sh scripts/dev/*.sh scripts/quality/*.sh` **PASS** w `.agent/results/photomap-audit-frontend-remaining-gates-20261108-v1.json`.
+- Knip odkrył 3 martwe eksporty po rollbacku, później czwarty osierocony limit. Usunięto nieużywane komponenty rail, udostępnienie klucza samouczka i stałą `MAX_RAIL_CATEGORY_BUTTONS` bez naruszania aktywnych komponentów drawer. Sprawdzenie po cleanupie: `photomap-audit-final-frontend-e2e-20261108-v1` — **status pozostał do potwierdzenia terminalnym wynikiem**; nie oznaczać PASS bez logu.
+
 ## Otwarte ryzyka / brak potwierdzenia
 
 - Pełny quality gate, testy E2E i dependency audit wymagają końcowego wyniku Mac Local Agent. Oddzielić błędy środowiska, odziedziczone flaky visual oraz regresje nowych zmian.
