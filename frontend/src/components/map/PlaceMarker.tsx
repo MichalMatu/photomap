@@ -178,17 +178,27 @@ export function PlaceMarker({
 
     const handlePrefetch = () => onPrefetchGallery();
     const handleFocus = () => onPrefetchGallery();
+    const visibleTile = element.querySelector("span");
+    const handleVisibleTileClick = (event: MouseEvent) => {
+      if (event.button !== 0) return;
+      // The tile can be translated outside Leaflet's marker wrapper. Handle
+      // the actual visual hit target directly instead of relying on Leaflet.
+      L.DomEvent.stop(event);
+      onToggleGallery();
+    };
 
     element.addEventListener("pointerenter", handlePrefetch, { passive: true });
     element.addEventListener("pointerdown", handlePrefetch, { passive: true });
     element.addEventListener("focus", handleFocus);
+    visibleTile?.addEventListener("click", handleVisibleTileClick);
 
     return () => {
       element.removeEventListener("pointerenter", handlePrefetch);
       element.removeEventListener("pointerdown", handlePrefetch);
       element.removeEventListener("focus", handleFocus);
+      visibleTile?.removeEventListener("click", handleVisibleTileClick);
     };
-  }, [isExpanded, onPrefetchGallery, placeIcon]);
+  }, [isExpanded, onPrefetchGallery, onToggleGallery, placeIcon]);
 
   const mapSize = map.getSize();
   const markerPoint = map.latLngToContainerPoint([place.lat, place.lon]);
