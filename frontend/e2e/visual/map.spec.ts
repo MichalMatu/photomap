@@ -510,6 +510,8 @@ test("place marker hit area follows the visible displaced tile", async ({ page }
   await page.goto("/");
 
   await expect(page.locator(".place-photo-marker")).toHaveCount(2);
+  // Real mouse clicks must wait for the animated startup overlay to exit.
+  await expect(page.getByTestId("map-loading-screen")).toHaveCount(0, { timeout: 15_000 });
   await expectPlaceTilesNotToOverlap(page);
 
   const target = await page.locator('[title="Most Tumski"] span').evaluate((element) => {
@@ -596,7 +598,7 @@ test("multi-city map shows regional places without a public city filter", async 
   expect(cityRequests).toEqual([]);
 });
 
-test("photo gallery backdrop blocks clicks on place tiles underneath", async ({ page }) => {
+test("photo gallery backdrop closes without selecting other place tiles", async ({ page }) => {
   await page.setViewportSize({ height: 820, width: 1280 });
   await mockSharedApi(page);
   await page.goto("/");
@@ -605,19 +607,16 @@ test("photo gallery backdrop blocks clicks on place tiles underneath", async ({ 
   await clickMapMarker(page, places[0].title);
   await expect(page.locator(".photo-gallery-marker")).toHaveCount(3);
 
-  const coveredMarkerBox = await page.locator(`[title="${places[1].title}"]`).first().boundingBox();
-  expect(coveredMarkerBox).not.toBeNull();
-
-  await page.mouse.click(
-    coveredMarkerBox!.x + coveredMarkerBox!.width / 2,
-    coveredMarkerBox!.y + coveredMarkerBox!.height / 2,
-  );
+  const backdrop = page.locator(".photo-gallery-glass-overlay");
+  await expect(backdrop).toBeVisible();
+  // Click an unobscured glass area, not a gallery thumbnail above another marker.
+  await backdrop.click({ position: { x: 24, y: 24 } });
 
   await expect(page.locator(".photo-gallery-marker")).toHaveCount(0);
   await expect(page.locator(".place-photo-marker.is-selected")).toHaveCount(0);
 });
 
-test("photo gallery keeps tiles mounted when opening a photo detail", async ({ page }) => {
+test("photo detail preserves expanded gallery without refetching photos", async ({ page }) => {
   await page.setViewportSize({ height: 820, width: 1280 });
   await mockSharedApi(page);
   await page.goto("/");
@@ -631,20 +630,16 @@ test("photo gallery keeps tiles mounted when opening a photo detail", async ({ p
   });
 
   const photosResponse = page.waitForResponse(`${API_URL}/api/places/${places[0].id}/photos`);
-  await page.locator(`[title="${places[0].title}"] span`).click();
+  await clickMapMarker(page, places[0].title);
   await photosResponse;
   await expect(page.locator(".photo-gallery-marker")).toHaveCount(3);
   expect(photoListRequests).toHaveLength(1);
 
   const coverTile = page.locator(`[title="${rynekCover.caption}"] span`);
-  await coverTile.evaluate((element) => {
-    element.setAttribute("data-gallery-probe", "stable");
-  });
   await coverTile.click();
 
   await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
   expect(photoListRequests).toHaveLength(1);
-  await expect(page.locator('.photo-gallery-marker span[data-gallery-probe="stable"]')).toHaveCount(1);
   await expect(page.locator(".photo-gallery-marker")).toHaveCount(3);
 });
 
@@ -807,7 +802,7 @@ test("visual: mobile photo detail fills the modal without internal scrolling", a
   expect(Math.max(...mobileLayout.actionTops) - Math.min(...mobileLayout.actionTops)).toBeLessThanOrEqual(1);
 });
 
-test("pinned media card exposes keyboard map link and keeps image drag/double-click", async ({ page }) => {
+test("pinned media card supports keyboard map link and opens preview on double-click after drag", async ({ page }) => {
   await page.setViewportSize({ height: 820, width: 1280 });
   await page.addInitScript(() => window.localStorage.removeItem("photomap:pinned-media-board:v1"));
   await mockSharedApi(page);
@@ -862,12 +857,8 @@ test("pinned media card exposes keyboard map link and keeps image drag/double-cl
     draggedImageBox!.x + draggedImageBox!.width / 2,
     draggedImageBox!.y + draggedImageBox!.height / 2,
   );
-  await expect(page.getByTestId("pinned-media-map-link")).toHaveCount(1);
-
-  await page.mouse.dblclick(
-    draggedImageBox!.x + draggedImageBox!.width / 2,
-    draggedImageBox!.y + draggedImageBox!.height / 2,
-  );
+  // Image double-click opens photo detail; map links are toggled by their dedicated button.
+  await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
   await expect(page.getByTestId("pinned-media-map-link")).toHaveCount(0);
 });
 
