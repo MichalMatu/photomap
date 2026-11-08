@@ -48,6 +48,13 @@
 - `photomap-audit-dependency-triage-20261108-v1`: `npm audit --omit=dev` **0 vulnerabilities**, pełny `npm audit` **16 dev-only** (13 moderate/3 high: `source-map-js`, `vite`, `zod`). Kompatybilność Pythona PASS, `pip-audit` nie było zainstalowane. Nie dokonano automatycznego `npm audit fix` ani zmiany wersji bez kontrolowanego testu.
 - `photomap-audit-single-smoke-recheck-20261108-v1`: `origin/main@3562896`, branch audytu `e4ed34b`, Mac root `agent-work` czysty, `git diff --check` PASS.
 
+## 08.11 — korekty asercji E2E po rollbacku (kontynuacja)
+
+- `photomap-ux-e2e-diagnostics-20261108-v1`: instrumentowany pomiar, bez trwałego modyfikowania produktu: galeria dla 6/18/42 zdjęć miała covery **215/162/133 px**, odpowiednio 7/19/43 kafelków, bez kolizji i pozaekranowych kafelków. Wymaganie absolutne `dense.coverWidth > 180` było sprzeczne z utrzymaniem 43 kafelków w viewportcie. Poprawiony test zachowuje zależności proporcji i bezkolizyjność; nowy dolny limit 120 px.
+- Ta sama diagnostyka karty przypiętej w trybie mini: `copyHeight=0`, `frameHeight=122`, `imageHeight=120`, `imageWidth=118`, prawidłowa etykieta dostępności `aria-label="Przypięte medium: Pionowy kadr"`. Kod `pinnedMediaBoardLayout.ts` jawnie ukrywa tekst, gdy szerokość karty < 188 px; wcześniejszy test oczekiwał nieistniejących 72 px tekstu i miniatury minimum 176 px.
+- Na gałęzi audytu skorygowano tylko **dwa testy E2E**, bez zmian UX: `frontend/e2e/visual/map-gallery-sizing.spec.ts` oraz `frontend/e2e/visual/map.spec.ts`.
+- `photomap-ux-e2e-align-verification-20261108-v1`: **2/2 E2E PASS**, Prettier PASS, TypeScript E2E PASS, `git diff --check` PASS; sprzątnięto wyłącznie tymczasowe instrumentacje po wcześniejszym tasku (tamten diagnostyczny task miał błąd cleanup, nie błąd produktu).
+
 ## Otwarte ryzyka / brak potwierdzenia
 
 - **Quality gate E2E pozostaje OPEN**: 9 błędów z pełnego przebiegu odtworzono na `main`, a jednorazowy dziesiąty scenariusz przeszedł po izolowanym rechecku. Istniejący dług testowy wymaga osobnej decyzji, czy naprawiać zachowanie obecnego UX, czy aktualizować błędne testy po rollbacku. Nie aktualizować screenshotów automatycznie.
