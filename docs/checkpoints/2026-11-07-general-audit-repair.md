@@ -65,6 +65,15 @@
 - Ostateczna weryfikacja bieżących, zaakceptowanych zmian frontendowych: zadanie `photomap-final-verified-changes-quality-20261108-v1`; wynik zapisać dopiero po odebraniu terminalnego JSON.
 - Warunek integracji: nie nazywać pełnego `scripts/check.sh` PASS, dopóki testy wizualne i marker nie są rozstrzygnięte; nie aktualizować screenshotów bez oceny wizualnej. Nie ruszać `main` ani produkcji bez zielonych gate'ów i świadomej decyzji o publikacji.
 
+## Wynik terminalny sprintu zamykającego — 08.11.2026
+
+- **Kod do dalszej integracji:** `audit/photomap-repair-20261107@10be691b0db87af7843443d79269b1fd63bb5a7f` (przed końcowym commitem dokumentacyjnym). `main@356289656d66963fb7451b70eac2e1bcff015819`. W pliku `PlaceMarker.tsx` finalna zawartość bitowo identyczna z `main`; wszystkie nieudane próby naprawy eventów wycofane.
+- `photomap-final-verified-changes-quality-20261108-v1`: **PASS** `format:check`, `lint` (TS i ESLint), `knip`, **371/371 Vitest**, `build` 2239 modułów, `git diff --check`. W jego przebiegu 5/6 korygowanych E2E PASS, pojedyncza różnica 1 px w kompaktowej karcie FAIL; test otrzymał konserwatywną tolerancję 116–120 px bez zmian produktu.
+- `photomap-final-accepted-e2e-security-20261108-v1`: **PASS terminalny**, **6/6** skorygowanych i sąsiednich E2E mapy, **18/18** E2E panelu admina na bundled Chromium, TypeScript E2E, Prettier, `git diff --check`, produkcyjne `npm audit --omit=dev` **0 vulnerabilities**. Cały przebieg exit 0.
+- Wcześniej: backend **346/346 pytest**, 90% coverage, migracje, performance smoke, ShellCheck i CSS gate PASS (oddzielne logi powyżej). Nie powtarzano niezmienionego backendu po wyłącznie frontendowych asercjach.
+- **Nadal nie ma pełnego PASS repozytorium:** 3 historyczne porównania screenshotów i 1 historyczny test hit-area markera są czerwone na bazowym `main` (test hit-area także po próbach na branchu). Nie zaktualizowano golden screenshotów ani nie usunięto krytycznej asercji. `scripts/check.sh` zawiera te screenshoty, więc nie został i nie może zostać uznany za green. Dev-only `npm audit`: 16 ostrzeżeń, `pip-audit` nieprzeprowadzony.
+- **Decyzja:** zakończono bezpiecznie ten sprint z zachowaniem dowodów i handoffu, ale integracja **BLOCKED** do czasu rozstrzygnięcia historycznych testów E2E. Nie wykonywano merge ani deploymentu; `main` i produkcja pozostają na zaakceptowanej wersji. W nowym czacie nie powtarzać już 371/346 testów bez zmiany objętego nimi kodu.
+
 ## Otwarte ryzyka / brak potwierdzenia
 
 - **Quality gate E2E pozostaje OPEN**: 9 błędów z pełnego przebiegu odtworzono na `main`, a jednorazowy dziesiąty scenariusz przeszedł po izolowanym rechecku. Istniejący dług testowy wymaga osobnej decyzji, czy naprawiać zachowanie obecnego UX, czy aktualizować błędne testy po rollbacku. Nie aktualizować screenshotów automatycznie.
