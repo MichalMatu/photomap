@@ -179,6 +179,12 @@ export function PlaceMarker({
     const handlePrefetch = () => onPrefetchGallery();
     const handleFocus = () => onPrefetchGallery();
     const visibleTile = element.querySelector("span");
+    const handleVisibleTileMouseDown = (event: MouseEvent) => {
+      if (event.button !== 0) return;
+      // A tile can extend beyond the Leaflet marker wrapper. Keep the map's
+      // drag handler from capturing mouseup before this tile receives click.
+      L.DomEvent.stopPropagation(event);
+    };
     const handleVisibleTileClick = (event: MouseEvent) => {
       if (event.button !== 0) return;
       // The tile can be translated outside Leaflet's marker wrapper. Handle
@@ -187,15 +193,16 @@ export function PlaceMarker({
       onToggleGallery();
     };
 
-    // Prefetching on pointerdown can replace the marker between down and up,
-    // sending the actual click to the map instead of the visible tile.
+    // Prefetch on hover and focus, not on pointerdown during a click gesture.
     element.addEventListener("pointerenter", handlePrefetch, { passive: true });
     element.addEventListener("focus", handleFocus);
+    visibleTile?.addEventListener("mousedown", handleVisibleTileMouseDown);
     visibleTile?.addEventListener("click", handleVisibleTileClick);
 
     return () => {
       element.removeEventListener("pointerenter", handlePrefetch);
       element.removeEventListener("focus", handleFocus);
+      visibleTile?.removeEventListener("mousedown", handleVisibleTileMouseDown);
       visibleTile?.removeEventListener("click", handleVisibleTileClick);
     };
   }, [isExpanded, onPrefetchGallery, onToggleGallery, placeIcon]);
