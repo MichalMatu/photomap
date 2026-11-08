@@ -447,7 +447,7 @@
   border: 1px solid var(--border-media-control);
   border-radius: var(--radius-full);
   box-shadow: var(--elevation-floating);
-  color: #ef4444;
+  color: var(--pinned-media-remove-color);
   cursor: pointer;
   display: flex;
   height: 48px;
@@ -492,7 +492,7 @@
 .pinned-media-card-map-link,
 .pinned-media-card-remove {
   opacity: 1;
-  transition: opacity 240ms ease;
+  transition: var(--pinned-media-fade-transition);
 }
 .pinned-media-card.is-controls-hidden .pinned-media-card-map-link,
 .pinned-media-card.is-controls-hidden .pinned-media-card-remove {
