@@ -91,6 +91,8 @@ case "$ACTION" in
     if [[ ! -s "$DEV/admin-token" ]]; then
       (umask 077; python3 -c 'import secrets; print(secrets.token_urlsafe(48))' > "$DEV/admin-token")
     fi
+    # Expand ADMIN_TOKEN inside the guest shell, not in the outer Termux process.
+    # shellcheck disable=SC2016
     exec proot-distro login --isolated --bind "$ROOT:/mnt" photomap-dev -- /bin/sh -c '
       set -eu
       test -x /opt/photomap-venv/bin/python || { echo "Isolated Debian backend is not ready." >&2; exit 3; }
