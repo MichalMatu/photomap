@@ -45,8 +45,6 @@ const mapCategoryIcons: Record<string, LucideIcon> = {
   utensils: Utensils,
 };
 
-export const MAX_RAIL_CATEGORY_BUTTONS = 6;
-
 export function getMapLayerIcon(layerId: string) {
   return mapLayerIcons[layerId] ?? Sparkles;
 }
