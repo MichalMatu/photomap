@@ -1,37 +1,33 @@
-# PhotoMap — NEXT CHAT / handoff 2026-11-07
+# PhotoMap — handoff po audycie, 2026-11-08
 
-## Wejście
+## Punkt wejścia
 
-Repo: `MichalMatu/photomap`. Base: `main@356289656d66963fb7451b70eac2e1bcff015819` (zawsze pobierz bieżący HEAD). Wykonane poprawki są na `audit/photomap-repair-20261107`, **nie na produkcyjnym main**. Najpierw przeczytaj `AGENTS.md`, `backend/AGENTS.md`, `frontend/AGENTS.md`, `docs/GOLDEN_STATUS.md`, `docs/dev.md` i `docs/checkpoints/2026-11-07-general-audit-repair.md`.
+- Repo: `MichalMatu/photomap`; produkcyjny `main@356289656d66963fb7451b70eac2e1bcff015819` według ostatniej weryfikacji. **Odśwież HEAD**, nie zakładaj niezmienności.
+- Wszystkie poprawki i checkpointy na `audit/photomap-repair-20261107`; **niezmergowane**, brak deploymentu/restartu produkcji i force-push.
+- Tryb: GitHub Connector + Mac Local Agent + ChatGPT Linux Sandbox. Nigdy Codex, Work ani GitHub Actions, również bez zapytań o ich status.
+- Agent: repo id `photomap`, branch sterujący `agent-control`, binding `2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607`, resources `[]`.
+- Mac: root `~/agent-workspace/repos/photomap/work`, clean na gałęzi `agent-work`; izolowany audyt w `~/agent-workspace/repos/photomap/worktrees/audit-20261107` (detached); izolowany bazowy `main` w `~/agent-workspace/repos/photomap/worktrees/baseline-visual-20261108`.
+- Przeczytaj `AGENTS.md`, `backend/AGENTS.md`, `frontend/AGENTS.md`, `docs/GOLDEN_STATUS.md`, `docs/dev.md` i `docs/checkpoints/2026-11-07-general-audit-repair.md`. Ten checkpoint zawiera szczegółową historię i ścieżki wyników.
 
-Tryb: **GitHub Connector + Mac Local Agent + ChatGPT Linux Sandbox**; nie używaj Codex, Work ani GitHub Actions. GitHub `agent-control` to tylko kolejka; binding: `.agent/binding.json`. Nie zmieniaj produkcji bez evidence gate'ów i świadomej decyzji.
+## Ukończone poprawki
 
-## Co jest faktycznie ukończone
+1. Naprawiono izolację SQLite/Alembic CLI względem `PHOTOMAP_DATA_DIR` i dodano dwa testy regresyjne; RED przed poprawką, potem 12/12 PASS i 21 migracji.
+2. Naprawiono kolizję rewizji cache mediów przy dwóch zmianach w tej samej milisekundzie.
+3. Naprawiono CSS token gate poprzez centralizację 53 deklaracji przy 0 zmianach wartości obliczonych; nie zwiększano tolerancji lintera.
+4. Uzasadniono ShellCheck SC2016 w kontekście PRoot, usunięto cztery nieużywane elementy frontendu po rollbacku.
+5. Zsynchronizowano `docs/dev.md`, `docs/GOLDEN_STATUS.md`, niniejszy handoff i checkpoint.
 
-- Preflight GitHub + Mac Local Agent: HEAD zgodny, root clean, toolchain obecny. Dowód: `.agent/results/photomap-general-audit-preflight-20261107-v1.json`.
-- Przywrócenie starego UX po niezaakceptowanym eksperymencie zostało wykonane 04.11. Produkcyjny stan potwierdzono wtedy, nie powtarzaj starej kampanii testowej bez nowej regresji.
-- Naprawa CLI Alembic ignorującego `PHOTOMAP_DATA_DIR`: test RED w `.agent/results/photomap-audit-alembic-red-test-20261107-v1.json`, test GREEN 12/12 i 21 migracji w `.agent/results/photomap-audit-alembic-green-20261107-v1.json`.
-- Poprawka monotonicznego identyfikatora cache mediów + jednostkowy test szybkich edycji.
-- Uporządkowanie odziedziczonych wartości CSS w mapie, animacji i samouczku bez zmiany obliczonych wartości: 53 zmienione linie, 0 różnic po rozwinięciu tokenów. Weryfikacja `.agent/results/photomap-audit-css-token-focus-20261108-v1.json`: CSS gate, Prettier, ESLint, TypeScript, 16/16 Vitest, produkcyjny Vite build — PASS.
-- Odczytowy smoke produkcji: `.agent/results/photomap-audit-production-readonly-20261107-v1.json`; Pi i publiczny HTTP 200, usługi aktywne, HEAD i hash indeksu potwierdzone.
-- Synchronizacja `docs/dev.md`, `docs/GOLDEN_STATUS.md` i checkpointu sprintu.
+## Potwierdzone testy
 
-## Najpierw zweryfikować
+- Backend `scripts/check.sh` do dalszych gate'ów: **346/346 pytest PASS**, 90% coverage, Alembic, Ruff, architektura, schemat DB, CSS gate i perf smoke PASS. Pierwotny pełny przebieg zakończył się na ShellCheck, później naprawionym i zweryfikowanym osobno; **nie raportuj całego skryptu jako PASS**.
+- Frontend: **371/371 Vitest PASS**, Knip, Prettier, ESLint, TypeScript, CSS token gate i Vite build PASS (dokumentacja wyniku w checkpoint).
+- Playwright na systemowym Chrome: admin **18/18 testów PASS**, ale runner FAIL przez 3 wiszące workery. Zainstalowano do cache Maca `chromium-headless-shell` Playwright; z nim dwa testy kontrolne przeszły i procesy zamknęły się czysto.
+- Szerszy Playwright (bundled Chromium): **82 PASS / 10 FAIL**. **3 screenshoty + 6 scenariuszy zachowania zawiodły także na oryginalnym `main`**, co osobno potwierdzono w dwóch zadaniach bazowych. Pozostały scenariusz map motion przeszedł na `main` i przy ponownym izolowanym teście audytu **PASS** — prawdopodobny błąd niestabilności pod obciążeniem. `E2E FULL GREEN` **NIEOSIĄGNIĘTE**.
+- Bezpieczeństwo: `npm audit --omit=dev` **0**, `npm audit` 16 dev-only (13 moderate, 3 high: source-map-js, vite, zod). `pip check` PASS; `pip-audit` nie zainstalowano. `git diff --check` PASS.
+- Read-only smoke produkcji na Pi Zero 2W: `photomap.service`, `cloudflared.service` aktywne; lokalne i publiczne HTTP 200; stan production `main@3562896`. Bez wdrożenia audytu.
 
-1. Pobierz **najświeższy** `main`, `audit/photomap-repair-20261107`, `agent-control`; sprawdź aktualny binding i stan agenta. Mac root `$HOME/agent-workspace/repos/photomap/work` jest chroniony; nie nadpisuj cudzych zmian.
-2. Odczytaj terminalny wynik `photomap-audit-full-regression-20261108-v1` w `.agent/results/` (run w `.agent/runs/`), będący ponowną pełną próbą po poprawce CSS. Jeśli brak terminalnego wyniku, nie zgaduj statusu. Późniejsze zmiany dokumentacji nie zmieniają CSS, ale wymagają `git diff --check`.
-3. Jeżeli pełny gate jest czerwony, rozdziel testy odziedziczone, środowiskowe i nowe. Poprzedni gate `photomap-general-audit-full-gates-20261107-v3` zakończył się na odziedziczonym CSS token gate, już naprawionym. Wcześniej 5/5 porównań E2E starego baseline było czerwonych. Nie aktualizuj screenshotów automatycznie.
-4. Po naprawach uruchom równoważny `./scripts/check.sh`, lint, typecheck, build, unit/integration/E2E, security/deps na **izolowanym** worktree, DB i storage; żadnego produkcyjnego resetowania danych. Zapisz dokładne liczby i zakresy.
-5. Nie powtarzaj bez potrzeby już zaliczonego read-only Pi smoke (`photomap-audit-production-readonly-20261107-v1`). Dopiero po pełnym gate i finalnym diff/HEAD rozważ merge zgodny z repo. Audyt nie jest równoznaczny z automatycznym deployem.
+## Decyzje i otwarte punkty
 
-## Status do zamknięcia
+**Status audytu: poprawki oraz dowody bazowe zapisane, quality gate E2E OPEN, security tooling PARTIAL.** Niczego nie przeniesiono do `main` ani produkcji. Nie aktualizowano screenshotów, nie zmieniano odziedziczonego UX.
 
-- Ostatnie potwierdzenie bieżącego `main` w preflight: `356289656d66963fb7451b70eac2e1bcff015819`.
-- Gałąź audytu: `audit/photomap-repair-20261107` (pobierz SHA na wejściu; nie kopiuj tu statycznego SHA po kolejnych commitach).
-- Baza: poprawiona i zweryfikowana. Media cache: poprawiony, test Vitest PASS. CSS token gate, Prettier, lint, typecheck i Vite build: PASS. Pełny `scripts/check.sh` — zależny od terminalnego wyniku zadania z 08.11.
-- Produkcja: nietknięta przez ten sprint; świeży odczytowy test Pi i publicznego HTTP PASS w audycie.
-- Żaden otwarty quality gate nie jest oznaczony PASS bez logu terminalnego. Dokumentacja i checkpoint powinny zostać jeszcze raz uzupełnione po wyniku.
-
-## Następny, ściśle ograniczony sprint
-
-Dokończyć istniejący audyt: zamknąć pełne quality gates, rozstrzygnąć odziedziczone visual E2E, zaktualizować checkpoint i dopiero rozważyć merge. Bez dodawania funkcji i bez odtwarzania wycofanego UX.
+Kolejny sprint: świadomie rozstrzygnąć dziewięć odziedziczonych niezaliczonych testów E2E względem zaakceptowanego rollbacku UX (zachowanie kontra nieaktualne asercje), usunąć niestabilność równoległego map motion, następnie rozważyć kontrolowane uaktualnienia dev dependencies i skan `pip-audit`. Po zweryfikowanym QA oraz wyraźnej decyzji o publikacji rozważyć merge bez force-push. Nie powtarzać już zaliczonych testów backendu czy produkcyjnego read-only smoke bez rzeczywistej potrzeby.
