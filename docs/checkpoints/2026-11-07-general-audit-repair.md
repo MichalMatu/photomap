@@ -35,11 +35,18 @@
 
 - Pełny `scripts/check.sh` z 08.11: **346/346 pytest PASS**, **90% coverage**, Alembic/Ruff/architektura/schemat/CSS gate PASS, perf smoke PASS na Mac. Skrypt zatrzymał się na ShellCheck `SC2016` w `scripts/termux-dev.sh` (zamierzone rozwinięcie zmiennej w gościu PRoot), nie na błędzie aplikacji.
 - `scripts/termux-dev.sh`: lokalne, uzasadnione oznaczenie `SC2016` przy cytowanym poleceniu `sh -c`, z opisem kontekstu. Kontrola `shellcheck scripts/*.sh scripts/dev/*.sh scripts/quality/*.sh` **PASS** w `.agent/results/photomap-audit-frontend-remaining-gates-20261108-v1.json`.
-- Knip odkrył 3 martwe eksporty po rollbacku, później czwarty osierocony limit. Usunięto nieużywane komponenty rail, udostępnienie klucza samouczka i stałą `MAX_RAIL_CATEGORY_BUTTONS` bez naruszania aktywnych komponentów drawer. Sprawdzenie po cleanupie: `photomap-audit-final-frontend-e2e-20261108-v1` — **status pozostał do potwierdzenia terminalnym wynikiem**; nie oznaczać PASS bez logu.
+- Knip odkrył 3 martwe eksporty po rollbacku, później czwarty osierocony limit. Usunięto nieużywane komponenty rail, udostępnienie klucza samouczka i stałą `MAX_RAIL_CATEGORY_BUTTONS` bez naruszania aktywnych komponentów drawer. Sprawdzenie po cleanupie: `photomap-audit-final-frontend-e2e-20261108-v1` — **Knip PASS, Vitest 371/371 PASS, Playwright admin 18/18 PASS**, lecz cały proces E2E exit 1: trzy workery Playwright nie zamknęły się po 300 s; dlatego to **nie jest pełne E2E PASS**.
+
+## Kontynuacja 08.11 — izolacja Chrome, E2E mapy i dependency scan
+
+- `photomap-audit-map-e2e-single-worker-20261108-v1` na systemowym Chrome i jednym workerze: 1/4 PASS (wielomiejski scenariusz funkcjonalny), trzy porównania screenshotów FAIL, odpowiednio 3%, 41% i 8% różnic pikseli. Testy mapy wykonały się w 22,9 s, bez błędu zamknięcia workera.
+- `photomap-audit-bundled-chromium-qa-20261108-v1`: lokalnie doinstalowano **Playwright Chrome Headless Shell** do cache Maca, bez zmiany kodu produktu; po wyłączeniu `E2E_CHROME_EXECUTABLE` dwa kontrolne scenariusze (admin: grupy miast, mapa: awaria app-config) **2/2 PASS**, czyste zamknięcie procesów. Odróżnia to środowiskowy problem systemowego Chrome od błędów aplikacji, ale nie dowodzi jeszcze PASS całej regresji.
+- `photomap-audit-dependencies-final-diff-20261108-v1`: **git diff --check PASS** między `origin/main` a HEAD audytu, **pip check PASS**; `pip-audit` niedostępny. `npm audit` zgłosił 16 podatności (13 moderate, 3 high: `source-map-js`, `vite`, `zod`; critical 0). Klasyfikacja produkcyjne/dev oraz ewentualna naprawa **pozostają otwarte**; nie deklarować clean security gate.
+- Oddzielne sprawdzenie dokładnie tych samych trzech screenshotów na niezmienionym `main` oraz pełna funkcjonalna regresja E2E na bundled Chromium — zlecone, **nie oznaczać PASS przed wynikami terminalnymi**.
 
 ## Otwarte ryzyka / brak potwierdzenia
 
-- Pełny quality gate, testy E2E i dependency audit wymagają końcowego wyniku Mac Local Agent. Oddzielić błędy środowiska, odziedziczone flaky visual oraz regresje nowych zmian.
+- Pełny quality gate pozostaje **OPEN**: do rozstrzygnięcia wizualne screenshoty na identycznej bazie `main`, pełne E2E oraz npm security advisories. Nie pomijać błędów przez aktualizację wzorców bez porównania.
 - Testy sprzętowe aktualnego Pi Zero 2W i Cloudflare: tylko odczyt, bez restartu i bez wdrażania zmian audytowych; weryfikacja bieżąca nie została potwierdzona.
 - Linux Sandbox nie ma jeszcze kompletnego, zgodnego z SHA pakietu bieżącego źródła i zależności, więc nie można przypisać mu pełnego build/test.
 - Brak dowodu, że da się bezpiecznie zwiększyć rozmiary/konkurencję uploadów na Pi Zero 2W; nie zmieniano granic pamięci ani semantyki storage.
