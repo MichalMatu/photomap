@@ -187,14 +187,14 @@ export function PlaceMarker({
       onToggleGallery();
     };
 
+    // Prefetching on pointerdown can replace the marker between down and up,
+    // sending the actual click to the map instead of the visible tile.
     element.addEventListener("pointerenter", handlePrefetch, { passive: true });
-    element.addEventListener("pointerdown", handlePrefetch, { passive: true });
     element.addEventListener("focus", handleFocus);
     visibleTile?.addEventListener("click", handleVisibleTileClick);
 
     return () => {
       element.removeEventListener("pointerenter", handlePrefetch);
-      element.removeEventListener("pointerdown", handlePrefetch);
       element.removeEventListener("focus", handleFocus);
       visibleTile?.removeEventListener("click", handleVisibleTileClick);
     };
