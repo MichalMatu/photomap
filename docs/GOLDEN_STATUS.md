@@ -1,6 +1,15 @@
-# PhotoMap — GOLDEN STATUS / checkpoint końcowy (03.11.2026)
+# PhotoMap — GOLDEN STATUS / checkpoint historyczny i bieżący
 
-## Stan produkcyjny
+## Aktualizacja produkcyjna — 09.11.2026
+
+- **Wdrożono płynną szufladę zdjęć**: przeciąganie palcem i myszą za uchwyt lub nagłówek, wysokość pośrednia, szybki swipe, synchronizacja wysokości mapy i atrybucji. Zachowano kliknięcia, przypinanie, przeciąganie zdjęć i usuwanie po przytrzymaniu.
+- **Produkcyjny kod UI:** `main@90609f7733b178da9f2687e2133c64b47fb7338b`; `frontend/dist/index.html` SHA256 `fd9ccd24cd8638eae979b94b9f01e4cbbacd7a19ec3264f096df6df974cf74ae`.
+- **Zasoby:** `index-PEafTVoL.js`, `public-map-ZUEh_Tys.js`, `index-CoSvbh38.css` — produkcyjne HTTP 200; `/health` OK, `/api/places/map` 200.
+- **Testy zmiany:** TypeScript, ESLint, build PASS; Vitest 3/3 PASS; Chrome Playwright 5/5 PASS. Dokumentacja i szczegóły: [checkpoint 09.11](checkpoints/2026-11-09-fluid-photo-drawer-ux.md).
+- **Backup:** `.dev/deploy/2026-11-09-fluid-photo-drawer-90609f7/` na Pi: `dist-before/` + spójny `app-before.db`, źródłowy SHA, hash indeksu, PID. Pi `main` czysty po wdrożeniu; backend PID `2669406`, tunel PID `222848` bez restartu.
+- **Rollback UI:** atomowo przywrócić `dist-before/index.html` z backupu bieżącego wdrożenia; nie wykonywać migracji bazy ani restartu backendu. Publiczny HTML otrzymuje dynamiczne SEO/CSP i skrypt Cloudflare, dlatego jego hash nie musi być równy statycznemu `index.html`; porównuj lokalny plik i publiczne nazwy zasobów.
+
+## Stan historyczny — checkpoint 03.11.2026
 
 - **Działa:** https://photomap.pl, `/`, `/health`, `/api/places/map`, nowy JS mapy i CSS: HTTP 200 z publicznej domeny i na Pi.
 - **SHA produkcyjnego kodu:** `8af9eb36d0a023dc39b0d0f032279182912dcd96` (frontend + porządek Prettier); dokumentacja może być późniejszym, czysto tekstowym fast-forward na `main`.
