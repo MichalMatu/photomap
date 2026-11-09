@@ -136,7 +136,7 @@ export function PinnedMediaDrawer({
       const handleHeight = window.matchMedia("(pointer: coarse)").matches ? 44 : 30;
       const { collection, discovery } = drawerHeightLimits(window.innerWidth, window.innerHeight);
       const required = handleHeight + Math.max(natural, paddingTop) + paddingBottom + 2;
-      const fitted = Math.min(discovery, Math.max(collection, Math.ceil(required)));
+      const fitted = Math.min(discovery, Math.max(collection + 72, Math.ceil(required)));
       frame.style.setProperty("--pinned-drawer-fit-height", fitted + "px");
     };
     fitContent();
