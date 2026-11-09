@@ -1,5 +1,13 @@
 # PhotoMap — GOLDEN STATUS / checkpoint historyczny i bieżący
 
+## Aktualny produkcyjny frontend — 09.11.2026, korekta szuflady
+
+- **Wdrożono dopracowany UX** dolnej szuflady: kursor `grab/grabbing` zamiast `ns-resize`, krótszy uchwyt bez pustego pasa, brak redundantnego tytułu przy samych zdjęciach, mały fokus na znaczniku zamiast niebieskiego obrysu panelu, zachowane chwytanie poza uchwytem oraz obsługa dotyku.
+- **Źródła na Pi:** `main@ef1a903a74dfd3df588f7598fa378126c55865c6`; **aktywny index SHA256:** `38199380ed27f6d007f9c2f638641564c8c9e73306c9386029b080ed03a6f955`.
+- **Publiczne zasoby:** `index-CgV_TFTO.js`, `index-BeBTM2BB.css`, `public-map-CcCrSDoE.js` — HTTP 200. Publiczne `/health` OK, `/api/places/map` 200.
+- **Weryfikacja:** Prettier, TypeScript, ESLint, build, Vitest 3/3 i Chrome Playwright 5/5 PASS. Szczegóły i rozpoznany problem nakładki ładowania: [checkpoint korekty](checkpoints/2026-11-09-photo-drawer-compact-ux-polish.md).
+- **Backup i rollback:** `.dev/deploy/2026-11-09-compact-drawer-ef1a903/` na Raspberry Pi: `dist-before/`, spójny snapshot SQLite i PID-y. Bez migracji i restartów; backend PID `2669406`, Cloudflare PID `222848`. Odwrócenie UI przez atomowe przywrócenie poprzedniego `index.html` (bez kasowania zahashowanych assetów).
+
 ## Aktualizacja produkcyjna — 09.11.2026
 
 - **Wdrożono płynną szufladę zdjęć**: przeciąganie palcem i myszą za uchwyt lub nagłówek, wysokość pośrednia, szybki swipe, synchronizacja wysokości mapy i atrybucji. Zachowano kliknięcia, przypinanie, przeciąganie zdjęć i usuwanie po przytrzymaniu.
