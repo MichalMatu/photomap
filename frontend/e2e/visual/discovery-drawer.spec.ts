@@ -133,9 +133,7 @@ test("collapsed thumbnail preview does not bleed through the grabber while expan
   const handle = drawer.locator(".pinned-media-drawer-handle");
   await page.locator(".place-map").click({ position: { x: 26, y: 240 } });
   await expect(drawer).toHaveAttribute("data-stage", "collapsed");
-  await expect
-    .poll(async () => (await drawer.boundingBox())?.y ?? 0)
-    .toBeGreaterThanOrEqual(719);
+  await expect.poll(async () => (await drawer.boundingBox())?.y ?? 0).toBeGreaterThanOrEqual(719);
   await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(2);
 
   const start = await handle.boundingBox();
@@ -148,7 +146,10 @@ test("collapsed thumbnail preview does not bleed through the grabber while expan
   await expect(drawer.locator(".pinned-media-drawer-handle-thumbs")).toHaveCount(0);
   await expect(drawer.locator(".pinned-media-drawer-grab-line")).toHaveCount(1);
   await expect(handle).toHaveCSS("overflow", "hidden");
-  await expect(handle).toHaveCSS("background-color", await drawer.evaluate((node) => getComputedStyle(node).backgroundColor));
+  await expect(handle).toHaveCSS(
+    "background-color",
+    await drawer.evaluate((node) => getComputedStyle(node).backgroundColor),
+  );
   await page.mouse.up();
 
   await expect(drawer).toHaveAttribute("data-stage", "collection");
@@ -166,9 +167,11 @@ test("discovery size follows its rendered photo rows instead of leaving a giant 
   await expect
     .poll(async () => {
       const box = await drawer.boundingBox();
-      const fitted = await page.locator(".map-frame").evaluate((frame) =>
-        Number.parseFloat((frame as HTMLElement).style.getPropertyValue("--pinned-drawer-fit-height")),
-      );
+      const fitted = await page
+        .locator(".map-frame")
+        .evaluate((frame) =>
+          Number.parseFloat((frame as HTMLElement).style.getPropertyValue("--pinned-drawer-fit-height")),
+        );
       return Math.abs((box?.height ?? 0) - fitted);
     })
     .toBeLessThan(1);
