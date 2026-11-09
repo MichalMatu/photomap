@@ -64,7 +64,9 @@ test("drawer handle follows a slow drag without jumping between predefined heigh
   await handle.click();
   await expect(drawer).toHaveAttribute("data-stage", "discovery");
   await expect
-    .poll(() => page.locator(".map-frame").evaluate((element) => element.style.getPropertyValue("--pinned-drawer-live-height")))
+    .poll(() =>
+      page.locator(".map-frame").evaluate((element) => element.style.getPropertyValue("--pinned-drawer-live-height")),
+    )
     .toBe("");
 });
 
@@ -75,9 +77,27 @@ test("touch-style drawer swipe changes stages and does not open photos", async (
   const drawer = page.getByTestId("pinned-media-drawer");
   const handle = drawer.locator(".pinned-media-drawer-handle");
 
-  await handle.dispatchEvent("pointerdown", { pointerId: 23, pointerType: "touch", button: 0, clientX: 160, clientY: 600 });
-  await handle.dispatchEvent("pointermove", { pointerId: 23, pointerType: "touch", button: 0, clientX: 160, clientY: 530 });
-  await handle.dispatchEvent("pointerup", { pointerId: 23, pointerType: "touch", button: 0, clientX: 160, clientY: 530 });
+  await handle.dispatchEvent("pointerdown", {
+    pointerId: 23,
+    pointerType: "touch",
+    button: 0,
+    clientX: 160,
+    clientY: 600,
+  });
+  await handle.dispatchEvent("pointermove", {
+    pointerId: 23,
+    pointerType: "touch",
+    button: 0,
+    clientX: 160,
+    clientY: 530,
+  });
+  await handle.dispatchEvent("pointerup", {
+    pointerId: 23,
+    pointerType: "touch",
+    button: 0,
+    clientX: 160,
+    clientY: 530,
+  });
   await expect(drawer).toHaveAttribute("data-stage", "discovery");
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });
