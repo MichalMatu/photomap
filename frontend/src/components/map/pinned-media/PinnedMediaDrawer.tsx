@@ -99,7 +99,6 @@ export function PinnedMediaDrawer({
         ? "Pokaż więcej zdjęć z mapy"
         : "Zwiń do kolekcji zdjęć";
 
-
   const clearCustomHeight = useCallback(() => {
     const frame = frameRef.current;
     frame?.style.removeProperty("--pinned-drawer-live-height");
@@ -348,13 +347,17 @@ export function PinnedMediaDrawer({
       <div className="pinned-media-drawer-content">
         {cards.length > 0 ? (
           <section className="pinned-media-drawer-section" aria-label="Przypięta kolekcja">
-            <span className="pinned-media-drawer-section-label" {...resizeGestureHandlers}>Twoja kolekcja</span>
+            <span className="pinned-media-drawer-section-label" {...resizeGestureHandlers}>
+              Twoja kolekcja
+            </span>
             <div className="pinned-media-drawer-items pinned-media-drawer-collection">{cards.map(renderPinned)}</div>
           </section>
         ) : null}
         {showDiscovery ? (
           <section className="pinned-media-drawer-section" aria-label="Zdjęcia z obszaru mapy">
-            <span className="pinned-media-drawer-section-label" {...resizeGestureHandlers}>Zdjęcia z mapy</span>
+            <span className="pinned-media-drawer-section-label" {...resizeGestureHandlers}>
+              Zdjęcia z mapy
+            </span>
             {recommendedItems.length === 0 ? (
               <p className="pinned-media-drawer-hint">Brak zdjęć w widocznym obszarze mapy</p>
             ) : (
