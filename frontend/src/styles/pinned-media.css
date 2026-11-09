@@ -344,7 +344,9 @@
   box-shadow: none;
   outline: 0;
 }
-.pinned-media-drawer-handle:focus-visible .pinned-media-drawer-grab-line {
+.pinned-media-drawer-handle:focus-visible .pinned-media-drawer-grab-line,
+.pinned-media-drawer-handle:focus-visible .pinned-media-drawer-handle-thumbs,
+.pinned-media-drawer-handle:focus-visible .pinned-media-drawer-drag-label {
   outline: 2px solid var(--accent-primary);
   outline-offset: 4px;
 }
@@ -391,7 +393,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-1) var(--space-3) var(--space-2);
 }
 .pinned-media-drawer-section {
   display: grid;
