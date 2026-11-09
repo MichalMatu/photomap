@@ -28,7 +28,9 @@
   min-height: 0;
 }
 .place-map--drawer-discovery {
-  height: calc(100% - var(--pinned-drawer-live-height, var(--pinned-drawer-discovery-height)));
+  height: calc(
+    100% - var(--pinned-drawer-live-height, var(--pinned-drawer-fit-height, var(--pinned-drawer-discovery-height)))
+  );
   min-height: 0;
 }
 
@@ -839,7 +841,9 @@
   bottom: calc(var(--pinned-drawer-live-height, var(--pinned-drawer-height)) + 10px);
 }
 .map-attribution--drawer-discovery {
-  bottom: calc(var(--pinned-drawer-live-height, var(--pinned-drawer-discovery-height)) + 10px);
+  bottom: calc(
+    var(--pinned-drawer-live-height, var(--pinned-drawer-fit-height, var(--pinned-drawer-discovery-height))) + 10px
+  );
 }
 
 .map-frame.is-drawer-resizing .map-attribution--with-drawer {
