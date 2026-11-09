@@ -60,6 +60,23 @@ test("drawer handle follows a slow drag without jumping between predefined heigh
   const before = await drawer.boundingBox();
   const handleBox = await handle.boundingBox();
   if (!before || !handleBox) throw new Error("Drawer handle is missing");
+  await page.evaluate(() => {
+    const traces: string[] = [];
+    (window as Window & { __drawerTraces?: string[] }).__drawerTraces = traces;
+    for (const type of ["pointerdown", "pointermove", "pointerup", "gotpointercapture", "lostpointercapture"]) {
+      document.addEventListener(
+        type,
+        (event) => {
+          const pointer = event as PointerEvent;
+          if (traces.length < 32) {
+            const element = pointer.target instanceof Element ? pointer.target.className : "unknown";
+            traces.push([type, pointer.pointerId, pointer.clientY, element].join(":"));
+          }
+        },
+        true,
+      );
+    }
+  });
   await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);
   await page.mouse.down();
   await page.waitForTimeout(320);
@@ -68,6 +85,16 @@ test("drawer handle follows a slow drag without jumping between predefined heigh
   });
 
   const during = await drawer.boundingBox();
+  console.log("DRAWER_DEBUG", JSON.stringify({
+    before, handleBox, during,
+    events: await page.evaluate(() => (window as Window & { __drawerTraces?: string[] }).__drawerTraces),
+    state: await handle.evaluate((element) => ({
+      captured: element.hasPointerCapture(1),
+      atTop: document.elementFromPoint(element.getBoundingClientRect().x + element.getBoundingClientRect().width / 2, element.getBoundingClientRect().y + 2)?.className,
+      liveHeight: element.closest<HTMLElement>(".map-frame")?.style.getPropertyValue("--pinned-drawer-live-height"),
+      className: element.closest(".pinned-media-drawer")?.className,
+    })),
+  }));
   const map = await page.locator(".place-map").boundingBox();
   const attribution = await page.getByTestId("map-attribution").boundingBox();
   if (!during || !map || !attribution) throw new Error("Resizing elements not measurable");
