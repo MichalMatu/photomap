@@ -19,5 +19,11 @@ After the first fluid-drawer release on photomap.pl, the user observed an unattr
 - The first full Vitest run caused excessive host load and was interrupted. Do not treat it as a completed full-suite pass; only the scoped regression above is accepted.
 - No backend, API, SQLite, Cloudflare, or app services altered by the code fix.
 
-## Release boundary
-The patch is ready for a frontend-only atomic release under `docs/deploy-pi-zero2w.md`, with an independent `dist-before` and SQLite snapshot. Follow the exact source SHA and confirm public new asset URLs and stable PIDs. The public HTML is dynamically changed by server SEO/CSP and Cloudflare; do not compare its raw hash to static `dist/index.html`.
+## Production release — PASS (2026-11-09)
+- Released source: `main@ef1a903a74dfd3df588f7598fa378126c55865c6`; Raspberry Pi `main` fast-forwarded without force/reset.
+- Atomically switched `frontend/dist/index.html` to SHA256 `38199380ed27f6d007f9c2f638641564c8c9e73306c9386029b080ed03a6f955`.
+- Public HTML references new assets `index-CgV_TFTO.js` and `index-BeBTM2BB.css`; both HTTP 200, as is `public-map-CcCrSDoE.js`. Public `/health` is OK and `/api/places/map` returns HTTP 200.
+- Raspberry Pi backup: `.dev/deploy/2026-11-09-compact-drawer-ef1a903/` includes previous `dist-before/`, online SQLite snapshot `app-before.db` (19,574,784 bytes; integrity OK), source SHA, index hash and service PIDs.
+- No backend migration, server restart or Cloudflare restart. Backend PID `2669406` and tunnel PID `222848` unchanged.
+- Rollback if required: atomically restore `dist-before/index.html` from this backup without removing hashed assets; database snapshot is protection only, no data migrations were performed.
+- The public HTML is dynamically changed by server SEO/CSP and Cloudflare; compare referenced hashed assets, not raw HTML hashes.
