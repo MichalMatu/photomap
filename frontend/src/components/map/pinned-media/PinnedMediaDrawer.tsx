@@ -175,6 +175,10 @@ export function PinnedMediaDrawer({
     if (!current.moved) return;
 
     suppressHandleClick.current = true;
+    // A native post-pointerup click is synchronous; synthetic pointer tests may emit none.
+    window.setTimeout(() => {
+      suppressHandleClick.current = false;
+    }, 0);
     const distance = event.clientY - current.startY;
     const quickSwipe = Math.abs(distance) >= 35 && performance.now() - current.startedAt < 280;
     if (quickSwipe) {
