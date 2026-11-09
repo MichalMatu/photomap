@@ -1,4 +1,4 @@
-import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useRef, useState } from "react";
+import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { mediaUrl } from "../../../api/http";
 import type { MapDiscoveryItem } from "../discoveryRecommendations";
 import {
@@ -56,6 +56,8 @@ export function PinnedMediaDrawer({
   const gesture = useRef<DrawerGesture | null>(null);
   const frameRef = useRef<HTMLElement | null>(null);
   const drawerRef = useRef<HTMLElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [isResizing, setIsResizing] = useState(false);
   const suppressHandleClick = useRef(false);
   const hold = useRef<Hold | null>(null);
   const armedRef = useRef<string | null>(null);
@@ -112,8 +114,48 @@ export function PinnedMediaDrawer({
   }, [stage, clearCustomHeight]);
   useEffect(() => () => clearCustomHeight(), [clearCustomHeight]);
 
+  // Measure the *natural* content rather than scrollHeight (which includes the
+  // currently allocated empty space). This is the shared discovery maximum for
+  // the drawer, Leaflet viewport and OSM attribution.
+  useLayoutEffect(() => {
+    const drawer = drawerRef.current;
+    const content = contentRef.current;
+    const frame = drawer?.closest<HTMLElement>(".map-frame");
+    if (!drawer || !content || !frame) return;
+    frameRef.current = frame;
+
+    const fitContent = () => {
+      const last = content.lastElementChild as HTMLElement | null;
+      const style = window.getComputedStyle(content);
+      const contentTop = content.getBoundingClientRect().top;
+      const natural = last
+        ? last.getBoundingClientRect().bottom - contentTop + content.scrollTop
+        : 0;
+      const paddingBottom = Number.parseFloat(style.paddingBottom) || 0;
+      const paddingTop = Number.parseFloat(style.paddingTop) || 0;
+      const handleHeight = window.matchMedia("(pointer: coarse)").matches ? 44 : 30;
+      const { collection, discovery } = drawerHeightLimits(window.innerWidth, window.innerHeight);
+      const required = handleHeight + Math.max(natural, paddingTop) + paddingBottom + 2;
+      const fitted = Math.min(discovery, Math.max(collection, Math.ceil(required)));
+      frame.style.setProperty("--pinned-drawer-fit-height", fitted + "px");
+    };
+    fitContent();
+    const observer = new ResizeObserver(fitContent);
+    Array.from(content.children).forEach((child) => observer.observe(child));
+    window.addEventListener("resize", fitContent);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", fitContent);
+    };
+  }, [cards.length, recommendedItems.length, stage]);
+
+  useEffect(
+    () => () => frameRef.current?.style.removeProperty("--pinned-drawer-fit-height"),
+    [],
+  );
+
   const stopResizing = useCallback(() => {
-    drawerRef.current?.classList.remove("is-resizing");
+    setIsResizing(false);
     frameRef.current?.classList.remove("is-drawer-resizing");
   }, []);
 
@@ -146,11 +188,13 @@ export function PinnedMediaDrawer({
     if (!current.moved) {
       if (Math.abs(deltaY) < DRAWER_DRAG_THRESHOLD || Math.abs(deltaY) < Math.abs(deltaX)) return;
       current.moved = true;
-      drawerRef.current?.classList.add("is-resizing");
+      setIsResizing(true);
       frameRef.current?.classList.add("is-drawer-resizing");
     }
     const { discovery } = drawerHeightLimits(window.innerWidth, window.innerHeight);
-    current.height = clampDrawerHeight(current.startHeight + deltaY, discovery);
+    const available = Number.parseFloat(frameRef.current?.style.getPropertyValue("--pinned-drawer-fit-height") || "");
+    const maximum = Number.isFinite(available) ? Math.min(discovery, available) : discovery;
+    current.height = clampDrawerHeight(current.startHeight + deltaY, maximum);
     frameRef.current?.style.setProperty("--pinned-drawer-live-height", current.height + "px");
   }, []);
 
@@ -315,10 +359,12 @@ export function PinnedMediaDrawer({
 
   return (
     <section
+      ref={drawerRef}
       className={[
         "pinned-media-drawer",
         `pinned-media-drawer--${stage}`,
         stage !== "collapsed" ? "is-open" : null,
+        isResizing ? "is-resizing" : null,
         isDragging ? "is-peeking" : null,
         isDropActive ? "is-drop-active" : null,
       ]
@@ -349,7 +395,7 @@ export function PinnedMediaDrawer({
           onStageChange(stage === "discovery" ? "collection" : shiftDrawerStage(stage, "up"));
         }}
       >
-        {stage !== "collapsed" ? (
+        {stage !== "collapsed" || isResizing ? (
           <span className="pinned-media-drawer-grab-line" aria-hidden="true" />
         ) : collapsedThumbs.length > 0 ? (
           <span className="pinned-media-drawer-handle-thumbs" aria-hidden="true">
@@ -361,7 +407,7 @@ export function PinnedMediaDrawer({
           <span className="pinned-media-drawer-drag-label">Odkrywaj miejsca</span>
         )}
       </button>
-      <div className="pinned-media-drawer-content">
+      <div ref={contentRef} className="pinned-media-drawer-content">
         {cards.length > 0 ? (
           <section className="pinned-media-drawer-section" aria-label="Przypięta kolekcja">
             <span className="pinned-media-drawer-section-label" {...resizeGestureHandlers}>
