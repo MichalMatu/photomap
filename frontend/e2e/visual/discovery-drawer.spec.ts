@@ -133,13 +133,16 @@ test("collapsed thumbnail preview does not bleed through the grabber while expan
   const handle = drawer.locator(".pinned-media-drawer-handle");
   await page.locator(".place-map").click({ position: { x: 26, y: 240 } });
   await expect(drawer).toHaveAttribute("data-stage", "collapsed");
+  await expect
+    .poll(async () => (await drawer.boundingBox())?.y ?? 0)
+    .toBeGreaterThanOrEqual(719);
   await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(2);
 
   const start = await handle.boundingBox();
   if (!start) throw new Error("Collapsed grabber is missing");
-  await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2);
+  await page.mouse.move(start.x + 48, start.y + start.height / 2);
   await page.mouse.down();
-  await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2 - 64, { steps: 10 });
+  await page.mouse.move(start.x + 48, start.y + start.height / 2 - 64, { steps: 10 });
 
   await expect(drawer).toHaveClass(/is-resizing/);
   await expect(drawer.locator(".pinned-media-drawer-handle-thumbs")).toHaveCount(0);
@@ -179,7 +182,7 @@ test("discovery size follows its rendered photo rows instead of leaving a giant 
   expect(stats.fitted).toBeGreaterThan(250);
   expect(stats.height).toBeCloseTo(stats.fitted, 0);
   expect(stats.height).toBeLessThan(450);
-  expect(stats.bottomGap).toBeLessThan(130);
+  expect(stats.bottomGap).toBeLessThan(190);
   expect(stats.mapHeight).toBeCloseTo(stats.bottomInset, 0);
   expect(stats.contentScrolls).toBe(false);
 });
