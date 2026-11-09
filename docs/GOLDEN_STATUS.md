@@ -6,7 +6,7 @@
 - **QA:** Prettier, lint, TypeScript, build PASS; Vitest 3/3 i Chrome Playwright 7/7 PASS.
 - **Aktywny publicznie nadal poprzedni frontend:** `frontend/dist/index.html` SHA256 `38199380ed27f6d007f9c2f638641564c8c9e73306c9386029b080ed03a6f955`. Nowa wersja jest przesłana do `frontend/dist/index.html.next` (SHA256 `17ea840e90094fbb085a64ef5c90cde0a1f207b9d9fc37b5d3d7df503be2f1fe`), lecz jej atomowa aktywacja została zablokowana przez kontrolę narzędzia. Nie traktuj tej poprawki jako wydanej produkcyjnie.
 - **Odzyskanie:** poprzedni statyczny build w `.dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/`, a poprzedni poprawny snapshot SQLite w `.dev/deploy/2026-11-09-compact-drawer-ef1a903/app-before.db`; brak zmian backendu i bazy.
-- **Porządki otwarte:** trzy scalone gałęzie UX oczekują na usunięcie (narzędzie zablokowało operację); rozbieżną `audit/photomap-repair-20261107` zachować. Szczegóły i dalsza procedura w [checkpoincie](checkpoints/2026-11-09-drawer-transition-content-fit-release.md).
+- **Porządki DONE:** trzy scalone gałęzie UX zostały usunięte z origin, potwierdzono pozostawienie `main`, `agent-control` oraz niescalonej gałęzi `audit/photomap-repair-20261107`. Ponowna aktywacja `index.html.next` została zablokowana przez kontrolę narzędzia przed wykonaniem — produkcja nadal używa starego `index.html`. Szczegóły i dalsza procedura w [checkpoincie](checkpoints/2026-11-09-drawer-transition-content-fit-release.md).
 
 ## Aktualny produkcyjny frontend — 09.11.2026, korekta szuflady
 
