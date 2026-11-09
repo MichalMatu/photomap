@@ -122,3 +122,65 @@ test("touch-style drawer swipe changes stages and does not open photos", async (
   await expect(drawer).toHaveAttribute("data-stage", "discovery");
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });
+
+test("collapsed thumbnail preview does not bleed through the grabber while expanding", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await mockSharedApi(page);
+  await page.goto("/");
+  await expect(page.getByTestId("map-loading-screen")).toHaveCount(0, { timeout: 15_000 });
+
+  const drawer = page.getByTestId("pinned-media-drawer");
+  const handle = drawer.locator(".pinned-media-drawer-handle");
+  await page.locator(".place-map").click({ position: { x: 26, y: 240 } });
+  await expect(drawer).toHaveAttribute("data-stage", "collapsed");
+  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(2);
+
+  const start = await handle.boundingBox();
+  if (!start) throw new Error("Collapsed grabber is missing");
+  await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2 - 64, { steps: 10 });
+
+  await expect(drawer).toHaveClass(/is-resizing/);
+  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs")).toHaveCount(0);
+  await expect(drawer.locator(".pinned-media-drawer-grab-line")).toHaveCount(1);
+  await expect(handle).toHaveCSS("overflow", "hidden");
+  await expect(handle).toHaveCSS("background-color", await drawer.evaluate((node) => getComputedStyle(node).backgroundColor));
+  await page.mouse.up();
+
+  await expect(drawer).toHaveAttribute("data-stage", "collection");
+  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs")).toHaveCount(0);
+});
+
+test("discovery size follows its rendered photo rows instead of leaving a giant bottom gap", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await mockSharedApi(page);
+  await page.goto("/");
+  await expect(page.getByTestId("map-loading-screen")).toHaveCount(0, { timeout: 15_000 });
+  const drawer = page.getByTestId("pinned-media-drawer");
+  await drawer.getByRole("button", { name: "Pokaż więcej zdjęć z mapy" }).click();
+  await expect(drawer).toHaveAttribute("data-stage", "discovery");
+
+  const stats = await drawer.evaluate((element) => {
+    const content = element.querySelector<HTMLElement>(".pinned-media-drawer-content");
+    const frame = element.closest<HTMLElement>(".map-frame");
+    if (!content || !frame || !content.lastElementChild) throw new Error("Missing discovery content");
+    const contentRect = content.getBoundingClientRect();
+    const lastBottom = content.lastElementChild.getBoundingClientRect().bottom;
+    const height = element.getBoundingClientRect().height;
+    return {
+      height,
+      fitted: Number.parseFloat(frame.style.getPropertyValue("--pinned-drawer-fit-height")),
+      bottomGap: element.getBoundingClientRect().bottom - lastBottom,
+      contentScrolls: content.scrollHeight > content.clientHeight + 2,
+      mapHeight: frame.querySelector<HTMLElement>(".place-map")?.getBoundingClientRect().height,
+      bottomInset: element.getBoundingClientRect().top,
+    };
+  });
+  expect(stats.fitted).toBeGreaterThan(250);
+  expect(stats.height).toBeCloseTo(stats.fitted, 0);
+  expect(stats.height).toBeLessThan(450);
+  expect(stats.bottomGap).toBeLessThan(130);
+  expect(stats.mapHeight).toBeCloseTo(stats.bottomInset, 0);
+  expect(stats.contentScrolls).toBe(false);
+});
