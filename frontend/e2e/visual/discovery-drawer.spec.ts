@@ -165,7 +165,6 @@ test("discovery size follows its rendered photo rows instead of leaving a giant 
     const content = element.querySelector<HTMLElement>(".pinned-media-drawer-content");
     const frame = element.closest<HTMLElement>(".map-frame");
     if (!content || !frame || !content.lastElementChild) throw new Error("Missing discovery content");
-    const contentRect = content.getBoundingClientRect();
     const lastBottom = content.lastElementChild.getBoundingClientRect().bottom;
     const height = element.getBoundingClientRect().height;
     return {
