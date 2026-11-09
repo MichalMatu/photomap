@@ -1,4 +1,11 @@
-import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { mediaUrl } from "../../../api/http";
 import type { MapDiscoveryItem } from "../discoveryRecommendations";
 import {
@@ -128,9 +135,7 @@ export function PinnedMediaDrawer({
       const last = content.lastElementChild as HTMLElement | null;
       const style = window.getComputedStyle(content);
       const contentTop = content.getBoundingClientRect().top;
-      const natural = last
-        ? last.getBoundingClientRect().bottom - contentTop + content.scrollTop
-        : 0;
+      const natural = last ? last.getBoundingClientRect().bottom - contentTop + content.scrollTop : 0;
       const paddingBottom = Number.parseFloat(style.paddingBottom) || 0;
       const paddingTop = Number.parseFloat(style.paddingTop) || 0;
       const handleHeight = window.matchMedia("(pointer: coarse)").matches ? 44 : 30;
