@@ -149,10 +149,11 @@ export function PinnedMediaDrawer({
     };
   }, [cards.length, recommendedItems.length, stage]);
 
-  useEffect(
-    () => () => frameRef.current?.style.removeProperty("--pinned-drawer-fit-height"),
-    [],
-  );
+  useEffect(() => {
+    return () => {
+      frameRef.current?.style.removeProperty("--pinned-drawer-fit-height");
+    };
+  }, []);
 
   const stopResizing = useCallback(() => {
     setIsResizing(false);
