@@ -355,9 +355,11 @@ export function PinnedMediaDrawer({
         ) : null}
         {showDiscovery ? (
           <section className="pinned-media-drawer-section" aria-label="Zdjęcia z obszaru mapy">
-            <span className="pinned-media-drawer-section-label" {...resizeGestureHandlers}>
-              Zdjęcia z mapy
-            </span>
+            {cards.length > 0 ? (
+              <span className="pinned-media-drawer-section-label" {...resizeGestureHandlers}>
+                Zdjęcia z mapy
+              </span>
+            ) : null}
             {recommendedItems.length === 0 ? (
               <p className="pinned-media-drawer-hint">Brak zdjęć w widocznym obszarze mapy</p>
             ) : (
