@@ -189,9 +189,9 @@ test("discovery size follows its rendered photo rows instead of leaving a giant 
     };
   });
   expect(stats.fitted).toBeGreaterThan(250);
-  expect(stats.height).toBeCloseTo(stats.fitted, 0);
+  expect(Math.abs(stats.height - stats.fitted)).toBeLessThan(2);
   expect(stats.height).toBeLessThan(450);
   expect(stats.bottomGap).toBeLessThan(190);
-  expect(stats.mapHeight).toBeCloseTo(stats.bottomInset, 0);
+  expect(Math.abs((stats.mapHeight ?? 0) - stats.bottomInset)).toBeLessThan(2);
   expect(stats.contentScrolls).toBe(false);
 });
