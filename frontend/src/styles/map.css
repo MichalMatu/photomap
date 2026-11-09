@@ -24,11 +24,16 @@
 }
 
 .place-map--drawer-open {
-  height: calc(100% - var(--pinned-drawer-height));
+  height: calc(100% - var(--pinned-drawer-live-height, var(--pinned-drawer-height)));
   min-height: 0;
 }
 .place-map--drawer-discovery {
-  height: calc(100% - var(--pinned-drawer-discovery-height));
+  height: calc(100% - var(--pinned-drawer-live-height, var(--pinned-drawer-discovery-height)));
+  min-height: 0;
+}
+
+.map-frame.is-drawer-resizing .place-map {
+  height: calc(100% - var(--pinned-drawer-live-height));
   min-height: 0;
 }
 
@@ -831,10 +836,14 @@
 }
 
 .map-attribution--drawer-open {
-  bottom: calc(var(--pinned-drawer-height) + 10px);
+  bottom: calc(var(--pinned-drawer-live-height, var(--pinned-drawer-height)) + 10px);
 }
 .map-attribution--drawer-discovery {
-  bottom: calc(var(--pinned-drawer-discovery-height) + 10px);
+  bottom: calc(var(--pinned-drawer-live-height, var(--pinned-drawer-discovery-height)) + 10px);
+}
+
+.map-frame.is-drawer-resizing .map-attribution--with-drawer {
+  bottom: calc(var(--pinned-drawer-live-height) + 10px);
 }
 
 .map-attribution a {
