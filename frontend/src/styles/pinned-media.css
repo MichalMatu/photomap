@@ -275,6 +275,7 @@
 }
 
 .pinned-media-drawer {
+  --pinned-drawer-handle-size: 80px;
   background: var(--surface-panel);
   border-top: 1px solid var(--border-subtle);
   border-radius: var(--radius-media) var(--radius-media) 0 0;
@@ -308,25 +309,44 @@
   transform: translateY(calc(100% - 140px));
 }
 .pinned-media-drawer.is-open {
+  --pinned-drawer-handle-size: 30px;
   transform: translateY(0);
 }
 .pinned-media-drawer.is-resizing {
+  --pinned-drawer-handle-size: 30px;
   transform: translateY(0);
   transition: none;
 }
 .pinned-media-drawer-handle {
   align-items: center;
   background: transparent;
+  border-radius: 0;
   color: var(--content-primary);
+  cursor: grab;
   display: flex;
   font-size: var(--text-caption);
   gap: var(--space-2);
-  height: 80px;
+  height: var(--pinned-drawer-handle-size);
   justify-content: center;
   min-height: 0;
   padding: 0 var(--space-3);
   touch-action: none;
+  user-select: none;
   width: 100%;
+}
+.pinned-media-drawer-handle:active,
+.pinned-media-drawer.is-resizing .pinned-media-drawer-handle,
+.pinned-media-drawer.is-resizing .pinned-media-drawer-section-label {
+  cursor: grabbing;
+}
+/* Keep keyboard focus visible on the small grabber, not as a full-width blue border. */
+.pinned-media-drawer-handle:focus-visible {
+  box-shadow: none;
+  outline: 0;
+}
+.pinned-media-drawer-handle:focus-visible .pinned-media-drawer-grab-line {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
 }
 .pinned-media-drawer-handle-thumbs {
   display: flex;
@@ -336,9 +356,14 @@
   background: var(--content-tertiary);
   border-radius: var(--radius-full);
   display: block;
-  height: 3px;
-  opacity: 0.7;
-  width: 34px;
+  height: 4px;
+  opacity: 0.75;
+  width: 40px;
+  transition: opacity var(--motion-duration-fast) var(--motion-ease-standard);
+}
+.pinned-media-drawer-handle:hover .pinned-media-drawer-grab-line,
+.pinned-media-drawer.is-resizing .pinned-media-drawer-grab-line {
+  opacity: 1;
 }
 .pinned-media-drawer-drag-label {
   color: var(--content-secondary);
@@ -350,29 +375,23 @@
   object-fit: cover;
   width: 76px;
 }
-.pinned-media-drawer.is-open .pinned-media-drawer-handle {
-  height: 44px;
-}
-.pinned-media-drawer-handle {
-  cursor: ns-resize;
-}
 .pinned-media-drawer-section-label {
+  cursor: grab;
   touch-action: none;
-  cursor: ns-resize;
+}
+@media (pointer: coarse) {
+  .pinned-media-drawer.is-open,
+  .pinned-media-drawer.is-resizing {
+    --pinned-drawer-handle-size: 44px;
+  }
 }
 .pinned-media-drawer-content {
   box-sizing: border-box;
-  height: calc(100% - 80px);
+  height: calc(100% - var(--pinned-drawer-handle-size));
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: var(--space-2) var(--space-3);
-}
-.pinned-media-drawer.is-open .pinned-media-drawer-content {
-  height: calc(100% - 44px);
-}
-.pinned-media-drawer.is-resizing .pinned-media-drawer-content {
-  height: calc(100% - 44px);
 }
 .pinned-media-drawer-section {
   display: grid;
