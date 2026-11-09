@@ -163,6 +163,15 @@ test("discovery size follows its rendered photo rows instead of leaving a giant 
   const drawer = page.getByTestId("pinned-media-drawer");
   await drawer.getByRole("button", { name: "Pokaż więcej zdjęć z mapy" }).click();
   await expect(drawer).toHaveAttribute("data-stage", "discovery");
+  await expect
+    .poll(async () => {
+      const box = await drawer.boundingBox();
+      const fitted = await page.locator(".map-frame").evaluate((frame) =>
+        Number.parseFloat((frame as HTMLElement).style.getPropertyValue("--pinned-drawer-fit-height")),
+      );
+      return Math.abs((box?.height ?? 0) - fitted);
+    })
+    .toBeLessThan(1);
 
   const stats = await drawer.evaluate((element) => {
     const content = element.querySelector<HTMLElement>(".pinned-media-drawer-content");
