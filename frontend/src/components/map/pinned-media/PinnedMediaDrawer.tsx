@@ -3,6 +3,10 @@ import { mediaUrl } from "../../../api/http";
 import type { MapDiscoveryItem } from "../discoveryRecommendations";
 import {
   DRAWER_HOLD_MS,
+  DRAWER_DRAG_THRESHOLD,
+  clampDrawerHeight,
+  drawerHeightLimits,
+  drawerStageForHeight,
   isDrawerHoldMove,
   type PinnedMediaDrawerStage,
   shiftDrawerStage,
@@ -24,6 +28,16 @@ type Props = {
 };
 
 type Hold = { pointerId: number; startX: number; startY: number; timeout: number };
+type DrawerGesture = {
+  pointerId: number;
+  startX: number;
+  startY: number;
+  startedAt: number;
+  startHeight: number;
+  height: number;
+  moved: boolean;
+  previousHeight: string;
+};
 
 export function PinnedMediaDrawer({
   cards,
@@ -38,7 +52,9 @@ export function PinnedMediaDrawer({
   onStartUndock,
   onCancelUndock,
 }: Props) {
-  const gesture = useRef<{ y: number; swiped: boolean } | null>(null);
+  const gesture = useRef<DrawerGesture | null>(null);
+  const frameRef = useRef<HTMLElement | null>(null);
+  const suppressHandleClick = useRef(false);
   const hold = useRef<Hold | null>(null);
   const armedRef = useRef<string | null>(null);
   const suppressClick = useRef(false);
@@ -82,6 +98,105 @@ export function PinnedMediaDrawer({
       : stage === "collection"
         ? "Pokaż więcej zdjęć z mapy"
         : "Zwiń do kolekcji zdjęć";
+
+
+  const clearCustomHeight = useCallback(() => {
+    const frame = frameRef.current;
+    frame?.style.removeProperty("--pinned-drawer-live-height");
+    frame?.classList.remove("is-drawer-resizing");
+  }, []);
+
+  useEffect(() => {
+    if (stage === "collapsed" && !gesture.current) clearCustomHeight();
+  }, [stage, clearCustomHeight]);
+  useEffect(() => () => clearCustomHeight(), [clearCustomHeight]);
+
+  const stopResizing = (element: HTMLElement) => {
+    element.closest(".pinned-media-drawer")?.classList.remove("is-resizing");
+    frameRef.current?.classList.remove("is-drawer-resizing");
+  };
+
+  const beginResize = (event: ReactPointerEvent<HTMLElement>) => {
+    if (event.button !== 0 || gesture.current) return;
+    const frame = event.currentTarget.closest<HTMLElement>(".map-frame");
+    const drawer = event.currentTarget.closest<HTMLElement>(".pinned-media-drawer");
+    if (!frame || !drawer) return;
+    frameRef.current = frame;
+    gesture.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      startedAt: performance.now(),
+      startHeight: window.innerHeight - drawer.getBoundingClientRect().top,
+      height: window.innerHeight - drawer.getBoundingClientRect().top,
+      moved: false,
+      previousHeight: frame.style.getPropertyValue("--pinned-drawer-live-height"),
+    };
+    if (event.nativeEvent.isTrusted) event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const updateResize = (event: ReactPointerEvent<HTMLElement>) => {
+    const current = gesture.current;
+    if (!current || current.pointerId !== event.pointerId) return;
+    const deltaY = current.startY - event.clientY;
+    const deltaX = current.startX - event.clientX;
+    if (!current.moved) {
+      if (Math.abs(deltaY) < DRAWER_DRAG_THRESHOLD || Math.abs(deltaY) < Math.abs(deltaX)) return;
+      current.moved = true;
+      event.currentTarget.closest(".pinned-media-drawer")?.classList.add("is-resizing");
+      frameRef.current?.classList.add("is-drawer-resizing");
+    }
+    const { discovery } = drawerHeightLimits(window.innerWidth, window.innerHeight);
+    current.height = clampDrawerHeight(current.startHeight + deltaY, discovery);
+    frameRef.current?.style.setProperty("--pinned-drawer-live-height", current.height + "px");
+  };
+
+  const cancelResize = (event: ReactPointerEvent<HTMLElement>) => {
+    const current = gesture.current;
+    if (!current || current.pointerId !== event.pointerId) return;
+    gesture.current = null;
+    stopResizing(event.currentTarget);
+    if (current.previousHeight) {
+      frameRef.current?.style.setProperty("--pinned-drawer-live-height", current.previousHeight);
+    } else {
+      clearCustomHeight();
+    }
+  };
+
+  const finishResize = (event: ReactPointerEvent<HTMLElement>) => {
+    const current = gesture.current;
+    if (!current || current.pointerId !== event.pointerId) return;
+    updateResize(event);
+    gesture.current = null;
+    stopResizing(event.currentTarget);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    if (!current.moved) return;
+
+    suppressHandleClick.current = true;
+    const distance = event.clientY - current.startY;
+    const quickSwipe = Math.abs(distance) >= 35 && performance.now() - current.startedAt < 280;
+    if (quickSwipe) {
+      clearCustomHeight();
+      onStageChange(shiftDrawerStage(stage, distance < 0 ? "up" : "down"));
+      return;
+    }
+    const nextStage = drawerStageForHeight(
+      current.height,
+      drawerHeightLimits(window.innerWidth, window.innerHeight).collection,
+    );
+    if (nextStage === "collapsed") clearCustomHeight();
+    onStageChange(nextStage);
+  };
+
+  const resizeGestureHandlers = {
+    onPointerDown: beginResize,
+    onPointerMove: updateResize,
+    onPointerUp: finishResize,
+    onPointerCancel: cancelResize,
+    onLostPointerCapture: cancelResize,
+  };
 
   const startHold = (card: ResolvedPinnedMediaCard, event: ReactPointerEvent<HTMLButtonElement>) => {
     if (event.button !== 0) return;
@@ -198,22 +313,19 @@ export function PinnedMediaDrawer({
         type="button"
         aria-expanded={stage !== "collapsed"}
         aria-label={stageLabel}
-        onPointerDown={(event) => {
-          gesture.current = { y: event.clientY, swiped: false };
-        }}
-        onPointerUp={(event) => {
-          const current = gesture.current;
-          if (current && Math.abs(current.y - event.clientY) > 24) {
-            current.swiped = true;
-            onStageChange(shiftDrawerStage(stage, event.clientY < current.y ? "up" : "down"));
-          }
+        {...resizeGestureHandlers}
+        onKeyDown={(event) => {
+          if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+          event.preventDefault();
+          clearCustomHeight();
+          onStageChange(shiftDrawerStage(stage, event.key === "ArrowUp" ? "up" : "down"));
         }}
         onClick={() => {
-          if (gesture.current?.swiped) {
-            gesture.current = null;
+          if (suppressHandleClick.current) {
+            suppressHandleClick.current = false;
             return;
           }
-          gesture.current = null;
+          clearCustomHeight();
           onStageChange(stage === "discovery" ? "collection" : shiftDrawerStage(stage, "up"));
         }}
       >
@@ -232,13 +344,13 @@ export function PinnedMediaDrawer({
       <div className="pinned-media-drawer-content">
         {cards.length > 0 ? (
           <section className="pinned-media-drawer-section" aria-label="Przypięta kolekcja">
-            <span className="pinned-media-drawer-section-label">Twoja kolekcja</span>
+            <span className="pinned-media-drawer-section-label" {...resizeGestureHandlers}>Twoja kolekcja</span>
             <div className="pinned-media-drawer-items pinned-media-drawer-collection">{cards.map(renderPinned)}</div>
           </section>
         ) : null}
         {showDiscovery ? (
           <section className="pinned-media-drawer-section" aria-label="Zdjęcia z obszaru mapy">
-            <span className="pinned-media-drawer-section-label">Zdjęcia z mapy</span>
+            <span className="pinned-media-drawer-section-label" {...resizeGestureHandlers}>Zdjęcia z mapy</span>
             {recommendedItems.length === 0 ? (
               <p className="pinned-media-drawer-hint">Brak zdjęć w widocznym obszarze mapy</p>
             ) : (
