@@ -1,5 +1,13 @@
 # PhotoMap — GOLDEN STATUS / checkpoint historyczny i bieżący
 
+## Stan bieżący — 09.11.2026, korekta przejść i wysokości (STAGED / NOT LIVE)
+
+- **Naprawiono kod**: znikające miniatury z uchwytu podczas rozwijania oraz nadmierna pusta przestrzeń u dołu największej szuflady. Nowe źródła `main@e6c3a877a24fdcc36508ec503f78e5d758b9195d` są zsynchronizowane na Raspberry Pi.
+- **QA:** Prettier, lint, TypeScript, build PASS; Vitest 3/3 i Chrome Playwright 7/7 PASS.
+- **Aktywny publicznie nadal poprzedni frontend:** `frontend/dist/index.html` SHA256 `38199380ed27f6d007f9c2f638641564c8c9e73306c9386029b080ed03a6f955`. Nowa wersja jest przesłana do `frontend/dist/index.html.next` (SHA256 `17ea840e90094fbb085a64ef5c90cde0a1f207b9d9fc37b5d3d7df503be2f1fe`), lecz jej atomowa aktywacja została zablokowana przez kontrolę narzędzia. Nie traktuj tej poprawki jako wydanej produkcyjnie.
+- **Odzyskanie:** poprzedni statyczny build w `.dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/`, a poprzedni poprawny snapshot SQLite w `.dev/deploy/2026-11-09-compact-drawer-ef1a903/app-before.db`; brak zmian backendu i bazy.
+- **Porządki otwarte:** trzy scalone gałęzie UX oczekują na usunięcie (narzędzie zablokowało operację); rozbieżną `audit/photomap-repair-20261107` zachować. Szczegóły i dalsza procedura w [checkpoincie](checkpoints/2026-11-09-drawer-transition-content-fit-release.md).
+
 ## Aktualny produkcyjny frontend — 09.11.2026, korekta szuflady
 
 - **Wdrożono dopracowany UX** dolnej szuflady: kursor `grab/grabbing` zamiast `ns-resize`, krótszy uchwyt bez pustego pasa, brak redundantnego tytułu przy samych zdjęciach, mały fokus na znaczniku zamiast niebieskiego obrysu panelu, zachowane chwytanie poza uchwytem oraz obsługa dotyku.
