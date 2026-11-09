@@ -37,6 +37,7 @@ type DrawerGesture = {
   height: number;
   moved: boolean;
   previousHeight: string;
+  captureTarget: HTMLElement;
 };
 
 export function PinnedMediaDrawer({
@@ -54,6 +55,7 @@ export function PinnedMediaDrawer({
 }: Props) {
   const gesture = useRef<DrawerGesture | null>(null);
   const frameRef = useRef<HTMLElement | null>(null);
+  const drawerRef = useRef<HTMLElement | null>(null);
   const suppressHandleClick = useRef(false);
   const hold = useRef<Hold | null>(null);
   const armedRef = useRef<string | null>(null);
@@ -110,10 +112,10 @@ export function PinnedMediaDrawer({
   }, [stage, clearCustomHeight]);
   useEffect(() => () => clearCustomHeight(), [clearCustomHeight]);
 
-  const stopResizing = (element: HTMLElement) => {
-    element.closest(".pinned-media-drawer")?.classList.remove("is-resizing");
+  const stopResizing = useCallback(() => {
+    drawerRef.current?.classList.remove("is-resizing");
     frameRef.current?.classList.remove("is-drawer-resizing");
-  };
+  }, []);
 
   const beginResize = (event: ReactPointerEvent<HTMLElement>) => {
     if (event.button !== 0 || gesture.current) return;
@@ -121,6 +123,7 @@ export function PinnedMediaDrawer({
     const drawer = event.currentTarget.closest<HTMLElement>(".pinned-media-drawer");
     if (!frame || !drawer) return;
     frameRef.current = frame;
+    drawerRef.current = drawer;
     gesture.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
@@ -130,11 +133,12 @@ export function PinnedMediaDrawer({
       height: window.innerHeight - drawer.getBoundingClientRect().top,
       moved: false,
       previousHeight: frame.style.getPropertyValue("--pinned-drawer-live-height"),
+      captureTarget: event.currentTarget,
     };
     if (event.nativeEvent.isTrusted) event.currentTarget.setPointerCapture(event.pointerId);
   };
 
-  const updateResize = (event: ReactPointerEvent<HTMLElement>) => {
+  const updateResize = useCallback((event: Pick<PointerEvent, "pointerId" | "clientX" | "clientY">) => {
     const current = gesture.current;
     if (!current || current.pointerId !== event.pointerId) return;
     const deltaY = current.startY - event.clientY;
@@ -142,64 +146,77 @@ export function PinnedMediaDrawer({
     if (!current.moved) {
       if (Math.abs(deltaY) < DRAWER_DRAG_THRESHOLD || Math.abs(deltaY) < Math.abs(deltaX)) return;
       current.moved = true;
-      event.currentTarget.closest(".pinned-media-drawer")?.classList.add("is-resizing");
+      drawerRef.current?.classList.add("is-resizing");
       frameRef.current?.classList.add("is-drawer-resizing");
     }
     const { discovery } = drawerHeightLimits(window.innerWidth, window.innerHeight);
     current.height = clampDrawerHeight(current.startHeight + deltaY, discovery);
     frameRef.current?.style.setProperty("--pinned-drawer-live-height", current.height + "px");
-  };
+  }, []);
 
-  const cancelResize = (event: ReactPointerEvent<HTMLElement>) => {
-    const current = gesture.current;
-    if (!current || current.pointerId !== event.pointerId) return;
-    gesture.current = null;
-    stopResizing(event.currentTarget);
-    if (current.previousHeight) {
-      frameRef.current?.style.setProperty("--pinned-drawer-live-height", current.previousHeight);
-    } else {
-      clearCustomHeight();
-    }
-  };
+  const cancelResize = useCallback(
+    (event: PointerEvent) => {
+      const current = gesture.current;
+      if (!current || current.pointerId !== event.pointerId) return;
+      gesture.current = null;
+      stopResizing();
+      if (current.previousHeight) {
+        frameRef.current?.style.setProperty("--pinned-drawer-live-height", current.previousHeight);
+      } else {
+        clearCustomHeight();
+      }
+    },
+    [clearCustomHeight, stopResizing],
+  );
 
-  const finishResize = (event: ReactPointerEvent<HTMLElement>) => {
-    const current = gesture.current;
-    if (!current || current.pointerId !== event.pointerId) return;
-    updateResize(event);
-    gesture.current = null;
-    stopResizing(event.currentTarget);
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-    if (!current.moved) return;
+  const finishResize = useCallback(
+    (event: PointerEvent) => {
+      const current = gesture.current;
+      if (!current || current.pointerId !== event.pointerId) return;
+      updateResize(event);
+      gesture.current = null;
+      stopResizing();
+      if (current.captureTarget.hasPointerCapture(event.pointerId)) {
+        current.captureTarget.releasePointerCapture(event.pointerId);
+      }
+      if (!current.moved) return;
 
-    suppressHandleClick.current = true;
-    // A native post-pointerup click is synchronous; synthetic pointer tests may emit none.
-    window.setTimeout(() => {
-      suppressHandleClick.current = false;
-    }, 0);
-    const distance = event.clientY - current.startY;
-    const quickSwipe = Math.abs(distance) >= 35 && performance.now() - current.startedAt < 280;
-    if (quickSwipe) {
-      clearCustomHeight();
-      onStageChange(shiftDrawerStage(stage, distance < 0 ? "up" : "down"));
-      return;
-    }
-    const nextStage = drawerStageForHeight(
-      current.height,
-      drawerHeightLimits(window.innerWidth, window.innerHeight).collection,
-    );
-    if (nextStage === "collapsed") clearCustomHeight();
-    onStageChange(nextStage);
-  };
+      suppressHandleClick.current = true;
+      window.setTimeout(() => {
+        suppressHandleClick.current = false;
+      }, 0);
+      const distance = event.clientY - current.startY;
+      const quickSwipe = Math.abs(distance) >= 35 && performance.now() - current.startedAt < 280;
+      if (quickSwipe) {
+        clearCustomHeight();
+        onStageChange(shiftDrawerStage(stage, distance < 0 ? "up" : "down"));
+        return;
+      }
+      const nextStage = drawerStageForHeight(
+        current.height,
+        drawerHeightLimits(window.innerWidth, window.innerHeight).collection,
+      );
+      if (nextStage === "collapsed") clearCustomHeight();
+      onStageChange(nextStage);
+    },
+    [clearCustomHeight, onStageChange, stage, stopResizing, updateResize],
+  );
 
-  const resizeGestureHandlers = {
-    onPointerDown: beginResize,
-    onPointerMove: updateResize,
-    onPointerUp: finishResize,
-    onPointerCancel: cancelResize,
-    onLostPointerCapture: cancelResize,
-  };
+  // Pointer events continue outside the visual 30px grabber. Native capture is
+  // retained when available, but document listeners also cover synthetic touch
+  // tests and browsers that dispatch a move over the map after leaving the handle.
+  useEffect(() => {
+    document.addEventListener("pointermove", updateResize);
+    document.addEventListener("pointerup", finishResize);
+    document.addEventListener("pointercancel", cancelResize);
+    return () => {
+      document.removeEventListener("pointermove", updateResize);
+      document.removeEventListener("pointerup", finishResize);
+      document.removeEventListener("pointercancel", cancelResize);
+    };
+  }, [cancelResize, finishResize, updateResize]);
+
+  const resizeGestureHandlers = { onPointerDown: beginResize };
 
   const startHold = (card: ResolvedPinnedMediaCard, event: ReactPointerEvent<HTMLButtonElement>) => {
     if (event.button !== 0) return;
