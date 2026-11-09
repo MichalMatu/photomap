@@ -17,6 +17,24 @@ test("desktop discovery drawer renders map recommendations and opens the existin
   await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(2);
   await expect(drawer).toHaveAttribute("data-stage", "collection");
 
+  // The photo-only sheet is a compact gallery, not a tall empty grab bar or a redundant heading.
+  const handle = drawer.locator(".pinned-media-drawer-handle");
+  await expect(handle).toHaveCSS("cursor", "grab");
+  await expect(handle).toHaveCSS("height", "30px");
+  await expect(drawer.locator(".pinned-media-drawer-section-label")).toHaveCount(0);
+  const handleArea = await handle.boundingBox();
+  const firstImage = await drawer.locator(".pinned-media-drawer-item img").first().boundingBox();
+  const sheetArea = await drawer.boundingBox();
+  if (!handleArea || !firstImage || !sheetArea) throw new Error("Photo sheet layout is not measurable");
+  expect(firstImage.y - sheetArea.y).toBeLessThan(46);
+  await handle.focus();
+  await expect(handle).toHaveCSS("box-shadow", "none");
+  const focusAppearance = await handle.evaluate((element) => ({
+    focused: element.matches(":focus-visible"),
+    grabberOutline: getComputedStyle(element.querySelector(".pinned-media-drawer-grab-line")!).outlineStyle,
+  }));
+  if (focusAppearance.focused) expect(focusAppearance.grabberOutline).toBe("solid");
+
   const bounds = await drawer.boundingBox();
   if (!bounds) throw new Error("Discovery drawer is not measurable");
   expect(bounds.height).toBeGreaterThanOrEqual(300);
