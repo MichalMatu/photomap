@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-fit-pi-backup-v3",
+  "task_digest": "896f4da3960b592de67d475b61db960b0a07794d73c9ad135791b955f3fcd01e",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T16:31:30.344356+00:00",
+  "attempt_id": "6977671bd5cbbe4429adfe7b",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 12591,
+  "updated_at": "2026-11-09T16:31:30.570645+00:00",
+  "pid": 12591
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-drawer-compact-prod-deploy-20261109-v1",
+  "task_digest": "2f4d942c80954a6893a7f8a17304937c1fe6e66f2c724b2175d12f605fe1cf5b",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T15:58:04.908585+00:00",
+  "attempt_id": "191579d373cc732e7c78509d",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 65609,
+  "updated_at": "2026-11-09T15:58:05.349763+00:00",
+  "pid": 65609
+}

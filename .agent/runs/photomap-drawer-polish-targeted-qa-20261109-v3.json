@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-drawer-polish-targeted-qa-20261109-v3",
+  "task_digest": "125af2c8d03b2d5b3c998c981b88672159ad10ca9a671eb84ede28aea9a01059",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T15:42:22.233573+00:00",
+  "attempt_id": "fb6950112a89418514045fbc",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 43685,
+  "updated_at": "2026-11-09T15:42:22.715950+00:00",
+  "pid": 43685
+}

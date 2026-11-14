@@ -1,0 +1,61 @@
+{
+  "allow_write": true,
+  "attempt_id": "73af4552daf53d2ad3b72315",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 724,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && test -s .dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/index.html && test -s .dev/deploy/2026-11-09-compact-drawer-ef1a903/app-before.db && test \"$(git rev-parse HEAD)\" = 372716c98f72d8a27c5895e06115d643dd092ef1 && test -z \"$(git status --porcelain)\" && git fetch origin main && test \"$(git rev-parse origin/main)\" = e6c3a877a24fdcc36508ec503f78e5d758b9195d && git merge --ff-only origin/main && git rev-parse HEAD && git status --short --branch'",
+      "current_rss_mb": 4.62,
+      "elapsed_seconds": 2.948,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "From https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\n   372716c..e6c3a87  main       -> origin/main\nUpdating 372716c..e6c3a87\nFast-forward\n ...-11-09-drawer-transition-content-fit-release.md | 19 ++++++\n frontend/e2e/visual/discovery-drawer.spec.ts       | 76 ++++++++++++++++++++++\n .../map/pinned-media/PinnedMediaDrawer.tsx         | 64 ++++++++++++++++--\n frontend/src/styles/map.css                        |  8 ++-\n frontend/src/styles/pinned-media.css               | 11 +++-\n 5 files changed, 168 insertions(+), 10 deletions(-)\n create mode 100644 docs/checkpoints/2026-11-09-drawer-transition-content-fit-release.md\ne6c3a877a24fdcc36508ec503f78e5d758b9195d\n## main...origin/main\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 4.62,
+      "stage_index": 1,
+      "stage_name": "pi-fastforward",
+      "stage_phase": "commands",
+      "stage_timeout": 290,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T16:33:44.281255+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.071,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.081,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-fit-pi-ff-v6",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 2.948,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "pi-fastforward",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T16:33:39.737799+00:00",
+  "status": "done",
+  "task_digest": "4b56b4eec88afc2101edb087af1dc37f58c1240f1ae92b026070dfb91ca214cd",
+  "task_timeout": 480,
+  "verification": [],
+  "work_branch": "main"
+}

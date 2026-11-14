@@ -1,0 +1,62 @@
+{
+  "allow_write": true,
+  "attempt_id": "191579d373cc732e7c78509d",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1229,
+      "command": "set -euo pipefail\ntest \"$(git rev-parse HEAD)\" = \"ef1a903a74dfd3df588f7598fa378126c55865c6\"\ntest -z \"$(git status --porcelain)\"\ncd frontend\nVITE_API_BASE_URL= npm run build\ntest -s dist/index.html\necho RELEASE_INDEX_SHA256\nshasum -a 256 dist/index.html\necho RELEASE_ASSETS\ngrep -oE '/assets/[^\"]+\\\\.(js|css)' dist/index.html | head -n 15",
+      "current_rss_mb": 389.7,
+      "elapsed_seconds": 40.224,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "\n> build\n> npm run typecheck && vite build\n\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\nvite v6.4.3 building for production...\ntransforming...\n✓ 2239 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                            3.00 kB │ gzip:  0.98 kB\ndist/assets/map-vendor-CIGW-MKW.css       15.61 kB │ gzip:  6.46 kB\ndist/assets/admin-C9VWJiZt.css            52.93 kB │ gzip:  7.86 kB\ndist/assets/index-BeBTM2BB.css           102.42 kB │ gzip: 17.48 kB\ndist/assets/PlaceDetailPage-B8B3z7Yn.js    3.45 kB │ gzip:  1.50 kB\ndist/assets/index-CgV_TFTO.js              3.50 kB │ gzip:  1.58 kB\ndist/assets/GuidesPage-Dj0MhP8P.js         8.53 kB │ gzip:  3.22 kB\ndist/assets/query-vendor-BLe33XlG.js      37.91 kB │ gzip: 11.44 kB\ndist/assets/react-vendor-GxMAwJfR.js     142.96 kB │ gzip: 45.76 kB\ndist/assets/map-vendor-DB9AUs6p.js       154.72 kB │ gzip: 45.15 kB\ndist/assets/admin-CgMUhYpv.js            187.30 kB │ gzip: 52.09 kB\ndist/assets/public-map-CcCrSDoE.js       217.77 kB │ gzip: 66.32 kB\n✓ built in 5.73s\nRELEASE_INDEX_SHA256\n38199380ed27f6d007f9c2f638641564c8c9e73306c9386029b080ed03a6f955  dist/index.html\nRELEASE_ASSETS\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 409.69,
+      "stage_index": 1,
+      "stage_name": "build-release-from-exact-main",
+      "stage_phase": "commands",
+      "stage_timeout": 350,
+      "stage_total": 6,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T15:58:04.908585+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.086,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.188,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-drawer-compact-prod-deploy-20261109-v1",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 40.224,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "build-release-from-exact-main",
+      "stage_phase": "commands",
+      "stage_total": 6
+    }
+  ],
+  "started_at": "2026-11-09T15:57:19.354795+00:00",
+  "status": "failed",
+  "task_digest": "2f4d942c80954a6893a7f8a17304937c1fe6e66f2c724b2175d12f605fe1cf5b",
+  "task_timeout": 2400,
+  "verification": [],
+  "work_branch": "main"
+}

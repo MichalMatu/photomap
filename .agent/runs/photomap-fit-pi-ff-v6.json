@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-fit-pi-ff-v6",
+  "task_digest": "4b56b4eec88afc2101edb087af1dc37f58c1240f1ae92b026070dfb91ca214cd",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T16:33:44.281255+00:00",
+  "attempt_id": "73af4552daf53d2ad3b72315",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 15629,
+  "updated_at": "2026-11-09T16:33:44.507645+00:00",
+  "pid": 15629
+}

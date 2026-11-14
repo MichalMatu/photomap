@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-fit-final-browser-v11",
+  "task_digest": "d6ca4d9cb4dc773b729d27a17cfa32830f1c4854d702921ca77997249a1d2c77",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T16:24:11.776396+00:00",
+  "attempt_id": "61a2321d7d512ff44fee0e2c",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 1302,
+  "updated_at": "2026-11-09T16:24:12.067037+00:00",
+  "pid": 1302
+}

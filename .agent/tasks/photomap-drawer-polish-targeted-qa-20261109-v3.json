@@ -1,0 +1,22 @@
+{
+  "id": "photomap-drawer-polish-targeted-qa-20261109-v3",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/photo-drawer-compact-polish-20261109",
+  "allow_write": false,
+  "resources": [],
+  "task_timeout": 1500,
+  "command_timeout": 850,
+  "steps": [
+    {
+      "name": "focused-typed-build-and-drawer-unit",
+      "command": "cd frontend && npm run lint && ./node_modules/.bin/vitest run src/components/map/pinned-media/pinnedMediaDrawerStage.test.ts && npm run build",
+      "timeout": 550
+    },
+    {
+      "name": "serialized-chrome-drawer-e2e",
+      "command": "cd frontend && E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ../scripts/quality/e2e.sh e2e/visual/discovery-drawer.spec.ts e2e/visual/pinned-media-drawer.spec.ts --workers=1",
+      "timeout": 850
+    }
+  ]
+}

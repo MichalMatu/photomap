@@ -1,0 +1,16 @@
+{
+  "id": "photomap-fit-pi-ff-v6",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "task_timeout": 480,
+  "steps": [
+    {
+      "name": "pi-fastforward",
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && test -s .dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/index.html && test -s .dev/deploy/2026-11-09-compact-drawer-ef1a903/app-before.db && test \"$(git rev-parse HEAD)\" = 372716c98f72d8a27c5895e06115d643dd092ef1 && test -z \"$(git status --porcelain)\" && git fetch origin main && test \"$(git rev-parse origin/main)\" = e6c3a877a24fdcc36508ec503f78e5d758b9195d && git merge --ff-only origin/main && git rev-parse HEAD && git status --short --branch'",
+      "timeout": 290
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "allow_write": false,
+  "attempt_id": "1e5352e975a38d04ebfecab4",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 526,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git status --short --branch && git rev-parse HEAD && sha256sum frontend/dist/index.html frontend/dist/index.html.next && ls -lh .dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/index.html .dev/deploy/2026-11-09-compact-drawer-ef1a903/app-before.db && systemctl is-active photomap.service cloudflared.service && systemctl show photomap.service cloudflared.service -p MainPID && curl -fsS --max-time 10 http://127.0.0.1:8000/health'",
+      "current_rss_mb": 1.55,
+      "elapsed_seconds": 0.587,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "## main...origin/main\ne6c3a877a24fdcc36508ec503f78e5d758b9195d\n38199380ed27f6d007f9c2f638641564c8c9e73306c9386029b080ed03a6f955  frontend/dist/index.html\n17ea840e90094fbb085a64ef5c90cde0a1f207b9d9fc37b5d3d7df503be2f1fe  frontend/dist/index.html.next\n-rw-r--r-- 1 michal michal  19M Nov  9 16:59 .dev/deploy/2026-11-09-compact-drawer-ef1a903/app-before.db\n-rw-r--r-- 1 michal michal 3.0K Nov  9 16:58 .dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/index.html\nactive\nactive\nMainPID=2669406\n\nMainPID=222848\n{\"status\":\"ok\"}",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 1.55,
+      "stage_index": 1,
+      "stage_name": "verify-staged-release-and-rollback",
+      "stage_phase": "commands",
+      "stage_timeout": 280,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T16:41:56.163514+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.068,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.08,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-release-retry-preflight-20261109-v1",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.587,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "verify-staged-release-and-rollback",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T16:41:53.733241+00:00",
+  "status": "done",
+  "task_digest": "d73b37132b629be48403ed19f651a0a1234879a6d7a7bf673d00a9a1efc8a3c1",
+  "task_timeout": 500,
+  "verification": [],
+  "work_branch": "main"
+}

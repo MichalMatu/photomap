@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-fit-stage-v8",
+  "task_digest": "94a5dcbccbe1b33f023bb5841a7d3abed7b0b4785716a495768f02d6cf1fa380",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T16:34:48.877769+00:00",
+  "attempt_id": "621e70cb7ac6e3c64e9409fc",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 17240,
+  "updated_at": "2026-11-09T16:34:49.104977+00:00",
+  "pid": 17240
+}

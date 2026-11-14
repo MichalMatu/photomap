@@ -1,0 +1,31 @@
+{
+  "id": "photomap-drawer-content-fit-qa-20261109-v1",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/drawer-transition-content-fit-20261109",
+  "allow_write": true,
+  "resources": [],
+  "task_timeout": 1800,
+  "steps": [
+    {
+      "name": "preflight-and-prettier",
+      "command": "git status --short --branch && git rev-parse HEAD && cd frontend && ./node_modules/.bin/prettier --write src/components/map/pinned-media/PinnedMediaDrawer.tsx src/styles/pinned-media.css src/styles/map.css e2e/visual/discovery-drawer.spec.ts && ./node_modules/.bin/prettier --check src/components/map/pinned-media/PinnedMediaDrawer.tsx src/styles/pinned-media.css src/styles/map.css e2e/visual/discovery-drawer.spec.ts",
+      "timeout": 180
+    },
+    {
+      "name": "static-and-unit-build",
+      "command": "cd frontend && npm run lint && ./node_modules/.bin/vitest run src/components/map/pinned-media/pinnedMediaDrawerStage.test.ts && npm run build",
+      "timeout": 420
+    },
+    {
+      "name": "chrome-gesture-and-drawer-regression",
+      "command": "cd frontend && E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ../scripts/quality/e2e.sh e2e/visual/discovery-drawer.spec.ts e2e/visual/pinned-media-drawer.spec.ts --workers=1",
+      "timeout": 800
+    },
+    {
+      "name": "publish-format-only-if-needed",
+      "command": "git add frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx frontend/src/styles/pinned-media.css frontend/src/styles/map.css frontend/e2e/visual/discovery-drawer.spec.ts && git diff --cached --check && (git diff --cached --quiet || git commit -m 'style(drawer): format verified transition and fit changes') && git push origin HEAD:refs/heads/fix/drawer-transition-content-fit-20261109 && git status --short --branch && git rev-parse HEAD",
+      "timeout": 180
+    }
+  ]
+}

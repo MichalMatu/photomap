@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-release-retry-preflight-20261109-v1",
+  "task_digest": "d73b37132b629be48403ed19f651a0a1234879a6d7a7bf673d00a9a1efc8a3c1",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T16:41:56.163514+00:00",
+  "attempt_id": "1e5352e975a38d04ebfecab4",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 26137,
+  "updated_at": "2026-11-09T16:41:56.393059+00:00",
+  "pid": 26137
+}

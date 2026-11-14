@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-drawer-pointer-debug-20261109-v5",
+  "task_digest": "a0851a09ebd761d4d6a7db1f5987d8dd9aad67eea8d7fe9110735fedef7c8287",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T15:47:37.228384+00:00",
+  "attempt_id": "d395c32431995123fde67388",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 53281,
+  "updated_at": "2026-11-09T15:47:37.692265+00:00",
+  "pid": 53281
+}

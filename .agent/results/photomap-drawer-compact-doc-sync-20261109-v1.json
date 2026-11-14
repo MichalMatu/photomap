@@ -1,0 +1,61 @@
+{
+  "allow_write": true,
+  "attempt_id": "9667bb853af9d362eb9da919",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 605,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git status --short --branch && git fetch origin main && git merge --ff-only origin/main && git rev-parse HEAD && git status --short --branch && sha256sum frontend/dist/index.html && systemctl is-active photomap.service cloudflared.service && systemctl show photomap.service cloudflared.service -p MainPID'",
+      "current_rss_mb": 4.61,
+      "elapsed_seconds": 2.342,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "## main...origin/main\nFrom https://github.com/MichalMatu/photomap\n * branch            main       -> FETCH_HEAD\n   ef1a903..372716c  main       -> origin/main\nUpdating ef1a903..372716c\nFast-forward\n docs/GOLDEN_STATUS.md                                         |  8 ++++++++\n docs/checkpoints/2026-11-09-photo-drawer-compact-ux-polish.md | 10 ++++++++--\n 2 files changed, 16 insertions(+), 2 deletions(-)\n372716c98f72d8a27c5895e06115d643dd092ef1\n## main...origin/main\n38199380ed27f6d007f9c2f638641564c8c9e73306c9386029b080ed03a6f955  frontend/dist/index.html\nactive\nactive\nMainPID=2669406\n\nMainPID=222848\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 4.61,
+      "stage_index": 1,
+      "stage_name": "fast-forward-release-documentation-on-pi",
+      "stage_phase": "commands",
+      "stage_timeout": 200,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T16:01:03.897376+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.072,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.094,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-drawer-compact-doc-sync-20261109-v1",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 2.342,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "fast-forward-release-documentation-on-pi",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T16:00:59.705239+00:00",
+  "status": "done",
+  "task_digest": "902c69a0ea6c3db08aa961602325f600f5fd9a09abdc06b652a34130bd72988d",
+  "task_timeout": 500,
+  "verification": [],
+  "work_branch": "main"
+}

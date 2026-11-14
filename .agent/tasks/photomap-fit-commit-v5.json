@@ -1,0 +1,16 @@
+{
+  "id": "photomap-fit-commit-v5",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/drawer-transition-content-fit-20261109",
+  "allow_write": true,
+  "resources": [],
+  "task_timeout": 400,
+  "steps": [
+    {
+      "name": "commit-format",
+      "command": "git add frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx frontend/e2e/visual/discovery-drawer.spec.ts && git diff --cached --check && git commit -m 'style: format drawer' && git push origin HEAD:refs/heads/fix/drawer-transition-content-fit-20261109 && git rev-parse HEAD && git status --short --branch",
+      "timeout": 260
+    }
+  ]
+}

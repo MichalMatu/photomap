@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-fit-verify-staged-v10",
+  "task_digest": "3ffb2da9b800b290b3b81cd2f13e58e985016322b0f8e212c185880ddbf21c7a",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T16:35:44.877090+00:00",
+  "attempt_id": "0d911bf1b08b8d6454745c5f",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 18659,
+  "updated_at": "2026-11-09T16:35:45.125819+00:00",
+  "pid": 18659
+}

@@ -1,0 +1,21 @@
+{
+  "id": "photomap-fit-stage-v8",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "task_timeout": 600,
+  "steps": [
+    {
+      "name": "sync-static-assets",
+      "command": "cd frontend && RSYNC_RSH='ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8' rsync -az --exclude=index.html dist/ michal@192.168.0.23:/home/michal/src/PhotoMaps/frontend/dist/",
+      "timeout": 220
+    },
+    {
+      "name": "stage-next-index",
+      "command": "cd frontend && RSYNC_RSH='ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8' rsync -az dist/index.html michal@192.168.0.23:/home/michal/src/PhotoMaps/frontend/dist/index.html.next && shasum -a 256 dist/index.html",
+      "timeout": 220
+    }
+  ]
+}

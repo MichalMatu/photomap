@@ -1,0 +1,15 @@
+{
+  "id": "cancel-photomap-drawer-polish-full-20261109-v1",
+  "action": "cancel_task",
+  "status": "accepted",
+  "daemon_version": "4.20.16",
+  "updated_at": "2026-11-09T15:39:20.854295+00:00",
+  "repository_id": "photomap",
+  "repository": "MichalMatu/photomap",
+  "control_branch": "agent-control",
+  "default_branch": "main",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "work_mode": "managed",
+  "task_id": "photomap-drawer-polish-qa-20261109-v1",
+  "result": "terminating_active_task"
+}

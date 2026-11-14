@@ -1,0 +1,16 @@
+{
+  "id": "photomap-fit-db-cli-v4",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "task_timeout": 300,
+  "steps": [
+    {
+      "name": "check-db-tool",
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'command -v sqlite3; ls -lh /home/michal/src/PhotoMaps/backend/data/app.db'",
+      "timeout": 140
+    }
+  ]
+}

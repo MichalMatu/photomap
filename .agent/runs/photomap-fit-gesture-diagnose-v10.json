@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-fit-gesture-diagnose-v10",
+  "task_digest": "320ba096b109e37ecdb5a9f892dc359c3fb753232dce3708c1d4d49b1b8a9af2",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T16:22:49.584554+00:00",
+  "attempt_id": "793249024bd29ad0a843560a",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 99351,
+  "updated_at": "2026-11-09T16:22:50.044266+00:00",
+  "pid": 99351
+}

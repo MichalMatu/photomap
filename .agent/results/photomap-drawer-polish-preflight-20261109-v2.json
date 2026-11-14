@@ -1,0 +1,61 @@
+{
+  "allow_write": false,
+  "attempt_id": "94600f47fbb2822ab5c58df1",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1419,
+      "command": "git status --short --branch && git rev-parse HEAD && git diff --check && free -h 2>/dev/null || vm_stat && uptime && test -x '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'",
+      "current_rss_mb": 3.0,
+      "elapsed_seconds": 0.509,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "## agent-work...origin/fix/photo-drawer-compact-polish-20261109\nfdc04d730431ef5bf3093ce2fb6e60f78cea711c\nMach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free:                                     4323.\nPages active:                                  78370.\nPages inactive:                                71303.\nPages speculative:                              5964.\nPages throttled:                                   0.\nPages wired down:                              90427.\nPages purgeable:                                  10.\n\"Translation faults\":                    19705169936.\nPages copy-on-write:                       961811366.\nPages zero filled:                        5065395716.\nPages reactivated:                        4510953519.\nPages purged:                              635531835.\nFile-backed pages:                             59744.\nAnonymous pages:                               95893.\nPages stored in compressor:                   925559.\nPages occupied by compressor:                 238141.\nDecompressions:                           4976694230.\nCompressions:                             5386590999.\nPageins:                                   459098174.\nPageouts:                                    1527656.\nSwapins:                                   285350637.\nSwapouts:                                  299440868.\n16:40  up 3 days,  6:05, 3 users, load averages: 13.52 12.82 10.03\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 3.0,
+      "stage_index": 1,
+      "stage_name": "repo-and-mac-preflight",
+      "stage_phase": "commands",
+      "stage_timeout": 120,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T15:40:35.505031+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.079,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.093,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-drawer-polish-preflight-20261109-v2",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.509,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "repo-and-mac-preflight",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T15:40:31.882527+00:00",
+  "status": "done",
+  "task_digest": "e8c75c5f654fb7279196f3722d87540a3feaf9f7253a3727e0f01e9e87d11fd5",
+  "task_timeout": 400,
+  "verification": [],
+  "work_branch": "fix/photo-drawer-compact-polish-20261109"
+}

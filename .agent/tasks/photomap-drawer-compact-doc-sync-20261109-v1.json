@@ -1,0 +1,16 @@
+{
+  "id": "photomap-drawer-compact-doc-sync-20261109-v1",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "task_timeout": 500,
+  "steps": [
+    {
+      "name": "fast-forward-release-documentation-on-pi",
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git status --short --branch && git fetch origin main && git merge --ff-only origin/main && git rev-parse HEAD && git status --short --branch && sha256sum frontend/dist/index.html && systemctl is-active photomap.service cloudflared.service && systemctl show photomap.service cloudflared.service -p MainPID'",
+      "timeout": 200
+    }
+  ]
+}

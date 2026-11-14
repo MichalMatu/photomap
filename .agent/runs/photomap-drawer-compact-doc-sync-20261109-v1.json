@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-drawer-compact-doc-sync-20261109-v1",
+  "task_digest": "902c69a0ea6c3db08aa961602325f600f5fd9a09abdc06b652a34130bd72988d",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T16:01:03.897376+00:00",
+  "attempt_id": "9667bb853af9d362eb9da919",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 70179,
+  "updated_at": "2026-11-09T16:01:04.382177+00:00",
+  "pid": 70179
+}

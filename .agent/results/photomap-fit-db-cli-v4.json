@@ -1,0 +1,61 @@
+{
+  "allow_write": false,
+  "attempt_id": "7e8c575c3971f70cf7a4243b",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 91,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'command -v sqlite3; ls -lh /home/michal/src/PhotoMaps/backend/data/app.db'",
+      "current_rss_mb": 1.7,
+      "elapsed_seconds": 0.664,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "-rw-rw---- 1 michal michal 19M Nov  1 00:38 /home/michal/src/PhotoMaps/backend/data/app.db\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 1.7,
+      "stage_index": 1,
+      "stage_name": "check-db-tool",
+      "stage_phase": "commands",
+      "stage_timeout": 140,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T16:32:26.399626+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.073,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.1,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-fit-db-cli-v4",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.664,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "check-db-tool",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T16:32:24.218236+00:00",
+  "status": "done",
+  "task_digest": "c2d322d3a1e185d92ee27129fabf1e5870b49fae19f539f5a410a54ebe4abd33",
+  "task_timeout": 300,
+  "verification": [],
+  "work_branch": "main"
+}

@@ -1,0 +1,91 @@
+{
+  "allow_write": false,
+  "attempt_id": "df6a0d14207b559673779093",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1277,
+      "command": "cd frontend && npm run lint && npm run build",
+      "current_rss_mb": 460.14,
+      "elapsed_seconds": 17.164,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "\n> lint\n> npm run typecheck && eslint . --max-warnings=0\n\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\n\n> build\n> npm run typecheck && vite build\n\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\nvite v6.4.3 building for production...\ntransforming...\n✓ 2239 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                            3.00 kB │ gzip:  0.98 kB\ndist/assets/map-vendor-CIGW-MKW.css       15.61 kB │ gzip:  6.46 kB\ndist/assets/admin-C9VWJiZt.css            52.93 kB │ gzip:  7.86 kB\ndist/assets/index-DDeBuBh1.css           102.59 kB │ gzip: 17.50 kB\ndist/assets/PlaceDetailPage-CPBZXpjy.js    3.45 kB │ gzip:  1.50 kB\ndist/assets/index-ND9VD85b.js              3.50 kB │ gzip:  1.57 kB\ndist/assets/GuidesPage-Cwnrb04t.js         8.53 kB │ gzip:  3.22 kB\ndist/assets/query-vendor-BLe33XlG.js      37.91 kB │ gzip: 11.44 kB\ndist/assets/react-vendor-GxMAwJfR.js     142.96 kB │ gzip: 45.76 kB\ndist/assets/map-vendor-DB9AUs6p.js       154.72 kB │ gzip: 45.15 kB\ndist/assets/admin-2pqBE5Cj.js            187.30 kB │ gzip: 52.10 kB\ndist/assets/public-map-BNLpoUO2.js       218.85 kB │ gzip: 66.72 kB\n✓ built in 2.04s\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 540.27,
+      "stage_index": 1,
+      "stage_name": "static",
+      "stage_phase": "commands",
+      "stage_timeout": 500,
+      "stage_total": 2,
+      "timed_out": false
+    },
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 4972,
+      "command": "cd frontend && E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ../scripts/quality/e2e.sh e2e/visual/discovery-drawer.spec.ts e2e/visual/pinned-media-drawer.spec.ts --workers=1",
+      "current_rss_mb": 349.66,
+      "elapsed_seconds": 45.656,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "Backend: http://127.0.0.1:18080, PID 96083\nFrontend: http://127.0.0.1:15174, PID 96118\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:96146) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 7 tests using 1 worker\n\n(node:96161) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  1 [chromium] › e2e/visual/discovery-drawer.spec.ts:6:5 › desktop discovery drawer renders map recommendations and opens the existing place gallery (3.7s)\n  ✘  2 [chromium] › e2e/visual/discovery-drawer.spec.ts:51:5 › drawer handle follows a slow drag without jumping between predefined heights (2.9s)\n(node:96462) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  3 [chromium] › e2e/visual/discovery-drawer.spec.ts:94:5 › touch-style drawer swipe changes stages and does not open photos (985ms)\n  ✘  4 [chromium] › e2e/visual/discovery-drawer.spec.ts:126:5 › collapsed thumbnail preview does not bleed through the grabber while expanding (12.7s)\n(node:96846) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  5 [chromium] › e2e/visual/discovery-drawer.spec.ts:155:5 › discovery size follows its rendered photo rows instead of leaving a giant bottom gap (2.7s)\n  ✓  6 [chromium] › e2e/visual/pinned-media-drawer.spec.ts:7:5 › mobile pin mode and bottom drawer survive reload (8.7s)\n  ✓  7 [chromium] › e2e/visual/pinned-media-drawer.spec.ts:170:5 › long hold removes only the pinned collection entry after central button click (2.9s)\n\n\n  1) [chromium] › e2e/visual/discovery-drawer.spec.ts:51:5 › drawer handle follows a slow drag without jumping between predefined heights \n\n    Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n    Expected: > \u001b[32m366\u001b[39m\n    Received:   \u001b[31m336\u001b[39m\n\n      75 |   const attribution = await page.getByTestId(\"map-attribution\").boundingBox();\n      76 |   if (!during || !map || !attribution) throw new Error(\"Resizing elements not measurable\");\n    > 77 |   expect(during.height).toBeGreaterThan(before.height + 30);\n         |                         ^\n      78 |   expect(during.height).toBeLessThan(before.height + 55);\n      79 |   expect(map.height).toBeLessThan(800 - before.height - 30);\n      80 |   expect(attribution.y + attribution.height).toBeLessThanOrEqual(during.y - 4);\n        at /Users/michal/agent-workspace/repos/photomap/work/frontend/e2e/visual/discovery-drawer.spec.ts:77:25\n\n    Error Context: test-results/visual-discovery-drawer-dr-e6023--between-predefined-heights-chromium/error-context.md\n\n  2) [chromium] › e2e/visual/discovery-drawer.spec.ts:126:5 › collapsed thumbnail preview does not bleed through the grabber while expanding \n\n    Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveClass\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\n    Locator: getByTestId('pinned-media-drawer')\n    Expected pattern: \u001b[32m/is-resizing/\u001b[39m\n    Received string:  \u001b[31m\"pinned-media-drawer pinned-media-drawer--collapsed\"\u001b[39m\n    Timeout: 10000ms\n\n    Call log:\n    \u001b[2m  - Expect \"toHaveClass\" with timeout 10000ms\u001b[22m\n    \u001b[2m  - waiting for getByTestId('pinned-media-drawer')\u001b[22m\n    \u001b[2m    24 × locator resolved to <section data-stage=\"collapsed\" aria-label=\"Galeria zdjęć z mapy\" data-testid=\"pinned-media-drawer\" class=\"pinned-media-drawer pinned-media-drawer--collapsed\">…</section>\u001b[22m\n    \u001b[2m       - unexpected value \"pinned-media-drawer pinned-media-drawer--collapsed\"\u001b[22m\n\n\n      142 |   await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2 - 64, { steps: 10 });\n      143 |\n    > 144 |   await expect(drawer).toHaveClass(/is-resizing/);\n          |                        ^\n      145 |   await expect(drawer.locator(\".pinned-media-drawer-handle-thumbs\")).toHaveCount(0);\n      146 |   await expect(drawer.locator(\".pinned-media-drawer-grab-line\")).toHaveCount(1);\n      147 |   await expect(handle).toHaveCSS(\"overflow\", \"hidden\");\n        at /Users/michal/agent-workspace/repos/photomap/work/frontend/e2e/visual/discovery-drawer.spec.ts:144:24\n\n    Error Context: test-results/visual-discovery-drawer-co-ae155-the-grabber-while-expanding-chromium/error-context.md\n\n  2 failed\n    [chromium] › e2e/visual/discovery-drawer.spec.ts:51:5 › drawer handle follows a slow drag without jumping between predefined heights \n    [chromium] › e2e/visual/discovery-drawer.spec.ts:126:5 › collapsed thumbnail preview does not bleed through the grabber while expanding \n  5 passed (40.9s)\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 515.52,
+      "stage_index": 2,
+      "stage_name": "browser",
+      "stage_phase": "commands",
+      "stage_timeout": 900,
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T16:20:44.672952+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.072,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.106,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-fit-qa-v9",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 17.164,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "static",
+      "stage_phase": "commands",
+      "stage_total": 2
+    },
+    {
+      "elapsed_seconds": 45.656,
+      "outcome": "failed",
+      "stage_index": 2,
+      "stage_name": "browser",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-09T16:19:39.790748+00:00",
+  "status": "failed",
+  "task_digest": "151e78c602007179894387713d2c5786f33d4828e3a1a48dc1f298ce8ee518e5",
+  "task_timeout": 1500,
+  "verification": [],
+  "work_branch": "fix/drawer-transition-content-fit-20261109"
+}

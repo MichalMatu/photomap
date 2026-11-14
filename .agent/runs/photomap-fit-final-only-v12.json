@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-fit-final-only-v12",
+  "task_digest": "e70649a48e66582cfb588053973e2f6701ff1d71924e81fb29a9619e5ea93ab0",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T16:25:16.406625+00:00",
+  "attempt_id": "1ab9c2478acabe8787633a09",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 3568,
+  "updated_at": "2026-11-09T16:25:16.648667+00:00",
+  "pid": 3568
+}

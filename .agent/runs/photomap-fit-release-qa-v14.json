@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-fit-release-qa-v14",
+  "task_digest": "bd1fd898a69675d01e1f35b531684ed09e70fa068d9a59a78be4a9af17e40be4",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T16:27:57.550696+00:00",
+  "attempt_id": "23e2392b42ff355bee6745b3",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 5958,
+  "updated_at": "2026-11-09T16:27:57.818292+00:00",
+  "pid": 5958
+}

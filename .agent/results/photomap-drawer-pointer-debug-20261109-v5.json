@@ -1,0 +1,62 @@
+{
+  "allow_write": false,
+  "attempt_id": "d395c32431995123fde67388",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 2865,
+      "command": "cd frontend && E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ../scripts/quality/e2e.sh e2e/visual/discovery-drawer.spec.ts --grep 'drawer handle follows' --workers=1",
+      "current_rss_mb": 351.16,
+      "elapsed_seconds": 11.439,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "Backend: http://127.0.0.1:18080, PID 53586\nFrontend: http://127.0.0.1:15174, PID 53655\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:53701) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 1 test using 1 worker\n\n(node:53719) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\nDRAWER_DEBUG {\"before\":{\"x\":0,\"y\":464,\"width\":1280,\"height\":336},\"handleBox\":{\"x\":0,\"y\":465,\"width\":1280,\"height\":30},\"during\":{\"x\":0,\"y\":720,\"width\":1280,\"height\":336},\"events\":[\"pointermove:1:480:[object SVGAnimatedString]\",\"pointerdown:1:480:[object SVGAnimatedString]\",\"pointermove:1:475.3333435058594:[object SVGAnimatedString]\",\"pointermove:1:470.6666564941406:[object SVGAnimatedString]\",\"pointermove:1:466:[object SVGAnimatedString]\",\"pointermove:1:461.3333435058594:[object SVGAnimatedString]\",\"pointermove:1:456.6666564941406:[object SVGAnimatedString]\",\"pointermove:1:452:[object SVGAnimatedString]\",\"pointermove:1:447.3333435058594:[object SVGAnimatedString]\",\"pointermove:1:442.6666564941406:[object SVGAnimatedString]\",\"pointermove:1:438:[object SVGAnimatedString]\"],\"state\":{\"captured\":false,\"atTop\":\"map-loading-content\",\"liveHeight\":\"\",\"className\":\"pinned-media-drawer pinned-media-drawer--collapsed\"}}\n  ✘  1 [chromium] › e2e/visual/discovery-drawer.spec.ts:51:5 › drawer handle follows a slow drag without jumping between predefined heights (2.1s)\n\n\n  1) [chromium] › e2e/visual/discovery-drawer.spec.ts:51:5 › drawer handle follows a slow drag without jumping between predefined heights \n\n    Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n    Expected: > \u001b[32m366\u001b[39m\n    Received:   \u001b[31m336\u001b[39m\n\n       99 |   const attribution = await page.getByTestId(\"map-attribution\").boundingBox();\n      100 |   if (!during || !map || !attribution) throw new Error(\"Resizing elements not measurable\");\n    > 101 |   expect(during.height).toBeGreaterThan(before.height + 30);\n          |                         ^\n      102 |   expect(during.height).toBeLessThan(before.height + 55);\n      103 |   expect(map.height).toBeLessThan(800 - before.height - 30);\n      104 |   expect(attribution.y + attribution.height).toBeLessThanOrEqual(during.y - 4);\n        at /Users/michal/agent-workspace/repos/photomap/work/frontend/e2e/visual/discovery-drawer.spec.ts:101:25\n\n    Error Context: test-results/visual-discovery-drawer-dr-e6023--between-predefined-heights-chromium/error-context.md\n\n  1 failed\n    [chromium] › e2e/visual/discovery-drawer.spec.ts:51:5 › drawer handle follows a slow drag without jumping between predefined heights \n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 508.95,
+      "stage_index": 1,
+      "stage_name": "focused-pointer-telemetry",
+      "stage_phase": "commands",
+      "stage_timeout": 580,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T15:47:37.228384+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.072,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.113,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-drawer-pointer-debug-20261109-v5",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 11.439,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "focused-pointer-telemetry",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T15:47:23.512133+00:00",
+  "status": "failed",
+  "task_digest": "a0851a09ebd761d4d6a7db1f5987d8dd9aad67eea8d7fe9110735fedef7c8287",
+  "task_timeout": 700,
+  "verification": [],
+  "work_branch": "fix/photo-drawer-compact-polish-20261109"
+}

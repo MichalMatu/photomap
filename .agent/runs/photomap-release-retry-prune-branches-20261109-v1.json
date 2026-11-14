@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-release-retry-prune-branches-20261109-v1",
+  "task_digest": "5e47a7ad7677fe4e508668fdc36d6da43d5191d30b84975b61c66956307bb3ff",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T16:43:24.243460+00:00",
+  "attempt_id": "b73007a43c391c66e9a851c7",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 27952,
+  "updated_at": "2026-11-09T16:43:24.439003+00:00",
+  "pid": 27952
+}
