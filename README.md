@@ -11,6 +11,7 @@ PhotoMap to wizualna mapa miejsc, zdjęć i kolekcji. Wrocław jest pierwszym mi
 - [AGENTS.md](AGENTS.md) — zasady projektu i integracja GitHub Connector + Mac Local Agent; kolejka `agent-control`.
 - [docs/deploy-pi-zero2w.md](docs/deploy-pi-zero2w.md) — atomowy deploy i rollback.
 - [docs/ops.md](docs/ops.md) — diagnostyka, dane, kopie bezpieczeństwa.
+- [docs/termux-poc-toolkit.md](docs/termux-poc-toolkit.md) — zachowane narzędzia Termux, health check i wnioski z zakończonego testu S22.
 - [docs/dev.md](docs/dev.md) — uruchamianie i testowanie.
 - [docs/code-structure.md](docs/code-structure.md) — organizacja kodu.
 - [docs/product-direction.md](docs/product-direction.md) — kierunek produktu.
