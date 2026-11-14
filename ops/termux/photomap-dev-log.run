@@ -1,0 +1,9 @@
+#!/data/data/com.termux/files/usr/bin/sh
+# Archived S22 svlogd pattern. Optional; does not start a service by itself.
+set -eu
+HOME=/data/data/com.termux/files/home
+PREFIX=/data/data/com.termux/files/usr
+ROOT="${PHOTOMAP_TERMUX_ROOT:-$HOME/Projects/PhotoMap}"
+LOGDIR="$ROOT/.dev/termux/process/log"
+mkdir -p "$LOGDIR"
+exec "$PREFIX/bin/svlogd" -tt "$LOGDIR"
