@@ -1,0 +1,10 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Archived S22 runit pattern for an optional isolated PhotoMap Termux POC.
+# Do not install or register automatically.
+set -euo pipefail
+export HOME=/data/data/com.termux/files/home
+export PREFIX=/data/data/com.termux/files/usr
+ROOT="${PHOTOMAP_TERMUX_ROOT:-$HOME/Projects/PhotoMap}"
+test -f "$ROOT/scripts/termux-dev.sh" || exit 111
+cd "$ROOT"
+exec "$PREFIX/bin/bash" scripts/termux-dev.sh serve-debian
