@@ -14,6 +14,7 @@ import { MAP_DISPLAY_CONFIG } from "./mapDisplayConfig";
 import type { MapMarkerMode } from "./mapMarkerMode";
 import { MapTrackpadZoom } from "./MapTrackpadZoom";
 import { PinnedMediaBoard, type PinnedMediaPlaceProjector } from "./pinned-media/PinnedMediaBoard";
+import type { PinnedMediaDrawerStage } from "./pinned-media/pinnedMediaDrawerStage";
 import { PlaceLayer } from "./PlaceLayer";
 import { type PinMediaRequest, usePinnedMediaBoard } from "./pinned-media/usePinnedMediaBoard";
 
@@ -69,15 +70,19 @@ function MapSizeUpdater() {
   return null;
 }
 
-function MapDrawerInset({ expanded }: { expanded: boolean }) {
+function MapDrawerInset({ stage }: { stage: PinnedMediaDrawerStage }) {
   const map = useMap();
 
   useEffect(() => {
     const element = map.getContainer();
-    element.classList.toggle("place-map--drawer-open", expanded);
+    element.classList.toggle("place-map--drawer-open", stage !== "collapsed");
+    element.classList.toggle("place-map--drawer-discovery", stage === "discovery");
     map.invalidateSize();
-    return () => element.classList.remove("place-map--drawer-open");
-  }, [expanded, map]);
+    return () => {
+      element.classList.remove("place-map--drawer-open");
+      element.classList.remove("place-map--drawer-discovery");
+    };
+  }, [stage, map]);
 
   return null;
 }
@@ -155,12 +160,13 @@ export function PlaceMap({
   const mapStartKey = `${mapFallback.fallback_center.lat}:${mapFallback.fallback_center.lon}:${mapFallback.fallback_zoom}`;
   const { cards, notice, onBringToFront, onDock, onUndock, onLayoutChange, onMediaSizeChange, onRemove, pinMedia } =
     usePinnedMediaBoard(pinnedMediaPlaces);
-  const [isPinnedDrawerOpen, setIsPinnedDrawerOpen] = useState(true);
+  const [pinnedDrawerStage, setPinnedDrawerStage] = useState<PinnedMediaDrawerStage>("collection");
   const [recommendedItems, setRecommendedItems] = useState<MapDiscoveryItem[]>([]);
   const [recommendedPlaceRequest, setRecommendedPlaceRequest] = useState<{ placeId: string; serial: number } | null>(
     null,
   );
   const hasDrawerContent = cards.some((card) => card.docked) || recommendedItems.length > 0;
+  const visibleDrawerStage = showPinnedMedia && hasDrawerContent ? pinnedDrawerStage : "collapsed";
   const handleDiscoveryChange = useCallback((items: MapDiscoveryItem[]) => {
     setRecommendedItems((current) =>
       current.length === items.length &&
@@ -202,7 +208,7 @@ export function PlaceMap({
       >
         <MapSizeUpdater />
         <MapDiscoveryViewport places={markerPlaces} priority={mapFallback.marker_priority} onItemsChange={handleDiscoveryChange} />
-        <MapDrawerInset expanded={showPinnedMedia && isPinnedDrawerOpen && hasDrawerContent} />
+        <MapDrawerInset stage={visibleDrawerStage} />
         <MapTrackpadZoom />
         {showPinnedMedia && cards.length > 0 ? (
           <MapProjectionTracker onProjectorChange={handleProjectorChange} />
@@ -231,7 +237,8 @@ export function PlaceMap({
       </MapContainer>
       <MapAttribution
         hasPinnedDrawer={showPinnedMedia}
-        isPinnedDrawerOpen={showPinnedMedia && isPinnedDrawerOpen && hasDrawerContent}
+        isPinnedDrawerOpen={visibleDrawerStage !== "collapsed"}
+        isDiscoveryOpen={visibleDrawerStage === "discovery"}
       />
       {showPinnedMedia ? (
         <PinnedMediaBoard
@@ -244,8 +251,8 @@ export function PlaceMap({
           onBringToFront={onBringToFront}
           onDock={onDock}
           onUndock={onUndock}
-          isDrawerOpen={isPinnedDrawerOpen}
-          onDrawerOpenChange={setIsPinnedDrawerOpen}
+          drawerStage={pinnedDrawerStage}
+          onDrawerStageChange={setPinnedDrawerStage}
           onLayoutChange={onLayoutChange}
           onMediaSizeChange={onMediaSizeChange}
           onRemove={onRemove}

@@ -12,6 +12,7 @@ import type { MapDiscoveryItem } from "../discoveryRecommendations";
 import { isInteractiveDragTarget } from "../../ui/useDraggableWindow";
 import { PinnedMediaCard } from "./PinnedMediaCard";
 import { PinnedMediaDrawer } from "./PinnedMediaDrawer";
+import type { PinnedMediaDrawerStage } from "./pinnedMediaDrawerStage";
 import { PinnedMediaMapLink } from "./PinnedMediaMapLink";
 import { measurePinnedMediaCardRects, rectRecordsEqual } from "./pinnedMediaBoardDom";
 import {
@@ -38,8 +39,8 @@ type PinnedMediaBoardProps = {
   recommendedItems: MapDiscoveryItem[];
   onSelectRecommendedPlace: (placeId: string) => void;
   notice: string | null;
-  isDrawerOpen: boolean;
-  onDrawerOpenChange: (isOpen: boolean) => void;
+  drawerStage: PinnedMediaDrawerStage;
+  onDrawerStageChange: (stage: PinnedMediaDrawerStage) => void;
   onBringToFront: (id: string) => void;
   onDock: (id: string) => void;
   onUndock: (id: string) => void;
@@ -64,8 +65,8 @@ export function PinnedMediaBoard({
   recommendedItems,
   onSelectRecommendedPlace,
   notice,
-  isDrawerOpen,
-  onDrawerOpenChange,
+  drawerStage,
+  onDrawerStageChange,
   onBringToFront,
   onDock,
   onUndock,
@@ -86,6 +87,7 @@ export function PinnedMediaBoard({
   const [linkedCardId, setLinkedCardId] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isDropActive, setIsDropActive] = useState(false);
+  const isDrawerOpen = drawerStage !== "collapsed";
   const floatingCards = cards.filter((card) => !card.docked);
   const dockedCards = cards.filter((card) => card.docked);
   const pinnedItemKeys = new Set(cards.map((card) => `${card.place.id}:${card.item.kind}:${card.item.id}`));
@@ -122,11 +124,11 @@ export function PinnedMediaBoard({
       if (isDragging || interactionRef.current || undockRef.current) return;
       if (!(event.target instanceof Element)) return;
       if (event.target.closest(".pinned-media-drawer, .pinned-media-card, [role='dialog']")) return;
-      onDrawerOpenChange(false);
+      onDrawerStageChange("collapsed");
     };
     document.addEventListener("pointerdown", closeOnOutsidePointer, true);
     return () => document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
-  }, [isDragging, isDrawerOpen, onDrawerOpenChange]);
+  }, [isDragging, isDrawerOpen, onDrawerStageChange]);
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
@@ -207,7 +209,7 @@ export function PinnedMediaBoard({
         isPinnedMediaDrawerDropTarget(event.clientX, event.clientY, getPinnedMediaBounds(), isDrawerOpen)
       ) {
         onDock(interaction.cardId);
-        onDrawerOpenChange(true);
+        onDrawerStageChange("collection");
       }
       interactionRef.current = null;
       setActiveCardId(null);
@@ -240,7 +242,7 @@ export function PinnedMediaBoard({
       document.removeEventListener("pointerup", handlePointerEnd);
       document.removeEventListener("pointercancel", handlePointerCancel);
     };
-  }, [isDrawerOpen, isDragging, onBringToFront, onDock, onDrawerOpenChange, onLayoutChange, onUndock]);
+  }, [isDrawerOpen, isDragging, onBringToFront, onDock, onDrawerStageChange, onLayoutChange, onUndock]);
 
   const startInteraction = useCallback(
     (card: ResolvedPinnedMediaCard, mode: PinnedMediaInteractionMode, event: ReactPointerEvent<HTMLElement>) => {
@@ -282,6 +284,15 @@ export function PinnedMediaBoard({
       startY: event.clientY,
       moved: false,
     };
+  }, []);
+  const cancelUndock = useCallback((pointerId: number) => {
+    const undock = undockRef.current;
+    if (!undock || undock.pointerId !== pointerId) return;
+    undockRef.current = null;
+    suppressDrawerClickRef.current = false;
+    if (undock.captureTarget.hasPointerCapture(pointerId)) {
+      undock.captureTarget.releasePointerCapture(pointerId);
+    }
   }, []);
   const previewFloatingCard = useCallback(
     (card: ResolvedPinnedMediaCard) => {
@@ -334,12 +345,14 @@ export function PinnedMediaBoard({
           cards={dockedCards}
           recommendedItems={availableRecommendations}
           onSelectRecommendedPlace={onSelectRecommendedPlace}
-          isOpen={isDrawerOpen}
+          stage={drawerStage}
           isDragging={isDragging}
           isDropActive={isDropActive}
-          onToggle={() => onDrawerOpenChange(!isDrawerOpen)}
+          onStageChange={onDrawerStageChange}
           onPreview={previewDockedCard}
+          onRemove={onRemove}
           onStartUndock={startUndock}
+          onCancelUndock={cancelUndock}
         />
       {notice ? (
         <div className="pinned-media-notice" role="status">

@@ -13,6 +13,7 @@ test("desktop discovery drawer renders map recommendations and opens the existin
   await expect(drawer).toHaveClass(/is-open/);
   await expect(drawer.locator(".pinned-media-drawer-item--pinned")).toHaveCount(0);
   await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(2);
+  await expect(drawer).toHaveAttribute("data-stage", "collection");
 
   const bounds = await drawer.boundingBox();
   if (!bounds) throw new Error("Discovery drawer is not measurable");

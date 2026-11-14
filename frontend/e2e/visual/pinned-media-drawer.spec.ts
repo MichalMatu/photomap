@@ -53,8 +53,27 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   await expect(attribution).toHaveClass(/map-attribution--with-drawer/);
   await expect(page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` })).toBeVisible();
   await expect(drawer.locator(".pinned-media-drawer-item--pinned")).toHaveCount(1);
+  await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(0);
+  await expect(drawer).toHaveAttribute("data-stage", "collection");
+  await drawer.getByRole("button", { name: "Pokaż więcej zdjęć z mapy" }).click();
+  await expect(drawer).toHaveAttribute("data-stage", "discovery");
   await expect(drawer.locator(".pinned-media-drawer-item--recommended")).toHaveCount(2);
   await expect(drawer.locator(".pinned-media-drawer-item").first()).toHaveClass(/pinned-media-drawer-item--pinned/);
+  // Holding arms only the central remove button; leaving it dismisses without deleting.
+  const pinnedItem = drawer.locator(".pinned-media-drawer-item--pinned").first();
+  const pinnedBox = await pinnedItem.boundingBox();
+  if (!pinnedBox) throw new Error("Pinned gallery item not measurable");
+  await page.mouse.move(pinnedBox.x + pinnedBox.width / 2, pinnedBox.y + 55);
+  await page.mouse.down();
+  await page.waitForTimeout(620);
+  await expect(drawer.getByRole("button", { name: `Usuń z kolekcji: ${places[0].title}` })).toBeVisible();
+  await page.mouse.up();
+  await expect(page.getByRole("dialog", { name: places[0].title })).toHaveCount(0);
+  await drawer.locator(".pinned-media-drawer-section-label").first().click();
+  await expect(drawer.locator(".pinned-media-drawer-remove")).toHaveCount(0);
+  await pinnedItem.click();
+  await expect(page.getByRole("dialog", { name: places[0].title })).toBeVisible();
+  await page.getByRole("button", { name: "Zamknij modal" }).click();
   await page.screenshot({ path: testInfo.outputPath("mobile-discovery-expanded-with-pinned-first.png"), animations: "disabled" });
   await expect(page.locator(".place-map")).toHaveClass(/place-map--drawer-open/);
   await expect(attribution).toHaveClass(/map-attribution--drawer-open/);
@@ -83,9 +102,13 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   expect(expandedStyle.imageWidth).toBe(expandedStyle.tileWidth);
   expect(expandedStyle.imageHeight).toBeGreaterThanOrEqual(90);
   // Collapsed drawer shows thumbnails only, with no header text or arrow.
-  await drawer.getByRole("button", { name: "Zwiń szufladę zdjęć" }).click();
+  await drawer.getByRole("button", { name: "Zwiń do kolekcji zdjęć" }).click();
+  await expect(drawer).toHaveAttribute("data-stage", "collection");
+  await drawer.getByRole("button", { name: "Pokaż więcej zdjęć z mapy" }).dispatchEvent("pointerdown", { pointerId: 10, clientY: 250 });
+  await drawer.getByRole("button", { name: "Pokaż więcej zdjęć z mapy" }).dispatchEvent("pointerup", { pointerId: 10, clientY: 310 });
+  await expect(drawer).toHaveAttribute("data-stage", "collapsed");
   await expect(drawer).not.toHaveClass(/is-open/);
-  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(3);
+  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(1);
   const collapsedThumb = drawer.locator(".pinned-media-drawer-handle-thumbs img").first();
   const thumbBox = await collapsedThumb.boundingBox();
   const handleBox = await drawer.locator(".pinned-media-drawer-handle").boundingBox();
@@ -109,7 +132,7 @@ test("mobile pin mode and bottom drawer survive reload", async ({ page }, testIn
   await expect(drawer).toHaveClass(/is-open/);
   await page.locator(".place-map").click({ position: { x: 25, y: 320 }, force: true });
   await expect(drawer).not.toHaveClass(/is-open/);
-  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(3);
+  await expect(drawer.locator(".pinned-media-drawer-handle-thumbs img")).toHaveCount(1);
   await page.reload();
   await expect(drawer).toHaveClass(/is-open/);
   await page.getByRole("button", { name: `Otwórz podgląd: ${places[0].title}` }).click();
