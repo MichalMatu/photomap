@@ -35,6 +35,8 @@ The historical POC accepted 195 places, 1082 photo records and 2196 private/publ
 
 ## Source preservation boundary
 
-Uncommitted S22 frontend changes (eight tracked files plus two new pinned-media stage files) must be kept in the dedicated `archive/s22-termux-poc-20261114` branch and verified remotely before the local PhotoMap checkout is removed. This archive is historical, not a merge or production deploy.
+The eight S22 modified frontend files and two new pinned-media stage files were preserved in the dedicated [archive/s22-termux-poc-20261114](https://github.com/MichalMatu/photomap/tree/archive/s22-termux-poc-20261114) branch, GitHub commit `8245466c0e170a2cd38b7e4a6719451f812a7494`. All 10 files were verified in the remote tree before deleting the local checkout. The archive is historical, not a merge or production deploy.
+
+On 2026-11-14 the S22 local proof-of-concept `~/Projects/PhotoMap` and the independent PocketHost-managed `photomap-test` instance, its backups and registry entry were removed by the owner's explicit request. A read-only post-check confirmed those paths absent, separate IleStoi readiness HTTP 200, and all protected S22 services running. Production and its separate backup on Raspberry Pi were not touched.
 
 The managed proof-of-concept under `~/Projects/PocketHost-Managed/instances/photomap-test` is also experimental. Its imported databases/media are disposable copies **only after** checks confirm the independent Raspberry Pi production data and owner-authorized deletion. Shared PocketHost toolchains, other sites and active S22 services are outside the cleanup scope.
