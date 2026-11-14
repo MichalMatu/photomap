@@ -1,5 +1,7 @@
 # PhotoMap — izolowana kopia testowa na Samsungu (Termux)
 
+**Aktualizacja 14.11.2026:** na polecenie właściciela testowe PhotoMap na Samsungu S22 zostało całkowicie usunięte po przeniesieniu 10 lokalnych zmian do gałęzi [archiwalnej](https://github.com/MichalMatu/photomap/tree/archive/s22-termux-poc-20261114). Weryfikacja po usunięciu: POC i wpis rejestru nie istnieją, IleStoi nadal odpowiada HTTP 200. [Przydatne skrypty i wzorce Termuxa](termux-poc-toolkit.md) pozostają w GitHub. **Dalsza część poniżej to historyczny stan z 1.11.2026**, a nie aktualne polecenie zachowania lokalnych plików. Produkcyjne PhotoMap na Raspberry Pi i jego backup pozostają bez zmian.
+
 **Stan końcowy: 01.11.2026 — test użytkownika PASS, serwer testowy wyłączony.**
 To archiwum operacyjne zakończonego sprintu, nie instrukcja wdrożenia produkcyjnego.
 Szczegóły w [checkpoincie zamknięcia](checkpoints/2026-11-01-samsung-termux-photo-data-test-closeout.md).
