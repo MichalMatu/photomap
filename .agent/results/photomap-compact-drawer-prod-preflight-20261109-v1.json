@@ -1,0 +1,90 @@
+{
+  "allow_write": false,
+  "attempt_id": "d5cc3dcf47422d116e81e56c",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 108,
+      "command": "git status --short --branch && git rev-parse HEAD && git branch --show-current && test -f frontend/package.json && command -v rsync && command -v ssh",
+      "current_rss_mb": 3.05,
+      "elapsed_seconds": 0.699,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "## agent-work...origin/main\n09df208c664d788d9226136470c5ffdbf02862e1\nagent-work\n/usr/bin/rsync\n/usr/bin/ssh\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 3.05,
+      "stage_index": 1,
+      "stage_name": "source-preflight",
+      "stage_phase": "commands",
+      "stage_timeout": 140,
+      "stage_total": 2,
+      "timed_out": false
+    },
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 559,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git status --short --branch && git rev-parse HEAD && systemctl is-active photomap.service cloudflared.service && systemctl show photomap.service cloudflared.service -p MainPID && sha256sum frontend/dist/index.html && free -m && df -Pm . && curl -fsS --max-time 8 http://127.0.0.1:8000/health && echo && curl -fsS --max-time 10 -o /dev/null -w \"API_HTTP=%{http_code}\\n\" http://127.0.0.1:8000/api/places/map'",
+      "current_rss_mb": 2.84,
+      "elapsed_seconds": 3.775,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "## main...origin/main\n90609f7733b178da9f2687e2133c64b47fb7338b\nactive\nactive\nMainPID=2669406\n\nMainPID=222848\nfd9ccd24cd8638eae979b94b9f01e4cbbacd7a19ec3264f096df6df974cf74ae  frontend/dist/index.html\n               total        used        free      shared  buff/cache   available\nMem:             416         298          51           0         120         117\nSwap:            415          53         362\nFilesystem     1048576-blocks  Used Available Capacity Mounted on\n/dev/mmcblk0p2          59375 14039     42853      25% /\n{\"status\":\"ok\"}\nAPI_HTTP=200\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 2.92,
+      "stage_index": 2,
+      "stage_name": "raspberry-pi-runtime-preflight",
+      "stage_phase": "commands",
+      "stage_timeout": 180,
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T15:55:18.513346+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.093,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 1.039,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-compact-drawer-prod-preflight-20261109-v1",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.699,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "source-preflight",
+      "stage_phase": "commands",
+      "stage_total": 2
+    },
+    {
+      "elapsed_seconds": 3.775,
+      "outcome": "passed",
+      "stage_index": 2,
+      "stage_name": "raspberry-pi-runtime-preflight",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-09T15:55:09.879984+00:00",
+  "status": "done",
+  "task_digest": "73927cd90694eb026e1f742109dedb3829083dded584843d594ce25aefa4bfd2",
+  "task_timeout": 700,
+  "verification": [],
+  "work_branch": "main"
+}

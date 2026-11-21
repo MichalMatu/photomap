@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-drawer-content-fit-qa-20261109-v2",
+  "task_digest": "b18e297d4624363994eb462474eebc0f57dc850cc2f46579598f7d5aff47c9f6",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T16:15:38.004495+00:00",
+  "attempt_id": "e5a395b31f2c5901a7d954a4",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 89156,
+  "updated_at": "2026-11-09T16:15:38.248400+00:00",
+  "pid": 89156
+}

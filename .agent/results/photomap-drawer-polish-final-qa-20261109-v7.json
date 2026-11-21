@@ -1,0 +1,90 @@
+{
+  "allow_write": false,
+  "attempt_id": "b93d3c9ae6700b0092766050",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 296,
+      "command": "git status --short --branch && git diff --check && cd frontend && ./node_modules/.bin/prettier --check src/styles/pinned-media.css src/components/map/pinned-media/PinnedMediaDrawer.tsx e2e/visual/discovery-drawer.spec.ts && npm run lint",
+      "current_rss_mb": 229.23,
+      "elapsed_seconds": 53.962,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "## agent-work...origin/fix/photo-drawer-compact-polish-20261109\nChecking formatting...\nAll matched files use Prettier code style!\n\n> lint\n> npm run typecheck && eslint . --max-warnings=0\n\n\n> typecheck\n> tsc --noEmit && npm run typecheck:e2e\n\n\n> typecheck:e2e\n> tsc --noEmit -p tsconfig.e2e.json\n\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 391.64,
+      "stage_index": 1,
+      "stage_name": "final-static-and-format",
+      "stage_phase": "commands",
+      "stage_timeout": 350,
+      "stage_total": 2,
+      "timed_out": false
+    },
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 1296,
+      "command": "cd frontend && E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ../scripts/quality/e2e.sh e2e/visual/discovery-drawer.spec.ts e2e/visual/pinned-media-drawer.spec.ts --workers=1",
+      "current_rss_mb": 20.33,
+      "elapsed_seconds": 91.914,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "Backend: http://127.0.0.1:18080, PID 58824\nFrontend: http://127.0.0.1:15174, PID 58958\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:58997) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 5 tests using 1 worker\n\n(node:59031) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  1 [chromium] › e2e/visual/discovery-drawer.spec.ts:6:5 › desktop discovery drawer renders map recommendations and opens the existing place gallery (7.7s)\n  ✓  2 [chromium] › e2e/visual/discovery-drawer.spec.ts:51:5 › drawer handle follows a slow drag without jumping between predefined heights (6.6s)\n  ✓  3 [chromium] › e2e/visual/discovery-drawer.spec.ts:94:5 › touch-style drawer swipe changes stages and does not open photos (6.8s)\n  ✓  4 [chromium] › e2e/visual/pinned-media-drawer.spec.ts:7:5 › mobile pin mode and bottom drawer survive reload (25.5s)\n  ✓  5 [chromium] › e2e/visual/pinned-media-drawer.spec.ts:170:5 › long hold removes only the pinned collection entry after central button click (13.2s)\n\n  5 passed (1.2m)\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 383.3,
+      "stage_index": 2,
+      "stage_name": "final-browser-regression",
+      "stage_phase": "commands",
+      "stage_timeout": 600,
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T15:52:59.827835+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.122,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.272,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-drawer-polish-final-qa-20261109-v7",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 53.962,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "final-static-and-format",
+      "stage_phase": "commands",
+      "stage_total": 2
+    },
+    {
+      "elapsed_seconds": 91.914,
+      "outcome": "passed",
+      "stage_index": 2,
+      "stage_name": "final-browser-regression",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-09T15:50:31.035881+00:00",
+  "status": "done",
+  "task_digest": "07d03a2ea0c38f58bf291bb191d12d59acdd20500da78f39f398bf9c28eba5a8",
+  "task_timeout": 1000,
+  "verification": [],
+  "work_branch": "fix/photo-drawer-compact-polish-20261109"
+}

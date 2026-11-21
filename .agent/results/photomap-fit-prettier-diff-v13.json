@@ -1,0 +1,78 @@
+{
+  "allow_write": false,
+  "attempt_id": "5fad9d34f09f60e190e7ea47",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 3787,
+      "command": "cd frontend && ./node_modules/.bin/prettier --write src/components/map/pinned-media/PinnedMediaDrawer.tsx e2e/visual/discovery-drawer.spec.ts && cd .. && git diff -- frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx frontend/e2e/visual/discovery-drawer.spec.ts",
+      "current_rss_mb": 1.91,
+      "elapsed_seconds": 0.481,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "src/components/map/pinned-media/PinnedMediaDrawer.tsx 118ms\ne2e/visual/discovery-drawer.spec.ts 31ms\ndiff --git a/frontend/e2e/visual/discovery-drawer.spec.ts b/frontend/e2e/visual/discovery-drawer.spec.ts\nindex 7c98272..3c1d1fe 100644\n--- a/frontend/e2e/visual/discovery-drawer.spec.ts\n+++ b/frontend/e2e/visual/discovery-drawer.spec.ts\n@@ -133,9 +133,7 @@ test(\"collapsed thumbnail preview does not bleed through the grabber while expan\n   const handle = drawer.locator(\".pinned-media-drawer-handle\");\n   await page.locator(\".place-map\").click({ position: { x: 26, y: 240 } });\n   await expect(drawer).toHaveAttribute(\"data-stage\", \"collapsed\");\n-  await expect\n-    .poll(async () => (await drawer.boundingBox())?.y ?? 0)\n-    .toBeGreaterThanOrEqual(719);\n+  await expect.poll(async () => (await drawer.boundingBox())?.y ?? 0).toBeGreaterThanOrEqual(719);\n   await expect(drawer.locator(\".pinned-media-drawer-handle-thumbs img\")).toHaveCount(2);\n \n   const start = await handle.boundingBox();\n@@ -148,7 +146,10 @@ test(\"collapsed thumbnail preview does not bleed through the grabber while expan\n   await expect(drawer.locator(\".pinned-media-drawer-handle-thumbs\")).toHaveCount(0);\n   await expect(drawer.locator(\".pinned-media-drawer-grab-line\")).toHaveCount(1);\n   await expect(handle).toHaveCSS(\"overflow\", \"hidden\");\n-  await expect(handle).toHaveCSS(\"background-color\", await drawer.evaluate((node) => getComputedStyle(node).backgroundColor));\n+  await expect(handle).toHaveCSS(\n+    \"background-color\",\n+    await drawer.evaluate((node) => getComputedStyle(node).backgroundColor),\n+  );\n   await page.mouse.up();\n \n   await expect(drawer).toHaveAttribute(\"data-stage\", \"collection\");\n@@ -166,9 +167,11 @@ test(\"discovery size follows its rendered photo rows instead of leaving a giant\n   await expect\n     .poll(async () => {\n       const box = await drawer.boundingBox();\n-      const fitted = await page.locator(\".map-frame\").evaluate((frame) =>\n-        Number.parseFloat((frame as HTMLElement).style.getPropertyValue(\"--pinned-drawer-fit-height\")),\n-      );\n+      const fitted = await page\n+        .locator(\".map-frame\")\n+        .evaluate((frame) =>\n+          Number.parseFloat((frame as HTMLElement).style.getPropertyValue(\"--pinned-drawer-fit-height\")),\n+        );\n       return Math.abs((box?.height ?? 0) - fitted);\n     })\n     .toBeLessThan(1);\ndiff --git a/frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx b/frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx\nindex 756719b..062bc0b 100644\n--- a/frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx\n+++ b/frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx\n@@ -1,4 +1,11 @@\n-import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from \"react\";\n+import {\n+  type PointerEvent as ReactPointerEvent,\n+  useCallback,\n+  useEffect,\n+  useLayoutEffect,\n+  useRef,\n+  useState,\n+} from \"react\";\n import { mediaUrl } from \"../../../api/http\";\n import type { MapDiscoveryItem } from \"../discoveryRecommendations\";\n import {\n@@ -128,9 +135,7 @@ export function PinnedMediaDrawer({\n       const last = content.lastElementChild as HTMLElement | null;\n       const style = window.getComputedStyle(content);\n       const contentTop = content.getBoundingClientRect().top;\n-      const natural = last\n-        ? last.getBoundingClientRect().bottom - contentTop + content.scrollTop\n-        : 0;\n+      const natural = last ? last.getBoundingClientRect().bottom - contentTop + content.scrollTop : 0;\n       const paddingBottom = Number.parseFloat(style.paddingBottom) || 0;\n       const paddingTop = Number.parseFloat(style.paddingTop) || 0;\n       const handleHeight = window.matchMedia(\"(pointer: coarse)\").matches ? 44 : 30;\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 1.91,
+      "stage_index": 1,
+      "stage_name": "format-diff",
+      "stage_phase": "commands",
+      "stage_timeout": 220,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "unexpected_worktree_changes",
+  "finished_at": "2026-11-09T16:25:45.559106+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.019,
+    "exit_code": 0,
+    "output": "diff --git a/frontend/e2e/visual/discovery-drawer.spec.ts b/frontend/e2e/visual/discovery-drawer.spec.ts\nindex 7c98272..3c1d1fe 100644\n--- a/frontend/e2e/visual/discovery-drawer.spec.ts\n+++ b/frontend/e2e/visual/discovery-drawer.spec.ts\n@@ -133,9 +133,7 @@ test(\"collapsed thumbnail preview does not bleed through the grabber while expan\n   const handle = drawer.locator(\".pinned-media-drawer-handle\");\n   await page.locator(\".place-map\").click({ position: { x: 26, y: 240 } });\n   await expect(drawer).toHaveAttribute(\"data-stage\", \"collapsed\");\n-  await expect\n-    .poll(async () => (await drawer.boundingBox())?.y ?? 0)\n-    .toBeGreaterThanOrEqual(719);\n+  await expect.poll(async () => (await drawer.boundingBox())?.y ?? 0).toBeGreaterThanOrEqual(719);\n   await expect(drawer.locator(\".pinned-media-drawer-handle-thumbs img\")).toHaveCount(2);\n \n   const start = await handle.boundingBox();\n@@ -148,7 +146,10 @@ test(\"collapsed thumbnail preview does not bleed through the grabber while expan\n   await expect(drawer.locator(\".pinned-media-drawer-handle-thumbs\")).toHaveCount(0);\n   await expect(drawer.locator(\".pinned-media-drawer-grab-line\")).toHaveCount(1);\n   await expect(handle).toHaveCSS(\"overflow\", \"hidden\");\n-  await expect(handle).toHaveCSS(\"background-color\", await drawer.evaluate((node) => getComputedStyle(node).backgroundColor));\n+  await expect(handle).toHaveCSS(\n+    \"background-color\",\n+    await drawer.evaluate((node) => getComputedStyle(node).backgroundColor),\n+  );\n   await page.mouse.up();\n \n   await expect(drawer).toHaveAttribute(\"data-stage\", \"collection\");\n@@ -166,9 +167,11 @@ test(\"discovery size follows its rendered photo rows instead of leaving a giant\n   await expect\n     .poll(async () => {\n       const box = await drawer.boundingBox();\n-      const fitted = await page.locator(\".map-frame\").evaluate((frame) =>\n-        Number.parseFloat((frame as HTMLElement).style.getPropertyValue(\"--pinned-drawer-fit-height\")),\n-      );\n+      const fitted = await page\n+        .locator(\".map-frame\")\n+        .evaluate((frame) =>\n+          Number.parseFloat((frame as HTMLElement).style.getPropertyValue(\"--pinned-drawer-fit-height\")),\n+        );\n       return Math.abs((box?.height ?? 0) - fitted);\n     })\n     .toBeLessThan(1);\ndiff --git a/frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx b/frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx\nindex 756719b..062bc0b 100644\n--- a/frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx\n+++ b/frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx\n@@ -1,4 +1,11 @@\n-import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from \"react\";\n+import {\n+  type PointerEvent as ReactPointerEvent,\n+  useCallback,\n+  useEffect,\n+  useLayoutEffect,\n+  useRef,\n+  useState,\n+} from \"react\";\n import { mediaUrl } from \"../../../api/http\";\n import type { MapDiscoveryItem } from \"../discoveryRecommendations\";\n import {\n@@ -128,9 +135,7 @@ export function PinnedMediaDrawer({\n       const last = content.lastElementChild as HTMLElement | null;\n       const style = window.getComputedStyle(content);\n       const contentTop = content.getBoundingClientRect().top;\n-      const natural = last\n-        ? last.getBoundingClientRect().bottom - contentTop + content.scrollTop\n-        : 0;\n+      const natural = last ? last.getBoundingClientRect().bottom - contentTop + content.scrollTop : 0;\n       const paddingBottom = Number.parseFloat(style.paddingBottom) || 0;\n       const paddingTop = Number.parseFloat(style.paddingTop) || 0;\n       const handleHeight = window.matchMedia(\"(pointer: coarse)\").matches ? 44 : 30;\n"
+  },
+  "git_status": {
+    "elapsed_seconds": 0.087,
+    "exit_code": 0,
+    "output": " M frontend/e2e/visual/discovery-drawer.spec.ts\n M frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx\n"
+  },
+  "id": "photomap-fit-prettier-diff-v13",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.481,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "format-diff",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T16:25:43.543266+00:00",
+  "status": "failed",
+  "task_digest": "ebb1f6f1ed122144d5c8a68e32880b93c6eec04afe7f2187cf827c2adeba518e",
+  "task_timeout": 350,
+  "verification": [],
+  "work_branch": "fix/drawer-transition-content-fit-20261109",
+  "workspace_checkpoint": {
+    "base_head": "d944a2c5392393fb567453efac924a36550e9b9a",
+    "created_at": "2026-11-09T16:25:45.956901+00:00",
+    "path": "/Users/michal/agent-workspace/repos/photomap/checkpoints/photomap-fit-prettier-diff-v13/1794241545816806000-task-exit",
+    "reason": "task-exit",
+    "status": " M frontend/e2e/visual/discovery-drawer.spec.ts\n M frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx\n",
+    "task_id": "photomap-fit-prettier-diff-v13",
+    "total_bytes": 3818,
+    "tracked_patch": "tracked.patch",
+    "tracked_patch_bytes": 3818,
+    "untracked_bytes": 0,
+    "untracked_files": [],
+    "untracked_root": "untracked",
+    "version": 2,
+    "work_branch": "agent-work"
+  }
+}

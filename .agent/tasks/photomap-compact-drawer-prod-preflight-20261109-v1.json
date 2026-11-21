@@ -1,0 +1,21 @@
+{
+  "id": "photomap-compact-drawer-prod-preflight-20261109-v1",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "task_timeout": 700,
+  "steps": [
+    {
+      "name": "source-preflight",
+      "command": "git status --short --branch && git rev-parse HEAD && git branch --show-current && test -f frontend/package.json && command -v rsync && command -v ssh",
+      "timeout": 140
+    },
+    {
+      "name": "raspberry-pi-runtime-preflight",
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git status --short --branch && git rev-parse HEAD && systemctl is-active photomap.service cloudflared.service && systemctl show photomap.service cloudflared.service -p MainPID && sha256sum frontend/dist/index.html && free -m && df -Pm . && curl -fsS --max-time 8 http://127.0.0.1:8000/health && echo && curl -fsS --max-time 10 -o /dev/null -w \"API_HTTP=%{http_code}\\n\" http://127.0.0.1:8000/api/places/map'",
+      "timeout": 180
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-fit-prettier-v4",
+  "task_digest": "32b387971d6572b7fc616272378403a3efc97216530ef2853144ff616fba0cdd",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T16:16:26.139445+00:00",
+  "attempt_id": "8c01ce4faa7e8930d93cd95b",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 90311,
+  "updated_at": "2026-11-09T16:16:26.668457+00:00",
+  "pid": 90311
+}

@@ -1,0 +1,11 @@
+{
+  "event": "recovered_interrupted_attempt",
+  "status": "failed",
+  "failure_reason": "interrupted_previous_attempt",
+  "attempt_id": "38f4c684adb8ae5792a52b0c",
+  "task_digest": "c5be4c4a5ba2d79b1c1090d6f718462e53a3c3cec5845452cdcddd7a042e4e62",
+  "updated_at": "2026-11-09T15:39:39.346257+00:00",
+  "task_id": "photomap-drawer-polish-qa-20261109-v1",
+  "daemon_version": "4.20.16",
+  "pid": 41501
+}

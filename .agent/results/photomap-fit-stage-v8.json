@@ -1,0 +1,90 @@
+{
+  "allow_write": true,
+  "attempt_id": "621e70cb7ac6e3c64e9409fc",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 0,
+      "command": "cd frontend && RSYNC_RSH='ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8' rsync -az --exclude=index.html dist/ michal@192.168.0.23:/home/michal/src/PhotoMaps/frontend/dist/",
+      "current_rss_mb": 2.11,
+      "elapsed_seconds": 0.849,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 2.11,
+      "stage_index": 1,
+      "stage_name": "sync-static-assets",
+      "stage_phase": "commands",
+      "stage_timeout": 220,
+      "stage_total": 2,
+      "timed_out": false
+    },
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 82,
+      "command": "cd frontend && RSYNC_RSH='ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8' rsync -az dist/index.html michal@192.168.0.23:/home/michal/src/PhotoMaps/frontend/dist/index.html.next && shasum -a 256 dist/index.html",
+      "current_rss_mb": 3.3,
+      "elapsed_seconds": 0.737,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "17ea840e90094fbb085a64ef5c90cde0a1f207b9d9fc37b5d3d7df503be2f1fe  dist/index.html\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 3.3,
+      "stage_index": 2,
+      "stage_name": "stage-next-index",
+      "stage_phase": "commands",
+      "stage_timeout": 220,
+      "stage_total": 2,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T16:34:48.877769+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.073,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.087,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-fit-stage-v8",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.849,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "sync-static-assets",
+      "stage_phase": "commands",
+      "stage_total": 2
+    },
+    {
+      "elapsed_seconds": 0.737,
+      "outcome": "passed",
+      "stage_index": 2,
+      "stage_name": "stage-next-index",
+      "stage_phase": "commands",
+      "stage_total": 2
+    }
+  ],
+  "started_at": "2026-11-09T16:34:45.817882+00:00",
+  "status": "done",
+  "task_digest": "94a5dcbccbe1b33f023bb5841a7d3abed7b0b4785716a495768f02d6cf1fa380",
+  "task_timeout": 600,
+  "verification": [],
+  "work_branch": "main"
+}

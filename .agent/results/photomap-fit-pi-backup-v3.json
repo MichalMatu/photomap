@@ -1,0 +1,61 @@
+{
+  "allow_write": true,
+  "attempt_id": "6977671bd5cbbe4429adfe7b",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 168,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git status --short --branch && git rev-parse HEAD && systemctl is-active photomap.service cloudflared.service && mkdir -p .dev/deploy/2026-11-09-drawer-fit-e6c3a87 && cp -an frontend/dist .dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before && sha256sum frontend/dist/index.html'",
+      "current_rss_mb": 1.86,
+      "elapsed_seconds": 1.322,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "## main...origin/main\n372716c98f72d8a27c5895e06115d643dd092ef1\nactive\nactive\n38199380ed27f6d007f9c2f638641564c8c9e73306c9386029b080ed03a6f955  frontend/dist/index.html\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 1.86,
+      "stage_index": 1,
+      "stage_name": "backup-old-frontend",
+      "stage_phase": "commands",
+      "stage_timeout": 220,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T16:31:30.344356+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.075,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.085,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-fit-pi-backup-v3",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 1.322,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "backup-old-frontend",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T16:31:27.456250+00:00",
+  "status": "done",
+  "task_digest": "896f4da3960b592de67d475b61db960b0a07794d73c9ad135791b955f3fcd01e",
+  "task_timeout": 600,
+  "verification": [],
+  "work_branch": "main"
+}

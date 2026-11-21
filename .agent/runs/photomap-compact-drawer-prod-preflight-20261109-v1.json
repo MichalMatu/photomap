@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-compact-drawer-prod-preflight-20261109-v1",
+  "task_digest": "73927cd90694eb026e1f742109dedb3829083dded584843d594ce25aefa4bfd2",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T15:55:18.513346+00:00",
+  "attempt_id": "d5cc3dcf47422d116e81e56c",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 62582,
+  "updated_at": "2026-11-09T15:55:19.275232+00:00",
+  "pid": 62582
+}

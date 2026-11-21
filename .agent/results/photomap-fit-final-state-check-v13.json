@@ -1,0 +1,61 @@
+{
+  "allow_write": false,
+  "attempt_id": "e0f67abf54a57d2925faa949",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 368,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git rev-parse HEAD && sha256sum frontend/dist/index.html frontend/dist/index.html.next && systemctl is-active photomap.service cloudflared.service && curl -fsS --max-time 8 http://127.0.0.1:8000/health && echo && ls -lh .dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/index.html'",
+      "current_rss_mb": 0.0,
+      "elapsed_seconds": 0.82,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "e6c3a877a24fdcc36508ec503f78e5d758b9195d\n38199380ed27f6d007f9c2f638641564c8c9e73306c9386029b080ed03a6f955  frontend/dist/index.html\n17ea840e90094fbb085a64ef5c90cde0a1f207b9d9fc37b5d3d7df503be2f1fe  frontend/dist/index.html.next\nactive\nactive\n{\"status\":\"ok\"}\n-rw-r--r-- 1 michal michal 3.0K Nov  9 16:58 .dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/index.html\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 0.0,
+      "stage_index": 1,
+      "stage_name": "read-production-state",
+      "stage_phase": "commands",
+      "stage_timeout": 180,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T16:37:30.241731+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.073,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.087,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-fit-final-state-check-v13",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.82,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "read-production-state",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T16:37:27.663403+00:00",
+  "status": "done",
+  "task_digest": "a91388b0098a6807509203c7ea13713ccc621c596fb3880d4a5fdb8cf4e84a17",
+  "task_timeout": 400,
+  "verification": [],
+  "work_branch": "main"
+}

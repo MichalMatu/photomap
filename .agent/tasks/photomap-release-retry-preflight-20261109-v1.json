@@ -1,0 +1,16 @@
+{
+  "id": "photomap-release-retry-preflight-20261109-v1",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "task_timeout": 500,
+  "steps": [
+    {
+      "name": "verify-staged-release-and-rollback",
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git status --short --branch && git rev-parse HEAD && sha256sum frontend/dist/index.html frontend/dist/index.html.next && ls -lh .dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/index.html .dev/deploy/2026-11-09-compact-drawer-ef1a903/app-before.db && systemctl is-active photomap.service cloudflared.service && systemctl show photomap.service cloudflared.service -p MainPID && curl -fsS --max-time 10 http://127.0.0.1:8000/health'",
+      "timeout": 280
+    }
+  ]
+}

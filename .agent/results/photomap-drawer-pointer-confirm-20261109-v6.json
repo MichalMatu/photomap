@@ -1,0 +1,61 @@
+{
+  "allow_write": false,
+  "attempt_id": "2ac16fc22ccbceb52db7668a",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 727,
+      "command": "cd frontend && E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ../scripts/quality/e2e.sh e2e/visual/discovery-drawer.spec.ts --grep 'drawer handle follows' --workers=1",
+      "current_rss_mb": 57.31,
+      "elapsed_seconds": 30.588,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "Backend: http://127.0.0.1:18080, PID 55874\nFrontend: http://127.0.0.1:15174, PID 55986\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:56024) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 1 test using 1 worker\n\n(node:56050) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  1 [chromium] › e2e/visual/discovery-drawer.spec.ts:51:5 › drawer handle follows a slow drag without jumping between predefined heights (7.1s)\n\n  1 passed (19.5s)\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 388.34,
+      "stage_index": 1,
+      "stage_name": "focused-compact-handle-gesture",
+      "stage_phase": "commands",
+      "stage_timeout": 540,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T15:49:19.370268+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.14,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 3.512,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-drawer-pointer-confirm-20261109-v6",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 30.588,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "focused-compact-handle-gesture",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T15:48:42.747622+00:00",
+  "status": "done",
+  "task_digest": "c2792d36ab7623a26bbe2a41b0d57c75fd33225b5192968df8300027379541d1",
+  "task_timeout": 700,
+  "verification": [],
+  "work_branch": "fix/photo-drawer-compact-polish-20261109"
+}

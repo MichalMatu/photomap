@@ -1,0 +1,61 @@
+{
+  "allow_write": false,
+  "attempt_id": "1ab9c2478acabe8787633a09",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 731,
+      "command": "cd frontend && E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ../scripts/quality/e2e.sh e2e/visual/discovery-drawer.spec.ts --grep 'discovery size follows' --workers=1",
+      "current_rss_mb": 227.31,
+      "elapsed_seconds": 11.44,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "Backend: http://127.0.0.1:18080, PID 3809\nFrontend: http://127.0.0.1:15174, PID 3832\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:3859) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 1 test using 1 worker\n\n(node:3881) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  1 [chromium] › e2e/visual/discovery-drawer.spec.ts:158:5 › discovery size follows its rendered photo rows instead of leaving a giant bottom gap (3.8s)\n\n  1 passed (6.6s)\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 452.55,
+      "stage_index": 1,
+      "stage_name": "fit-chrome",
+      "stage_phase": "commands",
+      "stage_timeout": 580,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T16:25:16.406625+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.071,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.1,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-fit-final-only-v12",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 11.44,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "fit-chrome",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T16:25:03.056127+00:00",
+  "status": "done",
+  "task_digest": "e70649a48e66582cfb588053973e2f6701ff1d71924e81fb29a9619e5ea93ab0",
+  "task_timeout": 700,
+  "verification": [],
+  "work_branch": "fix/drawer-transition-content-fit-20261109"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "photomap-drawer-pointer-confirm-20261109-v6",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/photo-drawer-compact-polish-20261109",
+  "allow_write": false,
+  "resources": [],
+  "task_timeout": 700,
+  "steps": [
+    {
+      "name": "focused-compact-handle-gesture",
+      "command": "cd frontend && E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ../scripts/quality/e2e.sh e2e/visual/discovery-drawer.spec.ts --grep 'drawer handle follows' --workers=1",
+      "timeout": 540
+    }
+  ]
+}

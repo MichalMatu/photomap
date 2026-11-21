@@ -1,0 +1,61 @@
+{
+  "allow_write": false,
+  "attempt_id": "0d911bf1b08b8d6454745c5f",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 261,
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git rev-parse HEAD && sha256sum frontend/dist/index.html.next && ls -l .dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/index.html && systemctl is-active photomap.service cloudflared.service'",
+      "current_rss_mb": 1.55,
+      "elapsed_seconds": 0.717,
+      "exit_code": 0,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "e6c3a877a24fdcc36508ec503f78e5d758b9195d\n17ea840e90094fbb085a64ef5c90cde0a1f207b9d9fc37b5d3d7df503be2f1fe  frontend/dist/index.html.next\n-rw-r--r-- 1 michal michal 2997 Nov  9 16:58 .dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/index.html\nactive\nactive\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 1.55,
+      "stage_index": 1,
+      "stage_name": "verify",
+      "stage_phase": "commands",
+      "stage_timeout": 180,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "finished_at": "2026-11-09T16:35:44.877090+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.071,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.083,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-fit-verify-staged-v10",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.717,
+      "outcome": "passed",
+      "stage_index": 1,
+      "stage_name": "verify",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T16:35:42.538402+00:00",
+  "status": "done",
+  "task_digest": "3ffb2da9b800b290b3b81cd2f13e58e985016322b0f8e212c185880ddbf21c7a",
+  "task_timeout": 350,
+  "verification": [],
+  "work_branch": "main"
+}

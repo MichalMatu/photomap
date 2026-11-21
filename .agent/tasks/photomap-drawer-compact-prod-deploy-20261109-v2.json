@@ -1,0 +1,42 @@
+{
+  "id": "photomap-drawer-compact-prod-deploy-20261109-v2",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "task_timeout": 2400,
+  "command_timeout": 900,
+  "steps": [
+    {
+      "name": "validate-previously-built-exact-sha",
+      "command": "set -euo pipefail\ntest \"$(git rev-parse HEAD)\" = \"ef1a903a74dfd3df588f7598fa378126c55865c6\"\ntest -z \"$(git status --porcelain)\"\ntest -s frontend/dist/index.html\necho MAC_RELEASE_INDEX_SHA\nshasum -a 256 frontend/dist/index.html\ngrep -oE '/assets/[^\"]+[.](js|css)' frontend/dist/index.html | head -n 15",
+      "timeout": 160
+    },
+    {
+      "name": "save-rollback-ui-and-online-sqlite",
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 bash -s <<'REMOTE'\nset -euo pipefail\ncd /home/michal/src/PhotoMaps\ntest \"$(git rev-parse HEAD)\" = \"90609f7733b178da9f2687e2133c64b47fb7338b\"\ntest -z \"$(git status --porcelain)\"\nsystemctl is-active --quiet photomap.service\nsystemctl is-active --quiet cloudflared.service\ncurl -fsS --max-time 8 http://127.0.0.1:8000/health >/dev/null\nrelease=\".dev/deploy/2026-11-09-compact-drawer-ef1a903\"\ntest ! -e \"$release\"\nmkdir -p \"$release\"\ncp -a frontend/dist \"$release/dist-before\"\ngit rev-parse HEAD > \"$release/source-before.sha\"\nsha256sum frontend/dist/index.html > \"$release/index-before.sha256\"\nsystemctl show photomap.service -p MainPID --value > \"$release/backend-pid-before\"\nsystemctl show cloudflared.service -p MainPID --value > \"$release/tunnel-pid-before\"\npython3 - \"$release\" <<'PY'\nimport pathlib, sqlite3, sys\nrelease = pathlib.Path(sys.argv[1])\ndb = pathlib.Path(\"backend/data/app.db\")\nif not db.is_file(): raise SystemExit(\"missing database\")\nwith sqlite3.connect(f\"file:{db.resolve()}?mode=ro\", uri=True, timeout=30) as origin:\n    with sqlite3.connect(release / \"app-before.db\", timeout=30) as copy:\n        origin.backup(copy)\n        assert copy.execute(\"PRAGMA integrity_check\").fetchone()[0] == \"ok\"\nprint(\"SQLITE_SNAPSHOT_OK\", (release / \"app-before.db\").stat().st_size)\nPY\ntest -s \"$release/dist-before/index.html\"\necho \"BACKUP_READY=$release\"\nREMOTE",
+      "timeout": 300
+    },
+    {
+      "name": "fast-forward-pi-source",
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 bash -s <<'REMOTE'\nset -euo pipefail\ncd /home/michal/src/PhotoMaps\ntest \"$(git rev-parse HEAD)\" = \"90609f7733b178da9f2687e2133c64b47fb7338b\"\ntest -z \"$(git status --porcelain)\"\ngit fetch origin main\ntest \"$(git rev-parse origin/main)\" = \"ef1a903a74dfd3df588f7598fa378126c55865c6\"\ngit merge --ff-only origin/main\ntest \"$(git rev-parse HEAD)\" = \"ef1a903a74dfd3df588f7598fa378126c55865c6\"\ntest -z \"$(git status --porcelain)\"\necho \"PI_SOURCE=$(git rev-parse HEAD)\"\nREMOTE",
+      "timeout": 200
+    },
+    {
+      "name": "stage-hashed-frontend-assets",
+      "command": "set -euo pipefail\ntest \"$(git rev-parse HEAD)\" = \"ef1a903a74dfd3df588f7598fa378126c55865c6\"\ntest -s frontend/dist/index.html\nexport RSYNC_RSH='ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8'\nrsync -az --exclude=index.html frontend/dist/ michal@192.168.0.23:/home/michal/src/PhotoMaps/frontend/dist/\nrsync -az frontend/dist/index.html michal@192.168.0.23:/home/michal/src/PhotoMaps/frontend/dist/index.html.next\necho STAGED\nshasum -a 256 frontend/dist/index.html",
+      "timeout": 260
+    },
+    {
+      "name": "atomic-index-cutover",
+      "command": "set -euo pipefail\nexpected=\"$(shasum -a 256 frontend/dist/index.html | awk '{print $1}')\"\nssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 bash -s -- \"$expected\" \"ef1a903a74dfd3df588f7598fa378126c55865c6\" <<'REMOTE'\nset -euo pipefail\nexpected=\"$1\"\ntarget=\"$2\"\ncd /home/michal/src/PhotoMaps\nrelease=\".dev/deploy/2026-11-09-compact-drawer-ef1a903\"\ntest \"$(git rev-parse HEAD)\" = \"$target\"\ntest -s \"$release/app-before.db\"\ntest -s \"$release/dist-before/index.html\"\ntest -s frontend/dist/index.html.next\ntest \"$(sha256sum frontend/dist/index.html.next | awk '{print $1}')\" = \"$expected\"\nsystemctl is-active --quiet photomap.service\nsystemctl is-active --quiet cloudflared.service\ntest \"$(systemctl show photomap.service -p MainPID --value)\" = \"$(cat \"$release/backend-pid-before\")\"\ntest \"$(systemctl show cloudflared.service -p MainPID --value)\" = \"$(cat \"$release/tunnel-pid-before\")\"\nmv -f frontend/dist/index.html.next frontend/dist/index.html\nif ! test \"$(sha256sum frontend/dist/index.html | awk '{print $1}')\" = \"$expected\" || ! curl -fsS --max-time 8 http://127.0.0.1:8000/health >/dev/null; then\n  cp -p \"$release/dist-before/index.html\" frontend/dist/index.html.rollback\n  mv -f frontend/dist/index.html.rollback frontend/dist/index.html\n  echo ROLLBACK_ACTIVATED >&2\n  exit 1\nfi\necho LIVE_INDEX\nsha256sum frontend/dist/index.html\necho LIVE_SHA\ngit rev-parse HEAD\necho RUNNING_PIDS\nsystemctl show photomap.service cloudflared.service -p MainPID\nREMOTE",
+      "timeout": 240
+    },
+    {
+      "name": "public-smoke-no-dynamic-html-hash-assumption",
+      "command": "set -euo pipefail\ntest \"$(git rev-parse HEAD)\" = \"ef1a903a74dfd3df588f7598fa378126c55865c6\"\napp=\"$(grep -oE '/assets/index-[A-Za-z0-9_-]+[.]js' frontend/dist/index.html | head -n 1)\"\nstyle=\"$(grep -oE '/assets/index-[A-Za-z0-9_-]+[.]css' frontend/dist/index.html | head -n 1)\"\nmap=\"$(find frontend/dist/assets -maxdepth 1 -name 'public-map-*.js' | head -n 1)\"\ntest -n \"$app\" && test -n \"$style\" && test -f \"$map\"\ntmp=\"$(mktemp /tmp/photomap-public-release.XXXXXX)\"\ncurl -fsS --max-time 20 -H 'Cache-Control: no-cache' 'https://photomap.pl/?ux=ef1a903' -o \"$tmp\"\ngrep -Fq \"$app\" \"$tmp\"\ngrep -Fq \"$style\" \"$tmp\"\necho \"PUBLIC_HTML_REFERENCES=$app $style\"\ncurl -fsS --max-time 20 -o /dev/null -w 'APP_JS_HTTP=%{http_code}\\\\n' \"https://photomap.pl$app\"\ncurl -fsS --max-time 20 -o /dev/null -w 'CSS_HTTP=%{http_code}\\\\n' \"https://photomap.pl$style\"\ncurl -fsS --max-time 20 -o /dev/null -w 'MAP_JS_HTTP=%{http_code}\\\\n' \"https://photomap.pl/assets/$(basename \"$map\")\"\ncurl -fsS --max-time 15 'https://photomap.pl/health'\necho\ncurl -fsS --max-time 20 -o /dev/null -w 'API_HTTP=%{http_code}\\\\n' 'https://photomap.pl/api/places/map'\nssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git status --short --branch && git rev-parse HEAD && sha256sum frontend/dist/index.html && systemctl is-active photomap.service cloudflared.service && systemctl show photomap.service cloudflared.service -p MainPID'\n",
+      "timeout": 300
+    }
+  ]
+}
