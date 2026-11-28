@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-drawer-polish-preflight-20261109-v2",
+  "task_digest": "e8c75c5f654fb7279196f3722d87540a3feaf9f7253a3727e0f01e9e87d11fd5",
+  "status": "done",
+  "failure_reason": null,
+  "finished_at": "2026-11-09T15:40:35.505031+00:00",
+  "attempt_id": "94600f47fbb2822ab5c58df1",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 42616,
+  "updated_at": "2026-11-09T15:40:35.771372+00:00",
+  "pid": 42616
+}

@@ -1,0 +1,21 @@
+{
+  "id": "photomap-fit-release-qa-v14",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/drawer-transition-content-fit-20261109",
+  "allow_write": false,
+  "resources": [],
+  "task_timeout": 1700,
+  "steps": [
+    {
+      "name": "format-lint-unit-build",
+      "command": "cd frontend && ./node_modules/.bin/prettier --check src/components/map/pinned-media/PinnedMediaDrawer.tsx src/styles/pinned-media.css src/styles/map.css e2e/visual/discovery-drawer.spec.ts && npm run lint && ./node_modules/.bin/vitest run src/components/map/pinned-media/pinnedMediaDrawerStage.test.ts && npm run build",
+      "timeout": 550
+    },
+    {
+      "name": "all-seven-drawer-chrome-scenarios",
+      "command": "cd frontend && E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ../scripts/quality/e2e.sh e2e/visual/discovery-drawer.spec.ts e2e/visual/pinned-media-drawer.spec.ts --workers=1",
+      "timeout": 950
+    }
+  ]
+}

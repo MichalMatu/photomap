@@ -1,0 +1,62 @@
+{
+  "allow_write": false,
+  "attempt_id": "61a2321d7d512ff44fee0e2c",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 2999,
+      "command": "cd frontend && E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ../scripts/quality/e2e.sh e2e/visual/discovery-drawer.spec.ts e2e/visual/pinned-media-drawer.spec.ts --workers=1",
+      "current_rss_mb": 45.7,
+      "elapsed_seconds": 33.338,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "Backend: http://127.0.0.1:18080, PID 1645\nFrontend: http://127.0.0.1:15174, PID 1688\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:1729) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 7 tests using 1 worker\n\n(node:1749) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  1 [chromium] › e2e/visual/discovery-drawer.spec.ts:6:5 › desktop discovery drawer renders map recommendations and opens the existing place gallery (3.4s)\n  ✓  2 [chromium] › e2e/visual/discovery-drawer.spec.ts:51:5 › drawer handle follows a slow drag without jumping between predefined heights (3.1s)\n  ✓  3 [chromium] › e2e/visual/discovery-drawer.spec.ts:94:5 › touch-style drawer swipe changes stages and does not open photos (556ms)\n  ✓  4 [chromium] › e2e/visual/discovery-drawer.spec.ts:126:5 › collapsed thumbnail preview does not bleed through the grabber while expanding (3.1s)\n  ✘  5 [chromium] › e2e/visual/discovery-drawer.spec.ts:158:5 › discovery size follows its rendered photo rows instead of leaving a giant bottom gap (2.4s)\n(node:2101) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  6 [chromium] › e2e/visual/pinned-media-drawer.spec.ts:7:5 › mobile pin mode and bottom drawer survive reload (9.4s)\n  ✓  7 [chromium] › e2e/visual/pinned-media-drawer.spec.ts:170:5 › long hold removes only the pinned collection entry after central button click (3.9s)\n\n\n  1) [chromium] › e2e/visual/discovery-drawer.spec.ts:158:5 › discovery size follows its rendered photo rows instead of leaving a giant bottom gap \n\n    Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeCloseTo\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m, \u001b[22mprecision\u001b[2m)\u001b[22m\n\n    Expected: \u001b[32m408\u001b[39m\n    Received: \u001b[31m407.453125\u001b[39m\n\n    Expected precision:    0\n    Expected difference: < \u001b[32m0.5\u001b[39m\n    Received difference:   \u001b[31m0.546875\u001b[39m\n\n      190 |   });\n      191 |   expect(stats.fitted).toBeGreaterThan(250);\n    > 192 |   expect(stats.height).toBeCloseTo(stats.fitted, 0);\n          |                        ^\n      193 |   expect(stats.height).toBeLessThan(450);\n      194 |   expect(stats.bottomGap).toBeLessThan(190);\n      195 |   expect(stats.mapHeight).toBeCloseTo(stats.bottomInset, 0);\n        at /Users/michal/agent-workspace/repos/photomap/work/frontend/e2e/visual/discovery-drawer.spec.ts:192:24\n\n    Error Context: test-results/visual-discovery-drawer-di-d782b--leaving-a-giant-bottom-gap-chromium/error-context.md\n\n  1 failed\n    [chromium] › e2e/visual/discovery-drawer.spec.ts:158:5 › discovery size follows its rendered photo rows instead of leaving a giant bottom gap \n  6 passed (29.0s)\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 666.05,
+      "stage_index": 1,
+      "stage_name": "seven-chrome-drawer-regressions",
+      "stage_phase": "commands",
+      "stage_timeout": 1000,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T16:24:11.776396+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.08,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.096,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-fit-final-browser-v11",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 33.338,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "seven-chrome-drawer-regressions",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T16:23:36.649969+00:00",
+  "status": "failed",
+  "task_digest": "d6ca4d9cb4dc773b729d27a17cfa32830f1c4854d702921ca77997249a1d2c77",
+  "task_timeout": 1200,
+  "verification": [],
+  "work_branch": "fix/drawer-transition-content-fit-20261109"
+}

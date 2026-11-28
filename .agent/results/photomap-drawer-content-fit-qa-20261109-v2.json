@@ -1,0 +1,62 @@
+{
+  "allow_write": true,
+  "attempt_id": "e5a395b31f2c5901a7d954a4",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 204,
+      "command": "cd frontend && ./node_modules/.bin/prettier --check src/components/map/pinned-media/PinnedMediaDrawer.tsx src/styles/pinned-media.css src/styles/map.css e2e/visual/discovery-drawer.spec.ts && npm run lint && ./node_modules/.bin/vitest run src/components/map/pinned-media/pinnedMediaDrawerStage.test.ts && npm run build",
+      "current_rss_mb": 2.33,
+      "elapsed_seconds": 0.625,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "Checking formatting...\n[warn] src/components/map/pinned-media/PinnedMediaDrawer.tsx\n[warn] e2e/visual/discovery-drawer.spec.ts\n[warn] Code style issues found in 2 files. Run Prettier with --write to fix.\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 2.33,
+      "stage_index": 1,
+      "stage_name": "static-build-and-drawer-unit",
+      "stage_phase": "commands",
+      "stage_timeout": 520,
+      "stage_total": 3,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T16:15:38.004495+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.066,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.076,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-drawer-content-fit-qa-20261109-v2",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 0.625,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "static-build-and-drawer-unit",
+      "stage_phase": "commands",
+      "stage_total": 3
+    }
+  ],
+  "started_at": "2026-11-09T16:15:35.717933+00:00",
+  "status": "failed",
+  "task_digest": "b18e297d4624363994eb462474eebc0f57dc850cc2f46579598f7d5aff47c9f6",
+  "task_timeout": 1900,
+  "verification": [],
+  "work_branch": "fix/drawer-transition-content-fit-20261109"
+}

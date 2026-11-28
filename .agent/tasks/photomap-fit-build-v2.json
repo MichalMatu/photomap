@@ -1,0 +1,16 @@
+{
+  "id": "photomap-fit-build-v2",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "task_timeout": 400,
+  "steps": [
+    {
+      "name": "build",
+      "command": "cd frontend && VITE_API_BASE_URL= npm run build && shasum -a 256 dist/index.html",
+      "timeout": 300
+    }
+  ]
+}

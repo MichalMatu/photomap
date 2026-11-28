@@ -1,0 +1,16 @@
+{
+  "id": "photomap-fit-prettier-diff-v13",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/drawer-transition-content-fit-20261109",
+  "allow_write": false,
+  "resources": [],
+  "task_timeout": 350,
+  "steps": [
+    {
+      "name": "format-diff",
+      "command": "cd frontend && ./node_modules/.bin/prettier --write src/components/map/pinned-media/PinnedMediaDrawer.tsx e2e/visual/discovery-drawer.spec.ts && cd .. && git diff -- frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx frontend/e2e/visual/discovery-drawer.spec.ts",
+      "timeout": 220
+    }
+  ]
+}

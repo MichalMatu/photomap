@@ -1,0 +1,11 @@
+{
+  "attempt_id": "38f4c684adb8ae5792a52b0c",
+  "daemon_version": "4.20.16",
+  "error": "Previous daemon instance ended while this task was claimed. Automatic replay was blocked.",
+  "failure_reason": "interrupted_previous_attempt",
+  "finished_at": "2026-11-09T15:39:35.706831+00:00",
+  "id": "photomap-drawer-polish-qa-20261109-v1",
+  "started_at": "2026-11-09T15:35:09.574191+00:00",
+  "status": "failed",
+  "task_digest": "c5be4c4a5ba2d79b1c1090d6f718462e53a3c3cec5845452cdcddd7a042e4e62"
+}

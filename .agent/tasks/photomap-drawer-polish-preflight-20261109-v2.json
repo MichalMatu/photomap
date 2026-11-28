@@ -1,0 +1,16 @@
+{
+  "id": "photomap-drawer-polish-preflight-20261109-v2",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/photo-drawer-compact-polish-20261109",
+  "allow_write": false,
+  "resources": [],
+  "task_timeout": 400,
+  "steps": [
+    {
+      "name": "repo-and-mac-preflight",
+      "command": "git status --short --branch && git rev-parse HEAD && git diff --check && free -h 2>/dev/null || vm_stat && uptime && test -x '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'",
+      "timeout": 120
+    }
+  ]
+}

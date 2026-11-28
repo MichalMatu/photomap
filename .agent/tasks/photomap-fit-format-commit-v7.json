@@ -1,0 +1,26 @@
+{
+  "id": "photomap-fit-format-commit-v7",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "fix/drawer-transition-content-fit-20261109",
+  "allow_write": true,
+  "resources": [],
+  "task_timeout": 600,
+  "steps": [
+    {
+      "name": "format",
+      "command": "cd frontend && ./node_modules/.bin/prettier --write src/components/map/pinned-media/PinnedMediaDrawer.tsx e2e/visual/discovery-drawer.spec.ts",
+      "timeout": 100
+    },
+    {
+      "name": "commit",
+      "command": "git add frontend/src/components/map/pinned-media/PinnedMediaDrawer.tsx frontend/e2e/visual/discovery-drawer.spec.ts && git diff --cached --check && git commit -m 'style(drawer): Prettier'",
+      "timeout": 120
+    },
+    {
+      "name": "push",
+      "command": "git push origin HEAD:refs/heads/fix/drawer-transition-content-fit-20261109",
+      "timeout": 120
+    }
+  ]
+}

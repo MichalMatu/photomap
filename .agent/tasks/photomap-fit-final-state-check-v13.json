@@ -1,0 +1,16 @@
+{
+  "id": "photomap-fit-final-state-check-v13",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": false,
+  "resources": [],
+  "task_timeout": 400,
+  "steps": [
+    {
+      "name": "read-production-state",
+      "command": "ssh -i /Users/michal/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 michal@192.168.0.23 'cd /home/michal/src/PhotoMaps && git rev-parse HEAD && sha256sum frontend/dist/index.html frontend/dist/index.html.next && systemctl is-active photomap.service cloudflared.service && curl -fsS --max-time 8 http://127.0.0.1:8000/health && echo && ls -lh .dev/deploy/2026-11-09-drawer-fit-e6c3a87/dist-before/index.html'",
+      "timeout": 180
+    }
+  ]
+}

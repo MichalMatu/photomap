@@ -1,0 +1,13 @@
+{
+  "event": "task_finished",
+  "task_id": "photomap-fit-format-commit-v7",
+  "task_digest": "a5a560f01a97a7daf2ba9a8d4c58ebd285b1e4c4e304861badaeeba249afff71",
+  "status": "failed",
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T16:17:45.563994+00:00",
+  "attempt_id": "cec429ffe91dc2b96e4fe622",
+  "daemon_version": "4.20.16",
+  "daemon_pid": 92139,
+  "updated_at": "2026-11-09T16:17:46.055691+00:00",
+  "pid": 92139
+}

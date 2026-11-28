@@ -1,0 +1,26 @@
+{
+  "id": "photomap-release-retry-prune-branches-20261109-v1",
+  "agent_binding": "2e5d59f8-f6e4-4d75-8d1a-dce7b6bf6607",
+  "mode": "commands",
+  "work_branch": "main",
+  "allow_write": true,
+  "resources": [],
+  "task_timeout": 500,
+  "steps": [
+    {
+      "name": "prune-fluid-drawer-merged-branch",
+      "command": "git merge-base --is-ancestor origin/feat/fluid-photo-drawer-20261109 origin/main && git push origin --delete feat/fluid-photo-drawer-20261109",
+      "timeout": 120
+    },
+    {
+      "name": "prune-compact-polish-merged-branch",
+      "command": "git merge-base --is-ancestor origin/fix/photo-drawer-compact-polish-20261109 origin/main && git push origin --delete fix/photo-drawer-compact-polish-20261109",
+      "timeout": 120
+    },
+    {
+      "name": "prune-fit-merged-branch",
+      "command": "git merge-base --is-ancestor origin/fix/drawer-transition-content-fit-20261109 origin/main && git push origin --delete fix/drawer-transition-content-fit-20261109",
+      "timeout": 120
+    }
+  ]
+}

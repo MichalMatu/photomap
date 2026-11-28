@@ -1,0 +1,62 @@
+{
+  "allow_write": false,
+  "attempt_id": "793249024bd29ad0a843560a",
+  "command_timeout": 900,
+  "commands": [
+    {
+      "background_process_leak": false,
+      "captured_output_chars": 2527,
+      "command": "cd frontend && E2E_CHROME_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' ../scripts/quality/e2e.sh e2e/visual/discovery-drawer.spec.ts --workers=1",
+      "current_rss_mb": 256.48,
+      "elapsed_seconds": 18.36,
+      "exit_code": 1,
+      "idle_timed_out": false,
+      "memory_limit_mb": 4096,
+      "memory_limited": false,
+      "output": "Backend: http://127.0.0.1:18080, PID 99647\nFrontend: http://127.0.0.1:15174, PID 99684\n\nMapa: http://127.0.0.1:15174\nAPI:  http://127.0.0.1:18080\n(node:99721) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\nRunning 5 tests using 1 worker\n\n(node:99741) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n  ✓  1 [chromium] › e2e/visual/discovery-drawer.spec.ts:6:5 › desktop discovery drawer renders map recommendations and opens the existing place gallery (3.3s)\n  ✓  2 [chromium] › e2e/visual/discovery-drawer.spec.ts:51:5 › drawer handle follows a slow drag without jumping between predefined heights (2.9s)\n  ✓  3 [chromium] › e2e/visual/discovery-drawer.spec.ts:94:5 › touch-style drawer swipe changes stages and does not open photos (579ms)\n  ✓  4 [chromium] › e2e/visual/discovery-drawer.spec.ts:126:5 › collapsed thumbnail preview does not bleed through the grabber while expanding (2.9s)\n  ✘  5 [chromium] › e2e/visual/discovery-drawer.spec.ts:158:5 › discovery size follows its rendered photo rows instead of leaving a giant bottom gap (2.6s)\n\n\n  1) [chromium] › e2e/visual/discovery-drawer.spec.ts:158:5 › discovery size follows its rendered photo rows instead of leaving a giant bottom gap \n\n    Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeCloseTo\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m, \u001b[22mprecision\u001b[2m)\u001b[22m\n\n    Expected: \u001b[32m408\u001b[39m\n    Received: \u001b[31m336\u001b[39m\n\n    Expected precision:    0\n    Expected difference: < \u001b[32m0.5\u001b[39m\n    Received difference:   \u001b[31m72\u001b[39m\n\n      181 |   });\n      182 |   expect(stats.fitted).toBeGreaterThan(250);\n    > 183 |   expect(stats.height).toBeCloseTo(stats.fitted, 0);\n          |                        ^\n      184 |   expect(stats.height).toBeLessThan(450);\n      185 |   expect(stats.bottomGap).toBeLessThan(190);\n      186 |   expect(stats.mapHeight).toBeCloseTo(stats.bottomInset, 0);\n        at /Users/michal/agent-workspace/repos/photomap/work/frontend/e2e/visual/discovery-drawer.spec.ts:183:24\n\n    Error Context: test-results/visual-discovery-drawer-di-d782b--leaving-a-giant-bottom-gap-chromium/error-context.md\n\n  1 failed\n    [chromium] › e2e/visual/discovery-drawer.spec.ts:158:5 › discovery size follows its rendered photo rows instead of leaving a giant bottom gap \n  4 passed (14.0s)\n",
+      "output_policy": "stream",
+      "output_truncated": false,
+      "peak_rss_mb": 621.45,
+      "stage_index": 1,
+      "stage_name": "focused-e2e",
+      "stage_phase": "commands",
+      "stage_timeout": 750,
+      "stage_total": 1,
+      "timed_out": false
+    }
+  ],
+  "daemon_version": "4.20.16",
+  "edits": {},
+  "failure_reason": "command_failed",
+  "finished_at": "2026-11-09T16:22:49.584554+00:00",
+  "git_diff": {
+    "elapsed_seconds": 0.076,
+    "exit_code": 0,
+    "output": ""
+  },
+  "git_status": {
+    "elapsed_seconds": 0.101,
+    "exit_code": 0,
+    "output": ""
+  },
+  "id": "photomap-fit-gesture-diagnose-v10",
+  "idle_timeout": 300,
+  "memory_limit_mb": 4096,
+  "mode": "commands",
+  "stages": [
+    {
+      "elapsed_seconds": 18.36,
+      "outcome": "failed",
+      "stage_index": 1,
+      "stage_name": "focused-e2e",
+      "stage_phase": "commands",
+      "stage_total": 1
+    }
+  ],
+  "started_at": "2026-11-09T16:22:29.421914+00:00",
+  "status": "failed",
+  "task_digest": "320ba096b109e37ecdb5a9f892dc359c3fb753232dce3708c1d4d49b1b8a9af2",
+  "task_timeout": 950,
+  "verification": [],
+  "work_branch": "fix/drawer-transition-content-fit-20261109"
+}
